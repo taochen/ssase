@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.ssascaling</groupId>
+  <artifactId>ssascaling-core</artifactId>
+  <version>0.0.1</version>
+  <name>SSASCALING-DISTRIBUTION</name>
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+		
+	</build>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<scope>test</scope>
+		</dependency>
+    
+    <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.10</version>
+			<scope>compile</scope>
+		</dependency>
+		
+		  <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.10</version>
+			<scope>compile</scope>
+		</dependency>
+          <dependency>
+             <groupId>org.encog</groupId>
+             <artifactId>encog-core</artifactId>
+             <version>3.2.0-SNAPSHOT</version>
+             <scope>compile</scope>
+        </dependency>
+       
+        <dependency>
+            <groupId>org.cloudbus.cloudsim</groupId>
+	        <artifactId>cloudsim-toolkit</artifactId>
+	        <version>2.1</version>
+            <scope>test</scope> 
+        </dependency>
+       <dependency>
+             <groupId>jxl</groupId>
+             <artifactId>jxl</artifactId>
+             <version>1.0.0</version>
+             <scope>test</scope>
+        </dependency>
+        <dependency>
+	         <groupId>org.apache.commons</groupId>
+	         <artifactId>commons-math3</artifactId>
+	         <version>3.0</version>
+	         <scope>compile</scope>
+        </dependency>
+         <dependency>
+            <groupId>quickdt</groupId>
+            <artifactId>quickdt</artifactId>
+            <version>0.0.6</version>
+        </dependency>
+        <dependency>
+		<groupId>edu.berkeley.compbio</groupId>
+		<artifactId>jlibsvm</artifactId>
+		<version>0.902</version>
+	</dependency>
+	 <dependency>
+      <groupId>net.sf</groupId>
+      <artifactId>javaml</artifactId>
+      <version>0.1.5</version>
+      <scope>compile</scope>
+    </dependency> 
+    <dependency>
+      <groupId>libsvm</groupId>
+      <artifactId>libsvm</artifactId>
+      <version>0.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+     <repository>
+            <id>sanity-maven-repo</id>
+            <name>Sanity's Maven repository on GitHub</name>
+            <url>http://sanity.github.com/maven-repo/repository/</url>
+        </repository>
+        <repository>
+		<id>dev.davidsoergel.com releases</id>
+		<url>http://dev.davidsoergel.com/artifactory/repo</url>
+		<snapshots>
+			<enabled>false</enabled>
+		</snapshots>
+	</repository>
+	<repository>
+		<id>dev.davidsoergel.com snapshots</id>
+		<url>http://dev.davidsoergel.com/artifactory/repo</url>
+		<releases>
+			<enabled>false</enabled>
+		</releases>
+	</repository>
+   </repositories>
+</project>
