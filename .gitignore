@@ -1,11 +1,17 @@
 # Build and Release Folders
-bin/
-bin-debug/
-bin-release/
+backup/
+lib/
+META-INF/
 
 # Other files and folders
+.classpath
+.DS_Store
+.project
 .settings/
+target/
+temp/
+*.jar
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Testing files
+src/test/
+
