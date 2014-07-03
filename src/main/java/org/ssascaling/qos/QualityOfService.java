@@ -3,7 +3,7 @@ package org.ssascaling.qos;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-
+ 
 import org.ssascaling.Model;
 import org.ssascaling.objective.Objective;
 import org.ssascaling.objective.ScalarizedObjective;
@@ -11,12 +11,18 @@ import org.ssascaling.observation.listener.Listener;
 import org.ssascaling.observation.listener.ModelListener;
 import org.ssascaling.primitive.EnvironmentalPrimitive;
 import org.ssascaling.primitive.Primitive;
+import org.ssascaling.util.Tuple;
+import org.ssascaling.util.Util;
 
 
 @SuppressWarnings("rawtypes")
+/**
+ * Note that primitive selection can contain 0, but QoS function training may be better
+ * to eliminate 0 values.
+ */
 public class QualityOfService implements Objective, Comparable{
 
-	// 0 to 1
+	// 0 to 1, this exclude any 0 value
 	protected double mean;
 
 	// 0 to 100
@@ -135,6 +141,10 @@ public class QualityOfService implements Objective, Comparable{
 	}
 
 	
+	public boolean isValid(){
+		return !Model.isEliminateZero ||  value != 0;
+	}
+	
 	public void doAddValue(){
 		
 		if (values != null) {
@@ -195,6 +205,23 @@ public class QualityOfService implements Objective, Comparable{
 	public double[] getArray() {
 		return array;
 	}
+	
+	/*public double[] getFilteredArray(){
+		int size = 0;
+		double[] result;
+		for (double d : array) {
+			if (d != 0) {
+				size++;
+			}
+		}
+		result = new double[size];
+		for (int i = 0; i < array.length;i++) {
+			if (array[i] != 0) {
+				result[i] = array[i]; 
+			}
+		}
+		
+	}*/
 
 	private void addValues(double[] values) {
 		for (double v : values) {
@@ -209,7 +236,7 @@ public class QualityOfService implements Objective, Comparable{
 	public void updateGlobalAndLocalErrorHeuristics(){
 		
 		// Do nothing for the first run.
-		if (model.getInputs().size() == 0) {
+		if (model.getInputs().size() == 0 || !isValid()) {
 			return;
 		}
 		
@@ -239,14 +266,46 @@ public class QualityOfService implements Objective, Comparable{
 	}
 	
 	/**
+	 * Only use for testing the MAPE/SMAPE of newly collected data against the model.
+	 * @param index
+	 * @return
+	 */
+	public Tuple<Double, Double> testNewData (int index){
+		double[] xValue = new double[model.getSize()];
+		for (int i = 0; i < xValue.length; i++) {
+			xValue[i] = model.get(i).getValue()/model.get(i).getMax();
+		}
+		double expectedY = value*100/max;
+		
+		double result = 0;
+		if (index == 0) {
+			result = model.predict(xValue, 0);
+		} else if (index == 1) {
+			result = model.predict(xValue, 1);
+		} else if (index == 2) {
+			result = model.predict(xValue, 2);
+		} else {
+			result = model.predict(xValue, true, a, b);
+		}
+		
+		return new Tuple<Double, Double>(Util.calculateMAPE(expectedY, result),
+				Util.calculateSMAPE(expectedY, result));
+	}
+	
+	/**
 	 * Calculate the importance of local and global errors.
 	 */
 	private void calculateRelativeImportance(double[] xValue, double expectedY){
 		double aMape = 0.0;
 		double bMape = 0.0;
-		System.out.print("***** The prediction MAPE is " +  (Math.abs(model.predict(xValue, true, a, b) - expectedY )/(expectedY))  +"*********\n");
-		if ((aMape = Math.abs(model.predict(xValue, true, 1, 0) - expectedY )/(expectedY)) <
-				(bMape = Math.abs(model.predict(xValue, true, 0, 1) - expectedY)/(expectedY))){
+		
+		double su = model.predict(xValue, true, a, b);
+		double su10 = model.predict(xValue, true, 1, 0);
+		double su01 = model.predict(xValue, true, 0, 1);
+		
+		System.out.print("***** The prediction MAPE is " +  (Math.abs(su - expectedY )/(expectedY==0? 1 : expectedY))  +"*********\n");
+		if ((aMape = Math.abs(su10 - expectedY )/(expectedY==0? 1 : expectedY)) <
+				(bMape = Math.abs(su01 - expectedY)/(expectedY==0? 1 : expectedY))){
 		    System.out.print("aMape: " + aMape + ", bMape: " + bMape + "\n");
 			a += bMape - aMape;
 			
@@ -283,11 +342,15 @@ public class QualityOfService implements Objective, Comparable{
 		}
 		
 		mean = 0;
+		int size = 0;
 		for (double d : array) {
+			if (!Model.isEliminateZero || d != 0){
+				size ++;
+			}
 			mean +=d;
 		}
 		
-		this.mean = mean/(array.length*100);
+		this.mean = mean/(size*100);
 	}
 
 	public void removeHistoreicalValues(int no) {
@@ -296,11 +359,15 @@ public class QualityOfService implements Objective, Comparable{
 		
 		array = newArray;
 		mean = 0;
+		int size = 0;
 		for (double d : array) {
+			if (!Model.isEliminateZero || d != 0){
+				size ++;
+			}
 			mean +=d;
 		}
 		
-		this.mean = mean/array.length;
+		this.mean = mean/(size*100);
 	}
 	
 	public double getMean(){
@@ -404,7 +471,7 @@ public class QualityOfService implements Objective, Comparable{
 		}*/
 		
 		// Do nothing for the first run.
-		if (model.getInputs().size() == 0) {
+		if (model.getInputs().size() == 0 || !isValid()) {
 			return;
 		}
 		

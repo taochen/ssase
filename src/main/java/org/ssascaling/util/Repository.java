@@ -2,6 +2,7 @@ package org.ssascaling.util;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -47,9 +48,9 @@ public class Repository {
 	
 	// Used to detect under-provisioning
 	// need concurrent set
-	private static Set<QualityOfService> qoss = new ConcurrentSkipListSet<QualityOfService>();
+	private static Set<QualityOfService> qoss = new HashSet<QualityOfService>();
 	// Used to detect over-provisioning
-	private static Set<Cost> cost = new ConcurrentSkipListSet<Cost>();
+	private static Set<Cost> cost = new HashSet<Cost>();
 	
 	// ************** These are the collections contain unique instance of QoS and primitives, 
 	// which need to be updated when adding newly measured data ***********
@@ -91,6 +92,10 @@ public class Repository {
 		return vms.get(VM_ID);
 	}
 	
+	public static Collection<VM> getAllVMs () {
+		return vms.values();
+	}
+	
     public static boolean isContainVM (String VM_ID) {
 		return vms.containsKey(VM_ID);
 	}
@@ -108,6 +113,7 @@ public class Repository {
 	}
 	
 	public static void prepareToUpdateHardwareControlPrimitive(String VM_ID, String name, double... values) {
+		
 		if (values.length == 1) {
 			vms.get(VM_ID).getHardwareControlPrimitive(name).prepareToAddValue(values[0]);
 		} else {
@@ -128,13 +134,17 @@ public class Repository {
 	
 	public static void setDirectForAnObjective  (Objective obj, Primitive p) {
 		if (!directPrimitives.containsKey(obj)) {
-			directPrimitives.put(obj, new ConcurrentSkipListSet<Primitive>());
+			directPrimitives.put(obj, new HashSet<Primitive>());
 		}
 		
 		directPrimitives.get(obj).add(p);
 	}
 	
 	public static boolean isDirectForAnObjective (Objective obj, Primitive p) {
-		return directPrimitives.get(obj).contains(p);
+		return directPrimitives.containsKey(obj)?  directPrimitives.get(obj).contains(p) : false;
+	}
+	
+	public static int countDirectForAnObjective (Objective obj) {
+		return directPrimitives.containsKey(obj)? directPrimitives.get(obj).size() : 0;
 	}
 }

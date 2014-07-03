@@ -11,6 +11,7 @@ import java.util.Set;
 import org.ssascaling.model.selection.mi.MutualInformation;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.qos.QualityOfService;
+import org.ssascaling.util.Repository;
 
 public class PrimitiveLearner {
 
@@ -26,6 +27,7 @@ public class PrimitiveLearner {
 		final Set<Primitive> inputs = new HashSet<Primitive>();
 		newInputesMap.clear();
 		double value = 0.0;
+		//System.out.print("*******count: " + Repository.countDirectForAnObjective(output) + "\n");
 		for (Primitive p : primitives) {
 			
 			 if ((value = MutualInformation.calculateSymmetricUncertainty(output.getArray(), p.getArray())) > 0) {
@@ -43,6 +45,8 @@ public class PrimitiveLearner {
 			 }
 		}
 		
+		System.out.print("Number of direrct primitives: " + inputs.size() + "\n");
+		
 		
 		if (inputMap.size() > 1) {
 			throw new RuntimeException("We currently only allow one group for non-direct primitives!");
@@ -56,6 +60,9 @@ public class PrimitiveLearner {
 			}
 
 		}
+		
+		
+		System.out.print("Number of total selected primitives: " + inputs.size() + "\n");
 		
 		System.out.print("Time for primitives selection:" + (System.currentTimeMillis() - time) + "ms\n");
 		return inputs;

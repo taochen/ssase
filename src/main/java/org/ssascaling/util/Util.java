@@ -17,6 +17,33 @@ public class Util {
 		return Math.sqrt(result);
 	}
 	
+	public static double calculateSMAPE (double a, double b) {
+
+		if (a == 0) {
+			return b; 
+		}
+		
+		double result = 0.0;
+		   if ((a > 0 && b < 0) ||
+				   (a < 0 && b > 0)) {
+			   result = Math.abs((b + a) / 
+					   (b - a));
+		   } else {
+			   result = Math.abs((b- a) / 
+					   (b+ a));
+		   }
+		   
+		   return result;
+	}
+	
+	public static double calculateMAPE (double a, double b) {
+		if (a == 0) {
+			return b; 
+		}
+		
+		   return Math.abs(b- a) / a;
+	}
+	
 	
 	public static void readMeasuredData(){
 	

@@ -116,6 +116,11 @@ public class ARMA extends AbstractModelFunction implements TimeSeries{
 
 	@Override
 	public double predict(double[] xValue) {
+		
+		if (ARcoeff.length == 0) {
+			return 0;
+		}
+		
 		double result =  0.0;
 		for (int i = 0; i < xValue.length; i++) {
 			result += ARcoeff[i] * xValue[i];	

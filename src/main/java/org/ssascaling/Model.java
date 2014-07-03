@@ -38,6 +38,7 @@ import org.ssascaling.primitive.EnvironmentalPrimitive;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.qos.QualityOfService;
 import org.ssascaling.util.Tuple;
+import org.ssascaling.util.Util;
 
 /**
  * Note that the measured value are updated via the Repository. But this
@@ -55,6 +56,8 @@ import org.ssascaling.util.Tuple;
  *
  */
 public class Model {
+	
+	public static final boolean isEliminateZero = true;
 	
 	protected static final Logger logger = LoggerFactory
 	.getLogger(Model.class);
@@ -227,6 +230,9 @@ public class Model {
 				
 			}
 		
+			if (inputs.size() == 0) {
+				return;
+			}
 			
 			// copy the data for local usage, we need to do this in order to
 			// avoid any concurrent changes in the underlying primitive and QoS
@@ -417,7 +423,7 @@ public class Model {
 					}
 					
 				}
-				lastMape[k] = Math.abs(predict- ideal) / ideal;
+				lastMape[k] = Math.abs(predict- ideal) / (ideal==0? 1 : ideal);
 				String name = "ARMAX";
 				if (k == ModelFunction.ANN) {
 					name = "ANN";
@@ -500,7 +506,7 @@ public class Model {
 					}
 					
 				}
-				result[k] = Math.abs(predict- ideal) / ideal;
+				result[k] = Math.abs(predict- ideal) / (ideal==0? 1 : ideal);
 				String name = "ARMAX";
 				if (k == ModelFunction.ANN) {
 					name = "ANN";
@@ -907,7 +913,7 @@ public class Model {
 		ClusterData[] data = new ClusterData[output.length];
 		//Map map = new HashMap();
 		for (int i = 0;i < output.length;i++){
-			double mape = Math.abs(output[i] - function.predict(inputs[i]))/output[i];
+			double mape = Util.calculateMAPE(output[i],  function.predict(inputs[i]));
 			data[i] = new ClusterData(originalInputs[i], output[i], mape);
 			
 			if (previous != 0 && previous != mape) {
@@ -1158,13 +1164,13 @@ public class Model {
 				// For EP, there should be always EP(t-1), which is one interval before.
 				if (inputs.get(i) instanceof EnvironmentalPrimitive) {
 					// Only put inputs if the corresponding output is non-zero.
-					if (output.getArray()[k] != 0) {
+					if (!isEliminateZero || output.getArray()[k] != 0) {
 					    x[index][i] =  inputs.get(i).getArray()[k - 1]/100;
 					  //  System.out.print(inputs.get(i).getName() + x[index][i]+" EP ********** \n");
 					    index++;
 					}
 				} else {
-					if (output.getArray()[k] != 0) {
+					if (!isEliminateZero || output.getArray()[k] != 0) {
 					    x[index][i] =  inputs.get(i).getArray()[k]/100;
 					   // System.out.print(inputs.get(i).getAlias()+ " : " +  k + " CP ********** \n");
 					   // System.out.print(inputs.get(i).getName() + x[index][i]+" CP ********** \n");
@@ -1183,14 +1189,16 @@ public class Model {
 	 */
 	private Object[] decomposeOutput(){
 		invalidOuputCount = 0;
-		// Do not allow to model 0 output.
-		for (int i = 1; i < output.getArray().length; i++)  {
-			if (output.getArray()[i] == 0) {
-				invalidOuputCount++;
-			}
-			
-		}
 		
+		if (isEliminateZero) {
+			// Do not allow to model 0 output.
+			for (int i = 1; i < output.getArray().length; i++)  {
+				if (output.getArray()[i] == 0) {
+					invalidOuputCount++;
+				}
+				
+			}
+		}
 		
 		double[][] y2 = new double[output.getArray().length - invalidOuputCount - 1][];
 		double[] y1 = new double[output.getArray().length - invalidOuputCount - 1];
@@ -1200,7 +1208,7 @@ public class Model {
 			
 			
 			// Get rid of the first data
-			if (output.getArray()[i] != 0) {
+			if (!isEliminateZero || output.getArray()[i] != 0) {
 				y2[k] = new double[]{output.getArray()[i]/100};				
 				y1[k] = output.getArray()[i]/100;
 				k++;

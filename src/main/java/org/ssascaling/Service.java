@@ -76,6 +76,10 @@ public class Service {
 	}
 
 	public void prepareToUpdatePrimitiveValue(String name, double... values){
+		if (!primitives.containsKey(name)) {
+			return;
+		}
+		
 		if (values.length == 1) {
 			primitives.get(name).prepareToAddValue(values[0]) ;
 		} else {
@@ -97,6 +101,14 @@ public class Service {
 	
 	public Collection<Primitive> getPrimitives(){
 		return primitives.values();
+	}
+	
+	public Set<Primitive> getPossiblePrimitives(){
+		return possibleInputs;
+	}
+	
+	public Objective getObjective(String name){
+		return objectives.get(name);
 	}
 	
 	public String getName(){

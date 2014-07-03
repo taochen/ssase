@@ -24,10 +24,16 @@ public class ApacheOLSLearner extends AbstractLearner {
 	
 	@Override
 	public double[] train(double[][] x, double[] y) {
-		regression = new OLSMultipleLinearRegression();
-		regression.setNoIntercept(true);
-		regression.newSampleData(y, x);
-		return regression.estimateRegressionParameters();
+		try {
+		   regression = new OLSMultipleLinearRegression();
+		   regression.setNoIntercept(true);
+		   regression.newSampleData(y, x);
+		
+		   return regression.estimateRegressionParameters();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new double[0];
+		}
 	}
 	
 	public double calculateResidualSumOfSquares() {

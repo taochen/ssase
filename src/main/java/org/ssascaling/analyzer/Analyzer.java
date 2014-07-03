@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ssascaling.Service;
+import org.ssascaling.executor.VM;
 import org.ssascaling.objective.Cost;
 import org.ssascaling.objective.Objective;
 import org.ssascaling.primitive.ControlPrimitive;
+import org.ssascaling.primitive.HardwareControlPrimitive;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.qos.QualityOfService;
 import org.ssascaling.region.SuperRegionControl;
@@ -85,6 +87,12 @@ public class Analyzer {
 		
 		for (Service s : Repository.getAllServices() ) {
 			for (Primitive p : s.getPrimitives()) {
+				p.addValue();
+			}
+		}
+		
+		for (VM v : Repository.getAllVMs()) {
+			for (Primitive p : v.getAllPrimitives()){
 				p.addValue();
 			}
 		}

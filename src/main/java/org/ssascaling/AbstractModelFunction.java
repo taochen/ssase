@@ -37,6 +37,11 @@ public abstract class AbstractModelFunction implements ModelFunction {
 	}
 
 	public double calculateEachSMAPE(double ideal, double actual){
+		
+		if (ideal == 0) {
+			return actual; 
+		}
+		
 		if ((actual > 0 && ideal < 0) || (actual < 0 && ideal > 0)) {
 			return Math.abs((ideal + actual) / (ideal - actual));
 		} else {
@@ -44,7 +49,12 @@ public abstract class AbstractModelFunction implements ModelFunction {
 		}
 	}
 	
-	public double calculateEachMAPE(double ideal, double actual){	  
+	public double calculateEachMAPE(double ideal, double actual){	
+		
+		if (ideal == 0) {
+			return actual; 
+		}
+		
 		return ideal==0? 0 : Math.abs(ideal - actual)/ideal;
 	}
 }

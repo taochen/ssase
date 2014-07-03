@@ -458,7 +458,7 @@ public class EncogFeedForwardNeuralNetwork extends AbstractModelFunction impleme
 			size++;
 		}
 	
-		return new double[]{Ry==0?0.0:RSS/Ry, 
+		return new double[]{Ry==0?RSS:RSS/Ry, 
 				total/size};
 	}
 	
@@ -505,7 +505,7 @@ public class EncogFeedForwardNeuralNetwork extends AbstractModelFunction impleme
 		}
 		this.RSS = RSS;
 		//System.out.print("Ry: " + Ry + "\n");
-		this.R = 1-(RSS/Ry);
+		this.R = 1-(Ry==0? RSS : RSS/Ry);
 		this.SMAPE = SMAPE/no;
 		this.MAPE = MAPE/no;
 		System.out.print(no+"MSE: " + bestEverNetwork.calculateError(trainingSet) + "\n");
