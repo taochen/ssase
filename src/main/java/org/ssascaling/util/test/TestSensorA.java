@@ -410,6 +410,10 @@ public class TestSensorA {
 					}
 				}
 				readFileIndex++;
+				System.out.print("========================== readFileIndex ===============================\n");
+				System.out.print(readFileIndex + " break\n");
+				System.out.print("========================== readFileIndex ===============================\n");
+				
 			}
 		}, SAMPLING_INTERVAL, SAMPLING_INTERVAL);
 

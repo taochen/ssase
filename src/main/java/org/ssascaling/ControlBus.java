@@ -28,6 +28,14 @@ public class ControlBus {
 	@SuppressWarnings("unused")
 	public static void begin(DataInputStream is){
 		
+		
+		// This is the Monitor, do not detect symptons but record historical data.
+		/*
+		 *The M part 
+		 ***/
+		
+		boolean ifAnalyze = Monitor.write(is);
+		//System.out.print("is trigger analyzer " + ifAnalyze  + "\n");
 		synchronized(lock) {
 			// Ensure only one MAPE loop running at a time.
 			// Can not just get rid of as this may be newly measured data.	
@@ -52,12 +60,7 @@ public class ControlBus {
 			
 		}
 		
-		// This is the Monitor, do not detect symptons but record historical data.
-		/*
-		 *The M part 
-		 ***/
 		
-		boolean ifAnalyze = Monitor.write(is);
 		// Put modeling in the Analyzer, which will also analyze symptons, the Adaptor would be trigger once model change significantly. 
 	    // In case of changing super region, this should be trigger in the Analyzer, the same as previous TODO.
 		if (isTestMonitoringOnly) {
