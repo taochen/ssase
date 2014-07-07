@@ -80,19 +80,15 @@ public class Service {
 			return;
 		}
 		
-		if (values.length == 1) {
-			primitives.get(name).prepareToAddValue(values[0]) ;
-		} else {
-			primitives.get(name).prepareToAddValue(values) ;
-		}
+		for (double v : values) {
+			primitives.get(name).prepareToAddValue(v) ;
+		} 
 	}
 	
 	public void prepareToUpdateQoSValue(String name, double... values){
-		if (values.length == 1) {
-			((QualityOfService)objectives.get(name)).prepareToAddValue(values[0]) ;
-		} else {
-			((QualityOfService)objectives.get(name)).prepareToAddValue(values) ;
-		}
+		for (double v : values) {
+			((QualityOfService)objectives.get(name)).prepareToAddValue(v) ;
+		} 
 	}
 	
 	public Collection<Objective> getObjectives(){

@@ -27,6 +27,7 @@ import org.ssascaling.qos.QualityOfService;
  * happen very often.
  * 
  * We assume that these collection can be updated via GMS when adding/removing VMs and service-instances.
+ * but of course need to have lock.
  * @author tao
  *
  */
@@ -114,10 +115,8 @@ public class Repository {
 	
 	public static void prepareToUpdateHardwareControlPrimitive(String VM_ID, String name, double... values) {
 		
-		if (values.length == 1) {
-			vms.get(VM_ID).getHardwareControlPrimitive(name).prepareToAddValue(values[0]);
-		} else {
-			vms.get(VM_ID).getHardwareControlPrimitive(name).prepareToAddValue(values);
+		for (double v : values){
+			vms.get(VM_ID).getHardwareControlPrimitive(name).prepareToAddValue(v);
 		}
 		
 		

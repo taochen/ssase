@@ -31,7 +31,7 @@ public class ApacheOLSLearner extends AbstractLearner {
 		
 		   return regression.estimateRegressionParameters();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.print("Too little samples for trainning ARMAX or the matrix is singular.\n");
 			return new double[0];
 		}
 	}

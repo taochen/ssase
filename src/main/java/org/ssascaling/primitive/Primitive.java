@@ -8,8 +8,6 @@ public interface Primitive {
 	
 	public void prepareToAddValue(double value);
 	
-	public void prepareToAddValue(double[] values);
-	
 	public double getValue();
 	
 	public void addValue();
@@ -35,4 +33,6 @@ public interface Primitive {
 	public void setName(String alias);
 	
 	public String getAlias();
+	
+	public void resetValues();
 }

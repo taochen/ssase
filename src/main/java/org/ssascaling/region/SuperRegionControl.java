@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.Future;
 
 import org.ssascaling.ControlBus;
 import org.ssascaling.objective.Objective;
@@ -15,6 +17,7 @@ import org.ssascaling.observation.event.SuperRegionChangeEvent.Operation;
 import org.ssascaling.observation.listener.SuperRegionListener;
 import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.util.Repository;
+import org.ssascaling.util.SSAScalingThreadPool;
 import org.ssascaling.util.Tuple;
 
 /**
@@ -25,6 +28,7 @@ import org.ssascaling.util.Tuple;
  * @author tao
  *
  */
+@SuppressWarnings("rawtypes")
 public class SuperRegionControl implements SuperRegionListener{
 
 	// Change in the same sync lock 
@@ -42,7 +46,7 @@ public class SuperRegionControl implements SuperRegionListener{
 	
 	private RegionControl control;
 	
-	private Map<Objective, Thread> running;
+	private Map<Objective, String> running;
 	
 	private static SuperRegionControl instance;
 	
@@ -64,7 +68,7 @@ public class SuperRegionControl implements SuperRegionListener{
 	
 	
 	private SuperRegionControl(Set<Objective> objs){
-		running = new HashMap<Objective, Thread>();
+		running = new HashMap<Objective, String>();
 		control =  new RegionControl(objs);
 	}
 	
@@ -90,7 +94,7 @@ public class SuperRegionControl implements SuperRegionListener{
 	 * its own super region.
 	 * @param obj
 	 */
-	public LinkedHashMap<ControlPrimitive, Double> optimize(Objective obj){
+	public LinkedHashMap<ControlPrimitive, Double> optimize(Objective obj, String uuid){
 		/*RegionControl superRegion = null;
 		synchronized (lock) {
 			// The obj here should only belongs to its own super region of the node.
@@ -107,10 +111,10 @@ public class SuperRegionControl implements SuperRegionListener{
 		
 		synchronized (lock) {
 			// Always overwrite the new one, as the old one should have been stop.
-			running.put(obj, Thread.currentThread());
+			running.put(obj, uuid);
 		}
 		
-		LinkedHashMap<ControlPrimitive, Double> result = control.optimize(obj);
+		LinkedHashMap<ControlPrimitive, Double> result = control.optimize(obj, uuid);
 		
 		/*synchronized (lock) {
 			// If this region has been replaced due to super region change, and this thread is
@@ -124,6 +128,7 @@ public class SuperRegionControl implements SuperRegionListener{
 		
 		synchronized (lock) {
 			running.remove(obj);
+			SSAScalingThreadPool.removeThread(uuid);
 		}
 		
 		
@@ -210,9 +215,9 @@ public class SuperRegionControl implements SuperRegionListener{
 	 * This should be sync on 'lock', at the place where it is called.
 	 */
 	private void restartExistingOptimization(){
-		for (final Map.Entry<Objective, Thread> entry : running.entrySet()) {
+		for (final Map.Entry<Objective, String> entry : running.entrySet()) {
 			
-			entry.getValue().stop();
+			SSAScalingThreadPool.terminate(entry.getValue());
 			
 			
 			// Only trigger if the objective is still violated, should be fine as the Analyzer ensures
@@ -221,15 +226,17 @@ public class SuperRegionControl implements SuperRegionListener{
 			
 			if (entry.getKey().isViolate()) {
 
-				new Thread(new Runnable() {
+				final String uuid = UUID.randomUUID().toString();
+				Future f = SSAScalingThreadPool.submitJob(new Runnable() {
 
 					@Override
 					public void run() {
-						ControlBus.doDecisionMaking(entry.getKey());
+						ControlBus.doDecisionMaking(entry.getKey(), uuid);
 					}
 
-				}).start();
+				});
 
+				SSAScalingThreadPool.putThread(uuid, f);
 			}
 		}
 		// This should be fine as it is called with the lock's sync block.

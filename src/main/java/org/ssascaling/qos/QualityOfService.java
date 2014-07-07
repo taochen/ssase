@@ -68,6 +68,12 @@ public class QualityOfService implements Objective, Comparable{
 	// Used for testing.
 	private boolean isReallyTrain = true;
 	
+	
+	// The new values that has not yet being updated. This is raw value.
+	protected double[] pendingValues = null;
+	protected int samplingCounter = 0;
+	protected int addingCounter = 0;
+	
 	protected QualityOfService(){
 		
 	}
@@ -127,17 +133,25 @@ public class QualityOfService implements Objective, Comparable{
 	 * This is mutually exclusive with the other prepareToAddValue
 	 * @param value
 	 */
-	public void prepareToAddValue(double value) {
-		this.value = value;
-	}
-	
-	/**
-	 * This is mutually exclusive with the other prepareToAddValue
-	 * @param value
-	 */
-	public void prepareToAddValue(double[] values) {
-		this.values = values;
-		this.value  = values [ values.length - 1];
+	public synchronized void prepareToAddValue(double value) {
+		// If the previous value has not been added.
+		if (addingCounter != samplingCounter) {
+			System.out.print(addingCounter + " : " + samplingCounter + "***** queuing values! *********\n");
+			if (pendingValues == null) {
+				pendingValues = new double[]{this.value, value};
+			} else {
+
+				double[] newArray = new double[pendingValues.length + 1];
+				System.arraycopy(pendingValues, 0, newArray, 0, pendingValues.length);
+				newArray[newArray.length - 1] = value;
+				pendingValues = newArray;
+			}
+			
+		} else {
+			pendingValues = new double[]{value};
+		}
+		
+		samplingCounter++;
 	}
 
 	
@@ -145,13 +159,28 @@ public class QualityOfService implements Objective, Comparable{
 		return !Model.isEliminateZero ||  value != 0;
 	}
 	
-	public void doAddValue(){
+	public synchronized void doAddValue(){
+		
+		
+		values = pendingValues.length == 1? null : pendingValues;
+		value = pendingValues[pendingValues.length - 1];
+				
 		
 		if (values != null) {
 			addValues(values);
 		} else {
 			addValue(value);
 		}
+		pendingValues = null;
+	}
+	
+
+
+	public synchronized void resetValues(){
+		// Only reset the array, as 'value' would be used
+		// as the current state of this QoS.
+		// Call this only after addValue has been invoked.
+		values = null;
 	}
 	/**
 	 * This is the final stage for updating the model when new data is available
@@ -194,9 +223,7 @@ public class QualityOfService implements Objective, Comparable{
 			
 			model.selectPrimititvesAndTrainModels();
 		
-			// Only reset the array, as 'value' would be used
-			// as the current state of this QoS.
-			values = null;
+			
 		}
 		
 		Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
@@ -242,15 +269,17 @@ public class QualityOfService implements Objective, Comparable{
 		
 		
 		if (values != null) {
-			for (int k = 0; k < values.length; k++) {
-				double[] xValue = new double[model.getSize()];
-				for (int i = 0; i < xValue.length; i++) {
-					xValue[i] = model.get(i).getArray()[model.get(i).getArray().length - 
-					                                    values.length + k]/model.get(i).getMax();
-				}
-				
-				calculateRelativeImportance(xValue,  values[k]*100/max);
+			//for (int k = 0; k < values.length; k++) {
+			// Only fouces on the 'next' interval data.
+			int k = 0;
+			double[] xValue = new double[model.getSize()];
+			for (int i = 0; i < xValue.length; i++) {
+				xValue[i] = model.get(i).getArray()[model.get(i).getArray().length - 
+				                                    values.length + k]/model.get(i).getMax();
 			}
+			
+			calculateRelativeImportance(xValue,  values[k]*100/max);
+			//}
 		// If there is only single newly measured data sample.	
 		} else {
 			double[] xValue = new double[model.getSize()];
@@ -341,6 +370,8 @@ public class QualityOfService implements Objective, Comparable{
 			
 		}
 		
+		addingCounter++;
+		
 		mean = 0;
 		int size = 0;
 		for (double d : array) {
@@ -353,7 +384,7 @@ public class QualityOfService implements Objective, Comparable{
 		this.mean = mean/(size*100);
 	}
 
-	public void removeHistoreicalValues(int no) {
+	public synchronized void removeHistoreicalValues(int no) {
 		double[] newArray = new double[array.length - no];
 		System.arraycopy(array, no, newArray, 0, array.length);
 		

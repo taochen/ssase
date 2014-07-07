@@ -10,7 +10,7 @@ import org.ssascaling.region.SuperRegionControl;
 public class Planner {
 
 
-	public static LinkedHashMap<ControlPrimitive, Double> optimize (Objective obj) {
-		return SuperRegionControl.getInstance().optimize(obj);
+	public static LinkedHashMap<ControlPrimitive, Double> optimize (Objective obj, String uuid) {
+		return SuperRegionControl.getInstance().optimize(obj, uuid);
 	}
 }

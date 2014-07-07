@@ -3,6 +3,8 @@ package org.ssascaling;
 import java.io.DataInputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ssascaling.analyzer.Analyzer;
@@ -11,17 +13,19 @@ import org.ssascaling.monitor.Monitor;
 import org.ssascaling.objective.Objective;
 import org.ssascaling.planner.Planner;
 import org.ssascaling.primitive.ControlPrimitive;
+import org.ssascaling.util.SSAScalingThreadPool;
 
 public class ControlBus {
 	
-	private static final boolean isTestMonitoringOnly = false;
-	private static final boolean isTestQoSModelingOnly = true;
+	public static final boolean isTestMonitoringOnly = false;
+	public static final boolean isTestQoSModelingOnly = true;
 
 	// Ensure only one MAPE loop running at a time.
 	// This is the main lock of MAPE loop, in case the repository 
 	// would change, it also need to rely on this lock.
 	private final static AtomicInteger lock = new AtomicInteger(-1);
 	private static List<Objective> objectivesToBeOptimized = null;
+	@SuppressWarnings("unused")
 	public static void begin(DataInputStream is){
 		
 		synchronized(lock) {
@@ -29,6 +33,9 @@ public class ControlBus {
 			// Can not just get rid of as this may be newly measured data.	
 				while (lock.get() != -1) {
 					try {
+						//System.out.print("========================== Break ===============================\n");
+						//System.out.print(Thread.currentThread() + " break\n");
+						//System.out.print("========================== Break ===============================\n");
 						lock.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -37,6 +44,10 @@ public class ControlBus {
 					
 				}
 				
+				
+				//System.out.print("========================== Run ===============================\n");
+				//System.out.print(Thread.currentThread() + " running\n");
+				//System.out.print("========================== Run ===============================\n");
 				lock.set(0);
 			
 		}
@@ -80,18 +91,20 @@ public class ControlBus {
 		
 			
 			for (final Objective obj : objectivesToBeOptimized) {
-				
+				final String uuid = UUID.randomUUID().toString();
 				// Optimize them on separate thread, if two or more are in the same group
 				// then only the first one can trigger optimization as implemented in 
 				// SuperRegionControl
-				new Thread(new Runnable(){
+				Future f = SSAScalingThreadPool.submitJob(new Runnable(){
 
 					@Override
 					public void run() {
-						 doDecisionMaking(obj);
+						 doDecisionMaking(obj, uuid);
 					}
 					
-				}).start();
+				});
+				
+				SSAScalingThreadPool.putThread(uuid, f);
 			    
 			}
 		}
@@ -125,12 +138,12 @@ public class ControlBus {
 	 * optimization or region partitioning.
 	 * @param obj
 	 */
-	public static void doDecisionMaking (Objective obj){
+	public static void doDecisionMaking (Objective obj, String uuid){
 		/*
 		 *The P part 
 		 ***/
 		// If need trigger optimization in the Planer, then the Analyzer should tell.
-		final LinkedHashMap<ControlPrimitive, Double>  decisions = Planner.optimize(obj);
+		final LinkedHashMap<ControlPrimitive, Double>  decisions = Planner.optimize(obj, uuid);
 		// Get the result from Planer to the Executor who will trigger Actuator. 
 		// If the region is under optimization already, then the decisions would be null.
 		if (decisions != null) {

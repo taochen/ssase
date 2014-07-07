@@ -14,7 +14,7 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 	
 	protected double max = 0;
 	
-	protected double value;
+	protected double value = -1;
 	protected double[] values = null;
 	protected double latest;
 	
@@ -22,6 +22,11 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 	
 	
 	protected String name;
+	// The new values that has not yet being updated. This is raw value.
+	protected double[] pendingValues = null;
+	// Keep adding and sampling consistent.
+	protected int samplingCounter = 0;
+	protected int addingCounter = 0;
 	public EnvironmentalPrimitive(String alias, Type type) {
 		super();
 		array = new double[0];
@@ -67,18 +72,35 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 	}
 
 	
-	public void prepareToAddValue(double value) {
-		this.value = value;
-	}
+	public synchronized void prepareToAddValue(double value) {
+		// If the previous value has not been added.
+		if (addingCounter != samplingCounter) {
+			
+			if (pendingValues == null) {
+				pendingValues = new double[]{this.value, value};
+			} else {
 
-
-	public void prepareToAddValue(double[] values) {
-		this.values = values;
-		this.value  = values [ values.length - 1];
+				double[] newArray = new double[pendingValues.length + 1];
+				System.arraycopy(pendingValues, 0, newArray, 0, pendingValues.length);
+				newArray[newArray.length - 1] = value;
+				pendingValues = newArray;
+			}
+			
+			
+		} else {
+			pendingValues = new double[]{value};
+		}
+		samplingCounter++;
 	}
+	
+
 
 	@Override
-	public void addValue() {
+	public synchronized void addValue() {
+		values = pendingValues.length == 1? null : pendingValues;
+		value = pendingValues[pendingValues.length - 1];
+		
+		
 		if (values != null) {
 			for (double v : values) {
 				addValue(v);
@@ -86,6 +108,8 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 		} else {
 			addValue(value);
 		}
+		
+		pendingValues = null;
 	}
 	
 	
@@ -114,11 +138,12 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 			array = newArray;
 		}
 		latest = value;
+		addingCounter++;
 		
 	}
 
 	@Override
-	public void removeHistoreicalValues(int no) {
+	public synchronized void removeHistoreicalValues(int no) {
 		double[] newArray = new double[array.length - no];
 		System.arraycopy(array, no, newArray, 0, array.length);
 		
@@ -184,5 +209,10 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 	
 	public double getLatest(){
 		return latest;
+	}
+	
+	
+	public synchronized void resetValues(){
+		values = null;
 	}
 }

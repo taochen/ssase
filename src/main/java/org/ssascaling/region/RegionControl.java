@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ssascaling.ControlBus;
@@ -18,6 +19,7 @@ import org.ssascaling.observation.event.ModelChangeEvent;
 import org.ssascaling.observation.listener.ModelListener;
 import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.primitive.Primitive;
+import org.ssascaling.util.SSAScalingThreadPool;
 import org.ssascaling.util.Tuple;
 
 /**
@@ -25,6 +27,7 @@ import org.ssascaling.util.Tuple;
  * @author tao
  *
  */
+@SuppressWarnings("rawtypes")
 public class RegionControl implements ModelListener {
 	
 	
@@ -50,12 +53,12 @@ public class RegionControl implements ModelListener {
     // Updated with calculateRegions
     private int totalNumberOfObjective;
     
-    
-    private Map<Region,Tuple<Objective, Thread>> map;
+    // String here is a unqiue thread id.
+    private Map<Region,Tuple<Objective, String>> map;
     
     public RegionControl(Set<Objective> objs){
     	objectiveMap = new HashMap<Objective, Region>();
-    	map = new HashMap<Region,Tuple<Objective, Thread>>();
+    	map = new HashMap<Region,Tuple<Objective, String>>();
     	id = UUID.randomUUID().toString();
     	calculateRegions(objs);
     }
@@ -70,7 +73,7 @@ public class RegionControl implements ModelListener {
      * this method return. So when doing the actions, we need to validate.
      * @param obj
      */
-	public LinkedHashMap<ControlPrimitive, Double> optimize(Objective obj){
+	public LinkedHashMap<ControlPrimitive, Double> optimize(Objective obj, String uuid){
 		Region region = null;
 		synchronized (lock) {
 			region = objectiveMap.get(obj);
@@ -81,7 +84,7 @@ public class RegionControl implements ModelListener {
 			if(map.containsKey(region)) {
 				return null;
 			}
-			map.put(region, new Tuple(obj, Thread.currentThread()));
+			map.put(region, new Tuple(obj, uuid));
 		}
 		
 		LinkedHashMap<ControlPrimitive, Double> result = region.optimize();
@@ -227,24 +230,26 @@ public class RegionControl implements ModelListener {
 	 * This should be sync on 'lock', at the place where it is called.
 	 */
 	private void restartExistingOptimization(){
-		for (final Map.Entry<Region,Tuple<Objective, Thread>> entry : map.entrySet()) {
+		for (final Map.Entry<Region,Tuple<Objective, String>> entry : map.entrySet()) {
 			
-			entry.getValue().getVal2().stop();
+			SSAScalingThreadPool.terminate(entry.getValue().getVal2());
 			
 			// Only trigger if the objective is still violated, should be fine as the Analyzer ensures
 			// that the new set of objective always trigger after this method. This is because thie method is
 			// called in the same thread as the model training.
 			
 			if (entry.getValue().getVal1().isViolate()) {
-
-				new Thread(new Runnable() {
+				final String uuid = UUID.randomUUID().toString();
+				Future f = SSAScalingThreadPool.submitJob(new Runnable() {
 
 					@Override
 					public void run() {
-						ControlBus.doDecisionMaking(entry.getValue().getVal1());
+						ControlBus.doDecisionMaking(entry.getValue().getVal1(), uuid);
 					}
 
-				}).start();
+				});
+				
+				SSAScalingThreadPool.putThread(uuid, f);
 
 			}
 		}

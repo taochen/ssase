@@ -21,7 +21,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	protected double max = 0;//fake
 
 	// Value for next update
-	protected double value;
+	protected double value = -1;
 	protected double[] values = null;
 	// Current setup value;
 	protected long provision;
@@ -37,6 +37,12 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	protected String alias;
 	
 	protected double constraint; 
+	
+	// The new values that has not yet being updated. This is raw value.
+	protected double[] pendingValues = null;
+	// Keep adding and sampling consistent.
+	protected int samplingCounter = 0;
+	protected int addingCounter = 0;
 
 	public ControlPrimitive(
 			String alias, 
@@ -112,18 +118,35 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		return array;
 	}
 
-	public void prepareToAddValue(double value) {
-		this.value = value;
+	public synchronized void prepareToAddValue(double value) {
+		// If the previous value has not been added.
+		if (addingCounter != samplingCounter) {
+			
+			if (pendingValues == null) {
+				pendingValues = new double[]{this.value, value};
+			} else {
+
+				double[] newArray = new double[pendingValues.length + 1];
+				System.arraycopy(pendingValues, 0, newArray, 0, pendingValues.length);
+				newArray[newArray.length - 1] = value;
+				pendingValues = newArray;
+			}
+			
+			
+		} else {
+			pendingValues = new double[]{value};
+		}
+		samplingCounter++;
 	}
 	
 
-	public void prepareToAddValue(double[] values) {
-		this.values = values;
-		this.value  = values [ values.length - 1];
-	}
 
 	@Override
-	public void addValue() {
+	public synchronized void addValue() {
+		values = pendingValues.length == 1? null : pendingValues;
+		value = pendingValues[pendingValues.length - 1];
+		
+		
 		if (values != null) {
 			for (double v : values) {
 				addValue(v);
@@ -131,6 +154,8 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		} else {
 			addValue(value);
 		}
+		
+		pendingValues = null;
 	}
 	
 	
@@ -159,10 +184,12 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 			array = newArray;
 		}
 		
+		addingCounter++;
+		
 	}
 
 	@Override
-	public void removeHistoreicalValues(int no) {
+	public synchronized void removeHistoreicalValues(int no) {
 		double[] newArray = new double[array.length - no];
 		System.arraycopy(array, no, newArray, 0, array.length);
 		
@@ -249,6 +276,10 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	public boolean isViolate() {
 		// Utilization is lower that a threshold, means over provision
 		return value/provision < constraint;
+	}
+	
+	public synchronized void resetValues(){
+		values = null;
 	}
 	
 }

@@ -37,6 +37,7 @@ import org.ssascaling.observation.listener.ModelListener;
 import org.ssascaling.primitive.EnvironmentalPrimitive;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.qos.QualityOfService;
+import org.ssascaling.util.SSAScalingThreadPool;
 import org.ssascaling.util.Tuple;
 import org.ssascaling.util.Util;
 
@@ -308,11 +309,11 @@ public class Model {
 			//**********************************************
 			for (int k = 0; k < functions.length; k++) {
 				final int index = k;
-				new Thread(new Runnable(){
+				SSAScalingThreadPool.executeJob(new Runnable(){
 
 					@Override
 					public void run() {
-					
+					try {
 						if (functions[index] != null) {
 							   	    							
 							
@@ -337,6 +338,16 @@ public class Model {
 										testingOutput);
 							}
 						}
+					}catch (RuntimeException e) {
+							// Make sure the process can keep going and avoid deadlock.
+							e.printStackTrace();
+							synchronized(concurrentModelLock) {
+								concurrentModelLock.decrementAndGet();								
+							    if (concurrentModelLock.get() == 0) {
+							    	concurrentModelLock.notifyAll();
+							    }
+							}
+						}
 						synchronized(concurrentModelLock) {
 							concurrentModelLock.decrementAndGet();		
 						    if (concurrentModelLock.get() == 0) {
@@ -345,7 +356,7 @@ public class Model {
 						}
 					
 					}
-				}).start();
+				});
 			
 			
 			}		
@@ -630,10 +641,11 @@ public class Model {
 		long time = System.currentTimeMillis();
 		for (int k = 0; k < functions.length; k++) {
 			final int index = k;
-			new Thread(new Runnable(){
+			SSAScalingThreadPool.executeJob(new Runnable(){
 
 				@Override
 				public void run() {
+					try {
 					switch (index) {
 					case ModelFunction.ANN: {
 						System.out.print(functions[index] + " train start\n");
@@ -711,9 +723,20 @@ public class Model {
 					    	concurrentModelLock.notifyAll();
 					    }
 					}
+				}catch (RuntimeException e) {
+					// Make sure the process can keep going and avoid deadlock.
+					e.printStackTrace();
+					synchronized(concurrentModelLock) {
+						concurrentModelLock.decrementAndGet();	
+						
+					    if (concurrentModelLock.get() == 0) {
+					    	concurrentModelLock.notifyAll();
+					    }
+					}
 				}
+				} 
 				
-			}).start();
+			});
 			
 		}
 		

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.ssascaling.ControlBus;
 import org.ssascaling.Service;
 import org.ssascaling.executor.VM;
 import org.ssascaling.objective.Cost;
@@ -14,6 +15,7 @@ import org.ssascaling.primitive.Primitive;
 import org.ssascaling.qos.QualityOfService;
 import org.ssascaling.region.SuperRegionControl;
 import org.ssascaling.util.Repository;
+import org.ssascaling.util.SSAScalingThreadPool;
 
 public class Analyzer {
 
@@ -40,7 +42,11 @@ public class Analyzer {
 				
 				
 			}
+			System.out.print("========================== run ===============================\n");
+			System.out.print(Thread.currentThread() + " run\n");
+			System.out.print("========================== run ===============================\n");
 			
+			doResetValues();
 			// Reset counter to zero upon finish all modeling.
 			updatedModel.set(0);
 		}
@@ -62,15 +68,34 @@ public class Analyzer {
 		doAddValues();
 		
 		for (final QualityOfService qos : Repository.getQoSSet()) {
-			new Thread(new Runnable() {
+			SSAScalingThreadPool.executeJob(new Runnable() {
 
 				@Override
 				public void run() {
 					//System.out.print("***** doing training *********\n");
-					qos.doTraining();
-					
+					try {
+					   qos.doTraining();
+					   
+					} catch (RuntimeException e) {
+						// Make sure the process can keep going and avoid deadlock.
+						e.printStackTrace();
+						synchronized(updatedModel) {
+							updatedModel.incrementAndGet();
+							System.out.print("==========================  ===============================\n");
+							System.out.print(updatedModel.get() + " processed\n");
+							System.out.print("==========================  ===============================\n");
+						
+							if (updatedModel.get() == Repository.getQoSSet().size()) {
+								updatedModel.notifyAll();
+							}
+						}
+					}
 					synchronized(updatedModel) {
 						updatedModel.incrementAndGet();
+						System.out.print("==========================  ===============================\n");
+						System.out.print(updatedModel.get() + " processed\n");
+						System.out.print("==========================  ===============================\n");
+					
 						if (updatedModel.get() == Repository.getQoSSet().size()) {
 							updatedModel.notifyAll();
 						}
@@ -78,7 +103,7 @@ public class Analyzer {
 					//System.out.print("***** finish doing training *********\n");
 				}
 
-			}).start();
+			});
 		}
 
 	}
@@ -99,6 +124,31 @@ public class Analyzer {
 		
 		for (final QualityOfService qos : Repository.getQoSSet()) {
 			qos.doAddValue();
+		}
+			
+	}
+	
+	/**
+	 * This is used to ensure that the 'values' attribute is empty,
+	 * 
+	 * so that the CP, EP and QoS can follow the workflow that uses 'value attribute'
+	 */
+	private static void doResetValues(){
+		
+		for (Service s : Repository.getAllServices() ) {
+			for (Primitive p : s.getPrimitives()) {
+				p.resetValues();
+			}
+		}
+		
+		for (VM v : Repository.getAllVMs()) {
+			for (Primitive p : v.getAllPrimitives()){
+				p.resetValues();
+			}
+		}
+		
+		for (final QualityOfService qos : Repository.getQoSSet()) {
+			qos.resetValues();
 		}
 			
 	}
@@ -130,7 +180,8 @@ public class Analyzer {
 		 
 		 // Doing the first run of filtering objectives that belong to the same region.
 		 // TODO May also communicate with other PM.
-		 SuperRegionControl.getInstance().filterObjective(result);
+		 if (!ControlBus.isTestQoSModelingOnly)
+		    SuperRegionControl.getInstance().filterObjective(result);
 		 
 		  
 		 return result;
