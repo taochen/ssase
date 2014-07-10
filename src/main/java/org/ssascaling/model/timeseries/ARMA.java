@@ -121,7 +121,7 @@ public class ARMA extends AbstractModelFunction implements TimeSeries{
 			return 0;
 		}
 		
-		double result =  0.0;
+		double result =  trainer.getIntercept();
 		for (int i = 0; i < xValue.length; i++) {
 			result += ARcoeff[i] * xValue[i];	
 		}

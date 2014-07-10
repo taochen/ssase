@@ -17,7 +17,7 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 	protected double value = -1;
 	protected double[] values = null;
 	protected double latest;
-	
+	protected double secondLatest;
 	protected Type type;
 	
 	
@@ -137,6 +137,7 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 			
 			array = newArray;
 		}
+		secondLatest = latest;
 		latest = value;
 		addingCounter++;
 		
@@ -160,7 +161,7 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 	}
 	
 	public double getValue(){
-		return value;
+		return secondLatest;
 	}
 	
 	public long getProvision(){ 

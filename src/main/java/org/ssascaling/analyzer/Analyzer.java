@@ -92,9 +92,9 @@ public class Analyzer {
 					}
 					synchronized(updatedModel) {
 						updatedModel.incrementAndGet();
-						System.out.print("==========================  ===============================\n");
-						System.out.print(updatedModel.get() + " processed\n");
-						System.out.print("==========================  ===============================\n");
+						//System.out.print("==========================  ===============================\n");
+						//System.out.print(updatedModel.get() + " processed\n");
+						//System.out.print("==========================  ===============================\n");
 					
 						if (updatedModel.get() == Repository.getQoSSet().size()) {
 							updatedModel.notifyAll();

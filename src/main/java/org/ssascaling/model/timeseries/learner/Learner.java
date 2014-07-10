@@ -11,4 +11,6 @@ public interface Learner {
 	public double[] train(double[][] x, double[] y);
 	
 	public double calculateRSquares();
+	
+	public double getIntercept();
 }

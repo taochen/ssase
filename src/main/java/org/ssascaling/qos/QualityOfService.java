@@ -269,25 +269,37 @@ public class QualityOfService implements Objective, Comparable{
 		
 		
 		if (values != null) {
+			if ( values[0] == 0) {
+				return;
+			}
 			//for (int k = 0; k < values.length; k++) {
 			// Only fouces on the 'next' interval data.
 			int k = 0;
 			double[] xValue = new double[model.getSize()];
 			for (int i = 0; i < xValue.length; i++) {
+				
+				double factor = model.get(i).getMax() == model.getXMax(i)? 1/100 : model.get(i).getMax()/100*model.getXMax(i);
+				
+				if (model.get(i) instanceof EnvironmentalPrimitive) {
+					xValue[i] = model.get(i).getArray()[model.get(i).getArray().length - 
+					                                    values.length + k - 1]*factor;
+				} else {
+				
 				xValue[i] = model.get(i).getArray()[model.get(i).getArray().length - 
-				                                    values.length + k]/model.get(i).getMax();
+				                                    values.length + k]*factor;
+				}
 			}
 			
-			calculateRelativeImportance(xValue,  values[k]*100/max);
+			calculateRelativeImportance(xValue,  values[k]*100/model.getYMax());
 			//}
 		// If there is only single newly measured data sample.	
 		} else {
 			double[] xValue = new double[model.getSize()];
 			for (int i = 0; i < xValue.length; i++) {
-				xValue[i] = model.get(i).getValue()/model.get(i).getMax();
+				xValue[i] = model.get(i).getValue()/model.getXMax(i);
 			}
 			
-			calculateRelativeImportance(xValue, value*100/max);
+			calculateRelativeImportance(xValue, value*100/model.getYMax());
 		}
 		
 		
@@ -302,9 +314,9 @@ public class QualityOfService implements Objective, Comparable{
 	public Tuple<Double, Double> testNewData (int index){
 		double[] xValue = new double[model.getSize()];
 		for (int i = 0; i < xValue.length; i++) {
-			xValue[i] = model.get(i).getValue()/model.get(i).getMax();
+			xValue[i] = model.get(i).getValue()/model.getXMax(i);
 		}
-		double expectedY = value*100/max;
+		
 		
 		double result = 0;
 		if (index == 0) {
@@ -317,8 +329,7 @@ public class QualityOfService implements Objective, Comparable{
 			result = model.predict(xValue, true, a, b);
 		}
 		
-		return new Tuple<Double, Double>(Util.calculateMAPE(expectedY, result),
-				Util.calculateSMAPE(expectedY, result));
+		return new Tuple<Double, Double>(value, result*model.getYMax()/100);
 	}
 	
 	/**
@@ -509,32 +520,47 @@ public class QualityOfService implements Objective, Comparable{
 		if (values != null) {
 			double[] result = new double[model.countFunction()];
 			double[] sub = null;
+			int number = 0;
 			for (int k = 0; k < values.length; k++) {
+				
+				if (values[k] == 0) {
+					continue;
+				}
+				number++;
 				double[] xValue = new double[model.getSize()];
 				for (int i = 0; i < xValue.length; i++) {
+					
+					double factor = model.get(i).getMax() == model.getXMax(i)? 1/100 : model.get(i).getMax()/100*model.getXMax(i);
+					
+					if (model.get(i) instanceof EnvironmentalPrimitive) {
+						xValue[i] = model.get(i).getArray()[model.get(i).getArray().length - 
+						                                    values.length + k - 1]*factor;
+					} else {
+					
 					xValue[i] = model.get(i).getArray()[model.get(i).getArray().length - 
-					                                    values.length + k]/model.get(i).getMax();
+					                                    values.length + k]*factor;
+					}
 				}
 				
 				
-				sub = model.updateNewlyErrorWithReturn(xValue, values[k]/max);
+				sub = model.updateNewlyErrorWithReturn(xValue, values[k]/model.getYMax());
 				for (int i = 0; i < sub.length; i++) {
 					result[i] += sub[i];
 				}
 			}
 			for (int i = 0; i < result.length; i++) {
 				// Here, we use the average error of all batch data for each learning algorithmn. 
-				result [i] = result[i] / values.length;
+				result [i] = result[i] / number;
 			}
 			model.updateNewlyErrorWithReturn(result);
 		// If there is only single newly measured data sample.	
 		} else {
 			double[] xValue = new double[model.getSize()];
 			for (int i = 0; i < xValue.length; i++) {
-				xValue[i] = model.get(i).getValue()/model.get(i).getMax();
+				xValue[i] = model.get(i).getValue()/model.getXMax(i);
 			}
 			
-			model.updateNewlyError(xValue, value/max);
+			model.updateNewlyError(xValue, value/model.getYMax());
 		}
 		
 		

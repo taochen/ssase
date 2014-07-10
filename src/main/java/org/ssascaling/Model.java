@@ -98,6 +98,9 @@ public class Model {
 	// Formatted data
 	private double[][] formattedInput;
 	private double[] formattedOutput1D;
+	// a matrix of max value of x
+	private double[] xMax;
+	private double yMax;
 	// The index of QoS which has a value of 0.
 	private int invalidOuputCount = 0;
 	// The difference between measurement frequency and modeling frequency.
@@ -231,6 +234,12 @@ public class Model {
 				
 			}
 		
+			yMax = output.getMax();
+			xMax = new double[inputs.size()];
+			for (int i = 0; i < inputs.size();i++) {
+				xMax[i] = inputs.get(i).getMax();
+			}
+			
 			if (inputs.size() == 0) {
 				return;
 			}
@@ -309,6 +318,7 @@ public class Model {
 			//**********************************************
 			for (int k = 0; k < functions.length; k++) {
 				final int index = k;
+				
 				SSAScalingThreadPool.executeJob(new Runnable(){
 
 					@Override
@@ -409,7 +419,7 @@ public class Model {
 		if (inputs.size() != 0) {
 			
 			for (int k = 0; k < functions.length; k++) {			
-
+				final int index = k;
 				double predict = 0;
 				double ideal = yValue;
 				if (k == ModelFunction.ARMAX/* for ARMAX */) {
@@ -569,7 +579,7 @@ public class Model {
 			System.out.print(" PREDICTED RT INPUT " + Arrays.toString(x) +  "\n");
 		}
 		
-		double result = function.predict(x);
+		double result = function==null? 0 : function.predict(x);
 		
 		/******************synchronized(writeLock) {
 		    readLock.decrementAndGet();		
@@ -608,6 +618,14 @@ public class Model {
 		}*/
 		
 		return result*100; // change to 100% with integer
+	}
+	
+	public double getYMax(){
+		return yMax;
+	}
+	
+	public double getXMax(int i){
+		return xMax[i];
 	}
 	
 	public void addListener (ModelListener listener) {

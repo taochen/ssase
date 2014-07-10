@@ -26,4 +26,10 @@ public class LMSLearner extends AbstractLearner {
 		return 0;
 	}
 
+	@Override
+	public double getIntercept() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
