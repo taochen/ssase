@@ -64,6 +64,14 @@ public class Repository {
 	// This can be configure the same time as possible primitives for services.
 	private static Map<Objective, Set<Primitive>> directPrimitives = new ConcurrentHashMap<Objective, Set<Primitive>>();
 	
+	public static void clear(){
+		services.clear();
+		vms.clear();
+		qoss.clear();
+		cost.clear();
+		directPrimitives.clear();
+	}
+	
 	public static Set<Objective> getAllObjectives(){
 		return directPrimitives.keySet();
 	}

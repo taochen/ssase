@@ -43,7 +43,7 @@ public class ApacheOLSLearner extends AbstractLearner {
 	public double[] train(double[][] x, double[] y) {
 		try {
 		   regression = new OLSMultipleLinearRegression();
-		   regression.setNoIntercept(false);
+		   regression.setNoIntercept(true);
 		   regression.newSampleData(y, x);
 		
 		   intercept = regression.isNoIntercept()? 0 : regression.estimateRegressionParameters()[0];
