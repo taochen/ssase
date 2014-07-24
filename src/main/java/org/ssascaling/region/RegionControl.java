@@ -98,7 +98,7 @@ public class RegionControl implements ModelListener {
 	}
 	
 	/**
-	 * Only deal with critical changes.
+	 * Only deal with critical changes, e.g., the primitives selection result change.
 	 * 
 	 * 
 	 * 
@@ -137,8 +137,13 @@ public class RegionControl implements ModelListener {
 	}
 	
 	/**
-	 * Used in the Analyzer
-	 * @param result
+	 * Used in the Analyzer, ensure that only one objective from a region,
+	 * as the region as a whole would be optimized.
+	 * 
+	 * We can do this as the update of region triggered by QoS sensitivity changes
+	 * has already been done during the QoS function training phase. (a sequential process)
+	 * 
+	 * @param result the list of objectives that to be optimized.
 	 */
 	public void filterObjective (List<Objective> result) {
 		

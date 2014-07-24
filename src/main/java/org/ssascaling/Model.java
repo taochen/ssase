@@ -211,7 +211,7 @@ public class Model {
 			writeLock = true;
 		*/
 			
-			boolean isChanged = false;
+			boolean isFeaturesChanged = false;
 			// This set needs to be transfered into a sorted collection.
 			Set<Primitive> newInputs = primitiveLearner.select(output, possibleInputs);
 			System.out.print("Actual Input " + newInputs.size() + "\n");
@@ -220,14 +220,14 @@ public class Model {
 				inputs.clear();
 
 				inputs.addAll(newInputs);
-				isChanged = true;
+				isFeaturesChanged = true;
 			} else {
 				
 				for (Primitive p : newInputs) {
 					if (!inputs.contains(p)) {
 						inputs.clear();
 						inputs.addAll(newInputs);
-						isChanged = true;
+						isFeaturesChanged = true;
 						break;
 					}
 				}
@@ -281,13 +281,10 @@ public class Model {
 						
 			System.out.print("Number of primitives " + inputs.size() + " \n");
 			
-			if (isChanged) {
+			if (isFeaturesChanged) {
 				System.out.print("Strcuture changed \n");
 				
-				// Notify the optimization
-				for (ModelListener listener : listeners) {
-					listener.updateWhenModelChange(new ModelChangeEvent(true, output));
-				}
+				
 				
 				triggerStructureSelection(formattedInput, 
 						formattedOutput2D,
@@ -300,6 +297,13 @@ public class Model {
 				
 				//******************writeLock = false;
 				//******************writeLock.notifyAll();
+				
+				// Notify the region control when primitives selection result change.
+				// At this level, the optimization algorithm would be also notified to
+				// abort the optimization.
+				for (ModelListener listener : listeners) {
+					listener.updateWhenModelChange(new ModelChangeEvent(true, output));
+				}
 				
 				Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 				System.out.print("Train finished\n");
@@ -318,7 +322,17 @@ public class Model {
 			//**********************************************
 			for (int k = 0; k < functions.length; k++) {
 				final int index = k;
-				
+				//=============== should be removed ============
+				if (index == 0 ) {
+					synchronized(concurrentModelLock) {
+						concurrentModelLock.decrementAndGet();		
+					    if (concurrentModelLock.get() == 0) {
+					    	concurrentModelLock.notifyAll();
+					    }
+					}
+					continue;
+				}
+				//=============== should be removed ============
 				SSAScalingThreadPool.executeJob(new Runnable(){
 
 					@Override
@@ -420,6 +434,11 @@ public class Model {
 			
 			for (int k = 0; k < functions.length; k++) {			
 				final int index = k;
+				//=============== should be removed ============
+				if (index == 0 ) {
+					continue;
+				}
+				//=============== should be removed ============
 				double predict = 0;
 				double ideal = yValue;
 				if (k == ModelFunction.ARMAX/* for ARMAX */) {
@@ -659,6 +678,18 @@ public class Model {
 		long time = System.currentTimeMillis();
 		for (int k = 0; k < functions.length; k++) {
 			final int index = k;
+			//=============== should be removed ============
+			if (index == 0 ) {
+				synchronized(concurrentModelLock) {
+					concurrentModelLock.decrementAndGet();	
+					
+				    if (concurrentModelLock.get() == 0) {
+				    	concurrentModelLock.notifyAll();
+				    }
+				}
+				continue;
+			}
+			//=============== should be removed ============
 			SSAScalingThreadPool.executeJob(new Runnable(){
 
 				@Override
@@ -1043,6 +1074,11 @@ public class Model {
 		double bestMape = 0; 
 		double averageMape = 0.0;
 		for (int k = 0; k < functions.length; k++){
+			//=============== should be removed ============
+			if (k == 0 ) {
+				continue;
+			}
+			//=============== should be removed ============
 			ClusterData[] paris = resultset.get(functions[k]);
 			
 			if (paris == null) {

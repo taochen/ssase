@@ -21,7 +21,7 @@ public class Analyzer {
 
 	
 	
-	
+	// Ensure it proceeds to Plan phase only if all the models are trained and updated. 
 	private final static AtomicInteger updatedModel = new AtomicInteger(0);
 	
 	public static List<Objective> doAnalysis(){
@@ -56,7 +56,9 @@ public class Analyzer {
 		return detectSymptoms();
 	}
 	
-	
+	/**
+	 * This is to train the models in adaptive multi-learners.
+	 */
 	private static void updateModels() {
 
 		// Trigger the 'prepareToAddValue', 
@@ -92,9 +94,9 @@ public class Analyzer {
 					}
 					synchronized(updatedModel) {
 						updatedModel.incrementAndGet();
-						//System.out.print("==========================  ===============================\n");
-						//System.out.print(updatedModel.get() + " processed\n");
-						//System.out.print("==========================  ===============================\n");
+						System.out.print("==========================  ===============================\n");
+						System.out.print(updatedModel.get() + " processed\n");
+						System.out.print("==========================  ===============================\n");
 					
 						if (updatedModel.get() == Repository.getQoSSet().size()) {
 							updatedModel.notifyAll();
@@ -180,9 +182,9 @@ public class Analyzer {
 		 
 		 // Doing the first run of filtering objectives that belong to the same region.
 		 // TODO May also communicate with other PM.
-		 if (!ControlBus.isTestQoSModelingOnly)
+		 if (!ControlBus.isTestQoSModelingOnly) {
 		    SuperRegionControl.getInstance().filterObjective(result);
-		 
+		 }
 		  
 		 return result;
 		 
