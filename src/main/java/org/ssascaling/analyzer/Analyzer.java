@@ -24,13 +24,15 @@ public class Analyzer {
 	// Ensure it proceeds to Plan phase only if all the models are trained and updated. 
 	private final static AtomicInteger updatedModel = new AtomicInteger(0);
 	
-	public static List<Objective> doAnalysis(){
+	private static boolean isReachTheLeastSamples = false;
+	
+	public static List<Objective> doAnalysis(long samples){
 		
 		
 		// should block the training of new models of different threads, (This has been done by using the lock
 		// in ControlBus class).
 		// Trigger detectSymptoms only when all models have been trained.
-		updateModels();
+		updateModels(samples);
 		
 		synchronized(updatedModel) {
 			while (updatedModel.get() != Repository.getQoSSet().size()) {
@@ -42,9 +44,9 @@ public class Analyzer {
 				
 				
 			}
-			System.out.print("========================== run ===============================\n");
-			System.out.print(Thread.currentThread() + " run\n");
-			System.out.print("========================== run ===============================\n");
+			//System.out.print("========================== run ===============================\n");
+			//System.out.print(Thread.currentThread() + " run\n");
+			//System.out.print("========================== run ===============================\n");
 			
 			doResetValues();
 			// Reset counter to zero upon finish all modeling.
@@ -59,7 +61,7 @@ public class Analyzer {
 	/**
 	 * This is to train the models in adaptive multi-learners.
 	 */
-	private static void updateModels() {
+	private static void updateModels(long samples) {
 
 		// Trigger the 'prepareToAddValue', 
 		// Alternatively, we could get this done in Monitor. If later we need to remove the historical
@@ -67,26 +69,32 @@ public class Analyzer {
 		
 		// updatePrimitivesAndQoSFromFiles();
 		// Actually adding the values.
-		doAddValues();
+		doAddValues(samples);
 		
 		for (final QualityOfService qos : Repository.getQoSSet()) {
+			
+			
 			SSAScalingThreadPool.executeJob(new Runnable() {
 
 				@Override
 				public void run() {
 					//System.out.print("***** doing training *********\n");
+					boolean result = false;
 					try {
-					   qos.doTraining();
+						
+						
+					   result = qos.doTraining();
+					   
 					   
 					} catch (RuntimeException e) {
 						// Make sure the process can keep going and avoid deadlock.
 						e.printStackTrace();
 						synchronized(updatedModel) {
 							updatedModel.incrementAndGet();
-							System.out.print("==========================  ===============================\n");
-							System.out.print(updatedModel.get() + " processed\n");
-							System.out.print("==========================  ===============================\n");
-						
+							//System.out.print("==========================  ===============================\n");
+							//System.out.print(updatedModel.get() + " processed\n");
+							//System.out.print("==========================  ===============================\n");
+							isReachTheLeastSamples = result;
 							if (updatedModel.get() == Repository.getQoSSet().size()) {
 								updatedModel.notifyAll();
 							}
@@ -94,10 +102,11 @@ public class Analyzer {
 					}
 					synchronized(updatedModel) {
 						updatedModel.incrementAndGet();
-						System.out.print("==========================  ===============================\n");
-						System.out.print(updatedModel.get() + " processed\n");
-						System.out.print("==========================  ===============================\n");
+						//System.out.print("==========================  ===============================\n");
+						//System.out.print(updatedModel.get() + " processed\n");
+						//System.out.print("==========================  ===============================\n");
 					
+						isReachTheLeastSamples = result;
 						if (updatedModel.get() == Repository.getQoSSet().size()) {
 							updatedModel.notifyAll();
 						}
@@ -108,24 +117,25 @@ public class Analyzer {
 			});
 		}
 
+		
 	}
 	
-	private static void doAddValues(){
+	private static void doAddValues(long samples){
 		
 		for (Service s : Repository.getAllServices() ) {
 			for (Primitive p : s.getPrimitives()) {
-				p.addValue();
+				p.addValue(samples);
 			}
 		}
 		
 		for (VM v : Repository.getAllVMs()) {
 			for (Primitive p : v.getAllPrimitives()){
-				p.addValue();
+				p.addValue(samples);
 			}
 		}
 		
 		for (final QualityOfService qos : Repository.getQoSSet()) {
-			qos.doAddValue();
+			qos.doAddValue(samples);
 		}
 			
 	}
@@ -164,6 +174,12 @@ public class Analyzer {
 	}
 	
 	private static  List<Objective> detectSymptoms(){
+		//TODO only trigger if the current violation has been longer than t intervals.
+		if (!isReachTheLeastSamples) {
+			return null;
+		}
+		
+		
 		// TODO add proactive detection based on the QoS models.
 		// as here we have only reactive detection on violation of QoS and CP utilization.
 		 List<Objective> result = new ArrayList<Objective>();

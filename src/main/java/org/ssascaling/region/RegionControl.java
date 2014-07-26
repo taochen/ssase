@@ -44,14 +44,14 @@ public class RegionControl implements ModelListener {
     // Ensure to trigger re assign region only when all models are up-to-date. 
     // In case where failure occur, this instance is invalid anyway as the optimization thread
     // would be stopped by the SuperRegionControl.
-    private int knownConunter = 0;
+    //private int knownConunter = 0;
     
     private boolean isStop = false;
     
     // Include the decomposition of scaled objective as those objective
     // has more then one notification upon significant changes, but they can be considered as one.
     // Updated with calculateRegions
-    private int totalNumberOfObjective;
+    //private int totalNumberOfObjective;
     
     // String here is a unqiue thread id.
     private Map<Region,Tuple<Objective, String>> map;
@@ -109,15 +109,20 @@ public class RegionControl implements ModelListener {
 	@Override
 	public void updateWhenModelChange(ModelChangeEvent event) {
 		synchronized (lock) {
-			knownConunter++;
 			if (event.isCritical()) {
 				isStop = true;
 			}
 			
-			if (knownConunter != totalNumberOfObjective) {
-				return;
-			}
-			
+		}
+		
+		
+	}
+	
+	/**
+	 * This should only be called when all models of objective have been updated.
+	 */
+	public void updateRegions(){
+		synchronized (lock) {
 			if (isStop) {
 				// Making the source un-affect by the clearance of objective map.
 				Set<Objective> set = new HashSet<Objective>();
@@ -126,14 +131,8 @@ public class RegionControl implements ModelListener {
 				restartExistingOptimization();
 			}
 			
-			
-			
-			knownConunter=0;
 			isStop = false;
-			
 		}
-		
-		
 	}
 	
 	/**
@@ -148,19 +147,19 @@ public class RegionControl implements ModelListener {
 	public void filterObjective (List<Objective> result) {
 		
 		final Set<Region> set = new HashSet<Region>();
-		
+		List<Objective> removal = new ArrayList<Objective>();
 		synchronized (lock) {
 			for (Objective obj : result) {
 				Region reg = objectiveMap.get(obj);
 				if (!set.contains(reg)) {
 					set.add(reg);
 				} else {
-					// This is removal of the current object,
-					// so it does not affect integrity of the list.
-					result.remove(obj);
+					removal.add(obj);
 				}
 			}
 		}
+		
+		result.removeAll(removal);
 	}
 	
 	public RegionControl copy(){
@@ -173,10 +172,11 @@ public class RegionControl implements ModelListener {
 	 * @param objs
 	 */
 	public void calculateRegions(Set<Objective> objs){
+		System.out.print("******** start regioning **************\n");
 		objectiveMap.clear();
-		totalNumberOfObjective = 0;
+		//totalNumberOfObjective = 0;
 		for (Objective obj : objs) {
-			totalNumberOfObjective += obj.countObjective();
+			//totalNumberOfObjective += obj.countObjective();
 			for (Objective subObj : objs) {
 				
 				// If both have been assigned.
@@ -263,9 +263,19 @@ public class RegionControl implements ModelListener {
 	}
 	
 	private void print(){
+		System.out.print("******** region results **************\n");
+		Set<Region> re = new HashSet<Region>();
 		for (Map.Entry<Objective, Region> entry : objectiveMap.entrySet()) {
-			System.out.print("O: " + entry.getKey().getName() + ", region: " + entry.getValue() + "\n");
+			//System.out.print("Objective: " + entry.getKey().getName() + ", region: " + entry.getValue() + "\n");
+			if (re.contains(entry.getValue())) {
+				continue;
+			}
+			re.add(entry.getValue());
+			System.out.print("\n"+entry.getValue() + "====================\n");
+			entry.getValue().print();
 			//entry.getValue().print();
 		}
+		System.out.print("******** region results **************\n");
+		System.out.print("******** total " + re.size() + " regions **************\n");
 	}
 }

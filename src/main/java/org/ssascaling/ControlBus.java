@@ -18,13 +18,20 @@ import org.ssascaling.util.SSAScalingThreadPool;
 public class ControlBus {
 	
 	public static final boolean isTestMonitoringOnly = false;
-	public static final boolean isTestQoSModelingOnly = true;
+	public static final boolean isTestQoSModelingOnly = false;
 
 	// Ensure only one MAPE loop running at a time.
 	// This is the main lock of MAPE loop, in case the repository 
 	// would change, it also need to rely on this lock.
 	private final static AtomicInteger lock = new AtomicInteger(-1);
 	private static List<Objective> objectivesToBeOptimized = null;
+	
+	private static long expectedSample = 1;
+	
+	// This is the samples that current MAPE should deal with, as when too much pending MAPE, the
+	// later ones can simply abort.
+	private static long targetSample = 0;
+	private static boolean isThereIsMAPEwaiting = false;
 	@SuppressWarnings("unused")
 	public static void begin(DataInputStream is){
 		
@@ -34,12 +41,31 @@ public class ControlBus {
 		 *The M part 
 		 ***/
 		
-		boolean ifAnalyze = Monitor.write(is);
-		//System.out.print("is trigger analyzer " + ifAnalyze  + "\n");
+		long samples = Monitor.write(is);
+		boolean ifAnalyze = samples == 0? false : true;
+		if (!ifAnalyze) {
+			return;
+		}
+		
+		System.out.print("**** MAPE start: " + samples  + "\n");
 		synchronized(lock) {
+			
+			// We do not allow more than two MAPEs loop that one for current processing and one for waiting,			
+			// the subsequent MAPE would give the samples for the waiting MAPE to process.
+			/*if (isThereIsMAPEwaiting) {
+				if (targetSample < samples) {
+					targetSample = samples;
+				}
+				return;
+			} else {
+				isThereIsMAPEwaiting = true;
+			}*/
+			
+			
 			// Ensure only one MAPE loop running at a time.
 			// Can not just get rid of as this may be newly measured data.	
-				while (lock.get() != -1) {
+				while (lock.get() != -1 || samples != expectedSample) {
+					System.out.print("**** this one is waiting: " + samples  + "\n");
 					try {
 						//System.out.print("========================== Break ===============================\n");
 						//System.out.print(Thread.currentThread() + " break\n");
@@ -51,12 +77,20 @@ public class ControlBus {
 					
 					
 				}
-				
+				System.out.print("**** is trigger analyzer: " + samples  + "\n");
+				System.out.print("**** is trigger analyzer, expected: " + expectedSample  + "\n");
 				
 				//System.out.print("========================== Run ===============================\n");
 				//System.out.print(Thread.currentThread() + " running\n");
 				//System.out.print("========================== Run ===============================\n");
 				lock.set(0);
+				
+				/*isThereIsMAPEwaiting = false;
+				if (targetSample != 0 ) {
+					samples = targetSample;
+					targetSample = 0;
+				}*/
+				expectedSample = samples + Monitor.getNumberOfNewSamples();
 			
 		}
 		
@@ -78,7 +112,7 @@ public class ControlBus {
 			/*
 			 *The A part 
 			 ***/
-			objectivesToBeOptimized = Analyzer.doAnalysis();
+			objectivesToBeOptimized = Analyzer.doAnalysis(samples);
 		}
 		
 	
@@ -90,6 +124,7 @@ public class ControlBus {
 			}			
 		}
 		// If need trigger optimization in the Planer, then the Analyzer should tell.
+		//TODO only trigger if the current setup has been longer than t intervals.
 		if (objectivesToBeOptimized != null) {
 		
 			
@@ -114,7 +149,7 @@ public class ControlBus {
 		
 		
 		synchronized(lock) {
-			while (lock.get() != objectivesToBeOptimized.size()) {
+			while (objectivesToBeOptimized != null && lock.get() != objectivesToBeOptimized.size()) {
 				try {
 					lock.wait();
 				} catch (InterruptedException e) {
@@ -128,6 +163,7 @@ public class ControlBus {
 			lock.set(-1);
 			objectivesToBeOptimized = null;
 			lock.notifyAll();
+			System.out.print("***** MAPE finished " + samples + " *********\n");
 		}
 		
 		

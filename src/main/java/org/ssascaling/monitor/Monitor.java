@@ -23,12 +23,14 @@ public class Monitor {
 	// We currently does not care about the maximum data recorded
 	private static final long MAX_DATA_RECORD = 10000;
 	// For sync the timing of sample interval steps.
-	private static final Object lock = new Object();
+	//private static final Object lock = new Object();
+	// The number of sample per VM * total number of VM.
 	private static long numberOfSample = 0;
 	private static long previousNumberOfSample = 0;
 	// Inlcude all QoS, CP and EP, we can only trigger MAPE once all associated data has been senced.
-	// Should equals to the number of VM
+	// Should equals to the number of VM if need 1 sample to trigger
 	private static long totalNumberOfSenceToTriggerModeling = 3;
+	private static long totalNumberOfVM = 3;
 	private static long numberOfSenceToTriggerModeling = 0;
 	public static final String prefix = //"/home/tao/monitor/";
 		"/Users/tao/research/monitor/test/";
@@ -36,13 +38,12 @@ public class Monitor {
 	// Called by updatePrimitivesAndQoSFromFiles in Analyzer class, so do not need
 	// to consider sync as it has been ensured in ControlBus class.
 	public static long getNumberOfNewSamples(){
-		return numberOfSample - previousNumberOfSample;
+		return totalNumberOfSenceToTriggerModeling/totalNumberOfVM;
 	}
 	
-	public static void updateNumberOfSenceToTriggerModeling(int number){
-		synchronized (lock) {
-		   totalNumberOfSenceToTriggerModeling = number;
-		}
+	public synchronized static void updateNumberOfSenceToTriggerModeling(int number){		
+		 totalNumberOfSenceToTriggerModeling = number;
+		
 	}
 	
 	
@@ -51,38 +52,40 @@ public class Monitor {
 	 * @param is
 	 * @return If trigger analyzer
 	 */
-	public static boolean write(DataInputStream is){
-			
-		Triple<List<String>, Interval, String> triple = convert(is);
-		previousNumberOfSample = numberOfSample;
-		numberOfSample  += Integer.parseInt(triple.getVal3().split("=")[1]) ;
-		
+	public synchronized static long write(DataInputStream is) {
 
-		
+		Triple<List<String>, Interval, String> triple = convert(is);
+
+		previousNumberOfSample = numberOfSample;
+		numberOfSample += Integer.parseInt(triple.getVal3().split("=")[1]);
+
 		System.out.print("Total sample is : " + numberOfSample + "\n");
-		System.out.print("Previous sample is : " + previousNumberOfSample + "\n");
+		//System.out.print("Previous sample is : " + previousNumberOfSample
+				//+ "\n");
 		final String VM_ID = triple.getVal3().split("=")[0];
 		writeVM(triple.getVal2(), VM_ID);
 		for (String service : triple.getVal1()) {
 			// key here is VM ID + '-' + service name
 			write(triple.getVal2(), service, VM_ID);
 		}
-		
 
-		synchronized (lock) {
-				numberOfSenceToTriggerModeling++;
-				if (numberOfSenceToTriggerModeling == totalNumberOfSenceToTriggerModeling) {
-					numberOfSenceToTriggerModeling=0;
-
-					
-
-					return true;
-				}
-				
-			
+		try {
+			is.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		return false;
+		numberOfSenceToTriggerModeling++;
+		if (numberOfSenceToTriggerModeling == totalNumberOfSenceToTriggerModeling) {
+			numberOfSenceToTriggerModeling = 0;
+
+			return numberOfSample / totalNumberOfVM;
+		}
+		
+		
+
+		return 0;
 	}
 	
 	
@@ -98,7 +101,7 @@ public class Monitor {
 			
 				// For VM X
 				for (Interval.ValuePair vp : interval.getVMXData()) {
-					if (!writers.containsKey(vp.getName())) {
+					/*if (!writers.containsKey(vp.getName())) {
 						if(!(file = new File(prefix + VM_ID + "/")).exists()){
 							file.mkdir();
 						} 
@@ -121,7 +124,7 @@ public class Monitor {
 					}
 					bw = writers.get(vp.getName());
 					bw.write(String.valueOf(vp.getValue()));
-					bw.newLine();
+					bw.newLine();*/
 					
 					if (!values.containsKey(vp.getName())) {
 						values.put(vp.getName(), new ArrayList<Double>());
@@ -161,7 +164,7 @@ public class Monitor {
 
 			// For X
 			for (Interval.ValuePair vp : interval.getXData(service)) {
-				if (!writers.containsKey(vp.getName())) {
+				/*if (!writers.containsKey(vp.getName())) {
 					if (!(file = new File(prefix + VM_ID + "/" + service + "/"))
 							.exists()) {
 						file.mkdir();
@@ -189,7 +192,7 @@ public class Monitor {
 				}
 				bw = writers.get(vp.getName());
 				bw.write(String.valueOf(vp.getValue()));
-				bw.newLine();
+				bw.newLine();*/
 
 				if (!xValues.containsKey(vp.getName())) {
 					xValues.put(vp.getName(), new ArrayList<Double>());
@@ -200,7 +203,7 @@ public class Monitor {
 
 			// For Y
 			for (Interval.ValuePair vp : interval.getYData(service)) {
-				if (!writers.containsKey(vp.getName())) {
+				/*if (!writers.containsKey(vp.getName())) {
 					if (!(file = new File(prefix + VM_ID + "/" + service + "/"))
 							.exists()) {
 						file.mkdir();
@@ -227,7 +230,7 @@ public class Monitor {
 				}
 				bw = writers.get(vp.getName());
 				bw.write(String.valueOf(vp.getValue()));
-				bw.newLine();
+				bw.newLine();*/
 
 				if (!yValues.containsKey(vp.getName())) {
 					yValues.put(vp.getName(), new ArrayList<Double>());

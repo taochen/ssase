@@ -54,7 +54,7 @@ public class TestSensorA {
 	private static final int NUMBER_OF_ORDER = 2;
 	private static final int MAX_DATA_RECORD = 10000;
 	// This should be set properly usually around 30 - 120 secs
-	private static int SAMPLING_INTERVAL = 1000;//30000
+	private static int SAMPLING_INTERVAL = 5000;//30000
 	private static final String prefix = //"/home/tao/monitor/";
 		"/Users/tao/research/monitor/";
 	
@@ -413,7 +413,9 @@ public class TestSensorA {
 				System.out.print("========================== readFileIndex ===============================\n");
 				System.out.print(readFileIndex + " break\n");
 				System.out.print("========================== readFileIndex ===============================\n");
-				
+				if (readFileIndex == 15) {
+					timer.cancel();
+				}
 			}
 		}, SAMPLING_INTERVAL, SAMPLING_INTERVAL);
 

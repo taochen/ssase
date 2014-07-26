@@ -240,7 +240,7 @@ public class Model {
 				xMax[i] = inputs.get(i).getMax();
 			}
 			
-			if (inputs.size() == 0) {
+			if ( inputs.size() == 0) {
 				return;
 			}
 			

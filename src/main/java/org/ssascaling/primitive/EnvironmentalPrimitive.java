@@ -20,17 +20,18 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 	protected double secondLatest;
 	protected Type type;
 	
-	
+	protected String alias;
 	protected String name;
 	// The new values that has not yet being updated. This is raw value.
 	protected double[] pendingValues = null;
 	// Keep adding and sampling consistent.
 	protected int samplingCounter = 0;
 	protected int addingCounter = 0;
-	public EnvironmentalPrimitive(String alias, Type type) {
+	public EnvironmentalPrimitive(String alias, String name, Type type) {
 		super();
 		array = new double[0];
-		this.name = alias;
+		this.name = name;
+		this.alias = alias;
 		this.type = type;
 	}
 
@@ -73,6 +74,7 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 
 	
 	public synchronized void prepareToAddValue(double value) {
+		//System.out.print(value+ "******\n");
 		// If the previous value has not been added.
 		if (addingCounter != samplingCounter) {
 			
@@ -96,9 +98,18 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 
 
 	@Override
-	public synchronized void addValue() {
-		values = pendingValues.length == 1? null : pendingValues;
-		value = pendingValues[pendingValues.length - 1];
+	public synchronized void addValue(long samples) {
+	
+		//System.out.print((samples - array.length) + " samples it have ******\n");
+		 int no = (int)(samples - array.length);
+			
+			if (no == 1) {
+				values = null;
+			} else {
+				values = new double[no];
+				System.arraycopy(pendingValues, 0, values, 0, no);				
+			}
+			value = pendingValues[pendingValues.length - 1];
 		
 		
 		if (values != null) {
@@ -109,7 +120,14 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 			addValue(value);
 		}
 		
-		pendingValues = null;
+		if (no != pendingValues.length) {
+			double[] newValues = new double[pendingValues.length-no];
+			System.arraycopy(pendingValues, no, newValues, 0, newValues.length);
+			pendingValues = newValues;
+		} else {
+			pendingValues = null;
+		}
+		
 	}
 	
 	
@@ -199,7 +217,7 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 	@Override
 	public String getAlias() {
 		// TODO Auto-generated method stub
-		return null;
+		return alias;
 	}
 
 	@Override

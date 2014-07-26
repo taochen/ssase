@@ -54,12 +54,16 @@ public class SuperRegionControl implements SuperRegionListener{
 	
 	private Object lock = new Object();
 	
+	static {
+		init();
+	}
+	
 	public static SuperRegionControl getInstance(){
 		return instance;
 	}
 	
-	public static void init(Set<Objective> objs) {
-		instance = new SuperRegionControl(objs);
+	private static void init() {
+		instance = new SuperRegionControl();
 	}
 	
 	private SuperRegionControl(){
@@ -136,11 +140,22 @@ public class SuperRegionControl implements SuperRegionListener{
 	}
 	
 	/**
-	 * Used in the Analyzer
+	 * Used in the Analyzer, when we reach here, it means the 
+	 * QoS modeling has been completed. 
 	 * @param result
 	 */
 	public void filterObjective (List<Objective> result) {
+		
+		if (control == null) {
+			running = new HashMap<Objective, String>();
+			control =  new RegionControl(Repository.getAllObjectives());
+			
+			Repository.setModelListeners(control);
+		}
+		
 		control.filterObjective(result);
+		// This would update regions if there is changes informed by model listeners.
+		control.updateRegions();
 	}
 	
 	/**

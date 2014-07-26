@@ -110,6 +110,7 @@ public class Region {
 			isLocked = false;
 			lock.notifyAll();
 		}
+		System.out.print("================= Finish optimization ! =================\n");
 		// TODO optimization.
 		return null;
 	}

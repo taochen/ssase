@@ -10,7 +10,7 @@ public interface Primitive {
 	
 	public double getValue();
 	
-	public void addValue();
+	public void addValue(long samples);
 	
 	public void removeHistoreicalValues(int no);
 	

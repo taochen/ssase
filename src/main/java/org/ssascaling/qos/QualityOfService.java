@@ -61,7 +61,7 @@ public class QualityOfService implements Objective, Comparable{
 	
 
 	// Least number of samples received before triggering training.
-	private int leastNumberOfSample = 100;
+	private int leastNumberOfSample = 10;
 	// Some QoS e.g., throughput's constraints need to rely on some EP.
 	private EnvironmentalPrimitive ep;
 	
@@ -136,7 +136,7 @@ public class QualityOfService implements Objective, Comparable{
 	public synchronized void prepareToAddValue(double value) {
 		// If the previous value has not been added.
 		if (addingCounter != samplingCounter) {
-			System.out.print(addingCounter + " : " + samplingCounter + "***** queuing values! *********\n");
+			//System.out.print(addingCounter + " : " + samplingCounter + "***** queuing values! *********\n");
 			if (pendingValues == null) {
 				pendingValues = new double[]{this.value, value};
 			} else {
@@ -159,10 +159,19 @@ public class QualityOfService implements Objective, Comparable{
 		return !Model.isEliminateZero ||  value != 0;
 	}
 	
-	public synchronized void doAddValue(){
+	public synchronized void doAddValue(long samples){
 		
+		//System.out.print(samples + " samples it have ******\n");
+		//System.out.print(pendingValues.length + " total pendingValues it have ******\n");
 		
-		values = pendingValues.length == 1? null : pendingValues;
+		int no = (int)(samples - array.length);
+		//System.out.print(no + " the number it needs to add ******\n");
+		if (no == 1) {
+			values = null;
+		} else {
+			values = new double[no];
+			System.arraycopy(pendingValues, 0, values, 0, no);
+		}
 		value = pendingValues[pendingValues.length - 1];
 				
 		
@@ -171,7 +180,18 @@ public class QualityOfService implements Objective, Comparable{
 		} else {
 			addValue(value);
 		}
-		pendingValues = null;
+		
+		
+		if (no != pendingValues.length) {
+			double[] newValues = new double[pendingValues.length-no];
+			System.arraycopy(pendingValues, no, newValues, 0, newValues.length);
+			pendingValues = newValues;
+		} else {
+			pendingValues = null;
+		}
+		
+		
+		
 	}
 	
 
@@ -186,13 +206,13 @@ public class QualityOfService implements Objective, Comparable{
 	 * This is the final stage for updating the model when new data is available
 	 * @param value
 	 */
-	public void doTraining () {
-		
+	public boolean doTraining () {
+	
 		// Add some data first in case there is too less data samples.
 		if (!isReallyTrain || array.length < leastNumberOfSample) {
-			return;
+			return false;
 		}
-		System.out.print("***** doing training *********\n");
+		
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		synchronized(writeLock) {
 			while (writeLock.get() != 0) {
@@ -227,6 +247,8 @@ public class QualityOfService implements Objective, Comparable{
 		}
 		
 		Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+		
+		return true;
 	}
 
 	public double[] getArray() {
@@ -263,7 +285,7 @@ public class QualityOfService implements Objective, Comparable{
 	public void updateGlobalAndLocalErrorHeuristics(){
 		
 		// Do nothing for the first run.
-		if (model.getInputs().size() == 0 || !isValid()) {
+		if (model.getInputs().size() == 0 || !isValid() || model.getInputs().size() == 0) {
 			return;
 		}
 		
@@ -482,6 +504,11 @@ public class QualityOfService implements Objective, Comparable{
 	}
 
 	public void addListener(Listener listener) {
+		
+		if (!(listener instanceof ModelListener)) {
+			return;
+		}
+		
 		synchronized(writeLock) {
 			writeLock.incrementAndGet();
 		}
@@ -513,7 +540,7 @@ public class QualityOfService implements Objective, Comparable{
 		}*/
 		
 		// Do nothing for the first run.
-		if (model.getInputs().size() == 0 || !isValid()) {
+		if (model.getInputs().size() == 0 || !isValid() || model.getInputs().size() == 0) {
 			return;
 		}
 		
@@ -617,11 +644,6 @@ public class QualityOfService implements Objective, Comparable{
 		return result;
 	}
 	
-	public void addListener (ModelListener listener) {
-		synchronized(writeLock) {
-			model.addListener(listener);
-		}
-	}
 
 	@Override
 	public boolean isMin() {
@@ -678,11 +700,13 @@ public class QualityOfService implements Objective, Comparable{
 	public boolean isViolate() {
 		
 		if (ep != null) {
-		// If make no sense if the required throughput even larger than the current workload.
-		if (isMin? constraint < ep.getLatest() : constraint > ep.getLatest()) {
-			return false;
-		}
-		
+			// If make no sense if the required throughput even larger than the
+			// current workload.
+			if (isMin ? constraint < ep.getLatest() : constraint > ep
+					.getLatest()) {
+				return false;
+			}
+
 		}
 		
 		return isMin? constraint < value : constraint > value;

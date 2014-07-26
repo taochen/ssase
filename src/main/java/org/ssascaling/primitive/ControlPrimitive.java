@@ -142,10 +142,17 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 
 
 	@Override
-	public synchronized void addValue() {
-		values = pendingValues.length == 1? null : pendingValues;
-		value = pendingValues[pendingValues.length - 1];
+	public synchronized void addValue(long samples) {
 		
+        int no = (int)(samples - array.length);
+		
+		if (no == 1) {
+			values = null;
+		} else {
+			values = new double[no];
+			System.arraycopy(pendingValues, 0, values, 0, no);
+		}
+		value = pendingValues[pendingValues.length - 1];
 		
 		if (values != null) {
 			for (double v : values) {
@@ -155,7 +162,14 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 			addValue(value);
 		}
 		
-		pendingValues = null;
+		if (no != pendingValues.length) {
+			double[] newValues = new double[pendingValues.length-no];
+			System.arraycopy(pendingValues, no, newValues, 0, newValues.length);
+			pendingValues = newValues;
+		} else {
+			pendingValues = null;
+		}
+		
 	}
 	
 	

@@ -15,6 +15,7 @@ import org.ssascaling.Service;
 import org.ssascaling.executor.VM;
 import org.ssascaling.objective.Cost;
 import org.ssascaling.objective.Objective;
+import org.ssascaling.observation.listener.ModelListener;
 import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.primitive.HardwareControlPrimitive;
 import org.ssascaling.primitive.Primitive;
@@ -62,6 +63,7 @@ public class Repository {
 	// Mainly for QoS
 	
 	// This can be configure the same time as possible primitives for services.
+	// objectives include both cost and QoS.
 	private static Map<Objective, Set<Primitive>> directPrimitives = new ConcurrentHashMap<Objective, Set<Primitive>>();
 	
 	public static void clear(){
@@ -153,5 +155,11 @@ public class Repository {
 	
 	public static int countDirectForAnObjective (Objective obj) {
 		return directPrimitives.containsKey(obj)? directPrimitives.get(obj).size() : 0;
+	}
+	
+	public static void setModelListeners (ModelListener listener) {
+		for (QualityOfService q : qoss) {
+			q.addListener(listener);
+		}
 	}
 }
