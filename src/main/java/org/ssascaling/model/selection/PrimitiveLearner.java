@@ -113,25 +113,34 @@ public class PrimitiveLearner {
 				//System.out.print("Old " + total + ", New" + (minus + b == 0 ? (add + a) / no
 						//: (((add + a) / no) / ((minus + b) / (no * no)))) + "\n");
 				if (total < (minus + b == 0 ? (add + a) / no
-						: (((add + a) / no) / ((minus + b) / (no * no))))) {
+						: (((add + a) / no) / ((minus + b) / ((no * no - no)/2))))) {
 
 					newInputes.add(((DependencyPair) inputList.get(i))
 							.getPrimitive());
 					add += a;
 					minus += b;
 					total = (minus == 0 ? add / no : (add / no)
-							/ (minus / (no * no)));
+							/ (minus / ((no * no - no)/2)));
 				}
 			}
 			if (finalp < total) {
 				finalp = total;
-				finalInputs.clear();
+				finalInputs.clear();			
 				finalInputs.addAll(newInputes);
 			}
 			//System.out.print("Best so far: " + finalp + ", with number of " + finalInputs.size() + ", Fine " + total + " with number of "
 					//+ newInputes.size() + "\n");
 		}
 		System.out.print("Total " + finalp + "\n");
+		
+
+		
+		for (Primitive p : finalInputs) {
+			System.out.print("=========================\n");
+			System.out.print("Selected: " + p.getAlias() + " : " + p.getName() + "\n");
+			System.out.print("=========================\n");
+		}
+		
 		return finalInputs;
 	}
 	
