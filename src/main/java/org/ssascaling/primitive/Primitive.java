@@ -22,7 +22,7 @@ public interface Primitive {
 
 	public void setGroup(int group);
 	
-	public long getProvision();
+	public double getProvision();
 	
 	public Type getType();
 	

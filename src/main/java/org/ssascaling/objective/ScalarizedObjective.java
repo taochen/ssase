@@ -127,4 +127,10 @@ public class ScalarizedObjective implements Objective {
 		return false;
 	}
 
+	@Override
+	public double getCurrentPrediction() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

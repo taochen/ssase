@@ -22,6 +22,8 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 	// Double here is the original value
 	// Changed to concurrent?
 	protected LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput = new LinkedHashMap<ControlPrimitive,  Tuple<Integer, Double>>();
+	protected LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> bestCpInput = new LinkedHashMap<ControlPrimitive,  Tuple<Integer, Double>>();
+	protected double bestEverResult = 0.0;
 	protected Structure strcture;
 
 	protected Observer observer;
@@ -37,6 +39,9 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 	
 	// The values extract from cpInput
 	protected double[] paretoSetValues;
+	
+	private int maxRun = 100;
+	private int currentRun = 0;
 	
 	
 	private Thread thread;
@@ -98,7 +103,7 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 
 			pathCounter = 0;
 			cpInput.clear();
-			
+			currentRun ++;
 			while (!end()) {
 				
 				Tuple<Integer, Double> newValue;
@@ -141,11 +146,21 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 				pathCounter++;
 			}
 
-		} while (antColony.invalidate(cpInput));
+		} while (!antColony.invalidate(this, cpInput) && currentRun <= maxRun);
 
+		// If the ant die
+		if (currentRun >= maxRun) {
+			cpInput = bestCpInput;
+		}
+		
+		//System.out.print(cpInput.size() + "***************** Finsihed an Ant " + "\n");
 		// Do not put in to the sync of structrue as it would cause deadlock
 		// with the dynamics triggering.
 		snapshotedValue = evaluate();
+		
+		
+		System.out.print(strcture.getObjective().getName() + " is finished, achevied value: " + snapshotedValue  + "\n");
+		
 		
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		synchronized (strcture.getWriteLock()) {
@@ -202,7 +217,16 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 	 * @return
 	 */
 	public double getValue(){
+		
+		if (!AntColony.ifConsiderDynamic) {
+			return getSnapshotedValue();
+		}
+		
 		return evaluate();
+	}
+	
+	public boolean selfInvalidate(){
+		return antColony.invalidate(null, cpInput);
 	}
 	
 	/**
@@ -228,6 +252,12 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 		}
 		
 		return true;
+	}
+	
+	public void print(){
+		for (Map.Entry<ControlPrimitive, Tuple<Integer, Double>> e : cpInput.entrySet()) {
+			   System.out.print(e.getKey().getAlias() + ", " + e.getKey().getName() + ", value: " + e.getValue().getVal2() +  "\n");
+		}
 	}
 	
 	public boolean isBetter(Ant another){
@@ -317,10 +347,43 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 		double result = 0;
 		if (snapshotedValue != (result = getValue())) {
 			snapshotedValue = result;
-			return antColony.invalidate(cpInput);
+			return antColony.invalidate(null, cpInput);
 		}
 		
 		return true;
+	}
+	
+	
+	public void setBestCpInput ( LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> inputs){
+		
+        List<Tuple<Primitive, Double>> list = strcture.getObjectiveInputList();
+		
+		double[] xValue = new double[list.size()];
+	
+		for (int i = 0; i < list.size(); i++) {
+			
+			Primitive p = list.get(i).getVal1();
+			
+			// Means it has to been a value in this ant's solution as it is CP.
+			if (p instanceof ControlPrimitive) {
+				xValue[i] = inputs.get(p).getVal2();
+			// Otherwise, if it is a EP then use its original value as we can not control EP.
+			} else {
+				xValue[i] = list.get(i).getVal2();
+			}
+			
+			
+			
+		}
+		
+		double result = strcture.getObjective().predict(xValue);
+		
+		
+		if (bestCpInput.size() == 0 || strcture.getObjective().isBetter(result, bestEverResult)) {
+			bestEverResult = result;
+			bestCpInput.clear();
+			bestCpInput.putAll(inputs);
+		}
 	}
 	
 	/**
@@ -351,7 +414,7 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 			
 		}
 		snapshotedValue = evaluate();
-		return antColony.invalidate(cpInput);
+		return antColony.invalidate(null, cpInput);
 	}
 	
 	/**

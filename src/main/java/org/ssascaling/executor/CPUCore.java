@@ -13,6 +13,11 @@ public class CPUCore {
 	public CPUCore (int id, VM...array){
 		this.id  = id;
 		vms = new HashMap<VM, Long>();
+		
+		if (array == null) {
+			return;
+		}
+		
 		for (VM vm : array) {
 			vms.put(vm, vm.getCpuCap());
 			remaining -= vm.getCpuCap();

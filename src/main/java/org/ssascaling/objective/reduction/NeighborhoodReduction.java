@@ -67,50 +67,95 @@ public abstract class NeighborhoodReduction implements Reduction {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void reduce(List[] clusters) {
 		int q = 0;
+		int total = 0;
 		List<Object> centroids = new ArrayList<Object>();
 		for (List<?> cluster : clusters) {
 			q = ((cluster.size() - 1) > q)? (cluster.size() - 1) : q;
 			centroids.add(centroid(cluster));
+			total += cluster.size();
 		}
 		
 		
-		int compact = -1;
-		for (; q > 0; q--) {
+		
+	
+		for(;;) {
+			double error = 0.0;
 			double distance = 0.0;
 			// Reset
-			compact = -1;
-			for (int i = 0; i < clusters.length; i ++) {
+			int compact = -1;
+			
+
+			double[] r = getMin(centroids, clusters, q);
+			compact = (int)r[0];
+			error = r[1];
+			
+			
+			
+			
+			// Step 3
+			
+			total = total + 1 - clusters[compact].size() ;
+			rmoveKNeighbors(q,centroids.get(compact), clusters[compact]);
+			
+			// Step 4
+			if (q > total - 1) {
+				q = total - 1;
+			}
+			
+			// Step 5
+			if (q == 1) {
+				break;
+			}
+			
+			r = getMin(centroids, clusters, q);
+			distance = r[1];
+			
+			// Step 6
+			while (distance > error) {
+				q = q - 1;
+				r = getMin(centroids, clusters, q);
+				distance = r[1];
 				
-				// Removed neighborhood
-				if (clusters[i].size() == 1){
-					continue;
-				}
-				
-				final Object temp = kNearest(q, centroids.get(i), clusters[i]);
-				
-				// The q is larger than the size of cluster.
-				if (temp == null) {
-					continue;
-				}
-				
-				final double currentDistance = map.get(getClassValue(centroids.get(i)))
-				.get(getClassValue(temp));
-				
-				
-				if (distance == 0.0 || currentDistance < distance){
-					distance = currentDistance;
-					compact = i;
+				if (q == 1) {
+					break;
 				}
 			}
 			
-			// Means no clusters has members more than the current q.
-			if (compact == -1) {
+			if (q == 1) {
+				break;
+			}
+			
+		}
+	}
+	
+	private double[] getMin(List<Object> centroids, List[] clusters, int q){
+		int compact = -1;
+		double error = 0.0;
+		for (int i = 0; i < clusters.length; i ++) {
+			
+			// Removed neighborhood
+			if (clusters[i].size() == 1){
 				continue;
 			}
 			
-			clusters[compact].clear();
-			clusters[compact].add(centroids.get(compact));
+			final Object temp = kNearest(q, centroids.get(i), clusters[i]);
+			
+			// The q is larger than the size of cluster.
+			if (temp == null) {
+				continue;
+			}
+			
+			final double currentDistance = map.get(getClassValue(centroids.get(i)))
+			.get(getClassValue(temp));
+			
+			
+			if (error == 0.0 || currentDistance < error){
+				error = currentDistance;
+				compact = i;
+			}
 		}
+		
+		return new double[]{compact, error};
 	}
 
 	private Object centroid(List<?> set) {
@@ -135,6 +180,31 @@ public abstract class NeighborhoodReduction implements Reduction {
 		return instance;
 	}
 
+	private void rmoveKNeighbors (int k, Object inst, List<?> set) {
+		Map<Object, Double> closest = new HashMap<Object, Double>();
+		@SuppressWarnings("unused")
+		double max = Double.POSITIVE_INFINITY;
+		for (Object tmp : set) {
+			if (!inst.equals(tmp)) {
+				double d = map.get(getClassValue(inst)).get(getClassValue(tmp)); // dm.measure(inst,
+																				// tmp);
+				closest.put(tmp, d);
+				//if (closest.size() > k)
+					//max = removeFarthest(closest);
+			}
+
+		}
+		
+		for (int i = 0; i < closest.size() - k; i++) {
+			removeFarthest(closest);
+		}
+		
+		for (Object ins : closest.keySet()) {
+			set.remove(ins);
+		}
+	}
+	
+	
 	private Object kNearest(int k, Object inst, List<?> set) {
 		if (k > set.size()) {
 			return null;
@@ -148,10 +218,14 @@ public abstract class NeighborhoodReduction implements Reduction {
 				double d = map.get(getClassValue(inst)).get(getClassValue(tmp)); // dm.measure(inst,
 																					// tmp);
 				closest.put(tmp, d);
-				if (closest.size() > k)
-					max = removeFarthest(closest);
+				//if (closest.size() > k)
+					//max = removeFarthest(closest);
 			}
 
+		}
+		
+		for (int i = 0; i < closest.size() - k; i++) {
+			removeFarthest(closest);
 		}
 
 		double distance = 0.0;

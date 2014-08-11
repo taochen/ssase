@@ -11,8 +11,20 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	
     protected int group = 0;	
 
-    // The optional value of this CP
+    // The optional value of this CP, provision values
+    // should be always >= 0.
     protected double[] valueVector;
+    
+    // The differences between different optional value.
+    // This is for both software and hardware CP.
+    protected int a;
+    
+    // The precentage to trigger change of the max provision value.
+    protected double b;
+    
+    // The precentage of increasing/decreasing the max possible provision.
+    // This is only for hardware CP.
+    protected double g;
 
 	//protected boolean isPrimary;
 	
@@ -24,7 +36,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	protected double value = -1;
 	protected double[] values = null;
 	// Current setup value;
-	protected long provision;
+	protected double provision;
 	
 	protected Type type;
 	
@@ -50,9 +62,12 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 			boolean isHardware, 
 			Type type,
 			Actuator actuator, 
-			long provision, 
+			double provision, 
 			double constraint,
-			double[] valueVector) {
+			int a,
+			double b,
+			double g,
+			double maxProvision) {
 		super();
 		array = new double[0];
 		this.alias = VMIDorService;
@@ -62,7 +77,10 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		this.actuator = actuator;
 		this.constraint = constraint;
 		this.provision = provision;
-		this.valueVector = valueVector;
+		this.a = a;
+		this.g = g;
+		this.b = b;
+		valueVector = new double[]{maxProvision};
 	}
 
 	@Deprecated
@@ -158,8 +176,10 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 			for (double v : values) {
 				addValue(v);
 			}
+			triggerMinProvisionUpdate(values);
 		} else {
 			addValue(value);
+			triggerMinProvisionUpdate(value);
 		}
 		
 		if (no != pendingValues.length) {
@@ -236,7 +256,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		return valueVector;
 	}
 	
-	public long getProvision(){
+	public double getProvision(){
 		return provision;
 	}
 	
@@ -294,6 +314,97 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	
 	public synchronized void resetValues(){
 		values = null;
+	}
+	
+	protected void triggerMinProvisionUpdate (double[] values){
+		double value = values[0];
+		for (double v : values) {
+			if ( v < value) {
+				value = v;
+			}
+		}
+		
+		triggerMinProvisionUpdate(value);
+	}
+	
+	/**
+	 * 
+	 * @param decidedValue
+	 * @param threshold the remaining hardware resources or the min resources that can be removed (remove the VM)
+	 * @return true if need to scale in/out
+	 */
+	public double triggerMaxProvisionUpdate (double decidedValue, double threshold){
+	 
+		// If increase
+		if (decidedValue / valueVector[valueVector.length - 1] > b  &&
+				value / valueVector[valueVector.length - 1] > b  /*consider the latest observed value as well*/) {
+			
+			if (Math.round(valueVector[valueVector.length - 1] * (1+g)) - valueVector[valueVector.length - 1] > threshold) {
+				return Double.NaN;
+			}
+			
+			System.out.print(name + " - " +  alias + "'s max provision change from " + valueVector[valueVector.length - 1]  + " to "+ 
+					(valueVector[valueVector.length - 1] * (1+g)) + "\n");
+			
+			double result = valueVector[valueVector.length - 1] - Math.round(valueVector[valueVector.length - 1] * (1+g)) ;
+			
+			updateValueVector(valueVector[0], valueVector[valueVector.length - 1] * (1+g));
+			return result;
+		// If decrease
+		} else if (decidedValue / valueVector[valueVector.length - 1] < b &&
+					value / valueVector[valueVector.length - 1] < b /*consider the latest observed value as well*/) {
+			
+			if (Math.round(valueVector[valueVector.length - 1] * (1-g)) < threshold) {
+				return Double.NaN;
+			}
+			
+			System.out.print(name + " - " +  alias + "'s max provision change from " + valueVector[valueVector.length - 1]  + " to "+ 
+					(valueVector[valueVector.length - 1] * (1-g)) + "\n");
+			
+		
+			double result = valueVector[valueVector.length - 1] - Math.round(valueVector[valueVector.length - 1] * (1-g));
+			
+			updateValueVector(valueVector[0], valueVector[valueVector.length - 1] * (1-g));	
+			return result;
+		}
+		
+		return 0;
+		
+	}
+	
+	protected void triggerMinProvisionUpdate (double value){
+		if (Math.round(value) != 0 && Math.round(value) < valueVector[0]) {
+			System.out.print(name + " - " + alias + ", New min provsion value: " + Math.round(value) +", max provision value: " + valueVector[valueVector.length - 1] + "\n");
+			updateValueVector(value, valueVector[valueVector.length - 1]);
+		}
+	}
+	
+	protected void updateValueVector (double minProvision, double maxProvision){
+		int max = (int)Math.round(maxProvision);
+		int min = (int)Math.round(minProvision);
+		
+		// This should not occur outside test cases.
+		if (min > max) {
+			min = 0;
+		}
+		
+		int length = max - min;
+		if (length % a != 0) {
+			length += 1;
+		}
+		
+		valueVector = new double[length]; 
+		double value = min;
+		for (int i = 0; i < length; i++) {
+			if (value + i*a > max) {
+				value = max;
+			} else {
+				value = value + i*a;
+			}
+			
+			
+			valueVector[i] = value;
+		}
 	}
 	
 }

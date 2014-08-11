@@ -182,8 +182,8 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 		return secondLatest;
 	}
 	
-	public long getProvision(){ 
-		return Math.round(latest);
+	public double getProvision(){ 
+		return latest;
 	}
 
 	public void setGroup(int group) {

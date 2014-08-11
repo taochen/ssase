@@ -41,4 +41,6 @@ public interface Objective {
 	public List<Primitive> getPrimitivesInput();
 	
 	public boolean isViolate();
+	
+	public double getCurrentPrediction();
 }

@@ -14,6 +14,7 @@ import org.ssascaling.util.Tuple;
 
 public abstract class AntColony implements  ModelListener {
 
+	public static final boolean ifConsiderDynamic = false;
 	    // Herustic factor
 	    protected double[][] mu;
 	    
@@ -26,6 +27,7 @@ public abstract class AntColony implements  ModelListener {
 	    
 	    
 	    // Sorted, list of integer needs to fit the sequential requirement of objective's inputs. Including EPs.
+	    // The tupe here need to be a unique instance.
 	    protected LinkedHashMap<Objective, List<Tuple<Primitive, Double>>> objectiveMap;
 	    // The same tuple instance as objectiveMap. Including EPs.
 	    protected LinkedHashMap<Primitive, Tuple<Primitive, Double>> objectivePrimitiveMap;
@@ -51,9 +53,9 @@ public abstract class AntColony implements  ModelListener {
 	    
 	    protected Ant[]    ants;
 	    protected int      numberOfAnt;
-	    protected int      antRatio = 3;
+	    protected int      antRatio = 10;
 	    protected int      iterCounter = 0;
-	    protected int      iterations = 1000;
+	    protected int      iterations = 30;
 	    
 	    protected int completedAnt=0;
 	    
@@ -106,6 +108,36 @@ public abstract class AntColony implements  ModelListener {
 	        }
 	        
 	        calculateMu();
+	        
+	        
+	        for (int i = 0; i < mu.length; i++) {
+	        	double min = 0.0;
+	        	 for (int j = 0; j < mu[i].length; j++) {
+	        		 if(min == 0 || (mu[i][j] >0 && mu[i][j] < min)) {
+	        			 min = mu[i][j];
+	        		 }
+	        	 }
+	        	 
+	        	 // In case no value in this primitive could have improvement.
+	        	 if (min == 0.0) {
+	        		 min = 1.0;
+	        	 }
+	        	 
+	        	 for (int j = 0; j < mu[i].length; j++) {
+	        		 if (mu[i][j] < 0) {
+	        			 mu[i][j]  = Math.abs(min / mu[i][j]);
+	        		 }
+	        	 }
+	        	
+	        }
+	    
+	        print();
+	    }
+	    
+	    private void print(){	        
+	    	for (int i = 0; i < mu.length; i++) {
+	    		System.out.print(Arrays.toString(mu[i]) + "\n");
+	    	}
 	    }
 	    
 	    public  void calculateMu(){
@@ -120,6 +152,8 @@ public abstract class AntColony implements  ModelListener {
 				}
 	    	mu = new double[primitives.size()][];
 	    	double[] original = calculateObjectiveValues();
+	    	
+	    
 	    	for (int i = 0; i < primitives.size(); i++) {
 	    		double[] nested = new double[primitives.get(i).getValueVector().length];
 	    		for (int j = 0; j < primitives.get(i).getValueVector().length; j++) {
@@ -147,6 +181,7 @@ public abstract class AntColony implements  ModelListener {
 	        // loop for all iterations
 	        while(iterCounter < iterations && !isStop)
 	        {
+	        	System.out.print("Run " + iterCounter + "\n");
 	        	// creates all ants
 		        ants  = createAnts(numberOfAnt);
 	            // run an iteration
@@ -247,19 +282,16 @@ public abstract class AntColony implements  ModelListener {
 	    
 	
 	    public synchronized void antCompleted(){
-	    	completedAnt--;
-	    	if (completedAnt == 0) {
+	    	completedAnt++;
+	    	if (completedAnt == numberOfAnt) {
 	    		this.notifyAll();
 	    	}
 	    }
 	    
-	    public boolean done()
-	    {
-	        return iterCounter == iterations;
-	    }
+	  
 	    
 	    public boolean done(int counter) {
-	    	return counter == primitives.size() - 1;
+	    	return counter == primitives.size();
 	    }
 	    
 	    public ControlPrimitive getPrimitive (int i){
@@ -392,7 +424,7 @@ public abstract class AntColony implements  ModelListener {
 	    
 	    protected abstract void globalUpdatingRule();
 	    
-	    protected abstract boolean invalidate(LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput);
+	    protected abstract boolean invalidate(Ant ant, LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput);
 	    
 	    protected abstract Structure selectStrcture(int i,Structure[] structures);
 	    
@@ -448,13 +480,16 @@ public abstract class AntColony implements  ModelListener {
 	    private double calculateMuRatio(double[] original){
 	    	double improvement = 0;
 	    	double degradation = 0;
-	    	
+	    	//System.out.print("=================\n");
 	    	
 	    	double[] values =  calculateObjectiveValues();
+	    	
+	    	
 	    	
 	    	Iterator<Map.Entry<Objective, List<Tuple<Primitive, Double>>>> itr =  objectiveMap.entrySet().iterator();
 	    	
 	    	for (int i =0; i < original.length;i++) {
+	    		//System.out.print("Mu " + values[i] + " : " + original[i] + "\n");
 	    		boolean isMin = itr.next().getKey().isMin();
 	    		if (isMin) {
 	    			if(values[i] < original[i]) {
@@ -471,7 +506,10 @@ public abstract class AntColony implements  ModelListener {
 	    		}
 	    	}
 	    	
-	    	return improvement/degradation;
+	    	//System.out.print("Im " + improvement+ "\n");
+    		//System.out.print("De " + degradation+ "\n");
+    		//System.out.print("=================\n");
+	    	return improvement==0? (-1*(degradation + 1)) : improvement/(degradation + 1);
 	    }
 	    
 	    
@@ -483,7 +521,7 @@ public abstract class AntColony implements  ModelListener {
 	    		for (int i =0; i < inputs.length;i++) {
 	    			inputs[i] = entry.getValue().get(i).getVal2();
 	    		}
-	    		
+	    		System.out.print("Inputs: " + Arrays.toString(inputs) + "\n");
 	    		results[k] = entry.getKey().predict(inputs);
 	    		k++;
 	    	}

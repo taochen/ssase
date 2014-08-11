@@ -1,5 +1,7 @@
 package org.ssascaling.objective.optimization;
 
+import java.util.Arrays;
+
 import org.ssascaling.util.Tuple;
 
 public class BasicAnt extends Ant {
@@ -7,6 +9,7 @@ public class BasicAnt extends Ant {
 	
 	public BasicAnt(String antID, AntColony antColony, Structure strcture) {
 		super(antID, antColony, strcture);
+		System.out.print(strcture.getObjective().getName() + "\n");
 	}
 
 
@@ -14,6 +17,11 @@ public class BasicAnt extends Ant {
 	public Tuple<Integer, Double> valueTransitionRule(int r) {
 		double[] p = strcture.getValueProbability(r, antColony.getMu());
 		int index = doProbabilisticSelection(p);
+		
+		/*System.out.print("=====================\n");
+		System.out.print(Arrays.toString(p) + "\n");
+		System.out.print("for " + r + " we get " + index + "\n");
+		System.out.print("=====================\n");*/
 		return new Tuple<Integer, Double>(index, antColony.getPrimitive(r).getValueVector()[index]);
 	}
 
@@ -43,11 +51,6 @@ public class BasicAnt extends Ant {
 	}
 
 
-	@Override
-	public int compareTo(Ant another) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	
 
 }

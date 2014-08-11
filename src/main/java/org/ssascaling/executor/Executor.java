@@ -21,7 +21,12 @@ public class Executor {
 	
 	/*Mainly need to record the provision of hardware CPs*/
 	private static int totalMemory; /*Mb*/
+	// these are based on the max possible provision value,
+	// so the actual provision do not need to update them, but
+	// the max provision value does.
+	
 	private static int remainingMemory;
+	private static int remainingCPU;
 	
 	private static Object lock = new Object();
 	
@@ -32,11 +37,12 @@ public class Executor {
 	
 	public final static boolean isTest = true;
 	public final static long memoryThreshold = 100;
-	public final static long CPUThreshold = 10;
+	public final static long CPUThreshold = 3;
 	
 	public static void init(HardwareControlPrimitive... primitives) {
 		totalMemory = 2048 - 500;
-		remainingMemory = totalMemory;
+		remainingMemory = 0;
+		remainingCPU = 0;
 		
 		/*This is a testing setup, the real setup should come from property files*/
 		Repository.setService("jeos-test.service1", new Service());
@@ -48,7 +54,7 @@ public class Executor {
 		VM kitty = new VM("kitty", new HardwareControlPrimitive[]{primitives[2], primitives[3]});
 		VM miku = new VM("miku", new HardwareControlPrimitive[]{primitives[4], primitives[5]});
 		
-		remainingMemory -= 600;
+		//remainingMemory -= 600;
 		
 		
 		Repository.setVM("jeos", jeos);
@@ -58,6 +64,10 @@ public class Executor {
 		cores.add(new CPUCore(1, new VM[]{jeos}));
 		cores.add(new CPUCore(2, new VM[]{kitty}));
 		cores.add(new CPUCore(3, new VM[]{miku}));
+		cores.add(new CPUCore(4, new VM[]{}));
+		cores.add(new CPUCore(5, new VM[]{}));
+		cores.add(new CPUCore(6, new VM[]{}));
+		cores.add(new CPUCore(7, new VM[]{}));
 	}
 	
 	/**
@@ -91,15 +101,20 @@ public class Executor {
 					// CPU is sepecial as its denormalized value is still %
 					if (Type.CPU.equals(entry.getKey().getType())) {
 						long finalValue = value;
-						if (value < CPUThreshold) {
-							System.out.print("Scale in due to CPU on " + entry.getKey().getAlias() + " \n");
-							// TODO do scale in
-							return;
-						}
 						
 						VM vm = Repository.getVM(entry.getKey().getAlias());
 						// Scale down, always remove the core with higher ID first.
 						if (!vm.isScaleUp(value)) {
+							double v = 0;
+							
+							if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, CPUThreshold))) {
+								System.out.print("Scale in due to CPU on " + entry.getKey().getAlias() + " \n");
+								// TODO do scale in and free all resources.
+								return;
+							}
+							
+							remainingCPU += v;
+							
 							long count = 0;
 							int no = 0;
 							for (CPUCore core : cores) {
@@ -141,6 +156,18 @@ public class Executor {
 							// this is only the cap one.
 							entry.getKey().triggerActuator(new long[] { value });
 						} else /*Scale up*/ {
+							
+	                        double v = 0;
+							
+							if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, remainingCPU))) {
+								//TODO should trigger scale out.
+								System.out.print("Scale out due to CPU on " + entry.getKey().getAlias() + " \n");
+								return;
+							}
+							
+							remainingCPU += v;
+							
+							
 							long add = value - vm.getCpuCap();
 							// new cpu core number
 							long newNo = 0;
@@ -183,6 +210,8 @@ public class Executor {
 							
 							
 
+							// If we foucs on the control of max provision, then add here should be always = 0
+							// as the decided value is always within the max provision value that meet the capacity of this PM.
 							finalValue = add > 0? (value-add) : value;
 							// This is only the cap one.
 							entry.getKey().triggerActuator(new long[] { finalValue });
@@ -199,14 +228,36 @@ public class Executor {
 						entry.getKey().setProvision(finalValue);
 
 					} else if (Type.Memory.equals(entry.getKey().getType())) {
-
-						if (value < memoryThreshold) {
-							System.out.print("Scale in due to memory on " + entry.getKey().getAlias() + " \n");
-							// TODO do scale in
-							return;
+						double v = 0;
+						// Scale down
+						if (value < entry.getKey().getProvision()) {
+							
+							if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, memoryThreshold))) {
+								System.out.print("Scale in due to memory on " + entry.getKey().getAlias() + " \n");
+								// TODO do scale in and free all resources.
+								return;
+							}
+							
+							
+							
+						} else /*Scale up*/ {
+							if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, remainingMemory))) {
+								System.out.print("Scale out due to memory on " + entry.getKey().getAlias() + " \n");
+								// TODO should trigger migration or replication for scale out as
+								// the memory is insufficient.
+								return;
+							}
+							
+							
 						}
+						remainingMemory += v;
 						
-						if (remainingMemory >= value) {
+						entry.getKey().setProvision(value);
+						entry.getKey()
+								.triggerActuator(new long[] { value });
+						
+
+						/*if (remainingMemory >= value) {
 							remainingMemory -= value - entry.getKey().getProvision();
 							
 							entry.getKey().setProvision(value);
@@ -216,7 +267,7 @@ public class Executor {
 							// TODO should trigger migration or replication for scale out as
 							// the memory is insufficient.
 							System.out.print("Scale out due to memory on " + entry.getKey().getAlias() + " \n");
-						}
+						}*/
 					}
 				}
 				
@@ -238,6 +289,7 @@ public class Executor {
 		}
 		
 		System.out.print("Remaining memory=" + remainingMemory+"\n");
+		System.out.print("Remaining CPU=" + remainingCPU+"\n");
 	}
 	
 	private static LinkedHashMap<ControlPrimitive, Double> orderDecision(final LinkedHashMap<ControlPrimitive, Double> decisions){

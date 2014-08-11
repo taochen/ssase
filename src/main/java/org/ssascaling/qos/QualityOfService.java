@@ -61,7 +61,7 @@ public class QualityOfService implements Objective, Comparable{
 	
 
 	// Least number of samples received before triggering training.
-	private int leastNumberOfSample = 10;
+	private int leastNumberOfSample = 340;
 	// Some QoS e.g., throughput's constraints need to rely on some EP.
 	private EnvironmentalPrimitive ep;
 	
@@ -483,14 +483,14 @@ public class QualityOfService implements Objective, Comparable{
 		for (int i = 0; i < x.length; i++) {
 			// get the latest EP here.
 			if (isLatestEP && model.get(i) instanceof EnvironmentalPrimitive) {
-			   x[i] = model.get(i).getProvision()/model.get(i).getMax();
+			   x[i] = ((EnvironmentalPrimitive)model.get(i)).getLatest()/model.get(i).getMax();
 			} else {
 			   x[i] = xValue[i]/model.get(i).getMax();
 			}
 		}
 		
 	
-		reuslt = model.predict(xValue, true, a, b)*max/100;
+		reuslt = model.predict(x, true, a, b)*max/100;
 		
 		
 		synchronized(writeLock) {
@@ -644,6 +644,16 @@ public class QualityOfService implements Objective, Comparable{
 		return result;
 	}
 	
+	@Override
+	public double getCurrentPrediction() {
+		double[] xValue = new double[model.getInputs().size()];
+		for (int i = 0; i < xValue.length; i++) {			
+			xValue[i] = model.getInputs().get(i).getProvision();		 
+		}
+		return predict(xValue);
+	}
+
+	
 
 	@Override
 	public boolean isMin() {
@@ -659,13 +669,13 @@ public class QualityOfService implements Objective, Comparable{
 
 	@Override
 	public boolean isSatisfied(double[] xValue) {
-		return isMin? constraint > predict(xValue) : constraint < predict(xValue);
+		return isMin? constraint >= predict(xValue) : constraint <= predict(xValue);
 	}
 
 
 	@Override
 	public boolean isBetter(double v1, double v2) {
-		return (isMin()) ? v1 < v2  : v1 > v2;
+		return (isMin()) ? v1 <= v2  : v1 >= v2;
 	}
 
 

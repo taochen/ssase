@@ -1,5 +1,7 @@
 package org.ssascaling.objective.optimization;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ssascaling.objective.Objective;
 import org.ssascaling.objective.optimization.dynamic.Dynamics;
-import org.ssascaling.objective.optimization.dynamic.MemoryBasedDynamic;
+import org.ssascaling.objective.optimization.dynamic.ClassicalDynamic;
 import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.util.Tuple;
@@ -27,11 +29,18 @@ public class Structure {
 
 	public static final double GRAPH_EVAPORATION = 3;*/
 
-	public static final double MAX_VALUE_TAU = 10;
+	private double MAX_VALUE_TAU = 0;
 
-	public static final double MIN_VALUE_TAU = 0.1;
+	private double MIN_VALUE_TAU = 0;
+	
+	private double P_MAX_VALUE_TAU = 0;
 
-	public static final double VALUE_EVAPORATION = 0.5;
+	private double P_MIN_VALUE_TAU = 0;
+	
+	
+	public static final double g = 2;
+
+	public static final double VALUE_EVAPORATION = 0.1;
 
 	// Weight for mu
 	private static final double ALPHA = 2;
@@ -73,9 +82,9 @@ public class Structure {
 		this.objective = objective;
 		this.primitives = primitives;
 		this.constraintedObjectiveMap = constraintedObjectiveMap;
-		dynamics = new MemoryBasedDynamic();
-		
-		antValues = new AntValues(primitivesList);
+		dynamics = new ClassicalDynamic();
+		updateTrailLimits(objective.getCurrentPrediction());
+		antValues = new AntValues(primitivesList, MAX_VALUE_TAU);
 	}
 	
 
@@ -88,6 +97,8 @@ public class Structure {
 		final LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> decision = ant
 		.getDecision();
 		
+		String selected = "";
+		
 		
 		for (Map.Entry<ControlPrimitive, Tuple<Integer, Double>> entry : decision
 				.entrySet()) {
@@ -97,18 +108,23 @@ public class Structure {
 			if (!primitives.containsKey(entry.getKey())) {
 				continue ;
 			}
-			
+		
+
+			selected += ", " + entry.getValue()
+			.getVal1();
 			antValues.update(primitives.get(entry.getKey()), entry.getValue()
 					.getVal1(), -1, -1,
-					objective.isMin());
+					objective.isMin(), MAX_VALUE_TAU, MIN_VALUE_TAU, 
+					P_MAX_VALUE_TAU == 0? MAX_VALUE_TAU : P_MAX_VALUE_TAU,
+							P_MIN_VALUE_TAU == 0? MIN_VALUE_TAU : P_MIN_VALUE_TAU);
 		}
 
 		/*Only local update when there is no change after a solution found*/
-		if (ant.reinvlidateWhenChange()) {
+		if (dynamics instanceof ClassicalDynamic || ant.reinvlidateWhenChange()) {
 			solutions.add(ant);
 		}
 
-		
+		System.out.print("===========" + selected + "\n");
 	}
 
 	/**
@@ -117,7 +133,8 @@ public class Structure {
 	 * @return
 	 */
 	public void globalUpdate() {
-
+		//System.out.print("Start ******MAX: " + Structure.MAX_VALUE_TAU + ", MIN: " + Structure.MIN_VALUE_TAU + "\n");
+		
 		
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		// synchronize the access to the graph
@@ -133,6 +150,17 @@ public class Structure {
 
 			Ant localBestAnt = solutions.peek();
 			Ant globalBestAnt = dynamics.getBestSoFar();
+			
+			// If the current run's best ant is the best ever one, then set it as the global best.
+			// So the update value would be 1, which is quite a great reward.
+			if (globalBestAnt == null || localBestAnt.isBetter(globalBestAnt)) {
+				globalBestAnt = localBestAnt;
+			} 
+				
+			System.out.print(globalBestAnt.getValue() +" : "+ localBestAnt.getValue() + "********* compare \n");
+			globalBestAnt.print();
+			
+			
 			LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> decision = localBestAnt
 					.getDecision();
 
@@ -149,13 +177,17 @@ public class Structure {
 				
 				antValues.update(primitives.get(entry.getKey()), entry.getValue()
 						.getVal1(), globalBestAnt.getValue(), localBestAnt.getValue(),
-						objective.isMin());
+						objective.isMin(), MAX_VALUE_TAU, MIN_VALUE_TAU,P_MAX_VALUE_TAU == 0? MAX_VALUE_TAU : P_MAX_VALUE_TAU,
+								P_MIN_VALUE_TAU == 0? MIN_VALUE_TAU : P_MIN_VALUE_TAU);
 			}
 			
 			dynamics.updateShort(solutions, antValues, primitives);
 			dynamics.updateLong(localBestAnt);
+		
+			updateTrailLimits(globalBestAnt.getValue());
 			
 			solutions.clear();
+			
 		}
 		Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
@@ -164,15 +196,18 @@ public class Structure {
 
 	public double[] getValueProbability(int j, double[][] mu) {
 		double sum = 0;
-		for (int k = 0; k < antValues.getTaus().length; k++) {
-			sum += Math.pow(mu[j][k], ALPHA)
-					* Math.pow(antValues.getTaus()[j][k], BETA);
+		int length = antValues.getTaus()[j].length;
+		for (int k = 0; k < length; k++) {
+			sum += Math.pow(mu[j][k], BETA)
+					* Math.pow(antValues.getTaus()[j][k], ALPHA);
 		}
+		
+		
 
-		double[] results = new double[antValues.getTaus().length];
-		for (int k = 0; k < antValues.getTaus().length; k++) {
-			results[k] = Math.pow(mu[j][k], ALPHA)
-					* Math.pow(antValues.getTaus()[j][k], BETA) / sum;
+		double[] results = new double[length];
+		for (int k = 0; k < length; k++) {
+			results[k] = Math.pow(mu[j][k], BETA)
+					* Math.pow(antValues.getTaus()[j][k], ALPHA) / sum;
 		}
 
 		return results;
@@ -194,7 +229,25 @@ public class Structure {
 			 }
 		}
 		
+		// Remove invalid solutions.
+		invalidate(ants);
+System.out.print(objective.getName()+ "==========\n");
+		
+		antValues.print();
+		
 		return ants;
+	}
+	
+	private void invalidate(List<Ant> ants){
+		List<Ant> list = new ArrayList<Ant>();
+		
+		for (Ant a : ants) {
+			if (!a.selfInvalidate()) {
+				list.add(a);
+			}
+		}
+		
+		ants.removeAll(list);
 	}
 	
 	public double predict(double[] xValue) {
@@ -272,6 +325,20 @@ public class Structure {
 		return writeLock;
 	}
 	
+	private void updateTrailLimits(double value){
+		
+		P_MAX_VALUE_TAU = MAX_VALUE_TAU;
+		P_MIN_VALUE_TAU = MIN_VALUE_TAU;
+		if (objective.isMin()) {
+			MAX_VALUE_TAU = 1 / (value*(1 - VALUE_EVAPORATION));
+			MIN_VALUE_TAU = MAX_VALUE_TAU / g;
+		} else {
+			MAX_VALUE_TAU = value*(1 - VALUE_EVAPORATION);
+			MIN_VALUE_TAU = MAX_VALUE_TAU / g;
+		}
+		
+		print();
+	}
 
 	/**
 	 * Reinvalidate the solution queue in the current iteration.
@@ -291,4 +358,7 @@ public class Structure {
 		solutions.addAll(longL);
 	}
 	
+	private void print(){
+		System.out.print(objective.getName() + " MAX: " + MAX_VALUE_TAU + ", MIN: " + MIN_VALUE_TAU + "\n");
+	}
 }

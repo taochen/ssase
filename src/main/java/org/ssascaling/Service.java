@@ -99,6 +99,10 @@ public class Service {
 		return primitives.values();
 	}
 	
+	public Primitive getPrimitive(String name){
+		return primitives.get(name);
+	}
+	
 	public Set<Primitive> getPossiblePrimitives(){
 		return possibleInputs;
 	}

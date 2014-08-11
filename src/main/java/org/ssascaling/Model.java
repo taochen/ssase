@@ -323,7 +323,7 @@ public class Model {
 			for (int k = 0; k < functions.length; k++) {
 				final int index = k;
 				//=============== should be removed ============
-				if (index == 0 ) {
+				if (index == 100) {
 					synchronized(concurrentModelLock) {
 						concurrentModelLock.decrementAndGet();		
 					    if (concurrentModelLock.get() == 0) {
@@ -435,7 +435,7 @@ public class Model {
 			for (int k = 0; k < functions.length; k++) {			
 				final int index = k;
 				//=============== should be removed ============
-				if (index == 0 ) {
+				if (index == 100) {
 					continue;
 				}
 				//=============== should be removed ============
@@ -521,7 +521,11 @@ public class Model {
 		if (inputs.size() != 0) {
 			
 			for (int k = 0; k < functions.length; k++) {			
-
+				//=============== should be removed ============
+				if (k == 100) {
+					continue;
+				}
+				//=============== should be removed ============
 				double predict = 0;
 				double ideal = yValue;
 				if (k == ModelFunction.ARMAX/* for ARMAX */) {
@@ -573,7 +577,7 @@ public class Model {
 	}
 	
 	public double predict(double[] xValue, boolean isSU, double a, double b) {
-		System.out.print("Enter\n");
+		//System.out.print("Enter\n");
 		/******************synchronized(writeLock) {
 			while (writeLock) {
 				try {
@@ -593,9 +597,9 @@ public class Model {
 		if (function instanceof ARMA) {
 			x = this.transferSlidingWindow(xValue, ModelFunction.ARMAX);
 		} else  if (function instanceof EncogFeedForwardNeuralNetwork) {
-			System.out.print(" PREDICTED ANN INPUT " + Arrays.toString(x) +  "\n");
+			//System.out.print(" PREDICTED ANN INPUT " + Arrays.toString(x) +  "\n");
 		} else if (function instanceof RegressionTree) {
-			System.out.print(" PREDICTED RT INPUT " + Arrays.toString(x) +  "\n");
+			//System.out.print(" PREDICTED RT INPUT " + Arrays.toString(x) +  "\n");
 		}
 		
 		double result = function==null? 0 : function.predict(x);
@@ -679,7 +683,7 @@ public class Model {
 		for (int k = 0; k < functions.length; k++) {
 			final int index = k;
 			//=============== should be removed ============
-			if (index == 0 ) {
+			if (index == 100) {
 				synchronized(concurrentModelLock) {
 					concurrentModelLock.decrementAndGet();	
 					
@@ -1075,7 +1079,7 @@ public class Model {
 		double averageMape = 0.0;
 		for (int k = 0; k < functions.length; k++){
 			//=============== should be removed ============
-			if (k == 0 ) {
+			if (k == 100) {
 				continue;
 			}
 			//=============== should be removed ============
@@ -1113,11 +1117,11 @@ public class Model {
 				bestPair = coresspondingPair;
 			}
 			
-			System.out.print((isSU?"SU" : "nonSU")+a+b+ " Funtion: " + functions[k] + " with MAPE " + a*coresspondingMape + ", average MAPE " + b*averageMape + "\n");
+			//System.out.print((isSU?"SU" : "nonSU")+a+b+ " Funtion: " + functions[k] + " with MAPE " + a*coresspondingMape + ", average MAPE " + b*averageMape + "\n");
 		}
 		
-		//logger.info("Selected: " + selected + " with MAPE " + bestMape);
-		System.out.print((isSU?"SU" : "nonSU")+a+b+ " Selected: " + selected + " with MAPE " + bestMape + "\n");
+		   //logger.info("Selected: " + selected + " with MAPE " + bestMape);
+		//System.out.print((isSU?"SU" : "nonSU")+a+b+ " Selected: " + selected + " with MAPE " + bestMape + "\n");
 		// Only trigger sub modeling if the expected MAPE lower than the threshold.
 		if (bestMape > DEFAULT_PREDICTION_ERROR_PERCENTAGE) {
 			//return trainSubModelFunction (bestPair, selected);
@@ -1315,7 +1319,7 @@ public class Model {
 		Object[] object = selectors[index].doDataSeparation(x,y);
 		
 		int length = ((double[][])object[0]).length - 1;
-		System.out.print(" PREDICTED ARMAX INPUT " + Arrays.toString(((double[][])object[0])[length]) +  "\n");
+		//System.out.print(" PREDICTED ARMAX INPUT " + Arrays.toString(((double[][])object[0])[length]) +  "\n");
 		return ((double[][])object[0])[length];
 		
 	}

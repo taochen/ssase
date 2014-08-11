@@ -39,7 +39,11 @@ public class BasicAntColony extends AntColony {
 	}
 
 	@Override
-	protected boolean invalidate(LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput) {
+	protected boolean invalidate(Ant ant, LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput) {
+		
+		if (ant != null) {
+			ant.setBestCpInput(cpInput);
+		}
 		
 		for (Entry<Objective, List<Tuple<Primitive, Double>>> entry : constraintedObjectiveMap.entrySet() ) {
 			double[] xValue = new double[entry.getValue().size()];
@@ -51,18 +55,29 @@ public class BasicAntColony extends AntColony {
 				xValue[i] = cpInput.containsKey(cp)? cpInput.get(cp).getVal2() : entry.getValue().get(i).getVal2();
 			}
 			
+			
+			
 			if (!entry.getKey().isSatisfied(xValue)) {
+				
+				/*for (Map.Entry<ControlPrimitive, Tuple<Integer, Double>>  e : cpInput.entrySet()) {
+					System.out.print(e.getValue().getVal2()  + " \n"); 
+				}*/
+				
+				//System.out.print(entry.getKey().getName() + " is not satisfied, start again, value: " + entry.getKey().predict(xValue)  + "\n");
+				
 				return false;
 			}
+		
 		}
 		return true;
 	}
 
 	@Override
 	protected Structure selectStrcture(int i, Structure[] structures) {
-		return structures[structures.length%i - 1];
+		return structures[( structures.length > i)? i : i%structures.length];
 	}
 
+	// TODO check here
 	@Override
 	protected LinkedHashMap<ControlPrimitive, Double> getParetoOptimality() {
 		Set<Structure> set = structures;

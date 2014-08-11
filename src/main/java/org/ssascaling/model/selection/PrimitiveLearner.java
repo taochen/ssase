@@ -40,7 +40,7 @@ public class PrimitiveLearner {
 					 }
 					 inputMap.get(p.getGroup()).add(new DependencyPair(p,value)); 
 				 }
-				 // This may include non-relevant primitives. However, it is fine to have them.
+				 // This may include unselected primitives. However, it is fine to have them.
 				 newInputesMap.put(p, value);
 			 }
 		}

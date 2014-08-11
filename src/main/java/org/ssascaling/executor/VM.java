@@ -31,11 +31,11 @@ public class VM {
 	}
 	
 	public long getCPUNo(){
-		return map.get(Type.CPU).getProvision()/100 + 1;
+		return  Math.round(map.get(Type.CPU).getProvision())/100 + 1;
 	}
 
 	public long getCpuCap() {
-		return map.get(Type.CPU).getProvision();
+		return Math.round(map.get(Type.CPU).getProvision());
 	}
 	
 	public Collection<HardwareControlPrimitive> getAllPrimitives(){
