@@ -1,7 +1,9 @@
 package org.ssascaling.executor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.ssascaling.primitive.*;
@@ -10,7 +12,7 @@ public class VM {
 	// VM_ID
 	private String VM_ID;
 	private Map<Type, HardwareControlPrimitive> map;
-	
+	private List<HardwareControlPrimitive> list = new ArrayList<HardwareControlPrimitive>();
 	
 	
 	public VM(String VM_ID, HardwareControlPrimitive... primitives) {
@@ -19,6 +21,7 @@ public class VM {
 		this.VM_ID = VM_ID;
 		for (HardwareControlPrimitive p : primitives) {
 			map.put(p.getType(), p);
+			list.add(p);
 		}
 	}
 
@@ -38,8 +41,12 @@ public class VM {
 		return Math.round(map.get(Type.CPU).getProvision());
 	}
 	
+	public long getMemory(){
+		return Math.round(map.get(Type.Memory).getProvision());
+	}
+	
 	public Collection<HardwareControlPrimitive> getAllPrimitives(){
-		return map.values();
+		return list;
 	}
 	
 	public String print(){

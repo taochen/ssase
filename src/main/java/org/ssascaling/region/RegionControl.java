@@ -105,6 +105,8 @@ public class RegionControl implements ModelListener {
 	 * 
 	 * Unlike non-critical change, which can still be a valid solution even if the dynamic has not been
 	 * resolved. Critical change could result in an invalid solution, which needs to be avoided.
+	 * 
+	 * 
 	 */
 	@Override
 	public void updateWhenModelChange(ModelChangeEvent event) {

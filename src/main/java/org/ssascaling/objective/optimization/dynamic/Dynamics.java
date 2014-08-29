@@ -1,5 +1,6 @@
 package org.ssascaling.objective.optimization.dynamic;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -28,6 +29,8 @@ public interface Dynamics {
 	public void updateShort(Queue<Ant> ants, AntValues values, Map<ControlPrimitive, Integer> primitives);
 	
 	public void updateLong (Ant localBestAnt);
+	
+	public void updateLong (Collection<Ant> ants);
 	
 	public void copeDynamics(AntValues values, Map<ControlPrimitive, Integer> primitives);
 	

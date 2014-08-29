@@ -409,7 +409,7 @@ public class TestSensorB {
 					}
 				}
 				readFileIndex++;
-				if (readFileIndex == 15) {
+				if (readFileIndex == 10) {
 					timer.cancel();
 				}
 			}

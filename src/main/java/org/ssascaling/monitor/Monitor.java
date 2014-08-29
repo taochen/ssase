@@ -100,6 +100,7 @@ public class Monitor {
 			
 			
 				// For VM X
+			if ( interval.getVMXData() != null) {
 				for (Interval.ValuePair vp : interval.getVMXData()) {
 					/*if (!writers.containsKey(vp.getName())) {
 						if(!(file = new File(prefix + VM_ID + "/")).exists()){
@@ -132,7 +133,7 @@ public class Monitor {
 					
 					values.get(vp.getName()).add(vp.getValue());
 				}
-			
+			}
 				for (Map.Entry<String, List<Double>> entry : values.entrySet()) {
 					
 					double[] value = new double[entry.getValue().size()];
@@ -163,6 +164,7 @@ public class Monitor {
 		try {
 
 			// For X
+			if ( interval.getXData(service) != null) {
 			for (Interval.ValuePair vp : interval.getXData(service)) {
 				/*if (!writers.containsKey(vp.getName())) {
 					if (!(file = new File(prefix + VM_ID + "/" + service + "/"))
@@ -201,7 +203,9 @@ public class Monitor {
 				xValues.get(vp.getName()).add(vp.getValue());
 			}
 
+			}
 			// For Y
+			if ( interval.getYData(service) != null) {
 			for (Interval.ValuePair vp : interval.getYData(service)) {
 				/*if (!writers.containsKey(vp.getName())) {
 					if (!(file = new File(prefix + VM_ID + "/" + service + "/"))
@@ -239,6 +243,7 @@ public class Monitor {
 				yValues.get(vp.getName()).add(vp.getValue());
 			}
 
+			}
 			for (Map.Entry<String, List<Double>> entry : xValues.entrySet()) {
 
 				double[] value = new double[entry.getValue().size()];

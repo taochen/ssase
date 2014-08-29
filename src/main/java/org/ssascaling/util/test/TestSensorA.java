@@ -413,7 +413,7 @@ public class TestSensorA {
 				System.out.print("========================== readFileIndex ===============================\n");
 				System.out.print(readFileIndex + " break\n");
 				System.out.print("========================== readFileIndex ===============================\n");
-				if (readFileIndex == 15) {
+				if (readFileIndex == 10) {
 					timer.cancel();
 				}
 			}

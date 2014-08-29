@@ -28,6 +28,8 @@ public class Executor {
 	private static int remainingMemory;
 	private static int remainingCPU;
 	
+	// This is mainly for changing the hardware, but need to maintain
+	// integrity of each adaptation.
 	private static Object lock = new Object();
 	
 	private static Actuator cpuNoActuator = new CPUNoActuator();
@@ -38,6 +40,34 @@ public class Executor {
 	public final static boolean isTest = true;
 	public final static long memoryThreshold = 100;
 	public final static long CPUThreshold = 3;
+	
+	/**
+	 * This should be invoked after the Repository has been configured properly.
+	 * 
+	 * We assume that there would be on vcpu for each VM at the beginning.
+	 */
+	public static void init (int noOfCPU /**This should be >= the number of initial VMs*/){
+		
+		
+		totalMemory = 4096 - 1200;
+		remainingMemory = totalMemory - 2400;
+		// 3 vcpus
+		remainingCPU = 300 - 240;
+		
+		int index = 0;
+		for (VM v : Repository.getAllVMs()) {
+			index++;
+			cores.add(new CPUCore(index, new VM[]{v}));		
+		}
+		
+		noOfCPU -= index;
+		
+		// Add vcpus that has not been occupied at the beginning.
+		for (int i = 0; i > noOfCPU; i++) {
+			index++;
+			cores.add(new CPUCore(index, new VM[]{}));		
+		}
+	}
 	
 	public static void init(HardwareControlPrimitive... primitives) {
 		totalMemory = 2048 - 500;
@@ -81,209 +111,254 @@ public class Executor {
 		
 		
 		LinkedHashMap<ControlPrimitive, Double> listMap = orderDecision(decisions);
-		for (Map.Entry<ControlPrimitive, Double> entry :  listMap.entrySet()){
-			
-
-			// If not a responsible service nor VM, then return
-			if (!Repository.isContainService(entry.getKey().getAlias()) && !Repository.isContainVM(entry.getKey().getAlias())){
-				return;
-			}
-			
-			value = Math.round(entry.getValue());
-			
-			//TODO if value is smaller than a threshold, should trigger scale in.
-			/**
-			 * Hardware CP allocation require special treatments.
-			 */
-			if (entry.getKey().isHardware()) {
-				// Need to sync in order to consistent on the utilization of resource on the PM.
-				synchronized (lock) {
-					// CPU is sepecial as its denormalized value is still %
-					if (Type.CPU.equals(entry.getKey().getType())) {
-						long finalValue = value;
-						
-						VM vm = Repository.getVM(entry.getKey().getAlias());
-						// Scale down, always remove the core with higher ID first.
-						if (!vm.isScaleUp(value)) {
-							double v = 0;
+		// Need to sync in order to consistent on the utilization of resource on the PM.
+		synchronized (lock) {
+			for (Map.Entry<ControlPrimitive, Double> entry :  listMap.entrySet()){
+				
+	
+				// If not a responsible service nor VM, then return
+				if (!Repository.isContainService(entry.getKey().getAlias()) && !Repository.isContainVM(entry.getKey().getAlias())){
+					return;
+				}
+				
+				value = Math.round(entry.getValue());
+				
+				//TODO if value is smaller than a threshold, should trigger scale in.
+				/**
+				 * Hardware CP allocation require special treatments.
+				 */
+				if (entry.getKey().isHardware()) {
+					
+						// CPU is sepecial as its denormalized value is still %
+						if (Type.CPU.equals(entry.getKey().getType())) {
+							long finalValue = value;
 							
-							if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, CPUThreshold))) {
-								System.out.print("Scale in due to CPU on " + entry.getKey().getAlias() + " \n");
-								// TODO do scale in and free all resources.
-								return;
-							}
-							
-							remainingCPU += v;
-							
-							long count = 0;
-							int no = 0;
-							for (CPUCore core : cores) {
+							VM vm = Repository.getVM(entry.getKey().getAlias());
+							// Scale down, always remove the core with higher ID first.
+							if (!vm.isScaleUp(value)) {
+								double v = 0;
 								
-								if (core.getVMs().containsKey(vm)) {
-									count+=core.getVMs().get(vm);
-									// If more CPU allocation on a core.
-									if (count > value) {
-										long minus = count - value;
-										long change = core.getVMs().get(vm) - minus;
-										
-										core.getVMs().put(vm,  change);
-										core.update(minus);
-										// if can remove the core.
-										if (change == 0) {
-											core.getVMs().remove(vm);									
-										}  else {
-											no ++;	
+								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, CPUThreshold))) {
+									System.out.print("Scale in due to CPU on " + entry.getKey().getAlias() + " \n");
+									// TODO do scale in and free all resources.
+									return;
+								}
+								
+								remainingCPU += v;
+								
+								long count = 0;
+								int no = 0;
+								for (CPUCore core : cores) {
+									
+									if (core.getVMs().containsKey(vm)) {
+										count+=core.getVMs().get(vm);
+										// If more CPU allocation on a core.
+										if (count > value) {
+											long minus = count - value;
+											long change = core.getVMs().get(vm) - minus;
+											
+											core.getVMs().put(vm,  change);
+											core.update(minus);
+											// if can remove the core.
+											if (change == 0) {
+												core.getVMs().remove(vm);									
+											}  else {
+												no ++;	
+											}
+											//TODO do pin cpu (we do not really need this? as if no core needed to be removed then
+											// nothing change, if there is, then it is simply removed by cpu_set as a core with higher ID) *************
+											
+											count = value;
+										} else {
+											no ++;
 										}
-										//TODO do pin cpu (we do not really need this? as if no core needed to be removed then
-										// nothing change, if there is, then it is simply removed by cpu_set as a core with higher ID) *************
 										
-										count = value;
-									} else {
-										no ++;
-									}
-									
-									
-							    }
-							}
-							
-							if (vm.getCPUNo() != no) {
-							// Set the CPU core number
-							cpuNoActuator.execute(entry.getKey().getAlias(), no);
-							}
-							
-
-
-							// this is only the cap one.
-							entry.getKey().triggerActuator(new long[] { value });
-						} else /*Scale up*/ {
-							
-	                        double v = 0;
-							
-							if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, remainingCPU))) {
-								//TODO should trigger scale out.
-								System.out.print("Scale out due to CPU on " + entry.getKey().getAlias() + " \n");
-								return;
-							}
-							
-							remainingCPU += v;
-							
-							
-							long add = value - vm.getCpuCap();
-							// new cpu core number
-							long newNo = 0;
-							
-							final List<Integer> newCoreIndex = new ArrayList<Integer>();
-							
-							for (CPUCore core : cores) {
-								
-								if (add == 0) {
-									break;
-								}
-									
-								
-								long allocated = core.allocate(add);
-								if (allocated != 0) {
-									
-									if (!core.getVMs().containsKey(vm)) {
-									     newCoreIndex.add(core.getPhysicalID());
-									     newNo ++;
-									}
-									core.getVMs().put(vm,  core.getVMs().containsKey(vm)?
-											core.getVMs().get(vm) + allocated : allocated);
-									core.update(0 - allocated);
-									
+										
+								    }
 								}
 								
-								add -= allocated;
-							}
-							
-							if (add > 0) {
-								//TODO should trigger scale out.
-								System.out.print("Scale out due to CPU on " + entry.getKey().getAlias() + " \n");
-							}
-							
-							
-							if (newNo != 0) {
+								if (vm.getCPUNo() != no) {
 								// Set the CPU core number
-								cpuNoActuator.execute(entry.getKey().getAlias(), newNo + vm.getCPUNo());
-							}
-							
-							
+								cpuNoActuator.execute(entry.getKey().getAlias(), no);
+								}
+								
+	
+	
+								// this is only the cap one.
+								entry.getKey().triggerActuator(new long[] { value });
+							} else /*Scale up*/ {
+								
+		                        double v = 0;
+								
+								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, remainingCPU))) {
+									//TODO should trigger scale out.
+									System.out.print("Scale out due to CPU on " + entry.getKey().getAlias() + " \n");
+									System.out.print(value + " : " + remainingCPU+ " \n");
+									return;
+								}
+								
+								remainingCPU += v;
+								
+								
+								long add = value - vm.getCpuCap();
+								// new cpu core number
+								long newNo = 0;
+								
+								final List<Integer> newCoreIndex = new ArrayList<Integer>();
+								
+							// Try to scale up on the core that has been already
+							// allocated on the VM
+							for (CPUCore core : cores) {
+								if (core.getVMs().containsKey(vm)) {
+									if (add == 0) {
+										break;
+									}
 
-							// If we foucs on the control of max provision, then add here should be always = 0
-							// as the decided value is always within the max provision value that meet the capacity of this PM.
-							finalValue = add > 0? (value-add) : value;
-							// This is only the cap one.
-							entry.getKey().triggerActuator(new long[] { finalValue });
-							// Do pin cpu
-							int start = ((int)vm.getCPUNo()) + 1;
-							for (int index : newCoreIndex) {
-								cpuPinActuator.execute(entry.getKey().getAlias(), new long[]{start, index});
-								start++;
-							}
-							 
-						}
-						
-						
-						entry.getKey().setProvision(finalValue);
+									long allocated = core.allocate(add);
+									if (allocated != 0) {
 
-					} else if (Type.Memory.equals(entry.getKey().getType())) {
-						double v = 0;
-						// Scale down
-						if (value < entry.getKey().getProvision()) {
-							
-							if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, memoryThreshold))) {
-								System.out.print("Scale in due to memory on " + entry.getKey().getAlias() + " \n");
-								// TODO do scale in and free all resources.
-								return;
-							}
-							
-							
-							
-						} else /*Scale up*/ {
-							if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, remainingMemory))) {
-								System.out.print("Scale out due to memory on " + entry.getKey().getAlias() + " \n");
-								// TODO should trigger migration or replication for scale out as
-								// the memory is insufficient.
-								return;
-							}
-							
-							
-						}
-						remainingMemory += v;
-						
-						entry.getKey().setProvision(value);
-						entry.getKey()
-								.triggerActuator(new long[] { value });
-						
+										if (!core.getVMs().containsKey(vm)) {
+											newCoreIndex.add(core
+													.getPhysicalID());
+											newNo++;
+										}
+										core.getVMs()
+												.put(vm,
+														core.getVMs()
+																.containsKey(vm) ? core
+																.getVMs().get(
+																		vm)
+																+ allocated
+																: allocated);
+										core.update(0 - allocated);
 
-						/*if (remainingMemory >= value) {
-							remainingMemory -= value - entry.getKey().getProvision();
+									}
+
+									add -= allocated;
+								}
+							}
+								
+								// Then try the other cores
+								for (CPUCore core : cores) {
+									
+									if (add == 0) {
+										break;
+									}
+										
+									
+									long allocated = core.allocate(add);
+									if (allocated != 0) {
+										
+										if (!core.getVMs().containsKey(vm)) {
+										     newCoreIndex.add(core.getPhysicalID());
+										     newNo ++;
+										}
+										core.getVMs().put(vm,  core.getVMs().containsKey(vm)?
+												core.getVMs().get(vm) + allocated : allocated);
+										core.update(0 - allocated);
+										
+									}
+									
+									add -= allocated;
+								}
+								
+								if (add > 0) {
+									//TODO should trigger scale out.
+									System.out.print("Small scale out due to CPU on " + entry.getKey().getAlias() + " \n");
+									System.out.print(value + " : " + remainingCPU+ " \n");
+								}
+								
+								
+								if (newNo != 0) {
+									// Set the CPU core number
+									cpuNoActuator.execute(entry.getKey().getAlias(), newNo + vm.getCPUNo());
+								}
+								
+								
+	
+								// If we foucs on the control of max provision, then add here should be always = 0
+								// as the decided value is always within the max provision value that meet the capacity of this PM.
+								finalValue = add > 0? (value-add) : value;
+								// This is only the cap one.
+								entry.getKey().triggerActuator(new long[] { finalValue });
+								// Do pin cpu
+								int start = ((int)vm.getCPUNo()) + 1;
+								for (int index : newCoreIndex) {
+									cpuPinActuator.execute(entry.getKey().getAlias(), new long[]{start, index});
+									start++;
+								}
+								 
+							}
+							
+							
+							entry.getKey().setProvision(finalValue);
+	
+						} else if (Type.Memory.equals(entry.getKey().getType())) {
+							double v = 0;
+							// Scale down
+							if (value < entry.getKey().getProvision()) {
+								
+								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, memoryThreshold))) {
+									System.out.print("Scale in due to memory on " + entry.getKey().getAlias() + " \n");
+									
+									// TODO do scale in and free all resources.
+									return;
+								}
+								
+								
+								
+							} else /*Scale up*/ {
+								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, remainingMemory))) {
+									System.out.print("Small Scale out due to memory on " + entry.getKey().getAlias() + " \n");
+									System.out.print(value + " : " + remainingMemory+ " \n");
+									// TODO should trigger migration or replication for scale out as
+									// the memory is insufficient.
+									return;
+								}
+								
+								
+							}
+							remainingMemory += v;
 							
 							entry.getKey().setProvision(value);
 							entry.getKey()
 									.triggerActuator(new long[] { value });
-						} else {
-							// TODO should trigger migration or replication for scale out as
-							// the memory is insufficient.
-							System.out.print("Scale out due to memory on " + entry.getKey().getAlias() + " \n");
-						}*/
-					}
-				}
+							
+	
+							/*if (remainingMemory >= value) {
+								remainingMemory -= value - entry.getKey().getProvision();
+								
+								entry.getKey().setProvision(value);
+								entry.getKey()
+										.triggerActuator(new long[] { value });
+							} else {
+								// TODO should trigger migration or replication for scale out as
+								// the memory is insufficient.
+								System.out.print("Scale out due to memory on " + entry.getKey().getAlias() + " \n");
+							}*/
+						}
+					
+					
+				} else {
+					// There is usually no threshold for software CP.
+					entry.getKey().triggerMaxProvisionUpdate(value, Double.MAX_VALUE);
+					entry.getKey().triggerActuator(new long[]{value});
+					entry.getKey().setProvision(value);
+				}	
 				
-			} else {
-				entry.getKey().triggerActuator(new long[]{value});
-				entry.getKey().setProvision(value);
-			}	
+				}
 			
-
-		
 		}
 		
 		
 	}
 	
 	public static void print(){
+		
+		for (VM v : Repository.getAllVMs()) {
+			System.out.print(v.print() +"\n");	
+		}
+		
 		for (CPUCore core : cores) {
 			core.print();
 		}

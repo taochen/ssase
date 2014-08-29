@@ -1,6 +1,7 @@
 package org.ssascaling;
 
 import java.io.DataInputStream;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +14,8 @@ import org.ssascaling.monitor.Monitor;
 import org.ssascaling.objective.Objective;
 import org.ssascaling.planner.Planner;
 import org.ssascaling.primitive.ControlPrimitive;
+import org.ssascaling.test.modeling.Configurator;
+import org.ssascaling.util.Repository;
 import org.ssascaling.util.SSAScalingThreadPool;
 
 public class ControlBus {
@@ -123,8 +126,16 @@ public class ControlBus {
 				return;
 			}			
 		}
+		
+		// ===================== force one trigger (should be removed) =====================
+		if (expectedSample == 11) {
+	 	objectivesToBeOptimized = new ArrayList<Objective>();
+	 	objectivesToBeOptimized.add(Repository.getService("jeos-"+Configurator.service).getObjective("Response Time"));
+		}
+		// ===================== force one trigger (should be removed) =====================
+		
 		// If need trigger optimization in the Planer, then the Analyzer should tell.
-		//TODO only trigger if the current setup has been longer than t intervals.
+		// TODO only trigger if the current setup has been longer than t intervals.
 		if (objectivesToBeOptimized != null) {
 		
 			
@@ -166,7 +177,7 @@ public class ControlBus {
 			System.out.print("***** MAPE finished " + samples + " *********\n");
 		}
 		
-		
+		System.gc();
 	}
 	
 	/**
@@ -184,12 +195,17 @@ public class ControlBus {
 		// If need trigger optimization in the Planer, then the Analyzer should tell.
 		final LinkedHashMap<ControlPrimitive, Double>  decisions = Planner.optimize(obj, uuid);
 		// Get the result from Planer to the Executor who will trigger Actuator. 
-		// If the region is under optimization already, then the decisions would be null.
+		
+		// If the region is under optimization already or there is no
+		// proper solution found, then the decisions would be null.
 		if (decisions != null) {
 			/*
 			 *The E part 
 			 ***/
 			Executor.execute(decisions);
+			Executor.print();
+		} else {
+			System.out.print("There is no proper solutions found!\n");
 		}
 		
 		synchronized(lock) {

@@ -150,6 +150,13 @@ public class Cost implements Objective  {
 	 */
 	@Override
 	public boolean isViolate() {
+		
+		for (Primitive p : inputs) {
+			if (((ControlPrimitive)p).isViolate()){
+				return true;
+			}
+		}
+		
 		return false;
 	}
 

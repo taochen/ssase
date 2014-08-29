@@ -10,8 +10,9 @@ public class HardwareControlPrimitive  extends ControlPrimitive {
 			int a,
 			double b,
 			double g,
+			double h,
 			double maxProvision) {
-		super(alias, VM_ID, isHardware, type, actuator, provision, constraint, a, b, g, maxProvision);
+		super(alias, VM_ID, isHardware, type, actuator, provision, constraint, a, b, g, h , maxProvision);
 		// TODO Auto-generated constructor stub
 	}
 	@Deprecated

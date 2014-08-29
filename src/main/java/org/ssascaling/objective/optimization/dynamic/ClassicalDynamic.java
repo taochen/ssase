@@ -1,5 +1,6 @@
 package org.ssascaling.objective.optimization.dynamic;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,11 @@ public class ClassicalDynamic implements Dynamics {
 	public void reinvalidate() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void updateLong(Collection<Ant> ants) {
+		solutions.addAll(ants);		
 	}
 
 }

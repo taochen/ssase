@@ -182,7 +182,7 @@ public class Structure {
 			}
 			
 			dynamics.updateShort(solutions, antValues, primitives);
-			dynamics.updateLong(localBestAnt);
+			dynamics.updateLong(solutions); //dynamics.updateLong(localBestAnt);
 		
 			updateTrailLimits(globalBestAnt.getValue());
 			
@@ -230,25 +230,14 @@ public class Structure {
 		}
 		
 		// Remove invalid solutions.
-		invalidate(ants);
-System.out.print(objective.getName()+ "==========\n");
+	//	invalidate(ants);
+        //System.out.print(objective.getName()+ "==========\n");
 		
-		antValues.print();
+		//antValues.print();
 		
 		return ants;
 	}
-	
-	private void invalidate(List<Ant> ants){
-		List<Ant> list = new ArrayList<Ant>();
-		
-		for (Ant a : ants) {
-			if (!a.selfInvalidate()) {
-				list.add(a);
-			}
-		}
-		
-		ants.removeAll(list);
-	}
+
 	
 	public double predict(double[] xValue) {
 		return objective.predict(xValue);

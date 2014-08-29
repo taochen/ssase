@@ -90,6 +90,9 @@ public class Repository {
 		qoss.add(qos);
 	}
 	
+	public static void setCost(Cost co){
+		cost.add(co);
+	}
 	
 	public static Set<Cost> getCostSet(){
 		return cost;

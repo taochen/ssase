@@ -1,12 +1,15 @@
 package org.ssascaling;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.ssascaling.objective.Objective;
 import org.ssascaling.primitive.Primitive;
+import org.ssascaling.primitive.SoftwareControlPrimitive;
 import org.ssascaling.qos.QualityOfService;
 /**
  * This is actually a service-instance.
@@ -111,6 +114,21 @@ public class Service {
 		return objectives.get(name);
 	}
 	
+	public void addObjective(String s, Objective obj){
+		objectives.put(s, obj);
+	}
+	
+	public List<Primitive> getSoftwarePrimitives(){
+		List<Primitive> result = new ArrayList<Primitive>();
+		for (Map.Entry<String, Primitive> e : primitives.entrySet()) {
+			if (e.getValue() instanceof SoftwareControlPrimitive) {
+				result.add(e.getValue());
+			}
+		}
+		
+		return result;
+	}
+	
 	public String getName(){
 		return name;
 	}
@@ -118,5 +136,9 @@ public class Service {
 	
 	public String getVMID(){
 		return VM_ID;
+	}
+	
+	public boolean isHasObjectiveToModel(){
+		return objectives != null;
 	}
 }

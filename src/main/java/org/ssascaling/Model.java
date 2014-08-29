@@ -1086,7 +1086,7 @@ public class Model {
 			ClusterData[] paris = resultset.get(functions[k]);
 			
 			if (paris == null) {
-				logger.error(functions[k] + " has no cluster data");
+				logger.error(functions[k] + " has no cluster data under " + output.getName());
 				continue;
 			}
 			

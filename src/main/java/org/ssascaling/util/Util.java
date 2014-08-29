@@ -17,6 +17,26 @@ public class Util {
 		return Math.sqrt(result);
 	}
 	
+	public static double calculateManhattanDistance(double[] input, double[] another) {
+		// The two array needs to be as the same dimension.
+		double result = 0;
+		for (int i = 0; i < input.length; i++) {
+			  result += Math.abs(input[i] - another[i]);
+		}
+		
+		return result;
+	}
+	
+	public static long calculateNashProduct(double[] input) {
+		
+		long result = 0;
+		for (int i = 0; i < input.length; i++) {
+			  result *= input[i];
+		}
+		
+		return result;
+	}
+	
 	public static double calculateSMAPE (double a, double b) {
 
 		if (a == 0) {

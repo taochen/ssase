@@ -1,5 +1,7 @@
 package org.ssascaling.primitive;
 
+import java.util.Arrays;
+
 import org.ssascaling.actuator.Actuator;
 import org.ssascaling.objective.Objective;
 import org.ssascaling.util.Repository;
@@ -26,6 +28,8 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
     // This is only for hardware CP.
     protected double g;
 
+    // A safe min value of this control primitive.
+    protected double h;
 	//protected boolean isPrimary;
 	
 	protected boolean isHardware = false;
@@ -67,6 +71,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 			int a,
 			double b,
 			double g,
+			double h,
 			double maxProvision) {
 		super();
 		array = new double[0];
@@ -80,6 +85,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		this.a = a;
 		this.g = g;
 		this.b = b;
+		this.h = h;
 		valueVector = new double[]{maxProvision};
 	}
 
@@ -338,31 +344,32 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		// If increase
 		if (decidedValue / valueVector[valueVector.length - 1] > b  &&
 				value / valueVector[valueVector.length - 1] > b  /*consider the latest observed value as well*/) {
-			
-			if (Math.round(valueVector[valueVector.length - 1] * (1+g)) - valueVector[valueVector.length - 1] > threshold) {
+			// Need scale out
+			if (Math.round(valueVector[valueVector.length - 1] * g) > threshold) {
+				System.out.print(Math.round(valueVector[valueVector.length - 1] * g) + " : " + threshold+ " \n");
 				return Double.NaN;
 			}
 			
 			System.out.print(name + " - " +  alias + "'s max provision change from " + valueVector[valueVector.length - 1]  + " to "+ 
-					(valueVector[valueVector.length - 1] * (1+g)) + "\n");
+					Math.round(valueVector[valueVector.length - 1] * (1+g)) + "\n");
 			
-			double result = valueVector[valueVector.length - 1] - Math.round(valueVector[valueVector.length - 1] * (1+g)) ;
+			double result = Math.round(valueVector[valueVector.length - 1] * g) ;
 			
 			updateValueVector(valueVector[0], valueVector[valueVector.length - 1] * (1+g));
 			return result;
 		// If decrease
 		} else if (decidedValue / valueVector[valueVector.length - 1] < b &&
 					value / valueVector[valueVector.length - 1] < b /*consider the latest observed value as well*/) {
-			
+			// Need scale in
 			if (Math.round(valueVector[valueVector.length - 1] * (1-g)) < threshold) {
 				return Double.NaN;
 			}
 			
 			System.out.print(name + " - " +  alias + "'s max provision change from " + valueVector[valueVector.length - 1]  + " to "+ 
-					(valueVector[valueVector.length - 1] * (1-g)) + "\n");
+					Math.round(valueVector[valueVector.length - 1] * (1-g)) + "\n");
 			
 		
-			double result = valueVector[valueVector.length - 1] - Math.round(valueVector[valueVector.length - 1] * (1-g));
+			double result =  Math.round(valueVector[valueVector.length - 1] * g);
 			
 			updateValueVector(valueVector[0], valueVector[valueVector.length - 1] * (1-g));	
 			return result;
@@ -373,6 +380,8 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	}
 	
 	protected void triggerMinProvisionUpdate (double value){
+		// Make the min provision a bit larger than the actual usage.
+		value = (value < h)? h : value;
 		if (Math.round(value) != 0 && Math.round(value) < valueVector[0]) {
 			System.out.print(name + " - " + alias + ", New min provsion value: " + Math.round(value) +", max provision value: " + valueVector[valueVector.length - 1] + "\n");
 			updateValueVector(value, valueVector[valueVector.length - 1]);
@@ -388,23 +397,26 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 			min = 0;
 		}
 		
-		int length = max - min;
+		
+		int length = 1 + (max - min)/a;
 		if (length % a != 0) {
 			length += 1;
 		}
 		
 		valueVector = new double[length]; 
-		double value = min;
-		for (int i = 0; i < length; i++) {
-			if (value + i*a > max) {
+		double value = min - a;
+		for (int i = 0; i < valueVector.length; i++) {
+			if (value + a >= max) {
 				value = max;
 			} else {
-				value = value + i*a;
+				value = value + a;
 			}
 			
 			
 			valueVector[i] = value;
 		}
+		
+		System.out.print(name + " new optional value: " + Arrays.toString(valueVector) + "\n");
 	}
 	
 }

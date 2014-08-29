@@ -200,8 +200,13 @@ public abstract class NeighborhoodReduction implements Reduction {
 		}
 		
 		for (Object ins : closest.keySet()) {
-			set.remove(ins);
+			// add back centriod
+			if (!ins.equals(inst)) {
+		     	set.remove(ins);
+			}
 		}
+		
+		
 	}
 	
 	

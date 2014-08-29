@@ -558,20 +558,26 @@ public class SensoringController {
 		builder.append(service + "\n");
 		
 		for (Interval interval : intervals) {
-			builder.append("1\n");
-			for (Interval.ValuePair vp : interval.getXData(service)) {			
-				builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
-			}
-			builder.append("2\n");
-			for (Interval.ValuePair vp : interval.getYData(service)) {
-				builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+			if (interval.getXData(service) != null) {
+				builder.append("1\n");
+				for (Interval.ValuePair vp : interval.getXData(service)) {			
+					builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+				}
 			}
 			
+			if (interval.getYData(service) != null) {
+				builder.append("2\n");
+				for (Interval.ValuePair vp : interval.getYData(service)) {
+					builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+				}
+			}
 			// Only record this under the first service
 			if (isRecordVMX) {
-				builder.append("3\n");
-				for (Interval.ValuePair vp : interval.getVMXData()) {
-					builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+				if (interval.getVMXData() != null) {
+					builder.append("3\n");
+					for (Interval.ValuePair vp : interval.getVMXData()) {
+						builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+					}
 				}
 			}
 		}

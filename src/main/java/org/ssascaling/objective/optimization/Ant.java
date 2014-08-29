@@ -205,6 +205,14 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 		return front;
 	}
 	
+	public double[] getFront(double[] max){
+		if(front == null) {
+			front = antColony.calculateFront(cpInput, max);
+		}
+		
+		return front;
+	}
+	
 	public abstract Tuple<Integer, Double> valueTransitionRule(int r);
 
 	public abstract void localUpdatingRule();
@@ -238,7 +246,7 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 		return snapshotedValue;
 	}
 	
-	public boolean dominates (Ant another) {
+	public boolean paretoDominates (Ant another) {
 		// Should be the same as the size of objectives
 		double[] front = getFront();
 		int index = 0;
@@ -253,6 +261,47 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 		
 		return true;
 	}
+	
+	public boolean nashDominates (Ant another) {
+		// Should be the same as the size of objectives
+		double[] front = getFront();
+		int index = 0;
+		Set<Objective> set = antColony.getObjectives();
+		int countA = 0;
+		int countB = 0;
+		for (Objective obj : set){
+			if (!obj.isBetter(front[index], another.getFront()[index])){
+				countB ++;
+			} else if (!obj.isBetter(another.getFront()[index], front[index])){
+				countA ++;
+			}
+			
+			index++;
+		}
+		
+		return countA > countB;
+	}
+	
+	public int[] c_measure (Ant another) {
+		// Should be the same as the size of objectives
+		double[] front = getFront();
+		int index = 0;
+		Set<Objective> set = antColony.getObjectives();
+		int countA = 0;
+		int countB = 0;
+		for (Objective obj : set){
+			if (!obj.isBetter(front[index], another.getFront()[index])){
+				countB ++;
+			} else if (!obj.isBetter(another.getFront()[index], front[index])){
+				countA ++;
+			}
+			
+			index++;
+		}
+		
+		return new int[]{countA, countB};
+	}
+	
 	
 	public void print(){
 		for (Map.Entry<ControlPrimitive, Tuple<Integer, Double>> e : cpInput.entrySet()) {
@@ -430,6 +479,10 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 		
 		return ant;
     }
+	
+	public Objective getObjective(){
+		return strcture.getObjective();
+	}
 	
 	public int compareTo(Ant another) { 		
 		return isBetter(another)? -1 : 1;

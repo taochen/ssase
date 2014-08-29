@@ -1,5 +1,6 @@
 package org.ssascaling.objective.optimization.dynamic;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -206,4 +207,9 @@ public class MemoryBasedDynamic implements Dynamics {
 		return ants;
 	}
 
+
+	@Override
+	public void updateLong(Collection<Ant> ants) {
+		K_long.addAll(ants);		
+	}
 }

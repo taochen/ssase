@@ -53,9 +53,9 @@ public abstract class AntColony implements  ModelListener {
 	    
 	    protected Ant[]    ants;
 	    protected int      numberOfAnt;
-	    protected int      antRatio = 10;
+	    protected int      antRatio = 5;
 	    protected int      iterCounter = 0;
-	    protected int      iterations = 30;
+	    protected int      iterations = 5;
 	    
 	    protected int completedAnt=0;
 	    
@@ -333,7 +333,68 @@ public abstract class AntColony implements  ModelListener {
 	    	return front;
 	    }
 	    
+	    /**
+	     * This would normalized the front point by divide it to a max value of the point.
+	     * @param cpInput
+	     * @param max
+	     * @return
+	     */
+	    public double[] calculateFront (LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput, double[] max){
+	    	
+	    	int index = 0;
+	    	double[] front = new double[objectiveMap.size()];
+	    	for (Map.Entry<Objective, List<Tuple<Primitive, Double>>> entry : objectiveMap.entrySet()){
+	    		double[] xValue = new double[entry.getValue().size()];
+	    		
+	    		for (int i = 0; i < entry.getValue().size() ;i++) {
+	    			Primitive p = entry.getValue().get(i).getVal1();
+	    			
+	    			// Means it has to been a value in this ant's solution as it is CP.
+	    			if (p instanceof ControlPrimitive) {
+	    				xValue[i] = cpInput.get(p).getVal2();
+	    			// Otherwise, if it is a EP then use its original value as we can not control EP.
+	    			} else {
+	    				xValue[i] = entry.getValue().get(i).getVal2();
+	    			}
+	    			
+	    		}
+	    		
+	    		front[index] = entry.getKey().predict(xValue)/max[index];
+	    		index++;
+	    	}
+	    	
+	    	return front;
+	    }
+	    
 	   
+        public double[] calculateFront (LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput, double[] max, boolean isForProduct){
+	    	
+	    	int index = 0;
+	    	double[] front = new double[objectiveMap.size()];
+	    	for (Map.Entry<Objective, List<Tuple<Primitive, Double>>> entry : objectiveMap.entrySet()){
+	    		double[] xValue = new double[entry.getValue().size()];
+	    		
+	    		for (int i = 0; i < entry.getValue().size() ;i++) {
+	    			Primitive p = entry.getValue().get(i).getVal1();
+	    			
+	    			// Means it has to been a value in this ant's solution as it is CP.
+	    			if (p instanceof ControlPrimitive) {
+	    				xValue[i] = cpInput.get(p).getVal2();
+	    			// Otherwise, if it is a EP then use its original value as we can not control EP.
+	    			} else {
+	    				xValue[i] = entry.getValue().get(i).getVal2();
+	    			}
+	    			
+	    		}
+	    		
+	    		front[index] = isForProduct? entry.getKey().isMin()? (100 - (entry.getKey().predict(xValue)*100/max[index])) : entry.getKey().predict(xValue)*100/max[index]
+	    		                                                                                            : entry.getKey().predict(xValue)/max[index];
+	    		index++;
+	    	}
+	    	
+	    	return front;
+	    }
+	    
 	    /**
 	     * This should be a different thread from the model change thread. 
 	     * 

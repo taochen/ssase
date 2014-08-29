@@ -61,7 +61,7 @@ public class QualityOfService implements Objective, Comparable{
 	
 
 	// Least number of samples received before triggering training.
-	private int leastNumberOfSample = 340;
+	private int leastNumberOfSample = 340; //340
 	// Some QoS e.g., throughput's constraints need to rely on some EP.
 	private EnvironmentalPrimitive ep;
 	
@@ -728,6 +728,10 @@ public class QualityOfService implements Objective, Comparable{
 	
 	public void setEP (EnvironmentalPrimitive ep) {
 		this.ep = ep;
+	}
+	
+	public EnvironmentalPrimitive getEP () {
+		return ep;
 	}
 	
 }
