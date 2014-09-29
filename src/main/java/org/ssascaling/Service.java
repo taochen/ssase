@@ -11,6 +11,7 @@ import org.ssascaling.objective.Objective;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.primitive.SoftwareControlPrimitive;
 import org.ssascaling.qos.QualityOfService;
+import org.ssascaling.util.Repository;
 /**
  * This is actually a service-instance.
  * @author tao
@@ -65,7 +66,7 @@ public class Service {
 	public void removePossiblePrimitive (Primitive p) {
 		possibleInputs.remove(p);
 	}
-	
+	 
 	public void initializeModelForQoS(){
 		for (Objective obj : objectives.values()) {
 			if(obj instanceof QualityOfService) {
@@ -88,7 +89,7 @@ public class Service {
 		} 
 	}
 	
-	public void prepareToUpdateQoSValue(String name, double... values){
+	public void prepareToUpdateQoSValue(String name, double... values){	
 		for (double v : values) {
 			((QualityOfService)objectives.get(name)).prepareToAddValue(v) ;
 		} 
@@ -139,6 +140,26 @@ public class Service {
 	}
 	
 	public boolean isHasObjectiveToModel(){
-		return objectives != null;
+		return objectives != null && objectives.size() != 0;
+	}
+	
+	public void print(){
+		System.out.print(name + " \n");
+		System.out.print("Objective: \n");
+		for (Map.Entry<String, Objective> en : objectives.entrySet()) {
+			System.out.print("--------" + en.getKey() + "," + en.getValue().getName() + ":" +  en.getValue() + " \n");
+			System.out.print("Direct Primitives: \n");
+			for (Primitive p : possibleInputs) {
+				if (Repository.isDirectForAnObjective(en.getValue(), p)) {
+					System.out.print(p.getName() + "=" + p.getAlias()  + ":" +  p + " \n");
+				}
+				
+			}
+		}
+		System.out.print(possibleInputs.size() + " Possible Primitives: \n");
+		for (Primitive p : possibleInputs) {
+			System.out.print(p.getName() + "=" + p.getAlias()  + ":" +  p + " \n");
+		}
+	
 	}
 }

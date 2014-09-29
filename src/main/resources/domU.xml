@@ -1,0 +1,21 @@
+<ssascaling>     
+            <sensor name="CPU" class="org.ssascaling.sensor.linux.CpuSensor"/>
+            <sensor name="Memory" class="org.ssascaling.sensor.linux.MemorySensor"/>
+        <service name="edu.rice.rubis.servlets.SearchItemsByCategory">
+            <sensor name="Availability" class="org.ssascaling.sensor.AvailabilitySensor"/>
+            <sensor name="Response Time" class="org.ssascaling.sensor.ResponseTimeSensor"/>
+            <sensor name="Throughput" class="org.ssascaling.sensor.ThroughputSensor"/>                     
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor"/>
+            <sensor name="Concurrency" class="org.ssascaling.sensor.ConcurrencySensor"/>
+            <sensor name="Reliability" class="org.ssascaling.sensor.ReliabilitySensor"/>         
+        </service>
+        <service name="edu.rice.rubis.servlets.RegisterUser">
+            <sensor name="Availability" class="org.ssascaling.sensor.AvailabilitySensor"/>
+            <sensor name="Response Time" class="org.ssascaling.sensor.ResponseTimeSensor"/>
+            <sensor name="Throughput" class="org.ssascaling.sensor.ThroughputSensor"/>                     
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor"/>
+            <sensor name="Concurrency" class="org.ssascaling.sensor.ConcurrencySensor"/>
+            <sensor name="Reliability" class="org.ssascaling.sensor.ReliabilitySensor"/>         
+        </service>
+</ssascaling>
+

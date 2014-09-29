@@ -3,14 +3,14 @@ package org.ssascaling;
 public class ModelFunctionConfigGenerator {
 	
 	private static double[] otherFunctionANN = {
-		15000,
+		6000, //15000
 		5,
 		0.15,
 		0.01
 	};
 	
 	private static double[] throughputFunctionANN = {
-		15000,
+		6000,
 		5,
 		0.25,
 		0.01
@@ -27,7 +27,7 @@ public class ModelFunctionConfigGenerator {
     
     
     private static double[][] structureResult = {
-    	/*ANN*/new double[]{3, 30, 0.35},
+    	/*ANN*/new double[]{3, 9,/*30*/ 0.35},
     	/*ARMAX*/new double[]{1,3},
     	/*RT*/new double[]{}
 	};

@@ -6,7 +6,7 @@ import java.util.List;
 public class ResponseTimeSensor implements Sensor {
 
 	final private List<Double> requests = new LinkedList<Double>();
-	public static final int index = 1;
+	
 
 	@Override
 	public synchronized double[] runMonitoring() {

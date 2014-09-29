@@ -174,8 +174,9 @@ public class Analyzer {
 	}
 	
 	private static  List<Objective> detectSymptoms(){
-		//TODO only trigger if the current violation has been longer than t intervals.
-		if (!isReachTheLeastSamples) {
+		// TODO only trigger if the current violation has been longer than t intervals and the current
+		// configuration has been up and running for t intervals.
+		if (!isReachTheLeastSamples /*Only detect when essential number of samples have been collected*/) {
 			return null;
 		}
 		

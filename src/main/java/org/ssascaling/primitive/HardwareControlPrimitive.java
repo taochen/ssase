@@ -5,14 +5,14 @@ import org.ssascaling.objective.Objective;
 
 public class HardwareControlPrimitive  extends ControlPrimitive {
 
-	public HardwareControlPrimitive(String alias, String VM_ID, boolean isHardware,
+	public HardwareControlPrimitive(String name, String VM_ID, boolean isHardware,
 			Type type, Actuator actuator, double provision, double constraint,
 			int a,
 			double b,
 			double g,
 			double h,
 			double maxProvision) {
-		super(alias, VM_ID, isHardware, type, actuator, provision, constraint, a, b, g, h , maxProvision);
+		super(name, VM_ID, isHardware, type, actuator, provision, constraint, a, b, g, h , maxProvision);
 		// TODO Auto-generated constructor stub
 	}
 	@Deprecated

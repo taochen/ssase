@@ -49,6 +49,10 @@ public class VM {
 		return list;
 	}
 	
+	public String getID (){
+		return VM_ID;
+	}
+	
 	public String print(){
 		return "VM " + VM_ID + ": CPU=" + map.get(Type.CPU).getProvision() + ", memory=" + map.get(Type.Memory).getProvision();
 	}

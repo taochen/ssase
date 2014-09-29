@@ -11,7 +11,7 @@ import org.ssascaling.sensor.Sensor;
 
 public class MemorySensor implements Sensor {
 	
-	final String command = "/bin/sh /home/tao/monitor/mem_monitor.sh";
+	final String command = "/bin/sh /root/monitor/mem_monitor.sh";
 
 	private double total = 0.0;
 	private double number = 0.0;

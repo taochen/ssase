@@ -10,7 +10,7 @@ public class AvailabilitySensor implements Sensor {
 	private double downTime = 0.0;
 	private double timeout = 60.0;//ms 120
 	
-	public static final int index = 0;
+	
 
 	@Override
 	public synchronized double[] runMonitoring() {

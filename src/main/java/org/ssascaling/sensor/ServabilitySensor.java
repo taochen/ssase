@@ -14,7 +14,6 @@ public class ServabilitySensor implements Sensor {
 	private double rejectTime = 0.0;
 	
 	
-	public static final int index = 8;
 
 	@Override
 	public synchronized double[] runMonitoring() {

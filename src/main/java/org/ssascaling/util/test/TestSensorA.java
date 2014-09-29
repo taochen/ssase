@@ -23,6 +23,7 @@ import org.ssascaling.Interval;
 import org.ssascaling.network.Sender;
 import org.ssascaling.sensor.*;
 import org.ssascaling.sensor.linux.CpuSensor;
+import org.ssascaling.test.modeling.Configurator;
 
 /**
  * This is running on the DomU.
@@ -457,6 +458,18 @@ public class TestSensorA {
 		Interval interval = new Interval(System.currentTimeMillis());
 		System.out.print("Start collect\n");
 		File root = new File(prefix +"adaptive/"+VM_ID+"/bak_3/");
+		List<String> services = new ArrayList<String>();
+		List<String> notModeledService = new ArrayList<String>();
+		List<String> qos = new ArrayList<String>();
+		for (String s : Configurator.notModeledServiceStrings) {
+			notModeledService.add(s);
+		}
+		for (String s : Configurator.serviceStrings) {
+			services.add(s);
+		}
+		for (String s : Configurator.qosStrings) {
+			qos.add(s);
+		}
 		try {
 		for (File file : root.listFiles()) {
 			
@@ -503,6 +516,12 @@ public class TestSensorA {
 					boolean isY = true;
 					
 					
+					// If the subfile is not workload and the service is not being modeled
+					if (notModeledService.contains(file.getName()) && !("Workload.rtf".equals(subFile.getName()))) {
+						continue;
+					}
+					
+					//System.out.print(file.getName()+"-"+subFile.getName()+"\n");
 					if ("Concurrency.rtf".equals(subFile.getName())) {
 						name = "Concurrency";
 						isY = false;
@@ -510,17 +529,30 @@ public class TestSensorA {
 						name = "Workload";
 						isY = false;
 					}else if ("Response Time.rtf".equals(subFile.getName())) {
+					
 						name = "Response Time";
 						isY = true;
+						if(!qos.contains(name)) {
+							continue;
+						}
 					}else if ("Throughput.rtf".equals(subFile.getName())) {
 						name = "Throughput";
 						isY = true;
+						if(!qos.contains(name)) {
+							continue;
+						}
 					}else if ("Availability.rtf".equals(subFile.getName())) {
 						name = "Availability";
 						isY = true;
+						if(!qos.contains(name)) {
+							continue;
+						}
 					}else if ("Reliability.rtf".equals(subFile.getName())) {
 						name = "Reliability";
 						isY = true;
+						if(!qos.contains(name)) {
+							continue;
+						}
 					} else {
 						continue;
 					}
@@ -570,20 +602,26 @@ public class TestSensorA {
 		builder.append(service + "\n");
 		
 		for (Interval interval : intervals) {
-			builder.append("1\n");
-			for (Interval.ValuePair vp : interval.getXData(service)) {			
-				builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
-			}
-			builder.append("2\n");
-			for (Interval.ValuePair vp : interval.getYData(service)) {
-				builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+			if (interval.getXData(service) != null) {
+				builder.append("1\n");
+				for (Interval.ValuePair vp : interval.getXData(service)) {			
+					builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+				}
 			}
 			
+			if (interval.getYData(service) != null) {
+				builder.append("2\n");
+				for (Interval.ValuePair vp : interval.getYData(service)) {
+					builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+				}
+			}
 			// Only record this under the first service
 			if (isRecordVMX) {
-				builder.append("3\n");
-				for (Interval.ValuePair vp : interval.getVMXData()) {
-					builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+				if (interval.getVMXData() != null) {
+					builder.append("3\n");
+					for (Interval.ValuePair vp : interval.getVMXData()) {
+						builder.append(vp.getName() + "=" + String.valueOf(vp.getValue()) + "\n");
+					}
 				}
 			}
 		}

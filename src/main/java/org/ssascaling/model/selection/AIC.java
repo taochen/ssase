@@ -29,7 +29,7 @@ public class AIC  {
 	*/
 	
 	public static void main (String[] a){
-		System.out.print(estimate(0.3,220,2));
+		System.out.print(estimate(235.20430083138467,350,3));
 	}
 	
 	private static double estimate (double rss, long n, int k) {

@@ -1,8 +1,13 @@
 package org.ssascaling.actuator;
 
 import org.ssascaling.executor.Executor;
+import org.ssascaling.primitive.Type;
 
-
+/**
+ * This is not used anymore.
+ * @author tao
+ *
+ */
 public class ThreadActuator implements Actuator {
 	
 	private Invoker invoker;
@@ -22,7 +27,7 @@ public class ThreadActuator implements Actuator {
 			System.out.print("Setting " + alias + " with thread " + value[0] + "\n");
 			return true;
 		}
-		return invoker.invoke(alias, value[0]);
+		return true;
 	}
 
 }

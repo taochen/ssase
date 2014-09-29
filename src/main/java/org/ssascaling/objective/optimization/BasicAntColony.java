@@ -267,6 +267,9 @@ public class BasicAntColony extends AntColony {
 		}
 		
 		System.out.print("Smallest dominance rank value is " + smallest + "\n");
+	
+		System.out.print("Dominated by: " + Arrays.toString(n) + "\n");
+			
 		
 		return f1;
 	}

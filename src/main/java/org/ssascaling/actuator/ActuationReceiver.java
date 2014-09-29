@@ -1,29 +1,35 @@
-package org.ssascaling.network;
+package org.ssascaling.actuator;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
-import org.ssascaling.ControlBus;
-import org.ssascaling.monitor.Monitor;
+import org.ssascaling.primitive.Type;
 import org.ssascaling.util.Ssascaling;
 
-public class Receiver {
+/**
+ * Used by domU.
+ * @author tao
+ *
+ */
+public class ActuationReceiver {
 	
 	private int port;
 	
-	public Receiver(){
-		 init();
+	// Type name - invoker
+	private Map<String, Invoker> map = new HashMap<String, Invoker>();
+	
+	public ActuationReceiver(Type[] types, Invoker[] invokers){
+		for (int i = 0; i < types.length;i++) {
+			map.put(types[i].toString(), invokers[i]);
+		}
+		init();
 	}
 	
-	public Receiver(int port){
-		 this.port = port;
-	}
-
-
 	public void receive() {
 
 		ServerSocket echoServer = null;
@@ -52,8 +58,8 @@ public class Receiver {
 
 							DataInputStream is = new DataInputStream(
 									clientSocket.getInputStream());
-							ControlBus.begin(is);
-
+						
+							doActuation(is);
 						} catch (IOException e) {
 							System.out.println(e);
 						}
@@ -69,18 +75,33 @@ public class Receiver {
 
 	}
 	
+	private void doActuation (DataInputStream is){
+		String line = null;
+		try {
+			
+			// servicename-type-value
 	
+			while ((line = is.readLine()) != null) {				
+				String[] split = line.split("-");
+				// Invoke as it read the file.
+				map.get(split[1]).invoke(split[0], Long.parseLong(split[2]));			
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	private void init(){  
 		Properties configProp = new Properties();
 		
 		try {
-			configProp.load(Ssascaling.class.getClassLoader().getResourceAsStream("dom0.properties"));
-			port = Integer.parseInt(configProp.getProperty("port"));
+			configProp.load(Ssascaling.class.getClassLoader().getResourceAsStream("domU.properties"));
+			port = Integer.parseInt(configProp.getProperty("vm_port"));
 			//Monitor.setSampleInterval(Integer.parseInt(configProp.getProperty("sampling_interval")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 }

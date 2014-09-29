@@ -11,7 +11,7 @@
 	    <pathelement location="${maven.repo.local}/javax/javaee-api/6.0/javaee-api-6.0.jar"/>
 	    <pathelement location="${maven.repo.local}/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4.jar"/>
 	    <pathelement location="${maven.repo.local}/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar"/>
-	  	 <pathelement location="${maven.repo.local}/org/encog/encog-core/2.5.3/encog-core-2.5.3.jar"/>
+	  	<pathelement location="${maven.repo.local}/org/encog/encog-core/2.5.3/encog-core-2.5.3.jar"/>
 	    <pathelement location="${maven.repo.local}/org/ssascaling/ssascaling-core/0.0.1/ssascaling-core-0.0.1.jar"/>
 	  </path>
 	
@@ -39,11 +39,20 @@
 
 
   <!-- Creates a jar file containing the servlets -->
-  <target name="jar" depends="init">
+  <target name="db_monitor" depends="init">
      <jar destfile="${dist}/database_monitor.jar">
 	<fileset dir="target/classes/"  />
     </jar>
   </target>
+	
+  <target name="jar" depends="init">
+	     <jar destfile="${dist}/ssascaling.jar">
+		<fileset dir="target/classes/"  />
+	     	 <manifest>
+	     	                <attribute name="Main-Class" value="org.ssascaling.util.Ssascaling"/>
+	     	            </manifest>
+	    </jar>
+	  </target>
 
   <!-- Create a war file-->
   <target name="war" depends="init, compile, jar">
@@ -60,8 +69,8 @@
   <!-- compile rule: Compile the beans and the servlets -->
   <target name="compile" depends="init">
     <javac srcdir="${src}"
-	   includes="edu/rice/rubis/servlets/*"
-	   destdir="${classes.dir}"
+	   includes="org/ssascaling/*"
+	   destdir="target/classes/"
     	nowarn="false" 
     	           debug="true" 
     	           optimize="false" 
@@ -72,10 +81,14 @@
     	           source="1.6">
     <classpath refid="base.classpath" />
     </javac>
-  	<copy todir="${lib.dir}" flatten="true">
+    </target>
+    <!--<copy todir="${lib.dir}" flatten="true">
   	  	  <path refid="copy.classpath"/>
-  	 </copy>
-  </target>
+  	 </copy>-->
+  	
+	 <target name="dist_main" depends="jar">
+		 	<scp file="${dist}/target/ssascaling-core-0.0.1.one-jar.jar" todir="tao@192.168.0.21:/" password="Monday22"/>
+		 </target>
 
 <!-- ====================================================================== -->
 <!-- Javadoc -->

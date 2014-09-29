@@ -3,6 +3,7 @@ package org.ssascaling.util;
 import java.io.File;
 
 import org.ssascaling.monitor.Monitor;
+import org.ssascaling.util.Logger;
 
 public class Util {
 
@@ -71,7 +72,7 @@ public class Util {
 		// TODO it may be possible that to remove the in-memory data after each training.
 		
 		
-		File root = new File(Monitor.prefix);
+		File root = new File(Logger.prefix);
 		for (File folder : root.listFiles()) {
 			
 			// Means it is a hardware primitive

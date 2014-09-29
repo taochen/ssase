@@ -5,7 +5,7 @@ public class ConcurrencySensor implements Sensor {
 	private double concurency = 0.0;
 	private double maxConcurency = 0.0;
 	
-	public static final int index = 4;
+	
 	@Override
 	public double recordPriorToTask(Object value) {
 		synchronized (this) {

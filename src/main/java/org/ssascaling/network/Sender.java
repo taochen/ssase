@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.ssascaling.sensor.SensoringController;
+import org.ssascaling.util.Ssascaling;
 
 public class Sender {
 	
@@ -35,7 +36,7 @@ public class Sender {
 		} catch (IOException e) {
 			System.err
 					.println("Couldn't get I/O for the connection to: hostname");
-		}
+		} 
 		// If everything has been initialized then we want to write some data
 		// to the socket we have opened a connection to on port 25
 		if (smtpSocket != null && os != null) {
@@ -59,7 +60,7 @@ public class Sender {
 		Properties configProp = new Properties();
 		
 		try {
-			configProp.load(new FileInputStream("conf/domU.properties"));
+			configProp.load(Ssascaling.class.getClassLoader().getResourceAsStream("domU.properties"));
 			port = Integer.parseInt(configProp.getProperty("port"));
 			address = configProp.getProperty("ip_address");
 			SensoringController.setSampleInterval(Integer.parseInt(configProp.getProperty("sampling_interval")));

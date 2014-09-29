@@ -61,7 +61,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	protected int addingCounter = 0;
 
 	public ControlPrimitive(
-			String alias, 
+			String name, 
 			String VMIDorService,
 			boolean isHardware, 
 			Type type,
@@ -76,7 +76,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		super();
 		array = new double[0];
 		this.alias = VMIDorService;
-		this.name = alias;
+		this.name = name;
 		this.isHardware = isHardware;
 		this.type = type;
 		this.actuator = actuator;

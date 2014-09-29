@@ -1,0 +1,488 @@
+<ssascaling>
+  <vm id="jeos">
+  
+           <hardwareControlPrimitive>
+              <item name="CPU" provision="60" constraint="0.5" differences="1" 
+              pre_to_max="0.9"
+              pre_of_max="0.1"
+              min="5"
+              max="80"
+              price_per_unit="0.03"/>
+            <item name="Memory" provision="800" constraint="0.5" differences="3" 
+              pre_to_max="0.9"
+              pre_of_max="0.1"
+              min="500"
+              max="800"
+              price_per_unit="0.07"/>
+           </hardwareControlPrimitive>
+           
+        <service name="edu.rice.rubis.servlets.SearchItemsByCategory">
+           <softwareControlPrimitive>
+                <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
+              pre_to_max="0.7"
+              pre_of_max="0.1"
+              min="2"
+              max="100"
+              price_per_unit="0.05"/>
+           </softwareControlPrimitive>
+           
+           
+           <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+           
+           <QoS>
+            <item name="Response Time" constraint="0.1" is_min="true" pre_to_change="0.7"/>
+            <item name="Throughput" constraint="0.3" is_min="false" pre_to_change="0.7" ep="Workload"/>
+            <item name="Availability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+            <item name="Reliability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+           </QoS>
+           
+           <Cost budget="60"/>
+           <!-- Cost can be created based on the other information -->
+           
+        </service>
+        <service name="edu.rice.rubis.servlets.RegisterUser">
+           <softwareControlPrimitive>
+                <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
+              pre_to_max="0.7"
+              pre_of_max="0.1"
+              min="2"
+              max="100"
+              price_per_unit="0.05"/>
+           </softwareControlPrimitive>
+           
+           
+           <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+           
+           <QoS>
+            <item name="Response Time" constraint="0.1" is_min="true" pre_to_change="0.7"/>
+            <item name="Throughput" constraint="0.3" is_min="false" pre_to_change="0.7" ep="Workload"/>
+            <item name="Availability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+            <item name="Reliability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+           </QoS>
+           
+           <Cost budget="60"/>
+           <!-- Cost can be created based on the other information -->
+           
+        </service>
+        <service name="edu.rice.rubis.servlets.AboutMe">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.BrowseCategories">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.BrowseRegions">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.StoreBuyNow">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.BuyNow">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.BuyNowAuth">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutBid">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutBidAuth">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutComment">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutCommentAuth">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.RegisterItem">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.SearchItemsByRegion">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.SellItemForm">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.StoreBid">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.StoreComment">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.ViewBidHistory">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.ViewItem">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.ViewUserInfo">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+  </vm>
+  
+  
+  
+   <vm id="kitty">
+  
+           <hardwareControlPrimitive>
+              <item name="CPU" provision="60" constraint="0.5" differences="1" 
+              pre_to_max="0.9"
+              pre_of_max="0.1"
+              min="5"
+              max="80"
+              price_per_unit="0.03"/>
+            <item name="Memory" provision="800" constraint="0.5" differences="3" 
+              pre_to_max="0.9"
+              pre_of_max="0.1"
+              min="500"
+              max="800"
+              price_per_unit="0.07"/>
+           </hardwareControlPrimitive>
+           
+        <service name="edu.rice.rubis.servlets.SearchItemsByRegion">
+           <softwareControlPrimitive>
+                <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
+              pre_to_max="0.7"
+              pre_of_max="0.1"
+              min="2"
+              max="100"
+              price_per_unit="0.05"/>
+           </softwareControlPrimitive>
+           
+           
+           <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+           
+           <QoS>
+            <item name="Response Time" constraint="0.1" is_min="true" pre_to_change="0.7"/>
+            <item name="Throughput" constraint="0.3" is_min="false" pre_to_change="0.7" ep="Workload"/>
+            <item name="Availability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+            <item name="Reliability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+           </QoS>
+           
+           <Cost budget="60"/>
+           <!-- Cost can be created based on the other information -->
+           
+        </service>
+        <service name="edu.rice.rubis.servlets.PutBid">
+           <softwareControlPrimitive>
+                <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
+              pre_to_max="0.7"
+              pre_of_max="0.1"
+              min="2"
+              max="100"
+              price_per_unit="0.05"/>
+           </softwareControlPrimitive>
+           
+           
+           <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+           
+           <QoS>
+            <item name="Response Time" constraint="0.1" is_min="true" pre_to_change="0.7"/>
+            <item name="Throughput" constraint="0.3" is_min="false" pre_to_change="0.7" ep="Workload"/>
+            <item name="Availability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+            <item name="Reliability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+           </QoS>
+           
+           <Cost budget="60"/>
+           <!-- Cost can be created based on the other information -->
+           
+        </service>
+         <service name="edu.rice.rubis.servlets.AboutMe">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.BrowseCategories">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.BrowseRegions">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.StoreBuyNow">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.BuyNow">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.BuyNowAuth">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.StoreBid">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutBidAuth">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutComment">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutCommentAuth">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.RegisterItem">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.SearchItemsByCategory">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.SellItemForm">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.RegisterUser">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.StoreComment">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.ViewBidHistory">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.ViewItem">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.ViewUserInfo">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+  </vm>
+  
+  
+   <vm id="miku">
+  
+           <hardwareControlPrimitive>
+              <item name="CPU" provision="60" constraint="0.5" differences="1" 
+              pre_to_max="0.9"
+              pre_of_max="0.1"
+              min="5"
+              max="80"
+              price_per_unit="0.03"/>
+            <item name="Memory" provision="800" constraint="0.5" differences="3" 
+              pre_to_max="0.9"
+              pre_of_max="0.1"
+              min="500"
+              max="800"
+              price_per_unit="0.07"/>
+           </hardwareControlPrimitive>
+           
+        <service name="edu.rice.rubis.servlets.BrowseRegions">
+           <softwareControlPrimitive>
+                <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
+              pre_to_max="0.7"
+              pre_of_max="0.1"
+              min="2"
+              max="100"
+              price_per_unit="0.05"/>
+           </softwareControlPrimitive>
+           
+           
+           <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+           
+           <QoS>
+            <item name="Response Time" constraint="0.1" is_min="true" pre_to_change="0.7"/>
+            <item name="Throughput" constraint="0.3" is_min="false" pre_to_change="0.7" ep="Workload"/>
+            <item name="Availability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+            <item name="Reliability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+           </QoS>
+           
+           <Cost budget="60"/>
+           <!-- Cost can be created based on the other information -->
+           
+        </service>
+        <service name="edu.rice.rubis.servlets.StoreBuyNow">
+           <softwareControlPrimitive>
+                <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
+              pre_to_max="0.7"
+              pre_of_max="0.1"
+              min="2"
+              max="100"
+              price_per_unit="0.05"/>
+           </softwareControlPrimitive>
+           
+           
+           <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+           
+           <QoS>
+            <item name="Response Time" constraint="0.1" is_min="true" pre_to_change="0.7"/>
+            <item name="Throughput" constraint="0.3" is_min="false" pre_to_change="0.7" ep="Workload"/>
+            <item name="Availability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+            <item name="Reliability" constraint="0.8" is_min="false" pre_to_change="0.7"/>
+           </QoS>
+           
+           <Cost budget="60"/>
+           <!-- Cost can be created based on the other information -->
+           
+        </service>
+         <service name="edu.rice.rubis.servlets.AboutMe">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.BrowseCategories">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.SearchItemsByRegion">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.StoreBid">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.BuyNow">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.BuyNowAuth">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutBid">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutBidAuth">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutComment">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.PutCommentAuth">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.RegisterItem">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+         <service name="edu.rice.rubis.servlets.SearchItemsByCategory">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.SellItemForm">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+        <service name="edu.rice.rubis.servlets.RegisterUser">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.StoreComment">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.ViewBidHistory">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.ViewItem">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+            <service name="edu.rice.rubis.servlets.ViewUserInfo">
+          <environmentalPrimitive >
+            <item name="Workload"/>
+           </environmentalPrimitive>
+        </service>
+  </vm>
+</ssascaling>
+

@@ -6,7 +6,7 @@ public class WorkloadSensor implements Sensor {
 	private double complete = 0.0;
 	private long startTime = System.currentTimeMillis();
 
-	public static final int index = 3;
+	
 	@Override
 	public synchronized double[] runMonitoring() {
 		long time = System.currentTimeMillis() - startTime;		

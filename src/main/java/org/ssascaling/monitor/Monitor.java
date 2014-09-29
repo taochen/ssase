@@ -17,6 +17,7 @@ import org.ssascaling.Interval;
 import org.ssascaling.sensor.Sensor;
 import org.ssascaling.util.Repository;
 import org.ssascaling.util.Triple;
+import org.ssascaling.util.Logger;
 
 public class Monitor {
 	
@@ -28,12 +29,12 @@ public class Monitor {
 	private static long numberOfSample = 0;
 	private static long previousNumberOfSample = 0;
 	// Inlcude all QoS, CP and EP, we can only trigger MAPE once all associated data has been senced.
-	// Should equals to the number of VM if need 1 sample to trigger
+	
+	// Should equals to totalNumberOfVM if need 1 modeling interval = sampling interval
+	// This should be a multiple of totalNumberOfVM.
 	private static long totalNumberOfSenceToTriggerModeling = 3;
 	private static long totalNumberOfVM = 3;
 	private static long numberOfSenceToTriggerModeling = 0;
-	public static final String prefix = //"/home/tao/monitor/";
-		"/Users/tao/research/monitor/test/";
 	
 	// Called by updatePrimitivesAndQoSFromFiles in Analyzer class, so do not need
 	// to consider sync as it has been ensured in ControlBus class.
@@ -93,16 +94,16 @@ public class Monitor {
 		final Map<String, BufferedWriter> writers = new HashMap<String, BufferedWriter>();
 		// The newly measured values.
 		final Map<String, List<Double>> values = new HashMap<String,  List<Double>>();
-		BufferedWriter bw = null;
-		File file = null;
+	
 		try {
 			
 			
 			
 				// For VM X
 			if ( interval.getVMXData() != null) {
-				for (Interval.ValuePair vp : interval.getVMXData()) {
-					/*if (!writers.containsKey(vp.getName())) {
+				Logger.logMonitoredData(interval.getVMXData(), writers, values, VM_ID, previousNumberOfSample/totalNumberOfVM);
+				/*for (Interval.ValuePair vp : interval.getVMXData()) {
+					if (!writers.containsKey(vp.getName())) {
 						if(!(file = new File(prefix + VM_ID + "/")).exists()){
 							file.mkdir();
 						} 
@@ -125,14 +126,14 @@ public class Monitor {
 					}
 					bw = writers.get(vp.getName());
 					bw.write(String.valueOf(vp.getValue()));
-					bw.newLine();*/
+					bw.newLine();
 					
 					if (!values.containsKey(vp.getName())) {
 						values.put(vp.getName(), new ArrayList<Double>());
 					}
 					
 					values.get(vp.getName()).add(vp.getValue());
-				}
+				}*/
 			}
 				for (Map.Entry<String, List<Double>> entry : values.entrySet()) {
 					
@@ -159,14 +160,14 @@ public class Monitor {
 		// The newly measured values.
 		final Map<String, List<Double>> xValues = new HashMap<String, List<Double>>();
 		final Map<String, List<Double>> yValues = new HashMap<String, List<Double>>();
-		BufferedWriter bw = null;
-		File file = null;
+		
 		try {
 
 			// For X
 			if ( interval.getXData(service) != null) {
-			for (Interval.ValuePair vp : interval.getXData(service)) {
-				/*if (!writers.containsKey(vp.getName())) {
+				Logger.logMonitoredData(interval.getXData(service), writers, xValues, VM_ID+"/"+service, previousNumberOfSample/totalNumberOfVM);
+			/*for (Interval.ValuePair vp : interval.getXData(service)) {
+				if (!writers.containsKey(vp.getName())) {
 					if (!(file = new File(prefix + VM_ID + "/" + service + "/"))
 							.exists()) {
 						file.mkdir();
@@ -194,20 +195,21 @@ public class Monitor {
 				}
 				bw = writers.get(vp.getName());
 				bw.write(String.valueOf(vp.getValue()));
-				bw.newLine();*/
+				bw.newLine();
 
 				if (!xValues.containsKey(vp.getName())) {
 					xValues.put(vp.getName(), new ArrayList<Double>());
 				}
 
 				xValues.get(vp.getName()).add(vp.getValue());
-			}
+			}*/
 
 			}
 			// For Y
 			if ( interval.getYData(service) != null) {
-			for (Interval.ValuePair vp : interval.getYData(service)) {
-				/*if (!writers.containsKey(vp.getName())) {
+				Logger.logMonitoredData(interval.getYData(service), writers, yValues, VM_ID+"/"+service, previousNumberOfSample/totalNumberOfVM);
+			/*for (Interval.ValuePair vp : interval.getYData(service)) {
+				if (!writers.containsKey(vp.getName())) {
 					if (!(file = new File(prefix + VM_ID + "/" + service + "/"))
 							.exists()) {
 						file.mkdir();
@@ -234,14 +236,14 @@ public class Monitor {
 				}
 				bw = writers.get(vp.getName());
 				bw.write(String.valueOf(vp.getValue()));
-				bw.newLine();*/
+				bw.newLine();
 
 				if (!yValues.containsKey(vp.getName())) {
 					yValues.put(vp.getName(), new ArrayList<Double>());
 				}
 
 				yValues.get(vp.getName()).add(vp.getValue());
-			}
+			}*/
 
 			}
 			for (Map.Entry<String, List<Double>> entry : xValues.entrySet()) {

@@ -669,6 +669,18 @@ public class QualityOfService implements Objective, Comparable{
 
 	@Override
 	public boolean isSatisfied(double[] xValue) {
+		
+		
+		if (ep != null) {
+			// If make no sense if the required throughput even larger than the
+			// current workload.
+			if (isMin ? constraint < ep.getLatest() : constraint > ep
+					.getLatest()) {
+				return true;
+			}
+
+		}
+		
 		return isMin? constraint >= predict(xValue) : constraint <= predict(xValue);
 	}
 
@@ -699,7 +711,7 @@ public class QualityOfService implements Objective, Comparable{
 	public String getName() {
 		return name;
 	}
-
+ 
 	@Override
 	public List<Primitive> getPrimitivesInput() {
 		

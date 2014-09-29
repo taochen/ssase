@@ -31,10 +31,12 @@ public class PrimitiveLearner {
 		for (Primitive p : primitives) {
 			
 			 if ((value = MutualInformation.calculateSymmetricUncertainty(output.getArray(), p.getArray())) > 0) {
-				
+				 
 				 if (p.isDirect(output)) {
+					// System.out.print("-------D: " + value + " : " + p.getAlias() + " - " + p.getName() + "\n");
 					 inputs.add(p);
 				 } else {
+					 //System.out.print("-------inD: " + value + " : " + p.getAlias() + " - " + p.getName()  + "\n");
 					 if (!inputMap.containsKey(p.getGroup())) {
 						 inputMap.put(p.getGroup(), new ArrayList<DependencyPair>());
 					 }
@@ -96,7 +98,7 @@ public class PrimitiveLearner {
 			newInputes.clear();
 			double total = 0.0;
 			double add = 0.0;
-			double minus = 0.0;
+			double minus = 1.0;
 			for (int i = inputList.size() - 1; i > -1; i--) {
 				
 
@@ -112,7 +114,9 @@ public class PrimitiveLearner {
 				// (minus+b)/(no*no)+" Selected \n");
 				//System.out.print("Old " + total + ", New" + (minus + b == 0 ? (add + a) / no
 						//: (((add + a) / no) / ((minus + b) / (no * no)))) + "\n");
-				if (total < (minus + b == 0 ? (add + a) / no
+				
+				
+				/*if (total < (minus + b == 0 ? (add + a) / no
 						: (((add + a) / no) / ((minus + b) / ((no * no - no)/2))))) {
 
 					newInputes.add(((DependencyPair) inputList.get(i))
@@ -121,9 +125,23 @@ public class PrimitiveLearner {
 					minus += b;
 					total = (minus == 0 ? add / no : (add / no)
 							/ (minus / ((no * no - no)/2)));
+				}*/
+				
+				if (total < ((add + a) / (minus + b))) {
+
+					newInputes.add(((DependencyPair) inputList.get(i))
+							.getPrimitive());
+					add += a;
+					minus += b;
+					total = (add) / (minus);
 				}
+				
+				
 			}
 			if (finalp < total) {
+				///System.out.print("Best so far: " + finalp + ", with number of " + finalInputs.size() + ", Fine " + total + " with number of "
+				//+ newInputes.size() + "\n");
+				//System.out.print(add + "\n");
 				finalp = total;
 				finalInputs.clear();			
 				finalInputs.addAll(newInputes);

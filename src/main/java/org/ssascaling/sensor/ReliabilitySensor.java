@@ -8,7 +8,7 @@ public class ReliabilitySensor implements Sensor {
 	private long violated = 0;
 
 	private double timeout = 30.0;//ms 120
-	public static final int index = 7;
+
 	@Override
 	public double recordPriorToTask(Object value) {		
 		return System.currentTimeMillis();

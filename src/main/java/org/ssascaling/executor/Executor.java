@@ -3,11 +3,13 @@ package org.ssascaling.executor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.ssascaling.Service;
+import org.ssascaling.actuator.ActuationSender;
 import org.ssascaling.actuator.Actuator;
 import org.ssascaling.actuator.linux.CPUNoActuator;
 import org.ssascaling.actuator.linux.CPUPinActuator;
@@ -16,6 +18,7 @@ import org.ssascaling.primitive.HardwareControlPrimitive;
 import org.ssascaling.primitive.SoftwareControlPrimitive;
 import org.ssascaling.primitive.Type;
 import org.ssascaling.util.Repository;
+import org.ssascaling.util.Logger;
 
 public class Executor {
 	
@@ -109,7 +112,11 @@ public class Executor {
 	public static void execute(LinkedHashMap<ControlPrimitive, Double> decisions){
 		long value  = 0;
 		
-		
+		// Send all software control primitives value to VM in one shot.
+		// VM_ID - data
+		Map<String, StringBuilder> softwareCPData = new HashMap<String, StringBuilder> ();
+		// VM_ID - data
+		Map<String, StringBuilder> hardwareCPData = new HashMap<String, StringBuilder> ();
 		LinkedHashMap<ControlPrimitive, Double> listMap = orderDecision(decisions);
 		// Need to sync in order to consistent on the utilization of resource on the PM.
 		synchronized (lock) {
@@ -128,6 +135,13 @@ public class Executor {
 				 * Hardware CP allocation require special treatments.
 				 */
 				if (entry.getKey().isHardware()) {
+				
+					// Logging, here we assume that any actions of hardware CP can be taken placed on Dom0.
+					if (!hardwareCPData.containsKey(entry.getKey().getAlias())) {
+						hardwareCPData.put(entry.getKey().getAlias(), new StringBuilder());
+					}
+					hardwareCPData.get(entry.getKey().getAlias()).append(entry.getKey().getType() + "-" + value + "\n");
+					
 					
 						// CPU is sepecial as its denormalized value is still %
 						if (Type.CPU.equals(entry.getKey().getType())) {
@@ -324,7 +338,8 @@ public class Executor {
 							entry.getKey()
 									.triggerActuator(new long[] { value });
 							
-	
+						
+							
 							/*if (remainingMemory >= value) {
 								remainingMemory -= value - entry.getKey().getProvision();
 								
@@ -340,13 +355,34 @@ public class Executor {
 					
 					
 				} else {
+					
+					// Logging, here we assume that any actions of software CP can not be taken placed on Dom0.
+					String[] split = entry.getKey().getAlias().split("-");
+					
+					if (!softwareCPData.containsKey(split[0])) {
+						softwareCPData.put(split[0], new StringBuilder());
+					}
+					softwareCPData.get(split[0]).append(split[1]  + "-" + entry.getKey().getType() + "-" + value + "\n");
+					
 					// There is usually no threshold for software CP.
 					entry.getKey().triggerMaxProvisionUpdate(value, Double.MAX_VALUE);
-					entry.getKey().triggerActuator(new long[]{value});
 					entry.getKey().setProvision(value);
+					entry.getKey().triggerActuator(new long[]{value});
+					
 				}	
 				
-				}
+			}
+			long count = Logger.getExecutionCount();
+			for (Map.Entry<String, StringBuilder> entry : hardwareCPData.entrySet()) {
+				Logger.logExecutionData(entry.getKey(), entry.getValue(), count);
+			}
+			
+			// Send the actions to VMs for certain software control primitives.
+			for (Map.Entry<String, StringBuilder> entry : softwareCPData.entrySet()) {
+				Logger.logExecutionData(entry.getKey(), entry.getValue(), -1);
+				ActuationSender.getInsatnce().send(entry.getKey(), entry.getValue().toString());
+			}
+			
 			
 		}
 		

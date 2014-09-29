@@ -5,7 +5,7 @@ public class ThroughputSensor implements Sensor {
 	private double completed = 0.0;
 	private long startTime = System.currentTimeMillis();
 
-	public static final int index = 2;
+	
 	@Override
 	public synchronized double[] runMonitoring() {
 		long time = System.currentTimeMillis() - startTime;		

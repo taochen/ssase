@@ -29,7 +29,7 @@ public class ControlBus {
 	private final static AtomicInteger lock = new AtomicInteger(-1);
 	private static List<Objective> objectivesToBeOptimized = null;
 	
-	private static long expectedSample = 1;
+	private static long expectedSample = Monitor.getNumberOfNewSamples();
 	
 	// This is the samples that current MAPE should deal with, as when too much pending MAPE, the
 	// later ones can simply abort.

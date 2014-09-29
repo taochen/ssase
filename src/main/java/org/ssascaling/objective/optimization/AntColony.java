@@ -55,7 +55,7 @@ public abstract class AntColony implements  ModelListener {
 	    protected int      numberOfAnt;
 	    protected int      antRatio = 5;
 	    protected int      iterCounter = 0;
-	    protected int      iterations = 5;
+	    protected int      iterations = 20;
 	    
 	    protected int completedAnt=0;
 	    
