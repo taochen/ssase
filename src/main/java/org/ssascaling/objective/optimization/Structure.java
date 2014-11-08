@@ -43,10 +43,10 @@ public class Structure {
 	public static final double VALUE_EVAPORATION = 0.1;
 
 	// Weight for mu
-	private static final double ALPHA = 2;
+	private static final double ALPHA = 4;
 
 	// Weight for tau
-	private static final double BETA = 3;
+	private static final double BETA = 1;
 
 
 	private Objective objective;
@@ -112,11 +112,11 @@ public class Structure {
 
 			selected += ", " + entry.getValue()
 			.getVal1();
-			antValues.update(primitives.get(entry.getKey()), entry.getValue()
+			/*antValues.update(primitives.get(entry.getKey()), entry.getValue()
 					.getVal1(), -1, -1,
 					objective.isMin(), MAX_VALUE_TAU, MIN_VALUE_TAU, 
 					P_MAX_VALUE_TAU == 0? MAX_VALUE_TAU : P_MAX_VALUE_TAU,
-							P_MIN_VALUE_TAU == 0? MIN_VALUE_TAU : P_MIN_VALUE_TAU);
+							P_MIN_VALUE_TAU == 0? MIN_VALUE_TAU : P_MIN_VALUE_TAU);*/
 		}
 
 		/*Only local update when there is no change after a solution found*/
@@ -164,6 +164,7 @@ public class Structure {
 			LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> decision = localBestAnt
 					.getDecision();
 
+			updateTrailLimits(localBestAnt.getValue());
 		
 			for (Map.Entry<ControlPrimitive, Tuple<Integer, Double>> entry : decision
 					.entrySet()) {
@@ -184,7 +185,7 @@ public class Structure {
 			dynamics.updateShort(solutions, antValues, primitives);
 			dynamics.updateLong(solutions); //dynamics.updateLong(localBestAnt);
 		
-			updateTrailLimits(globalBestAnt.getValue());
+			
 			
 			solutions.clear();
 			

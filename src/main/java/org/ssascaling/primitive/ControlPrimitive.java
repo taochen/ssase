@@ -344,6 +344,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		// If increase
 		if (decidedValue / valueVector[valueVector.length - 1] > b  &&
 				value / valueVector[valueVector.length - 1] > b  /*consider the latest observed value as well*/) {
+			
 			// Need scale out
 			if (Math.round(valueVector[valueVector.length - 1] * g) > threshold) {
 				System.out.print(Math.round(valueVector[valueVector.length - 1] * g) + " : " + threshold+ " \n");

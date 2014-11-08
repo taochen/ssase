@@ -97,10 +97,10 @@ public class Executor {
 		cores.add(new CPUCore(1, new VM[]{jeos}));
 		cores.add(new CPUCore(2, new VM[]{kitty}));
 		cores.add(new CPUCore(3, new VM[]{miku}));
-		cores.add(new CPUCore(4, new VM[]{}));
+		/*cores.add(new CPUCore(4, new VM[]{}));
 		cores.add(new CPUCore(5, new VM[]{}));
 		cores.add(new CPUCore(6, new VM[]{}));
-		cores.add(new CPUCore(7, new VM[]{}));
+		cores.add(new CPUCore(7, new VM[]{}));*/
 	}
 	
 	/**
@@ -155,7 +155,9 @@ public class Executor {
 								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, CPUThreshold))) {
 									System.out.print("Scale in due to CPU on " + entry.getKey().getAlias() + " \n");
 									// TODO do scale in and free all resources.
-									return;
+									//return;
+									hardwareCPData.get(entry.getKey().getAlias()).append(entry.getKey().getAlias()).append("Scale in due to CPU on " + entry.getKey().getAlias() + "\n");
+									v = 0;
 								}
 								
 								remainingCPU += v;
@@ -208,8 +210,13 @@ public class Executor {
 									//TODO should trigger scale out.
 									System.out.print("Scale out due to CPU on " + entry.getKey().getAlias() + " \n");
 									System.out.print(value + " : " + remainingCPU+ " \n");
-									return;
+									//return;
+									
+									hardwareCPData.get(entry.getKey().getAlias()).append("Scale out due to CPU on " + entry.getKey().getAlias() + ", "+ value + " : " + remainingCPU+  "\n");
+									v = 0;
 								}
+								
+								
 								
 								remainingCPU += v;
 								
@@ -280,6 +287,9 @@ public class Executor {
 									//TODO should trigger scale out.
 									System.out.print("Small scale out due to CPU on " + entry.getKey().getAlias() + " \n");
 									System.out.print(value + " : " + remainingCPU+ " \n");
+									
+									hardwareCPData.get(entry.getKey().getAlias()).append("Small scale out due to CPU on " + entry.getKey().getAlias() + ", "+ value + " : " + remainingCPU+  "\n");
+									
 								}
 								
 								
@@ -316,7 +326,9 @@ public class Executor {
 									System.out.print("Scale in due to memory on " + entry.getKey().getAlias() + " \n");
 									
 									// TODO do scale in and free all resources.
-									return;
+									//return;
+									hardwareCPData.get(entry.getKey().getAlias()).append("Scale in due to memory on " + entry.getKey().getAlias() + "\n");
+									v = 0;
 								}
 								
 								
@@ -327,7 +339,9 @@ public class Executor {
 									System.out.print(value + " : " + remainingMemory+ " \n");
 									// TODO should trigger migration or replication for scale out as
 									// the memory is insufficient.
-									return;
+									//return;
+									hardwareCPData.get(entry.getKey().getAlias()).append("Small Scale out due to memory on " + entry.getKey().getAlias() + ", " + value + " : " + remainingMemory+  "\n");
+									v = 0;
 								}
 								
 								

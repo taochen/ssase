@@ -20,6 +20,14 @@ public class PrimitiveLearner {
 	private Map<Primitive, Double> newInputesMap = new HashMap<Primitive, Double>();
 	
 
+	private static final boolean isConsiderDirectSpaceInRedundancy = false;
+	
+	private static final boolean isConsiderDirectSpaceWithRedundancy = false;
+	
+	private static final boolean isMul = true;
+	
+	private static final boolean isTotal = true;
+	
 	public Set<Primitive> select(QualityOfService output,  Set<Primitive> primitives){
 		
 		long time = System.currentTimeMillis();
@@ -33,10 +41,10 @@ public class PrimitiveLearner {
 			 if ((value = MutualInformation.calculateSymmetricUncertainty(output.getArray(), p.getArray())) > 0) {
 				 
 				 if (p.isDirect(output)) {
-					// System.out.print("-------D: " + value + " : " + p.getAlias() + " - " + p.getName() + "\n");
+					 //System.out.print("\"D," + value + ":" + p.getAlias() + " - " + p.getName() + "\",\n");
 					 inputs.add(p);
 				 } else {
-					 //System.out.print("-------inD: " + value + " : " + p.getAlias() + " - " + p.getName()  + "\n");
+					// System.out.print("\"inD," + value + ":" + p.getAlias() + " - " + p.getName()  + "\",\n");
 					 if (!inputMap.containsKey(p.getGroup())) {
 						 inputMap.put(p.getGroup(), new ArrayList<DependencyPair>());
 					 }
@@ -48,7 +56,37 @@ public class PrimitiveLearner {
 		}
 		
 		System.out.print("Number of direrct primitives: " + inputs.size() + "\n");
+		System.out.print("Number of possible primitives: " + primitives.size() + "\n");
 		
+		
+		if (isConsiderDirectSpaceInRedundancy) {
+			
+			List<DependencyPair> list = new ArrayList<DependencyPair> ();
+			for (Primitive p : inputs) {
+				list.add(new DependencyPair(p,newInputesMap.get(p)));
+			}
+			
+			final Set<Primitive> directSet = randomOptimizeSelection(list);
+			inputs.clear(); 
+			inputs.addAll(directSet);
+			
+		}
+		
+		if (isConsiderDirectSpaceWithRedundancy) {
+			
+			for (List<DependencyPair> list : inputMap.values()) {
+				
+				for (DependencyPair dp : list) {
+					double v = 0;
+					for (Primitive p : inputs) {
+						v += MutualInformation.calculateSymmetricUncertainty(dp.getPrimitive().getArray(), p.getArray());
+					}
+					
+					dp.setRedundancyToDirectSpace(v);
+				}
+				
+			}
+		}
 		
 		if (inputMap.size() > 1) {
 			throw new RuntimeException("We currently only allow one group for non-direct primitives!");
@@ -65,6 +103,12 @@ public class PrimitiveLearner {
 		
 		
 		System.out.print("Number of total selected primitives: " + inputs.size() + "\n");
+		
+		for (Primitive p : inputs) {
+			System.out.print("=========================\n");
+			System.out.print("Final Selected: " + p.getAlias() + " : " + p.getName() + "\n");
+			System.out.print("=========================\n");
+		}
 		
 		System.out.print("Time for primitives selection:" + (System.currentTimeMillis() - time) + "ms\n");
 		return inputs;
@@ -87,7 +131,7 @@ public class PrimitiveLearner {
 		return newInputes;
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 	private Set<Primitive> randomOptimizeSelection (List inputList) {
 		//Collections.sort(inputList);
 		Set<Primitive> newInputes = new HashSet<Primitive>();
@@ -126,16 +170,72 @@ public class PrimitiveLearner {
 					total = (minus == 0 ? add / no : (add / no)
 							/ (minus / ((no * no - no)/2)));
 				}*/
+		
+			    if (isMul && isTotal) {
 				
-				if (total < ((add + a) / (minus + b))) {
-
-					newInputes.add(((DependencyPair) inputList.get(i))
-							.getPrimitive());
-					add += a;
-					minus += b;
-					total = (add) / (minus);
+					if (total < ((add + a) / (minus + b))) {
+	
+						newInputes.add(((DependencyPair) inputList.get(i))
+								.getPrimitive());
+						add += a;
+						minus += b;
+						total = (add) / (minus);
+					}
+				} else 	if (isMul && !isTotal) {
+					
+					if (add == 0) {
+						// The 1+ should not be added in this way
+						minus = 0;
+					}
+					int n = no;
+					if (no == 1) {
+						n = 2;
+					}
+					
+				
+					if (total < (((add+ a)/no) / (1+((minus+b)/((n*n-n)/2))))) {
+	
+						newInputes.add(((DependencyPair) inputList.get(i))
+								.getPrimitive());
+						add += a;
+						minus += b;
+						total = (((add)/no) / (1+((minus)/((n*n-n)/2))));
+					}
+				} else 	if (!isMul && !isTotal) {
+				
+					if (add == 0) {
+						minus = 0;
+					}
+					
+					int n = no;
+					if (no == 1) {
+						n = 2;
+					}
+					
+					if (total < (((add+ a)/no) - ((minus+b)/((n*n-n)/2)))) {
+	
+						newInputes.add(((DependencyPair) inputList.get(i))
+								.getPrimitive());
+						add += a;
+						minus += b;
+						total = (((add)/no) - ((minus)/((n*n-n)/2)));
+					}
+				} else 	if (!isMul && isTotal) {
+					
+					if (add == 0) {
+						minus = 0;
+					}
+					
+				
+					if (total < ((add + a) - (minus + b))) {
+						
+						newInputes.add(((DependencyPair) inputList.get(i))
+								.getPrimitive());
+						add += a;
+						minus += b;
+						total = (add) - (minus);
+					}
 				}
-				
 				
 			}
 			if (finalp < total) {
@@ -170,6 +270,7 @@ public class PrimitiveLearner {
 	private class DependencyPair implements Comparable<DependencyPair>{
 		private Primitive p;
 		private double value;
+		private double redundancyToDirectSpace = 0;
 		
 		Map<Primitive, Double> redundancy = new HashMap<Primitive, Double>();
 		
@@ -180,7 +281,7 @@ public class PrimitiveLearner {
 			this.value = value;
 		}
 		
-		
+	
 		
 		public double getRedundancyValue(Set<Primitive> primitives) {
 			double total = 0.0;
@@ -193,7 +294,7 @@ public class PrimitiveLearner {
 				total += redundancy.get(primitive);
 			}
 			
-			return total;
+			return total + redundancyToDirectSpace;
 		}
 		
 		public Primitive getPrimitive() {
@@ -204,6 +305,11 @@ public class PrimitiveLearner {
 		public int compareTo(DependencyPair o) {			
 			return this.value < o.value? -1 : 1;
 		}
+
+		public void setRedundancyToDirectSpace(double redundancyToDirectSpace) {
+			this.redundancyToDirectSpace = redundancyToDirectSpace;
+		}
+		
 		
 		
 	}

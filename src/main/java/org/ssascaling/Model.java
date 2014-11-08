@@ -59,6 +59,8 @@ import org.ssascaling.util.Util;
 public class Model {
 	
 	public static final boolean isEliminateZero = true;
+
+	private final boolean isConsiderTimeSeriesOnLocalError = false;
 	
 	protected static final Logger logger = LoggerFactory
 	.getLogger(Model.class);
@@ -127,7 +129,6 @@ public class Model {
 	public final double DEFAULT_PREDICTION_ERROR_PERCENTAGE= 0.5;
 	// The max number of clueter
 	//public final int DEFAULT_MAX_NUMBER_OF_CLUSTER= 50;
-	
 	
 	// Threshold ************************************************
 	
@@ -323,7 +324,7 @@ public class Model {
 			for (int k = 0; k < functions.length; k++) {
 				final int index = k;
 				//=============== should be removed ============
-				if (index == 100) {
+				if (index == 200 || index == 100) {
 					synchronized(concurrentModelLock) {
 						concurrentModelLock.decrementAndGet();		
 					    if (concurrentModelLock.get() == 0) {
@@ -435,7 +436,7 @@ public class Model {
 			for (int k = 0; k < functions.length; k++) {			
 				final int index = k;
 				//=============== should be removed ============
-				if (index == 100) {
+				if (index == 200 || index == 100) {
 					continue;
 				}
 				//=============== should be removed ============
@@ -522,7 +523,7 @@ public class Model {
 			
 			for (int k = 0; k < functions.length; k++) {			
 				//=============== should be removed ============
-				if (k == 100) {
+				if (k == 200 || k == 100) {
 					continue;
 				}
 				//=============== should be removed ============
@@ -601,7 +602,9 @@ public class Model {
 		} else if (function instanceof RegressionTree) {
 			//System.out.print(" PREDICTED RT INPUT " + Arrays.toString(x) +  "\n");
 		}
-		
+		System.out.print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n");
+		System.out.print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " + selectors[ModelFunction.ARMAX].getOrder() +  "\n");
+		System.out.print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n");
 		double result = function==null? 0 : function.predict(x);
 		
 		/******************synchronized(writeLock) {
@@ -683,7 +686,7 @@ public class Model {
 		for (int k = 0; k < functions.length; k++) {
 			final int index = k;
 			//=============== should be removed ============
-			if (index == 100) {
+			if (index == 200 || index == 100) {
 				synchronized(concurrentModelLock) {
 					concurrentModelLock.decrementAndGet();	
 					
@@ -984,6 +987,11 @@ public class Model {
 	
 	private ClusterData[] record (double[][] originalInputs /*original inputs before transfer e.g., for ARMAX*/, 
 			double[][] inputs, double[] output, ModelFunction function) {
+		
+		if (isConsiderTimeSeriesOnLocalError && !originalInputs.equals(inputs)) {
+			originalInputs = inputs;
+		}
+		
 		boolean isInvalidModelFunction = true;
 		double previous = 0;
 		ClusterData[] data = new ClusterData[output.length];
@@ -1077,16 +1085,30 @@ public class Model {
 		ClusterData bestPair = null;
 		double bestMape = 0; 
 		double averageMape = 0.0;
+		double[] copy = xValue;
+		boolean isSUcopy = isSU;
 		for (int k = 0; k < functions.length; k++){
 			//=============== should be removed ============
-			if (k == 100) {
+			if (k ==200 || k==100) {
 				continue;
 			}
 			//=============== should be removed ============
 			ClusterData[] paris = resultset.get(functions[k]);
 			
+			if (isConsiderTimeSeriesOnLocalError) {
+				
+				if (k ==  ModelFunction.ARMAX) {
+					xValue = this.transferSlidingWindow(xValue, ModelFunction.ARMAX);
+					isSU = false;
+				} else {
+					xValue = copy;
+					isSU = isSUcopy;
+				}
+			
+			}
+			
 			if (paris == null) {
-				logger.error(functions[k] + " has no cluster data under " + output.getName());
+				//logger.error(functions[k] + " has no cluster data under " + output.getName());
 				continue;
 			}
 			

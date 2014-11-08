@@ -133,8 +133,8 @@ public class BasicAntColony extends AntColony {
 		// Store one in case there is no solution that violates non of the constraints.
 		//Ant pareto_harmonic = harmonicDistanceSort(paretoNonDominatedSort(ants).get(0), max);
 		//Ant nash_harmonic = harmonicDistanceSort(nashNonDominatedSort(paretoNonDominatedSort(ants).get(0)).get(0), max);
-		Ant nash_best_distance = bestDistanceSort(max, best, nashNonDominatedSort(paretoNonDominatedSort(ants).get(0)).get(0));
-		Ant nash_nash_product = nashProductSort(max, nashNonDominatedSort(paretoNonDominatedSort(ants).get(0)).get(0));
+		//Ant nash_best_distance = bestDistanceSort(max, best, nashNonDominatedSort(paretoNonDominatedSort(ants).get(0)).get(0));
+		//Ant nash_nash_product = nashProductSort(max, nashNonDominatedSort(paretoNonDominatedSort(ants).get(0)).get(0));
 		//Ant best_distance  = bestDistanceSort(max, best, ants);
 		//Ant nash_product  = nashProductSort(max, ants);
 		
@@ -147,7 +147,7 @@ public class BasicAntColony extends AntColony {
 		
 		//printCMeasure("nash_nash_product", "pareto_harmonic", nash_nash_product, pareto_harmonic);
 		//printCMeasure("nash_nash_product", "nash_harmonic", nash_nash_product, nash_harmonic);
-		printCMeasure("nash_nash_product", "nash_best_distance", nash_nash_product, nash_best_distance);
+		//printCMeasure("nash_nash_product", "nash_best_distance", nash_nash_product, nash_best_distance);
 		/*printCMeasure("nash_nash_product", "best_distance", nash_nash_product, best_distance);
 		printCMeasure("nash_nash_product", "nash_product", nash_nash_product, nash_product);
 		
@@ -156,16 +156,16 @@ public class BasicAntColony extends AntColony {
 		printCMeasure("nash_product", "nash_best_distance", nash_product, nash_best_distance);
 		printCMeasure("nash_product", "best_distance", nash_product, best_distance);*/
 		
-		printCMeasure("compromise_dominance", "nash_best_distance", compromise_dominance, nash_best_distance);
-		printCMeasure("compromise_dominance", "nash_nash_product", compromise_dominance, nash_nash_product);
+		//printCMeasure("compromise_dominance", "nash_best_distance", compromise_dominance, nash_best_distance);
+		//printCMeasure("compromise_dominance", "nash_nash_product", compromise_dominance, nash_nash_product);
 		
 		//printDistance("pareto_harmonic", pareto_harmonic, max, best);
 		//printDistance("nash_harmonic", nash_harmonic, max, best);
-		printDistance("nash_best_distance", nash_best_distance, max, best);
+		//printDistance("nash_best_distance", nash_best_distance, max, best);
 		//printDistance("best_distance", best_distance, max, best);
-		printDistance("nash_nash_product", nash_nash_product, max, best);
+		//printDistance("nash_nash_product", nash_nash_product, max, best);
 		//printDistance("nash_product", nash_product, max, best);
-		printDistance("compromise_dominance", compromise_dominance, max, best);
+		//printDistance("compromise_dominance", compromise_dominance, max, best);
 		
 		return compromise_dominance;
 	}

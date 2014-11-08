@@ -57,17 +57,19 @@ public class AntValues {
 
 			if (result > max) {
 				// Mean it happen due to max/min change.
-				if (tau[i][j] > max && result < premax) {
+				/*if (tau[i][j] > max && result < premax) {
 					result = max * result/premax;
 				} else {
 				    result = max;
-				}
+				}*/
+				 result = max;
 			} else if (result < min) {
-	           if (tau[i][j] < min && result > premin) {
+	          /* if (tau[i][j] < min && result > premin) {
 	        	   result = min * result/premin;
 				} else {
 				   result = min;
-				}
+				}*/
+				   result = min;
 			}
 
 			tau[i][j] = result;
