@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.ssascaling.actuator.Actuator;
 import org.ssascaling.objective.Objective;
 import org.ssascaling.util.Repository;
+import org.ssascaling.util.Timer;
 
 public abstract class ControlPrimitive implements Primitive, Comparable{
 
@@ -59,6 +60,8 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	// Keep adding and sampling consistent.
 	protected int samplingCounter = 0;
 	protected int addingCounter = 0;
+	protected Timer timer = new Timer();
+	
 
 	public ControlPrimitive(
 			String name, 
@@ -315,11 +318,24 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 
 	public boolean isViolate() {
 		// Utilization is lower that a threshold, means over provision
-		return value/provision < constraint;
+		boolean result = value/provision < constraint;
+		if (result) {
+			timer.increaseTimer();
+		}
+		
+		return timer.isValidViolation();
 	}
 	
 	public synchronized void resetValues(){
 		values = null;
+	}
+	
+	/**
+	 * Get the difference between optional values.
+	 * @return
+	 */
+	public int getDifference (){
+		return a;
 	}
 	
 	protected void triggerMinProvisionUpdate (double[] values){
@@ -339,15 +355,13 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	 * @param threshold the remaining hardware resources or the min resources that can be removed (remove the VM)
 	 * @return true if need to scale in/out
 	 */
-	public double triggerMaxProvisionUpdate (double decidedValue, double threshold){
-	 
+	public double triggerMaxProvisionUpdate (boolean isIncrease, double decidedValue, double threshold){
 		// If increase
-		if (decidedValue / valueVector[valueVector.length - 1] > b  &&
+		if (isIncrease && decidedValue / valueVector[valueVector.length - 1] > b  &&
 				value / valueVector[valueVector.length - 1] > b  /*consider the latest observed value as well*/) {
-			
 			// Need scale out
 			if (Math.round(valueVector[valueVector.length - 1] * g) > threshold) {
-				System.out.print(Math.round(valueVector[valueVector.length - 1] * g) + " : " + threshold+ " \n");
+				System.out.print(Math.round(valueVector[valueVector.length - 1] * g) + " : " + threshold+ "\n");
 				return Double.NaN;
 			}
 			
@@ -359,8 +373,9 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 			updateValueVector(valueVector[0], valueVector[valueVector.length - 1] * (1+g));
 			return result;
 		// If decrease
-		} else if (decidedValue / valueVector[valueVector.length - 1] < b &&
+		} else if (!isIncrease && decidedValue / valueVector[valueVector.length - 1] < b &&
 					value / valueVector[valueVector.length - 1] < b /*consider the latest observed value as well*/) {
+			
 			// Need scale in
 			if (Math.round(valueVector[valueVector.length - 1] * (1-g)) < threshold) {
 				return Double.NaN;

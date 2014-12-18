@@ -2,27 +2,27 @@
   <vm id="jeos">
   
            <hardwareControlPrimitive>
-              <item name="CPU" provision="60" constraint="0.5" differences="1" 
+              <item name="CPU" provision="30" constraint="0.5" differences="1" 
               pre_to_max="0.9"
               pre_of_max="0.1"
               min="5"
-              max="80"
+              max="40"
               price_per_unit="0.03"/>
-            <item name="Memory" provision="800" constraint="0.5" differences="3" 
+            <item name="Memory" provision="128" constraint="0.5" differences="3" 
               pre_to_max="0.9"
               pre_of_max="0.1"
-              min="500"
-              max="800"
+              min="100"
+              max="150"
               price_per_unit="0.07"/>
            </hardwareControlPrimitive>
            
         <service name="edu.rice.rubis.servlets.SearchItemsByCategory">
            <softwareControlPrimitive>
-                <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
+                <item name="Concurrency" provision="5" constraint="0.5" differences="1" 
               pre_to_max="0.7"
               pre_of_max="0.1"
               min="2"
-              max="100"
+              max="10"
               price_per_unit="0.05"/>
            </softwareControlPrimitive>
            
@@ -42,7 +42,7 @@
            <!-- Cost can be created based on the other information -->
            
         </service>
-        <service name="edu.rice.rubis.servlets.RegisterUser">
+        <service name="edu.rice.rubis.servlets.BrowseCategories">
            <softwareControlPrimitive>
                 <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
               pre_to_max="0.7"
@@ -73,7 +73,7 @@
             <item name="Workload"/>
            </environmentalPrimitive>
         </service>
-        <service name="edu.rice.rubis.servlets.BrowseCategories">
+        <service name="edu.rice.rubis.servlets.RegisterUser">
           <environmentalPrimitive >
             <item name="Workload"/>
            </environmentalPrimitive>
@@ -164,28 +164,28 @@
   
    <vm id="kitty">
   
-           <hardwareControlPrimitive>
-              <item name="CPU" provision="60" constraint="0.5" differences="1" 
+              <hardwareControlPrimitive>
+              <item name="CPU" provision="30" constraint="0.5" differences="1" 
               pre_to_max="0.9"
               pre_of_max="0.1"
               min="5"
-              max="80"
+              max="40"
               price_per_unit="0.03"/>
-            <item name="Memory" provision="800" constraint="0.5" differences="3" 
+            <item name="Memory" provision="128" constraint="0.5" differences="3" 
               pre_to_max="0.9"
               pre_of_max="0.1"
-              min="500"
-              max="800"
+              min="100"
+              max="150"
               price_per_unit="0.07"/>
            </hardwareControlPrimitive>
            
         <service name="edu.rice.rubis.servlets.SearchItemsByRegion">
-           <softwareControlPrimitive>
-                <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
+               <softwareControlPrimitive>
+                <item name="Concurrency" provision="5" constraint="0.5" differences="1" 
               pre_to_max="0.7"
               pre_of_max="0.1"
               min="2"
-              max="100"
+              max="10"
               price_per_unit="0.05"/>
            </softwareControlPrimitive>
            
@@ -205,7 +205,7 @@
            <!-- Cost can be created based on the other information -->
            
         </service>
-        <service name="edu.rice.rubis.servlets.PutBid">
+        <service name="edu.rice.rubis.servlets.BrowseCategories">
            <softwareControlPrimitive>
                 <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
               pre_to_max="0.7"
@@ -236,7 +236,7 @@
             <item name="Workload"/>
            </environmentalPrimitive>
         </service>
-        <service name="edu.rice.rubis.servlets.BrowseCategories">
+        <service name="edu.rice.rubis.servlets.PutBid">
           <environmentalPrimitive >
             <item name="Workload"/>
            </environmentalPrimitive>
@@ -326,28 +326,28 @@
   
    <vm id="miku">
   
-           <hardwareControlPrimitive>
-              <item name="CPU" provision="60" constraint="0.5" differences="1" 
+              <hardwareControlPrimitive>
+              <item name="CPU" provision="30" constraint="0.5" differences="1" 
               pre_to_max="0.9"
               pre_of_max="0.1"
               min="5"
-              max="80"
+              max="40"
               price_per_unit="0.03"/>
-            <item name="Memory" provision="800" constraint="0.5" differences="3" 
+            <item name="Memory" provision="128" constraint="0.5" differences="3" 
               pre_to_max="0.9"
               pre_of_max="0.1"
-              min="500"
-              max="800"
+              min="100"
+              max="150"
               price_per_unit="0.07"/>
            </hardwareControlPrimitive>
            
         <service name="edu.rice.rubis.servlets.BrowseRegions">
-           <softwareControlPrimitive>
-                <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
+               <softwareControlPrimitive>
+                <item name="Concurrency" provision="5" constraint="0.5" differences="1" 
               pre_to_max="0.7"
               pre_of_max="0.1"
               min="2"
-              max="100"
+              max="10"
               price_per_unit="0.05"/>
            </softwareControlPrimitive>
            
@@ -367,7 +367,7 @@
            <!-- Cost can be created based on the other information -->
            
         </service>
-        <service name="edu.rice.rubis.servlets.StoreBuyNow">
+        <service name="edu.rice.rubis.servlets.SearchItemsByCategory">
            <softwareControlPrimitive>
                 <item name="Concurrency" provision="35" constraint="0.5" differences="1" 
               pre_to_max="0.7"
@@ -448,7 +448,7 @@
             <item name="Workload"/>
            </environmentalPrimitive>
         </service>
-         <service name="edu.rice.rubis.servlets.SearchItemsByCategory">
+         <service name="edu.rice.rubis.servlets.StoreBuyNow">
           <environmentalPrimitive >
             <item name="Workload"/>
            </environmentalPrimitive>

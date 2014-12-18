@@ -1,12 +1,10 @@
 package org.ssascaling.actuator.linux;
 
-import java.io.IOException;
-
 import org.ssascaling.actuator.Actuator;
 import org.ssascaling.executor.Executor;
 
 public class CPUNoActuator  implements Actuator {
-	final String command = "/bin/sh /home/tao/actuator/cpu_set_actuator.sh";
+	final String command = "/bin/sh /home/tao/actuator/cpu_no_actuator";
 
 	
 	@Override
@@ -20,8 +18,8 @@ public class CPUNoActuator  implements Actuator {
 		Process p = null;
 		try {
 			p = Runtime.getRuntime().exec(command + " " + alias + " " + value[0]);
-
-		} catch (IOException e) {
+			p.waitFor();
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		} finally {

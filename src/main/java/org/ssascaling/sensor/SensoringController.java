@@ -61,7 +61,7 @@ public class SensoringController {
 	private static final int NUMBER_OF_ORDER = 2;
 	private static final int MAX_DATA_RECORD = 10000;
 	// This should be set properly usually around 30 - 120 secs
-	private static int SAMPLING_INTERVAL = 30000;
+	private static int SAMPLING_INTERVAL = 120000;
 
 	
 	private static Timer timer;
@@ -167,7 +167,11 @@ public class SensoringController {
 
 		}*/
 		
-		init(0);
+		init(0, Ssascaling.class.getClassLoader());
+	}
+	
+	public static Set<String> getServiceName(){
+		return sensors.keySet();
 	}
 	
 	/**
@@ -175,7 +179,7 @@ public class SensoringController {
 	 * Also sending the delay for starting monitoring, in order to get
 	 * on the same peacse with other VM.
 	 */
-	public static void init(long delay) {
+	public static void init(long delay, ClassLoader loader) {
 		
 		try {
 			Thread.sleep(delay);
@@ -187,13 +191,13 @@ public class SensoringController {
 		intervals = new LinkedList<Interval>();
 		preIntervals = new LinkedList<Interval>();
 		sensors = new HashMap<String, Map<String, Sensor>> ();
-		sender = new Sender();
+		sender = new Sender(loader);
 		
 		try {
 		
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = dbFactory.newDocumentBuilder();
-			Document doc = builder.parse(Ssascaling.class.getClassLoader().getResourceAsStream("domU.xml"));
+			Document doc = builder.parse(loader.getResourceAsStream("/domU.xml"));
 			
 			doc.getDocumentElement().normalize();
 			

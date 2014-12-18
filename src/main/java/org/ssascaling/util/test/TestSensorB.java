@@ -24,6 +24,7 @@ import org.ssascaling.network.Sender;
 import org.ssascaling.sensor.*;
 import org.ssascaling.sensor.linux.CpuSensor;
 import org.ssascaling.test.modeling.Configurator;
+import org.ssascaling.util.Ssascaling;
 
 /**
  * This is running on the DomU.
@@ -79,7 +80,7 @@ public class TestSensorB {
 		intervals = new LinkedList<Interval>();
 		preIntervals = new LinkedList<Interval>();
 		sensors = new HashMap<String, List<Sensor>> ();
-		sender = new Sender();
+		sender = new Sender(Ssascaling.class.getClassLoader());
 		
 		// This is temp implementation
 		String[] services = new String[] {
@@ -181,7 +182,7 @@ public class TestSensorB {
 		intervals = new LinkedList<Interval>();
 		preIntervals = new LinkedList<Interval>();
 		sensors = new HashMap<String, List<Sensor>> ();
-		sender = new Sender();
+		sender = new Sender(Ssascaling.class.getClassLoader());
 		
 		// This is temp implementation
 		String[] services = new String[] {

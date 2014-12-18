@@ -168,5 +168,9 @@ public class Cost implements Objective  {
 		}
 		return predict(xValue);
 	}
+	
+	public void setInputs ( List<Primitive> inputs) {
+		this.inputs = inputs;
+	}
 
 }

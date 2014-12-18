@@ -156,6 +156,10 @@ public class Repository {
 		return directPrimitives.containsKey(obj)?  directPrimitives.get(obj).contains(p) : false;
 	}
 	
+	public static Set<Primitive> getDirectPrimitives (Objective obj) {
+		return directPrimitives.get(obj);
+	}
+	
 	public static int countDirectForAnObjective (Objective obj) {
 		return directPrimitives.containsKey(obj)? directPrimitives.get(obj).size() : 0;
 	}

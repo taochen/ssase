@@ -17,8 +17,8 @@ public class Sender {
 	// Dom0 IP
 	private String address;
 	
-	public Sender(){
-		init();
+	public Sender(ClassLoader loader){
+		init(loader);
 	}
 
 	public void send(String data) {
@@ -33,9 +33,33 @@ public class Sender {
 			os = new DataOutputStream(smtpSocket.getOutputStream());
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host: hostname");
+			try {
+				if (smtpSocket != null) {
+					smtpSocket.close();
+				}
+
+				if (os != null) {
+					os.close();
+				}
+			} catch (IOException ioe) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			System.err
 					.println("Couldn't get I/O for the connection to: hostname");
+			try {
+				if (smtpSocket != null) {
+					smtpSocket.close();
+				}
+
+				if (os != null) {
+					os.close();
+				}
+			} catch (IOException ioe) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} 
 		// If everything has been initialized then we want to write some data
 		// to the socket we have opened a connection to on port 25
@@ -56,11 +80,11 @@ public class Sender {
 	}
 	
 	
-	private void init(){  
+	private void init(ClassLoader loader){  
 		Properties configProp = new Properties();
 		
 		try {
-			configProp.load(Ssascaling.class.getClassLoader().getResourceAsStream("domU.properties"));
+			configProp.load(loader.getResourceAsStream("/domU.properties"));
 			port = Integer.parseInt(configProp.getProperty("port"));
 			address = configProp.getProperty("ip_address");
 			SensoringController.setSampleInterval(Integer.parseInt(configProp.getProperty("sampling_interval")));

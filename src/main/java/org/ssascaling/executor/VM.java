@@ -45,6 +45,15 @@ public class VM {
 		return Math.round(map.get(Type.Memory).getProvision());
 	}
 	
+
+	public long getMaxCpuCap() {
+		return Math.round(map.get(Type.CPU).getValueVector()[map.get(Type.CPU).getValueVector().length - 1]);
+	}
+	
+	public long getMaxMemory(){
+		return Math.round(map.get(Type.Memory).getValueVector()[map.get(Type.Memory).getValueVector().length - 1]);
+	}
+	
 	public Collection<HardwareControlPrimitive> getAllPrimitives(){
 		return list;
 	}

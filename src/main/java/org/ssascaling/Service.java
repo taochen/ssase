@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.ssascaling.objective.Cost;
 import org.ssascaling.objective.Objective;
+import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.primitive.SoftwareControlPrimitive;
 import org.ssascaling.qos.QualityOfService;
@@ -143,6 +145,28 @@ public class Service {
 		return objectives != null && objectives.size() != 0;
 	}
 	
+	public void updateCostModelInputs (){
+		Cost cost = null;
+		List<Primitive> list = new ArrayList<Primitive>();
+		for (Map.Entry<String, Objective> e : objectives.entrySet()) {
+			if (e.getValue() instanceof QualityOfService) {
+				for (Primitive p : e.getValue().getPrimitivesInput()) {
+					if (p instanceof ControlPrimitive && primitives.containsValue(p) && 
+							!list.contains(p)) {
+						list.add(p);
+					}
+				}
+			} else {
+				cost = (Cost) e.getValue();
+			}
+		}
+		
+		
+		cost.setInputs(list);
+		
+		
+	}
+	
 	public void print(){
 		System.out.print(name + " \n");
 		System.out.print("Objective: \n");
@@ -162,4 +186,5 @@ public class Service {
 		}
 	
 	}
+	
 }

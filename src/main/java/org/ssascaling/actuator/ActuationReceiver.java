@@ -19,7 +19,7 @@ import org.ssascaling.util.Ssascaling;
 public class ActuationReceiver {
 	
 	private int port;
-	
+	ServerSocket echoServer = null;
 	// Type name - invoker
 	private Map<String, Invoker> map = new HashMap<String, Invoker>();
 	
@@ -30,9 +30,31 @@ public class ActuationReceiver {
 		init();
 	}
 	
+	public void shutdown(){
+		try {
+			echoServer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void receive() {
+		 TCPreceive();
+	}
+	
+	public void HTTPreceive(String data) {
+		String[] temp = data.split("\n");
+		
+		for (String line : temp) {				
+			String[] split = line.split("-");
+			// Invoke as it read the file.
+			map.get(split[1]).invoke(split[0], Long.parseLong(split[2]));			
+		}
+	}
+	
+	public void TCPreceive() {
 
-		ServerSocket echoServer = null;
 
 		// Try to open a server socket on port 9999
 		// Note that we can't choose a port less than 1023 if we are not
@@ -46,6 +68,8 @@ public class ActuationReceiver {
 		// connections.
 		// Open input and output streams
 
+		
+		System.out.println("Receiver us runing!!!\n");
 		for (;;) {
 			try {
 
@@ -62,6 +86,13 @@ public class ActuationReceiver {
 							doActuation(is);
 						} catch (IOException e) {
 							System.out.println(e);
+						} finally {
+							try {
+								clientSocket.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 
@@ -69,7 +100,7 @@ public class ActuationReceiver {
 
 			} catch (IOException e) {
 				System.out.println(e);
-			}
+			} 
 
 		}
 

@@ -1,12 +1,11 @@
 package org.ssascaling.actuator.linux;
 
-import java.io.IOException;
 
 import org.ssascaling.actuator.Actuator;
 import org.ssascaling.executor.Executor;
 
 public class CPUPinActuator  implements Actuator {
-	final String command = "/bin/sh /home/tao/actuator/cpu_pin_actuator.sh";
+	final String command = "/bin/sh /home/tao/actuator/cpu_pin_actuator";
 
 	
 	@Override
@@ -20,8 +19,8 @@ public class CPUPinActuator  implements Actuator {
 		Process p = null;
 		try {
 			p = Runtime.getRuntime().exec(command + " " + alias + " " + value[0] + " " + value[1]);
-
-		} catch (IOException e) {
+			p.waitFor();
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		} finally {

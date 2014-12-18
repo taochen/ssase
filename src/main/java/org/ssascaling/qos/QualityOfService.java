@@ -11,6 +11,7 @@ import org.ssascaling.observation.listener.Listener;
 import org.ssascaling.observation.listener.ModelListener;
 import org.ssascaling.primitive.EnvironmentalPrimitive;
 import org.ssascaling.primitive.Primitive;
+import org.ssascaling.util.Timer;
 import org.ssascaling.util.Tuple;
 import org.ssascaling.util.Util;
 
@@ -73,6 +74,7 @@ public class QualityOfService implements Objective, Comparable{
 	protected double[] pendingValues = null;
 	protected int samplingCounter = 0;
 	protected int addingCounter = 0;
+	protected Timer timer = new Timer();
 	
 	protected QualityOfService(){
 		
@@ -729,9 +731,14 @@ public class QualityOfService implements Objective, Comparable{
 				return false;
 			}
 
+		} 
+		
+		boolean result = isMin? constraint < value : constraint > value;
+		if (result) {
+			timer.increaseTimer();
 		}
 		
-		return isMin? constraint < value : constraint > value;
+		return timer.isValidViolation();
 	}
 	
 	public void setIsReallyTrain(boolean isReallyTrain){

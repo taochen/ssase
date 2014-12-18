@@ -12,11 +12,11 @@ import org.ssascaling.Interval.ValuePair;
 
 public class Logger {
 
-	public static final String prefix = //"/home/tao/monitor/";
-		"/Users/tao/research/monitor/test/";
+	public static final String prefix = "/home/tao/monitor/";
+		//"/Users/tao/research/monitor/test/";
 	
 	private static long executionCount = 0;
-	
+	 
 	
 	public static void logMonitoredData (List<ValuePair> list,  Map<String, BufferedWriter> writers,  Map<String, 
 			List<Double>> values, String path, long previousNumberOfSample ) throws Exception{
@@ -62,6 +62,11 @@ public class Logger {
 	 * @param data
 	 */
 	public static synchronized void logExecutionData(String VM_ID, StringBuilder data, long executionCount ){
+		File file = null;
+		if(!(file = new File(prefix
+				+ VM_ID + "/")).exists()){
+			file.mkdir();
+		} 
 		
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(prefix

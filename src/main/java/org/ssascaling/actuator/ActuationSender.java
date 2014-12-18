@@ -2,7 +2,10 @@ package org.ssascaling.actuator;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,8 +41,40 @@ public class ActuationSender {
 	private ActuationSender(){
 		init();
 	}
-
+	
 	public boolean send(String dest, String data) {
+		return TCPsend(dest, data);
+	}
+	
+    public boolean httpSend(String dest, String data) {
+		
+		System.out.print("To " + dest + " with " + "\n" + data);
+
+		// Initialization section:
+		// Try to open a socket on port 25
+		// Try to open input and output streams
+		try {
+			URL url = new URL("http://"+map.get(dest).getVal1()+":"+map.get(dest).getVal2()
+					+"/rubis_servlets/servlet/ConfigServlet?data="+
+			URLEncoder.encode(data, "utf-8") ); 
+			
+		    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		    conn.setRequestMethod("GET");
+		    conn.connect();
+		 
+		    conn.getResponseCode();
+		   
+		} catch (UnknownHostException e) {
+			System.err.println("Don't know about host: hostname");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return true;
+	}
+
+	public boolean TCPsend(String dest, String data) {
 		
 		System.out.print("To " + dest + " with " + "\n" + data);
 
@@ -53,9 +88,33 @@ public class ActuationSender {
 			os = new DataOutputStream(smtpSocket.getOutputStream());
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host: hostname");
+			try {
+				if (smtpSocket != null) {
+					smtpSocket.close();
+				}
+
+				if (os != null) {
+					os.close();
+				}
+			} catch (IOException ioe) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			System.err
 					.println("Couldn't get I/O for the connection to: hostname");
+			try {
+				if (smtpSocket != null) {
+					smtpSocket.close();
+				}
+
+				if (os != null) {
+					os.close();
+				};
+			} catch (IOException ioe) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		// If everything has been initialized then we want to write some data
 		// to the socket we have opened a connection to on port 25

@@ -237,6 +237,10 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 		return antColony.invalidate(null, cpInput);
 	}
 	
+	public int noOfViolatedObjective(){
+		return antColony.invalidate(cpInput);
+	}
+	
 	/**
 	 * Used to evaluate on completed ants, so that it can decide 
 	 * if there is need to trigger dynamics. 

@@ -20,7 +20,7 @@ import org.ssascaling.util.SSAScalingThreadPool;
 
 public class ControlBus {
 	
-	public static final boolean isTestMonitoringOnly = false;
+	public static final boolean isTestMonitoringOnly = true;
 	public static final boolean isTestQoSModelingOnly = false;
 
 	// Ensure only one MAPE loop running at a time.
@@ -33,8 +33,8 @@ public class ControlBus {
 	
 	// This is the samples that current MAPE should deal with, as when too much pending MAPE, the
 	// later ones can simply abort.
-	private static long targetSample = 0;
-	private static boolean isThereIsMAPEwaiting = false;
+	//private static long targetSample = 0;
+	//private static boolean isThereIsMAPEwaiting = false;
 	@SuppressWarnings("unused")
 	public static void begin(DataInputStream is){
 		
@@ -126,12 +126,12 @@ public class ControlBus {
 				return;
 			}			
 		}
-		
+		System.gc();
 		// ===================== force one trigger (should be removed) =====================
-		if (expectedSample == 11) {
+		/*if (expectedSample == 11) {
 	 	objectivesToBeOptimized = new ArrayList<Objective>();
 	 	objectivesToBeOptimized.add(Repository.getService("jeos-"+Configurator.service).getObjective("Response Time"));
-		}
+		}*/
 		// ===================== force one trigger (should be removed) =====================
 		
 		// If need trigger optimization in the Planer, then the Analyzer should tell.

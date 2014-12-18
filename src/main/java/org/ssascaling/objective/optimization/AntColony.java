@@ -55,7 +55,7 @@ public abstract class AntColony implements  ModelListener {
 	    protected int      numberOfAnt;
 	    protected int      antRatio = 5;
 	    protected int      iterCounter = 0;
-	    protected int      iterations = 20;
+	    protected int      iterations = 10;
 	    
 	    protected int completedAnt=0;
 	    
@@ -486,6 +486,8 @@ public abstract class AntColony implements  ModelListener {
 	    protected abstract void globalUpdatingRule();
 	    
 	    protected abstract boolean invalidate(Ant ant, LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput);
+	    
+	    protected abstract int invalidate(LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput);
 	    
 	    protected abstract Structure selectStrcture(int i,Structure[] structures);
 	    

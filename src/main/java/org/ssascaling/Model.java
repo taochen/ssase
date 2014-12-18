@@ -602,9 +602,9 @@ public class Model {
 		} else if (function instanceof RegressionTree) {
 			//System.out.print(" PREDICTED RT INPUT " + Arrays.toString(x) +  "\n");
 		}
-		System.out.print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n");
-		System.out.print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " + selectors[ModelFunction.ARMAX].getOrder() +  "\n");
-		System.out.print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n");
+		//System.out.print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n");
+		//System.out.print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " + selectors[ModelFunction.ARMAX].getOrder() +  "\n");
+		//System.out.print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n");
 		double result = function==null? 0 : function.predict(x);
 		
 		/******************synchronized(writeLock) {

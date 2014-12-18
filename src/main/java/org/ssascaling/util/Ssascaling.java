@@ -3,9 +3,14 @@ package org.ssascaling.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -23,6 +28,7 @@ import org.ssascaling.executor.VM;
 import org.ssascaling.network.Receiver;
 import org.ssascaling.objective.Cost;
 import org.ssascaling.objective.Objective;
+import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.primitive.EnvironmentalPrimitive;
 import org.ssascaling.primitive.HardwareControlPrimitive;
 import org.ssascaling.primitive.Primitive;
@@ -34,10 +40,136 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Ssascaling {
-
-	
 	
 	public static void main (String[] arg) {
+		
+		if (arg.length == 0) {
+			testExecution();
+		}
+		
+		if ("0".equals(arg[0])) {
+			activate ();
+		} else if ("1".equals(arg[0])) {
+			testExecution();
+		} else if ("2".equals(arg[0])) {
+			activateSensors("192.168.0.101");
+			activateSensors("192.168.0.102");
+			activateSensors("192.168.0.103");
+		} else {
+			testExecution();
+		}
+		
+	}
+	
+	public static boolean activateSensors(String dest) {
+
+		HttpURLConnection conn = null;
+		// Initialization section:
+		// Try to open a socket on port 25
+		// Try to open input and output streams
+		try {
+			URL url = new URL("http://" + dest + ":8080"
+					+ "/rubis_servlets/servlet/ConfigServlet?data=1");
+
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.connect();
+
+			System.out.print(dest + " : " + conn.getResponseCode() + "\n");
+
+		} catch (UnknownHostException e) {
+			System.err.println("Don't know about host: hostname");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+				conn = null;
+			}
+		}
+
+		return true;
+	}
+
+	public static void testExecution(){
+		ControlPrimitive threadOfService1 = new SoftwareControlPrimitive(null, "jeos-edu.rice.rubis.servlets.SearchItemsByCategory", false, null, null, 0,0,1, 0.7,0.1,2, 80);
+		threadOfService1.setType(Type.Thread);
+		//threadOfService1.setAlias("test.service1");
+		threadOfService1.setActuator(new ThreadActuator(null));
+		ControlPrimitive threadOfService2 = new SoftwareControlPrimitive(null, "jeos-edu.rice.rubis.servlets.BrowseCategories", false, null, null, 0,0,1, 0.7,0.1,2, 80);
+		threadOfService2.setType(Type.Thread);
+		//threadOfService2.setAlias("test.service2");
+		threadOfService2.setActuator(new ThreadActuator(null));
+		
+		HardwareControlPrimitive jeosCPU = new HardwareControlPrimitive(null, "jeos", true, null, null, 0,0,1, 0.9,0.1,5, 80);
+		jeosCPU.setType(Type.CPU);
+		//jeosCPU.setAlias("jeos");
+		((ControlPrimitive)jeosCPU).setProvision(30);
+		jeosCPU.setActuator(new CPUCapActuator());
+		jeosCPU.setHardware(true);
+		HardwareControlPrimitive jeosMemory = new HardwareControlPrimitive(null, "jeos", true, null, null, 0,0,5, 0.9,0.1,100, 300);
+		jeosMemory.setType(Type.Memory);
+		//jeosMemory.setAlias("jeos");
+		((ControlPrimitive)jeosMemory).setProvision(128);
+		jeosMemory.setActuator(new MemoryActuator());
+		jeosMemory.setHardware(true);
+		
+		HardwareControlPrimitive kittyCPU = new HardwareControlPrimitive(null, "kitty", true, null, null, 0,0,1, 0.9,0.1,5, 80);
+		kittyCPU.setType(Type.CPU);
+		//kittyCPU.setAlias("kitty");
+		((ControlPrimitive)kittyCPU).setProvision(30);
+		kittyCPU.setActuator(new CPUCapActuator());
+		kittyCPU.setHardware(true);
+		HardwareControlPrimitive kittyMemory = new HardwareControlPrimitive(null, "kitty", true, null, null, 0,0,5, 0.9,0.1,100, 300);
+		kittyMemory.setType(Type.Memory);
+		//kittyMemory.setAlias("kitty");
+		((ControlPrimitive)kittyMemory).setProvision(128);
+		kittyMemory.setActuator(new MemoryActuator());
+		kittyMemory.setHardware(true);
+		
+		HardwareControlPrimitive mikuCPU = new HardwareControlPrimitive(null, "miku", true, null, null, 0,0,1, 0.9,0.1,5, 80);
+		mikuCPU.setType(Type.CPU);
+		//mikuCPU.setAlias("miku");
+		((ControlPrimitive)mikuCPU).setProvision(30);
+		mikuCPU.setActuator(new CPUCapActuator());
+		mikuCPU.setHardware(true);
+		HardwareControlPrimitive mikuMemory = new HardwareControlPrimitive(null, "miku", true, null, null, 0,0,5, 0.9,0.1,100, 300);
+		mikuMemory.setType(Type.Memory);
+		//mikuMemory.setAlias("miku");
+		((ControlPrimitive)mikuMemory).setProvision(128);
+		mikuMemory.setActuator(new MemoryActuator());
+		mikuMemory.setHardware(true);
+		
+		Executor.init(new HardwareControlPrimitive[]{jeosCPU, jeosMemory, kittyCPU, kittyMemory, mikuCPU, mikuMemory});
+		Executor.print();
+		
+		System.out.print("-------------- \n");
+		LinkedHashMap<ControlPrimitive, Double> decisions = new LinkedHashMap<ControlPrimitive, Double>();
+		
+		decisions.put(jeosCPU, 120.5);
+		decisions.put(jeosMemory, 334.6);
+		
+		decisions.put(kittyCPU, 79.9);
+		decisions.put(kittyMemory, 185.4);
+		
+		decisions.put(mikuCPU, 21.4);
+		decisions.put(mikuMemory, 274.9);
+		
+		
+		decisions.put(threadOfService1, 54.0);
+		decisions.put(threadOfService2, 27.0);
+		//decisions.put(kittyCPU, 79.9);
+		//decisions.put(kittyMemory, 185.4);
+		long time = System.currentTimeMillis();
+		Executor.execute(decisions);
+		Executor.print();
+		
+		System.out.print("Time -------------- " +(System.currentTimeMillis() - time)+"\n");	
+		System.out.print("-------------- \n");
+		
+	}
+	
+	public static void activate () {
 		
 		try {
 			
@@ -345,7 +477,7 @@ public class Ssascaling {
 			Executor.init(3);
 			
 					
-			//Receiver r = new Receiver();
-			//r.receive();
+			Receiver r = new Receiver();
+			r.receive();
 	}
 }

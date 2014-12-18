@@ -5,7 +5,7 @@
 	<artifactId>ssascaling-core</artifactId>
 	<version>0.0.1</version>
 	<name>SSASCALING-DISTRIBUTION</name>
-	<build>
+	<build> 
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -89,7 +89,7 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<scp file="${basedir}/target/ssascaling-core-0.0.1.one-jar.jar" todir="tao@192.168.0.21:/home/tao" password="Monday22" />
+								<!-- <scp file="${basedir}/target/ssascaling-core-0.0.1.one-jar.jar" todir="tao@192.168.0.21:/home/tao" password="Monday22" /> -->
 							</tasks>
 						</configuration>
 						

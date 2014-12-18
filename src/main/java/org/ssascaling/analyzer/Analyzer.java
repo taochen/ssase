@@ -174,7 +174,7 @@ public class Analyzer {
 	}
 	
 	private static  List<Objective> detectSymptoms(){
-		// TODO only trigger if the current violation has been longer than t intervals and the current
+		// Done! only trigger if the current violation has been longer than t intervals and the current
 		// configuration has been up and running for t intervals.
 		if (!isReachTheLeastSamples /*Only detect when essential number of samples have been collected*/) {
 			return null;
@@ -196,6 +196,10 @@ public class Analyzer {
 				 result.add(c);
 			 }
 		 }
+		 
+		 /*for (Service s : Repository.getAllServices() ) {
+			 s.updateCostModelInputs();
+		 }*/
 		 
 		 // Doing the first run of filtering objectives that belong to the same region.
 		 // TODO May also communicate with other PM.

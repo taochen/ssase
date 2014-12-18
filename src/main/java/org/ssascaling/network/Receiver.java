@@ -10,6 +10,7 @@ import java.util.Properties;
 import org.ssascaling.ControlBus;
 import org.ssascaling.monitor.Monitor;
 import org.ssascaling.util.Ssascaling;
+import org.ssascaling.util.Timer;
 
 public class Receiver {
 	
@@ -56,6 +57,13 @@ public class Receiver {
 
 						} catch (IOException e) {
 							System.out.println(e);
+						} finally {
+							try {
+								clientSocket.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 
@@ -77,6 +85,7 @@ public class Receiver {
 		try {
 			configProp.load(Ssascaling.class.getClassLoader().getResourceAsStream("dom0.properties"));
 			port = Integer.parseInt(configProp.getProperty("port"));
+			Timer.setThreshold(Integer.parseInt(configProp.getProperty("violation_threshold")));
 			//Monitor.setSampleInterval(Integer.parseInt(configProp.getProperty("sampling_interval")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

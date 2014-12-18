@@ -28,6 +28,8 @@ public class Executor {
 	// so the actual provision do not need to update them, but
 	// the max provision value does.
 	
+	// These two means the max possible provision values rather than the 
+	// actual provsion values.
 	private static int remainingMemory;
 	private static int remainingCPU;
 	
@@ -40,28 +42,31 @@ public class Executor {
 	
 	private static List<CPUCore> cores = new ArrayList<CPUCore>();
 	
-	public final static boolean isTest = true;
-	public final static long memoryThreshold = 100;
+	public final static boolean isTest = false;
+	public final static long memoryThreshold = 50;
 	public final static long CPUThreshold = 3;
 	
 	/**
 	 * This should be invoked after the Repository has been configured properly.
 	 * 
-	 * We assume that there would be on vcpu for each VM at the beginning.
+	 * We assume that there would be one vcpu for each VM at the beginning.
 	 */
 	public static void init (int noOfCPU /**This should be >= the number of initial VMs*/){
 		
 		
-		totalMemory = 4096 - 1200;
-		remainingMemory = totalMemory - 2400;
-		// 3 vcpus
-		remainingCPU = 300 - 240;
+		totalMemory = 1800 - 500;
+		remainingMemory = totalMemory;
 		
 		int index = 0;
 		for (VM v : Repository.getAllVMs()) {
 			index++;
 			cores.add(new CPUCore(index, new VM[]{v}));		
+			remainingMemory -= v.getMaxMemory();
+			remainingCPU += (int)(100 - v.getMaxCpuCap());
 		}
+		
+		
+		
 		
 		noOfCPU -= index;
 		
@@ -70,16 +75,19 @@ public class Executor {
 			index++;
 			cores.add(new CPUCore(index, new VM[]{}));		
 		}
+		
+		print();
 	}
 	
 	public static void init(HardwareControlPrimitive... primitives) {
-		totalMemory = 2048 - 500;
+		totalMemory = 1800 - 500;
 		remainingMemory = 0;
+		// 3 vcpus
 		remainingCPU = 0;
 		
 		/*This is a testing setup, the real setup should come from property files*/
-		Repository.setService("jeos-test.service1", new Service());
-		Repository.setService("jeos-test.service2", new Service());  
+		Repository.setService("jeos-edu.rice.rubis.servlets.SearchItemsByCategory", new Service());
+		Repository.setService("jeos-edu.rice.rubis.servlets.BrowseCategories", new Service());  
 		
 		/*2 thread software CP, 6 CPU/memory hardware CP*/
 		
@@ -122,7 +130,7 @@ public class Executor {
 		synchronized (lock) {
 			for (Map.Entry<ControlPrimitive, Double> entry :  listMap.entrySet()){
 				
-	
+				
 				// If not a responsible service nor VM, then return
 				if (!Repository.isContainService(entry.getKey().getAlias()) && !Repository.isContainVM(entry.getKey().getAlias())){
 					return;
@@ -152,7 +160,7 @@ public class Executor {
 							if (!vm.isScaleUp(value)) {
 								double v = 0;
 								
-								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, CPUThreshold))) {
+								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(false, value, CPUThreshold))) {
 									System.out.print("Scale in due to CPU on " + entry.getKey().getAlias() + " \n");
 									// TODO do scale in and free all resources.
 									//return;
@@ -206,7 +214,7 @@ public class Executor {
 								
 		                        double v = 0;
 								
-								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, remainingCPU))) {
+								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(true, value, remainingCPU))) {
 									//TODO should trigger scale out.
 									System.out.print("Scale out due to CPU on " + entry.getKey().getAlias() + " \n");
 									System.out.print(value + " : " + remainingCPU+ " \n");
@@ -218,7 +226,7 @@ public class Executor {
 								
 								
 								
-								remainingCPU += v;
+								remainingCPU -= v;
 								
 								
 								long add = value - vm.getCpuCap();
@@ -306,7 +314,7 @@ public class Executor {
 								// This is only the cap one.
 								entry.getKey().triggerActuator(new long[] { finalValue });
 								// Do pin cpu
-								int start = ((int)vm.getCPUNo()) + 1;
+								int start = ((int)vm.getCPUNo());
 								for (int index : newCoreIndex) {
 									cpuPinActuator.execute(entry.getKey().getAlias(), new long[]{start, index});
 									start++;
@@ -322,7 +330,7 @@ public class Executor {
 							// Scale down
 							if (value < entry.getKey().getProvision()) {
 								
-								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, memoryThreshold))) {
+								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(false, value, memoryThreshold))) {
 									System.out.print("Scale in due to memory on " + entry.getKey().getAlias() + " \n");
 									
 									// TODO do scale in and free all resources.
@@ -331,10 +339,11 @@ public class Executor {
 									v = 0;
 								}
 								
-								
+								remainingMemory += v;
 								
 							} else /*Scale up*/ {
-								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(value, remainingMemory))) {
+								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(true, value, remainingMemory))) {
+									
 									System.out.print("Small Scale out due to memory on " + entry.getKey().getAlias() + " \n");
 									System.out.print(value + " : " + remainingMemory+ " \n");
 									// TODO should trigger migration or replication for scale out as
@@ -344,9 +353,9 @@ public class Executor {
 									v = 0;
 								}
 								
-								
+								remainingMemory -= v;
 							}
-							remainingMemory += v;
+							
 							
 							entry.getKey().setProvision(value);
 							entry.getKey()
@@ -379,7 +388,7 @@ public class Executor {
 					softwareCPData.get(split[0]).append(split[1]  + "-" + entry.getKey().getType() + "-" + value + "\n");
 					
 					// There is usually no threshold for software CP.
-					entry.getKey().triggerMaxProvisionUpdate(value, Double.MAX_VALUE);
+					entry.getKey().triggerMaxProvisionUpdate(value > entry.getKey().getProvision(),value, Double.MAX_VALUE);
 					entry.getKey().setProvision(value);
 					entry.getKey().triggerActuator(new long[]{value});
 					

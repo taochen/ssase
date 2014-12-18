@@ -73,6 +73,30 @@ public class BasicAntColony extends AntColony {
 		}
 		return true;
 	}
+	
+	protected int invalidate(LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput) {
+		
+		int result = 0;
+		for (Entry<Objective, List<Tuple<Primitive, Double>>> entry : constraintedObjectiveMap.entrySet() ) {
+			double[] xValue = new double[entry.getValue().size()];
+			
+			for (int i = 0; i < entry.getValue().size(); i++) {
+				Primitive cp = entry.getValue().get(i).getVal1();
+				// If the CP is within the optimized objectives, then use it. otherwise use the original value
+				// in case it is a reduced objective.
+				xValue[i] = cpInput.containsKey(cp)? cpInput.get(cp).getVal2() : entry.getValue().get(i).getVal2();
+			}
+			
+			
+			
+			if (!entry.getKey().isSatisfied(xValue)) {
+				
+				result++;
+			}
+		
+		}
+		return result;
+	}
 
 	@Override
 	protected Structure selectStrcture(int i, Structure[] structures) {
@@ -116,7 +140,9 @@ public class BasicAntColony extends AntColony {
 			// 0 means the first non-dominated fronts.
 			optimal = doDominanceSelection(best, max, reducedAnts);
 		} else {
-			System.out.print("We do not have valid solutions " + ants.size() + "\n");
+			System.out.print("We do not have valid solutions  \n");
+			getLeastNoOfViolatedObjectives(ants);
+			System.out.print("We have valid solutions with least number of violated objectives " + ants.size() + "\n");
 			// 0 means the first non-dominated fronts.
 			// Store one in case there is no solution that violates non of the constraints.
 			optimal = doDominanceSelection(best, max, ants);
@@ -601,5 +627,23 @@ public class BasicAntColony extends AntColony {
 		ants.removeAll(list);
 	}
 
+	private void getLeastNoOfViolatedObjectives(List<Ant> ants){
+        Map<Ant, Integer> map = new  HashMap<Ant, Integer>();
+		int least = 0;
+		for (Ant a : ants) {
+			int no = a.noOfViolatedObjective();
+			map.put(a, no);
+			if (no < least) {
+				least = no;
+			}
+		}
+		
+		for ( Map.Entry<Ant, Integer> entry : map.entrySet()) {
+			if (entry.getValue() != least) {
+				ants.remove(entry.getKey());
+			}
+		}
+		
+	}
 
 }
