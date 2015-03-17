@@ -246,7 +246,7 @@ public class SuperRegionControl implements SuperRegionListener{
 
 					@Override
 					public void run() {
-						ControlBus.doDecisionMaking(entry.getKey(), uuid);
+						ControlBus.getInstance().doDecisionMaking(entry.getKey(), uuid);
 					}
 
 				});

@@ -105,8 +105,8 @@ public class AntValues {
 	}
 	
 	public void print(){
-		for (int i = 0; i < tau.length; i++) {
+		/*for (int i = 0; i < tau.length; i++) {
 		System.out.print(Arrays.toString(tau[i]) + "\n");
-		}
+		}*/
 	}
 }

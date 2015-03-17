@@ -24,7 +24,7 @@ public class ARMAStructureSelector implements StructureSelector{
 		Validator validator = (config == null  || config.length == 0)? new ARMACrossValidator() : new ARMACrossValidator(config);
 		long time = System.currentTimeMillis();
 		order = validator.validate(x, y)[0];
-		System.out.print("Time used for determining model strcture: " + (System.currentTimeMillis() - time) + "\n");
+		//System.out.print("Time used for determining model strcture: " + (System.currentTimeMillis() - time) + "\n");
 		
 		final Object[] object = validator.doDataSeparation(x,y, order);
 		

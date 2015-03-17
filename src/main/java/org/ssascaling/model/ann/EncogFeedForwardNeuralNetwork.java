@@ -508,7 +508,7 @@ public class EncogFeedForwardNeuralNetwork extends AbstractModelFunction impleme
 		this.R = 1-(Ry==0? RSS : RSS/Ry);
 		this.SMAPE = SMAPE/no;
 		this.MAPE = MAPE/no;
-		System.out.print(no+"MSE: " + bestEverNetwork.calculateError(trainingSet) + "\n");
+		//System.out.print(no+"MSE: " + bestEverNetwork.calculateError(trainingSet) + "\n");
 		return sum != 0;
 	}
 

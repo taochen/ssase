@@ -23,12 +23,12 @@ import org.ssascaling.util.SSAScalingThreadPool;
 
 public class RuleControlBus extends ControlBus {
 	
-	private final static AtomicInteger lock = new AtomicInteger(-1);
+	protected RuleControlBus (){
+		
+	}
 	
-	private static long expectedSample = Monitor.getNumberOfNewSamples();
-	private static List<Objective> objectivesToBeOptimized = null;
 
-	public static void begin(DataInputStream is){
+	public void begin(DataInputStream is){
 		// This is the Monitor, do not detect symptons but record historical data.
 		/*
 		 *The M part 
@@ -114,7 +114,7 @@ public class RuleControlBus extends ControlBus {
 			}
 		}
 		
-		objectivesToBeOptimized = null;
+		
 		
 		Set<Primitive> removed = new HashSet<Primitive>();
 		for (Primitive p : increased) {
@@ -147,9 +147,21 @@ public class RuleControlBus extends ControlBus {
 			}
 		}
 		
+		if(objectivesToBeOptimized != null && objectivesToBeOptimized.size() != 0) {
 		
-		Executor.execute(decisions);
-		Executor.print();
+		  Executor.execute(decisions);
+		  Executor.print();
+		}
+		
+		
+		synchronized(lock) {
+			
+			// Reset counter to zero upon finish.
+			lock.set(-1);
+			objectivesToBeOptimized = null;
+			lock.notifyAll();
+			System.out.print("***** MAPE finished " + samples + " *********\n");
+		}
 	}
 	
 	
@@ -255,4 +267,9 @@ public class RuleControlBus extends ControlBus {
 		 return result;
 		 
 	}
+	
+	public void doDecisionMaking (Objective obj, String uuid){
+		
+	}
+	
 }

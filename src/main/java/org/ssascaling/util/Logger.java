@@ -10,7 +10,7 @@ import java.util.Map;
 import org.ssascaling.Interval;
 import org.ssascaling.Interval.ValuePair;
 
-public class Logger {
+public class Logger { 
 
 	public static final String prefix = "/home/tao/monitor/";
 		//"/Users/tao/research/monitor/test/";
@@ -36,7 +36,7 @@ public class Logger {
 						// Insert 0 to the precceding values.
 						bw.write(String.valueOf(0));
 						bw.newLine();
-						System.out.print(vp.getName() + " write\n");
+						//System.out.print(vp.getName() + " write\n");
 					}
 				} else {
 					writers.put(vp.getName(), new BufferedWriter(new FileWriter(
@@ -74,9 +74,11 @@ public class Logger {
 
 			if (executionCount > 0) {
 				bw.newLine();
+				//System.out.print("-----------" + executionCount + "-----------" + "\n");
 				bw.write("-----------" + executionCount + "-----------");
 				bw.newLine();
 			}
+			//System.out.print(data.toString() + "\n");
 			bw.write(data.toString());
 			bw.close();
 		} catch (Exception e) {

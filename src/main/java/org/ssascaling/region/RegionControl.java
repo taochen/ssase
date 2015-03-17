@@ -63,8 +63,7 @@ public class RegionControl implements ModelListener {
     	calculateRegions(objs);
     }
 	
-    
-    private RegionControl(String id){
+    public RegionControl(String id){
     	this.id = id;
     	objectiveMap = new HashMap<Objective, Region>();
     }
@@ -182,7 +181,8 @@ public class RegionControl implements ModelListener {
 			for (Objective subObj : objs) {
 				
 				// If both have been assigned.
-				if (objectiveMap.containsKey(obj) && objectiveMap.containsKey(subObj) ) {
+				if (objectiveMap.containsKey(obj) && objectiveMap.containsKey(subObj) 
+						&& objectiveMap.get(obj).equals(objectiveMap.get(subObj)))  {
 					continue;
 				}
 				
@@ -193,20 +193,33 @@ public class RegionControl implements ModelListener {
 				
 				if (obj.isSensitiveToTheSamePrimitive(subObj, null)) {
 					//System.out.print(obj.getName() + " and " + subObj.getName() + " does sensitive\n");
-					if (objectiveMap.containsKey(obj) || objectiveMap.containsKey(subObj) ) {
+					
+					if (objectiveMap.containsKey(obj) && objectiveMap.containsKey(subObj) ) {
+						//System.out.print("******here!\n");
+						// Change the region!
+						Region target = objectiveMap.get(obj);
+						Region source = objectiveMap.get(subObj);
 						
-						if (objectiveMap.containsKey(obj)) {
+						for (Objective o : objectiveMap.keySet()) {
+							
+							if (source.equals(objectiveMap.get(o))) {
+								target.addObjective(o);
+								objectiveMap.put(o, target);
+							}
+							
+						}
+						
+					
+					} else if (objectiveMap.containsKey(obj)){
 							Region region = objectiveMap.get(obj);
 							region.addObjective(subObj);
 							objectiveMap.put(subObj, region);
-						} else if (objectiveMap.containsKey(subObj)) {
+					} else if (objectiveMap.containsKey(subObj)) {
 							Region region = objectiveMap.get(subObj);
 							region.addObjective(obj);
 							objectiveMap.put(obj, region);
-						}
-						
 					} else {
-						Region region = new Region();
+						Region region = Region.getNewRegionInstance();
 						region.addObjective(obj);
 						region.addObjective(subObj);
 						objectiveMap.put(obj, region);
@@ -223,7 +236,7 @@ public class RegionControl implements ModelListener {
 			for (Objective obj : objs) {
 				if (!objectiveMap.containsKey(obj)) {
 					//System.out.print("single: " + obj.getName()+"\n");
-					Region region = new Region();
+					Region region = Region.getNewRegionInstance();
 					region.addObjective(obj);;
 					objectiveMap.put(obj, region);
 				}
@@ -251,7 +264,7 @@ public class RegionControl implements ModelListener {
 
 					@Override
 					public void run() {
-						ControlBus.doDecisionMaking(entry.getValue().getVal1(), uuid);
+						ControlBus.getInstance().doDecisionMaking(entry.getValue().getVal1(), uuid);
 					}
 
 				});

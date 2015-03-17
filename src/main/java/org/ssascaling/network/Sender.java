@@ -3,6 +3,7 @@ package org.ssascaling.network;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Properties;
@@ -17,12 +18,12 @@ public class Sender {
 	// Dom0 IP
 	private String address;
 	
-	public Sender(ClassLoader loader){
-		init(loader);
+	public Sender(InputStream input){
+		init(input);
 	}
 
 	public void send(String data) {
-
+System.out.print(data + "\n");
 		Socket smtpSocket = null;
 		DataOutputStream os = null;
 		// Initialization section:
@@ -80,14 +81,15 @@ public class Sender {
 	}
 	
 	
-	private void init(ClassLoader loader){  
+	private void init(InputStream input){  
 		Properties configProp = new Properties();
 		
 		try {
-			configProp.load(loader.getResourceAsStream("/domU.properties"));
+			configProp.load(input);
 			port = Integer.parseInt(configProp.getProperty("port"));
 			address = configProp.getProperty("ip_address");
 			SensoringController.setSampleInterval(Integer.parseInt(configProp.getProperty("sampling_interval")));
+			//SensoringController.setSampleInterval(10000);
 			SensoringController.setVMID(configProp.getProperty("vm_id"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

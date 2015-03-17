@@ -80,7 +80,7 @@ public class TestSensorC {
 		intervals = new LinkedList<Interval>();
 		preIntervals = new LinkedList<Interval>();
 		sensors = new HashMap<String, List<Sensor>> ();
-		sender = new Sender(Ssascaling.class.getClassLoader());
+		sender = new Sender(Ssascaling.class.getClassLoader().getResourceAsStream("domU.properties"));
 		
 		// This is temp implementation
 		String[] services = new String[] {
@@ -182,7 +182,7 @@ public class TestSensorC {
 		intervals = new LinkedList<Interval>();
 		preIntervals = new LinkedList<Interval>();
 		sensors = new HashMap<String, List<Sensor>> ();
-		sender = new Sender(Ssascaling.class.getClassLoader());
+		sender = new Sender(Ssascaling.class.getClassLoader().getResourceAsStream("domU.properties"));
 		
 		// This is temp implementation
 		String[] services = new String[] {

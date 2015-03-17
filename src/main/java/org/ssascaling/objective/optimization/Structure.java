@@ -124,7 +124,7 @@ public class Structure {
 			solutions.add(ant);
 		}
 
-		System.out.print("===========" + selected + "\n");
+		//System.out.print("===========" + selected + "\n");
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class Structure {
 				globalBestAnt = localBestAnt;
 			} 
 				
-			System.out.print(globalBestAnt.getValue() +" : "+ localBestAnt.getValue() + "********* compare \n");
+			//System.out.print(globalBestAnt.getValue() +" : "+ localBestAnt.getValue() + "********* compare \n");
 			globalBestAnt.print();
 			
 			
@@ -349,6 +349,6 @@ public class Structure {
 	}
 	
 	private void print(){
-		System.out.print(objective.getName() + " MAX: " + MAX_VALUE_TAU + ", MIN: " + MIN_VALUE_TAU + "\n");
+		//System.out.print(objective.getName() + " MAX: " + MAX_VALUE_TAU + ", MIN: " + MIN_VALUE_TAU + "\n");
 	}
 }

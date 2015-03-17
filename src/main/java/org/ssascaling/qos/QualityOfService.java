@@ -62,7 +62,7 @@ public class QualityOfService implements Objective, Comparable{
 	
 
 	// Least number of samples received before triggering training.
-	private int leastNumberOfSample = 10; //340
+	public final static int leastNumberOfSample = 88; //340,88
 	// Some QoS e.g., throughput's constraints need to rely on some EP.
 	private EnvironmentalPrimitive ep;
 	
@@ -367,19 +367,19 @@ public class QualityOfService implements Objective, Comparable{
 		double su10 = model.predict(xValue, true, 1, 0);
 		double su01 = model.predict(xValue, true, 0, 1);
 		
-		System.out.print("***** The prediction MAPE is " +  (Math.abs(su - expectedY )/(expectedY==0? 1 : expectedY))  +"*********\n");
+		//System.out.print("***** The prediction MAPE is " +  (Math.abs(su - expectedY )/(expectedY==0? 1 : expectedY))  +"*********\n");
 		if ((aMape = Math.abs(su10 - expectedY )/(expectedY==0? 1 : expectedY)) <
 				(bMape = Math.abs(su01 - expectedY)/(expectedY==0? 1 : expectedY))){
-		    System.out.print("aMape: " + aMape + ", bMape: " + bMape + "\n");
+		    //System.out.print("aMape: " + aMape + ", bMape: " + bMape + "\n");
 			a += bMape - aMape;
 			
 		} else if (aMape > bMape){
-			System.out.print("aMape: " + aMape + ", bMape: " + bMape + "\n");
+			//System.out.print("aMape: " + aMape + ", bMape: " + bMape + "\n");
 			b += aMape - bMape;
 		}
 		
 		
-		System.out.print("***** The new a is" + a + ", the new b is " + b +"*********\n");
+		//System.out.print("***** The new a is" + a + ", the new b is " + b +"*********\n");
 	}
 	
 	// TODO change it to private

@@ -11,6 +11,7 @@ import org.ssascaling.primitive.Primitive;
 import org.ssascaling.util.Tuple;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -39,7 +40,13 @@ public class Region {
 
 	protected int finishedUpdateCounter = 0;
 	
-	public Region () {
+	
+	public static Region getNewRegionInstance () {
+		return new NaiveRegion();
+	}
+	
+	
+	protected Region () {
 		this.objectives = new ArrayList<Objective>();
 	}
 	
@@ -49,7 +56,15 @@ public class Region {
 	 * @param obj
 	 */
 	public void addObjective (Objective obj) {
+		//if(objectives.contains(obj)) {
+			//return;
+		//}
 		objectives.add(obj);
+	}
+	
+	
+	public void addObjectives (Collection<Objective> objs) {
+		objectives.addAll(objs);
 	}
 
 	/**
@@ -142,9 +157,9 @@ public class Region {
 				}
 			}
 			
-			for (Primitive p : primitives) {
+			/*for (Primitive p : primitives) {
 				   System.out.print("The CP for optimization: " + p.getAlias() + " : " + p.getName() + "\n");
-			}
+			}*/
 			
 			
 			BasicAntColony aco = new BasicAntColony(new Random().nextInt(),

@@ -43,8 +43,8 @@ public class Ssascaling {
 	
 	public static void main (String[] arg) {
 		
-		if (arg.length == 0) {
-			testExecution();
+		if (arg == null || arg.length == 0) {
+			activate();
 		}
 		
 		if ("0".equals(arg[0])) {
@@ -91,6 +91,8 @@ public class Ssascaling {
 		return true;
 	}
 
+
+	
 	public static void testExecution(){
 		ControlPrimitive threadOfService1 = new SoftwareControlPrimitive(null, "jeos-edu.rice.rubis.servlets.SearchItemsByCategory", false, null, null, 0,0,1, 0.7,0.1,2, 80);
 		threadOfService1.setType(Type.Thread);
@@ -254,7 +256,7 @@ public class Ssascaling {
 	    								SoftwareControlPrimitive cp = new SoftwareControlPrimitive(
 	    										softwareCPs.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
 	    										vmName+"-"+serviceName, 
-	    										true, 
+	    										false, 
 	    										Type.getTypeByString(softwareCPs.item(k).getAttributes().getNamedItem("name").getNodeValue()),
 	    										Type.getActuatorByString(softwareCPs.item(k).getAttributes().getNamedItem("name").getNodeValue()),
 	    										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("provision").getNodeValue()), 
@@ -475,9 +477,10 @@ public class Ssascaling {
 			}
 			
 			Executor.init(3);
-			
+			//new HistoryLoader().run();
 					
-			Receiver r = new Receiver();
-			r.receive();
+			//new Receiver().receive();
+			
+			
 	}
 }

@@ -75,7 +75,7 @@ public class BasicAntColony extends AntColony {
 	}
 	
 	protected int invalidate(LinkedHashMap<ControlPrimitive, Tuple<Integer, Double>> cpInput) {
-		
+		//System.out.print("No " + cpInput.size() + "\n");
 		int result = 0;
 		for (Entry<Objective, List<Tuple<Primitive, Double>>> entry : constraintedObjectiveMap.entrySet() ) {
 			double[] xValue = new double[entry.getValue().size()];
@@ -90,6 +90,7 @@ public class BasicAntColony extends AntColony {
 			
 			
 			if (!entry.getKey().isSatisfied(xValue)) {
+				//System.out.print(entry.getKey().getName() + " is not satisfied, value: " + entry.getKey().predict(xValue)  + "\n");
 				
 				result++;
 			}
@@ -294,7 +295,7 @@ public class BasicAntColony extends AntColony {
 		
 		System.out.print("Smallest dominance rank value is " + smallest + "\n");
 	
-		System.out.print("Dominated by: " + Arrays.toString(n) + "\n");
+		//System.out.print("Dominated by: " + Arrays.toString(n) + "\n");
 			
 		
 		return f1;
@@ -630,12 +631,18 @@ public class BasicAntColony extends AntColony {
 	private void getLeastNoOfViolatedObjectives(List<Ant> ants){
         Map<Ant, Integer> map = new  HashMap<Ant, Integer>();
 		int least = 0;
+		int count = 0;
 		for (Ant a : ants) {
 			int no = a.noOfViolatedObjective();
 			map.put(a, no);
-			if (no < least) {
+			if (least == 0 || no < least) {
 				least = no;
+				count++;
 			}
+		}
+		System.out.print("Number of least volidated: " + least + "\n");
+		if (count == ants.size()) {		
+			return;
 		}
 		
 		for ( Map.Entry<Ant, Integer> entry : map.entrySet()) {

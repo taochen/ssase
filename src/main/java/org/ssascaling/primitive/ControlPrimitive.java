@@ -8,6 +8,8 @@ import org.ssascaling.util.Repository;
 import org.ssascaling.util.Timer;
 
 public abstract class ControlPrimitive implements Primitive, Comparable{
+	
+	public static boolean isPreLoad = true;
 
 	protected double[] array;
 	// Used to distingush group for non-primary primitives.
@@ -21,6 +23,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
     // The differences between different optional value.
     // This is for both software and hardware CP.
     protected int a;
+    protected int safe = 2;
     
     // The precentage to trigger change of the max provision value.
     protected double b;
@@ -360,34 +363,42 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		if (isIncrease && decidedValue / valueVector[valueVector.length - 1] > b  &&
 				value / valueVector[valueVector.length - 1] > b  /*consider the latest observed value as well*/) {
 			// Need scale out
-			if (Math.round(valueVector[valueVector.length - 1] * g) > threshold) {
-				System.out.print(Math.round(valueVector[valueVector.length - 1] * g) + " : " + threshold+ "\n");
+			if (Math.ceil(valueVector[valueVector.length - 1] * g) > threshold) {
+				//System.out.print(Math.round(valueVector[valueVector.length - 1] * g) + " : " + threshold+ "\n");
 				return Double.NaN;
 			}
 			
 			System.out.print(name + " - " +  alias + "'s max provision change from " + valueVector[valueVector.length - 1]  + " to "+ 
-					Math.round(valueVector[valueVector.length - 1] * (1+g)) + "\n");
+					Math.ceil(valueVector[valueVector.length - 1] * (1.0+g)) + "\n");
 			
-			double result = Math.round(valueVector[valueVector.length - 1] * g) ;
+			double result = Math.ceil(valueVector[valueVector.length - 1] * g) ;
 			
-			updateValueVector(valueVector[0], valueVector[valueVector.length - 1] * (1+g));
+			updateValueVector(valueVector[0], valueVector[valueVector.length - 1] * (1.0+g));
 			return result;
 		// If decrease
 		} else if (!isIncrease && decidedValue / valueVector[valueVector.length - 1] < b &&
 					value / valueVector[valueVector.length - 1] < b /*consider the latest observed value as well*/) {
 			
 			// Need scale in
-			if (Math.round(valueVector[valueVector.length - 1] * (1-g)) < threshold) {
+			if (Math.ceil(valueVector[valueVector.length - 1] * (1.0-g)) < threshold) {
 				return Double.NaN;
 			}
 			
+		
+			
+			// The max should be always bigger than the decidedValue.
+			if (valueVector[valueVector.length - 1] * (1.0-g) <= decidedValue ||
+					valueVector[valueVector.length - 1] * (1.0-g) <= valueVector[0] + safe*a) {
+				return 0;
+			}
+			
 			System.out.print(name + " - " +  alias + "'s max provision change from " + valueVector[valueVector.length - 1]  + " to "+ 
-					Math.round(valueVector[valueVector.length - 1] * (1-g)) + "\n");
+					Math.ceil(valueVector[valueVector.length - 1] * (1.0-g)) + "\n");
 			
 		
-			double result =  Math.round(valueVector[valueVector.length - 1] * g);
+			double result =  Math.ceil(valueVector[valueVector.length - 1] * g);
 			
-			updateValueVector(valueVector[0], valueVector[valueVector.length - 1] * (1-g));	
+			updateValueVector(valueVector[0], valueVector[valueVector.length - 1] * (1.0-g));	
 			return result;
 		}
 		
@@ -395,22 +406,39 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		
 	}
 	
+	public void outputCurrentVector(){
+		System.out.print(this.getAlias() + " Min: " + valueVector[0] + ", Max: " + valueVector[valueVector.length - 1] +"\n");
+	}
+	
 	protected void triggerMinProvisionUpdate (double value){
 		// Make the min provision a bit larger than the actual usage.
 		value = (value < h)? h : value;
-		if (Math.round(value) != 0 && Math.round(value) < valueVector[0]) {
-			System.out.print(name + " - " + alias + ", New min provsion value: " + Math.round(value) +", max provision value: " + valueVector[valueVector.length - 1] + "\n");
-			updateValueVector(value, valueVector[valueVector.length - 1]);
+		
+		if (isPreLoad) {
+			value = h;
+		}
+		// For hardware CP, it is safer to use the latest value as the min value.
+		if (this instanceof HardwareControlPrimitive) {
+			if (Math.ceil(value) != 0) {
+				//System.out.print(name + " - " + alias + ", New min provsion value: " + Math.round(value) +", max provision value: " + valueVector[valueVector.length - 1] + "\n");
+				updateValueVector(value, valueVector[valueVector.length - 1]);
+			}
+		} else {	
+			if (Math.ceil(value) != 0 /*&& Math.ceil(value) < valueVector[0]*/) {
+				//System.out.print(name + " - " + alias + ", New min provsion value: " + Math.round(value) +", max provision value: " + valueVector[valueVector.length - 1] + "\n");
+				updateValueVector(value, valueVector[valueVector.length - 1]);
+			}
 		}
 	}
 	
 	protected void updateValueVector (double minProvision, double maxProvision){
-		int max = (int)Math.round(maxProvision);
-		int min = (int)Math.round(minProvision);
+		int max = (int)Math.ceil(maxProvision);
+		int min = (int)Math.ceil(minProvision);
 		
-		// This should not occur outside test cases.
+		
+		// This may occur on Xen for CPU cap.
 		if (min > max) {
-			min = 0;
+			max = (int)Math.ceil(minProvision * (valueVector[valueVector.length - 1] / valueVector[0]));
 		}
 		
 		
@@ -432,7 +460,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 			valueVector[i] = value;
 		}
 		
-		System.out.print(name + " new optional value: " + Arrays.toString(valueVector) + "\n");
+		//System.out.print(name + " new optional value: " + Arrays.toString(valueVector) + "\n");
 	}
 	
 }

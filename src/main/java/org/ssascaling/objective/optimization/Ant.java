@@ -159,7 +159,7 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 		snapshotedValue = evaluate();
 		
 		
-		System.out.print(strcture.getObjective().getName() + " is finished, achevied value: " + snapshotedValue  + "\n");
+		//System.out.print(strcture.getObjective().getName() + " is finished, achevied value: " + snapshotedValue  + "\n");
 		
 		
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -308,9 +308,9 @@ public abstract class Ant extends Observable implements Runnable, Comparable<Ant
 	
 	
 	public void print(){
-		for (Map.Entry<ControlPrimitive, Tuple<Integer, Double>> e : cpInput.entrySet()) {
+		/*for (Map.Entry<ControlPrimitive, Tuple<Integer, Double>> e : cpInput.entrySet()) {
 			   System.out.print(e.getKey().getAlias() + ", " + e.getKey().getName() + ", value: " + e.getValue().getVal2() +  "\n");
-		}
+		}*/
 	}
 	
 	public boolean isBetter(Ant another){

@@ -53,7 +53,7 @@ public class Receiver {
 
 							DataInputStream is = new DataInputStream(
 									clientSocket.getInputStream());
-							ControlBus.begin(is);
+							ControlBus.getInstance().begin(is);
 
 						} catch (IOException e) {
 							System.out.println(e);

@@ -47,6 +47,30 @@ public class Monitor {
 		
 	}
 	
+	public synchronized static long write(int count) {
+
+
+		previousNumberOfSample = numberOfSample;
+		numberOfSample += count;
+
+		System.out.print("Total sample is : " + numberOfSample + "\n");
+		
+		
+		numberOfSenceToTriggerModeling++;
+		if (numberOfSenceToTriggerModeling == totalNumberOfSenceToTriggerModeling) {
+			numberOfSenceToTriggerModeling = 0;
+
+			return numberOfSample / totalNumberOfVM;
+		}
+		
+		
+
+		return 0;
+	}
+	
+	public static void outputCurrentSample(){
+		System.out.print("Current sample: " + (numberOfSample/totalNumberOfVM) + "\n");
+	}
 	
 	/**
 	 * 

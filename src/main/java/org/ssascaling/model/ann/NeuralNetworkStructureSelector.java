@@ -20,7 +20,7 @@ public class NeuralNetworkStructureSelector implements StructureSelector{
 		Validator validator = (structureConfig == null || structureConfig.length == 0)? new NeuralNetworkCrossValidator() : new NeuralNetworkCrossValidator(structureConfig, functionConfig);
 		long time = System.currentTimeMillis();
 		hidden = validator.validate(x, y, meanIdeal)[0];
-		System.out.print("Time used for determining model strcture: " + (System.currentTimeMillis() - time) + "\n");
+		//System.out.print("Time used for determining model strcture: " + (System.currentTimeMillis() - time) + "\n");
 		model = new EncogFeedForwardNeuralNetwork(x,y,meanIdeal,hidden,0, true, functionConfig);
 		logger.debug("The determined number of hidden neuron is " + hidden);
 	}

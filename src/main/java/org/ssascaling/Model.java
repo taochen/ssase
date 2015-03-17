@@ -215,7 +215,7 @@ public class Model {
 			boolean isFeaturesChanged = false;
 			// This set needs to be transfered into a sorted collection.
 			Set<Primitive> newInputs = primitiveLearner.select(output, possibleInputs);
-			System.out.print("Actual Input " + newInputs.size() + "\n");
+			//System.out.print("Actual Input " + newInputs.size() + "\n");
 			dataset.clear();
 			if (newInputs.size() != inputs.size()) {
 				inputs.clear();
@@ -280,10 +280,10 @@ public class Model {
 			outputMean = outputMean/formattedInput.length;
 			clusterOutputMean = clusterOutputMean/length;
 						
-			System.out.print("Number of primitives " + inputs.size() + " \n");
+			//System.out.print("Number of primitives " + inputs.size() + " \n");
 			
 			if (isFeaturesChanged) {
-				System.out.print("Strcuture changed \n");
+				//System.out.print("Strcuture changed \n");
 				
 				
 				
@@ -307,7 +307,7 @@ public class Model {
 				}
 				
 				Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
-				System.out.print("Train finished\n");
+				//System.out.print("Train finished\n");
 				return;
 			}
 			
@@ -319,7 +319,7 @@ public class Model {
 			synchronized(concurrentModelLock) {
 				concurrentModelLock.set(functions.length);
 			}
-			System.out.print("Structure not changed\n");
+			//System.out.print("Structure not changed\n");
 			//**********************************************
 			for (int k = 0; k < functions.length; k++) {
 				final int index = k;
@@ -343,7 +343,7 @@ public class Model {
 							   	    							
 							
 							if (DEFAULT_PREDICTION_ERROR_PERCENTAGE < lastMape[index]) {
-								System.out.print("Strcuture still changed \n");
+								//System.out.print("Strcuture still changed \n");
 								triggerStructureSelection(index, formattedInput, 
 										formattedOutput2D,
 										formattedOutput1D, 
@@ -409,7 +409,7 @@ public class Model {
 		// Set the priority back.
 		Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 		//System.arraycopy(functions, 0, finalFunctions, 0, functions.length);
-		System.out.print("Train finished\n");
+		//System.out.print("Train finished\n");
 	}
 	
 	/**
@@ -449,18 +449,18 @@ public class Model {
 							.predict(x);
 			
 
-					System.out.print(" ARMAX INPUT"
-							+ Arrays.toString(x)
-							+ "\n");
+					//System.out.print(" ARMAX INPUT"
+						//	+ Arrays.toString(x)
+							//+ "\n");
 
 				} else {
 					predict = functions[k].predict(xValue);
 					if (k == ModelFunction.ANN) {
-						System.out.print("ANN INPUT" + Arrays.toString(xValue)
-								+ "\n");
+						//System.out.print("ANN INPUT" + Arrays.toString(xValue)
+							//	+ "\n");
 					} else if (k == ModelFunction.RT) {
-						System.out.print("RT INPUT" + Arrays.toString(xValue)
-								+ "\n");
+						//System.out.print("RT INPUT" + Arrays.toString(xValue)
+							//	+ "\n");
 					}
 					
 				}
@@ -476,12 +476,12 @@ public class Model {
 						/ (formattedOutput1D.length - startPoint);
 				System.out.print((k == 0 ? "ANN" : "ARMAX")
 						+ " total MAPE " + totalMape[k] + "\n");*/
-				System.out.print(name
-						+ " MAPE of new data is "
-						+ (Math.abs(predict - ideal) / ideal) + "\n");
-				System.out.print(name
-						+ " Internal actual " + predict
-						+ ", internal ideal " + ideal + "\n");
+				//System.out.print(name
+					//	+ " MAPE of new data is "
+						//+ (Math.abs(predict - ideal) / ideal) + "\n");
+				//System.out.print(name
+					//	+ " Internal actual " + predict
+						//+ ", internal ideal " + ideal + "\n");
 			}
 			// Finished recording data for cluster
 
@@ -536,18 +536,18 @@ public class Model {
 							.predict(x);
 			
 
-					System.out.print(" ARMAX INPUT"
-							+ Arrays.toString(x)
-							+ "\n");
+					//System.out.print(" ARMAX INPUT"
+						//	+ Arrays.toString(x)
+							//+ "\n");
 
 				} else {
 					predict = functions[k].predict(xValue);
 					if (k == ModelFunction.ANN) {
-						System.out.print("ANN INPUT" + Arrays.toString(xValue)
-								+ "\n");
+						//System.out.print("ANN INPUT" + Arrays.toString(xValue)
+							//	+ "\n");
 					} else if (k == ModelFunction.RT) {
-						System.out.print("RT INPUT" + Arrays.toString(xValue)
-								+ "\n");
+						//System.out.print("RT INPUT" + Arrays.toString(xValue)
+							//	+ "\n");
 					}
 					
 				}
@@ -563,12 +563,12 @@ public class Model {
 						/ (formattedOutput1D.length - startPoint);
 				System.out.print((k == 0 ? "ANN" : "ARMAX")
 						+ " total MAPE " + totalMape[k] + "\n");*/
-				System.out.print(name
-						+ " MAPE of new data is "
-						+ (Math.abs(predict - ideal) / ideal) + "\n");
-				System.out.print(name
-						+ " Internal actual " + predict
-						+ ", internal ideal " + ideal + "\n");
+				//System.out.print(name
+					//	+ " MAPE of new data is "
+					//	+ (Math.abs(predict - ideal) / ideal) + "\n");
+				//System.out.print(name
+					//	+ " Internal actual " + predict
+					//	+ ", internal ideal " + ideal + "\n");
 			}
 			// Finished recording data for cluster
 
@@ -704,7 +704,7 @@ public class Model {
 					try {
 					switch (index) {
 					case ModelFunction.ANN: {
-						System.out.print(functions[index] + " train start\n");
+						//System.out.print(functions[index] + " train start\n");
 						/*functions[ModelFunction.ANN] = new EncogFeedForwardNeuralNetwork(
 								inputs, outputs2D, outputMean,
 								18, 0, true);*/
@@ -729,11 +729,11 @@ public class Model {
 						} while (cluster == null);
 						resultset.put(functions[ModelFunction.ANN], cluster);
 						//dataset.put(functions[ModelFunction.ANN], cluster);
-						System.out.print(functions[index] + " train finished\n");
+						//System.out.print(functions[index] + " train finished\n");
 						break;
 					}
 					case ModelFunction.ARMAX: {
-						System.out.print(functions[index] + " train start\n");
+						//System.out.print(functions[index] + " train start\n");
 						selectors[ModelFunction.ARMAX].decideStructure(inputs, outputs1D, structureConfig[ModelFunction.ARMAX]);		
 						functions[ModelFunction.ARMAX] = selectors[ModelFunction.ARMAX].getModelFunction();
 						
@@ -750,12 +750,12 @@ public class Model {
 						resultset.put(functions[ModelFunction.ARMAX], record(originalInputs, (double[][])object[0], (double[])object[1], armax));
 						
 						//dataset.put(functions[ModelFunction.ARMAX], cluster(originalInputs, (double[][])object[0], (double[])object[1], armax));
-						System.out.print(functions[index] + " train finished\n");
+						//System.out.print(functions[index] + " train finished\n");
 						break;
 					}
 					case ModelFunction.RT:{
 						
-						System.out.print(functions[index] + " train start\n");
+						//System.out.print(functions[index] + " train start\n");
 						selectors[ModelFunction.RT].decideStructure(inputs, outputs1D, structureConfig[ModelFunction.RT]);
 						
 						functions[ModelFunction.RT] = selectors[ModelFunction.RT]
@@ -767,7 +767,7 @@ public class Model {
 						ClusterData[] cluster = record(testingInput, testingInput, testingOutput,
 								tree);
 						resultset.put(functions[ModelFunction.RT], cluster);
-						System.out.print(functions[index] + " train finished\n");
+						//System.out.print(functions[index] + " train finished\n");
 						break;
 					}
 					}
@@ -805,10 +805,10 @@ public class Model {
 				}
 			}
 		}
-		System.out.print("******************************\n");
-		System.out.print("Time used for obtaining the model: " + (System.currentTimeMillis() - time) + "\n");
-		System.out.print("******************************\n");
-		System.out.print("concurrentModelLock notified\n");
+		//System.out.print("******************************\n");
+		//System.out.print("Time used for obtaining the model: " + (System.currentTimeMillis() - time) + "\n");
+		//System.out.print("******************************\n");
+		//System.out.print("concurrentModelLock notified\n");
 		
 	}
 	
@@ -823,7 +823,7 @@ public class Model {
 			double[] testingOutput){
 		switch (index) {
 		case ModelFunction.ANN: {
-			System.out.print(functions[index] + " train start\n");
+			//System.out.print(functions[index] + " train start\n");
 			/*functions[ModelFunction.ANN] = new EncogFeedForwardNeuralNetwork(
 			inputs, outputs2D, outputMean,
 			18, 0, true);*/
@@ -853,7 +853,7 @@ public class Model {
 			break;
 		}
 		case ModelFunction.ARMAX: {
-			System.out.print(functions[index] + " train start\n");
+			//System.out.print(functions[index] + " train start\n");
 			selectors[ModelFunction.ARMAX].decideStructure(inputs, outputs1D,structureConfig[ModelFunction.ARMAX]);
 			functions[ModelFunction.ARMAX] = selectors[ModelFunction.ARMAX]
 					.getModelFunction();
@@ -871,12 +871,12 @@ public class Model {
 			resultset.put(functions[ModelFunction.ARMAX], record(originalInputs, (double[][])object[0], (double[])object[1], armax));
 			
 			//dataset.put(functions[ModelFunction.ARMAX], cluster(originalInputs, (double[][])object[0], (double[])object[1], armax));
-			System.out.print(functions[index] + " train finished\n");
+			//System.out.print(functions[index] + " train finished\n");
 			break;
 		}
 		case ModelFunction.RT:{
 			
-			System.out.print(functions[index] + " train start\n");
+			//System.out.print(functions[index] + " train start\n");
 			selectors[ModelFunction.RT].decideStructure(inputs, outputs1D,  structureConfig[ModelFunction.RT]);
 			
 			functions[ModelFunction.RT] = selectors[ModelFunction.RT]
@@ -888,7 +888,7 @@ public class Model {
 			ClusterData[] cluster = record(testingInput, testingInput, testingOutput,
 					tree);
 			resultset.put(functions[ModelFunction.RT], cluster);
-			System.out.print(functions[index] + " train finished\n");
+			//System.out.print(functions[index] + " train finished\n");
 			break;
 		}
 
@@ -914,7 +914,7 @@ public class Model {
 			double[] testingOutput){	
 		switch (index) {
 		case ModelFunction.ANN: {
-			System.out.print(functions[index] + " train start\n");
+			//System.out.print(functions[index] + " train start\n");
 			/*functions[ModelFunction.ANN] = new EncogFeedForwardNeuralNetwork(
 			inputs, outputs2D, outputMean,
 			18, 0, true);*/
@@ -936,11 +936,11 @@ public class Model {
 			} while (cluster == null);
 			resultset.put(functions[ModelFunction.ANN], cluster);
 			//dataset.put(functions[ModelFunction.ANN], cluster);
-			System.out.print(functions[index] + " train finished\n");
+			//System.out.print(functions[index] + " train finished\n");
 			break;
 		}
 		case ModelFunction.ARMAX: {
-			System.out.print(functions[index] + " train start\n");
+			//System.out.print(functions[index] + " train start\n");
 			Object[] object = selectors[ModelFunction.ARMAX].doDataSeparation(inputs,
 					outputs1D);
 			functions[ModelFunction.ARMAX] = new ARMA((double[][])object[0], (double[])object[1]);
@@ -960,11 +960,11 @@ public class Model {
 			resultset.put(functions[ModelFunction.ARMAX], record(originalInputs, (double[][])object[0], (double[])object[1], armax));
 			
 			//dataset.put(functions[ModelFunction.ARMAX], cluster(originalInputs, (double[][])object[0], (double[])object[1], armax));
-			System.out.print(functions[index] + " train finished\n");
+			//System.out.print(functions[index] + " train finished\n");
 			break;
 		}
 		case ModelFunction.RT: {
-			System.out.print(functions[index] + " train start\n");
+			//System.out.print(functions[index] + " train start\n");
 			
 			
 			functions[ModelFunction.RT] = new RegressionTree(inputs,
@@ -977,7 +977,7 @@ public class Model {
 					tree);
 			resultset.put(functions[ModelFunction.RT], cluster);
 		
-			System.out.print(functions[index] + " train finished\n");
+			//System.out.print(functions[index] + " train finished\n");
 			break;
 		}
 		}
@@ -1008,8 +1008,8 @@ public class Model {
 		}
 		
 		if (isInvalidModelFunction) {
-			System.out.print("Oops, getting a model function that always produces the " +
-					"same result, re-train it for clustering...\n");
+			//System.out.print("Oops, getting a model function that always produces the " +
+				//	"same result, re-train it for clustering...\n");
 			return null;
 		}
 		
@@ -1034,8 +1034,8 @@ public class Model {
 		}
 		
 		if (isInvalidModelFunction) {
-			System.out.print("Oops, getting a model function that always produces the " +
-					"same result, re-train it for clustering...\n");
+			//System.out.print("Oops, getting a model function that always produces the " +
+				//	"same result, re-train it for clustering...\n");
 			return null;
 		}
 		
@@ -1044,7 +1044,7 @@ public class Model {
         //System.out.print("Start clustering...\n");
         Dataset[] clusters = km.cluster(ds);
         //System.out.print("Clustering finished\n");
-        System.out.print("Clustering size: " + clusters.length + "\n");
+        //System.out.print("Clustering size: " + clusters.length + "\n");
         ClusterPair[] pairs = new ClusterPair[clusters.length];
         List inputList = null;
         List outputList = null;
@@ -1075,7 +1075,7 @@ public class Model {
         	pairs[i] = new ClusterPair(clusters[i], inputList, outputList);
         }
         	
-        System.out.print("Exit clustering\n");
+        //System.out.print("Exit clustering\n");
         return pairs;
 	}
 	

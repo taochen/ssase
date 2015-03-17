@@ -6,10 +6,12 @@ import java.io.File;
 import java.io.FileNotFoundException; 
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -171,7 +173,14 @@ public class SensoringController {
 	}
 	
 	public static Set<String> getServiceName(){
-		return sensors.keySet();
+		Set<String> set = new HashSet<String>();
+		for (String name : sensors.keySet()) {
+			if ( sensors.get(name).size() > 3) {
+				set.add(name);
+			}
+		}
+		
+		return set;
 	}
 	
 	/**
@@ -179,7 +188,7 @@ public class SensoringController {
 	 * Also sending the delay for starting monitoring, in order to get
 	 * on the same peacse with other VM.
 	 */
-	public static void init(long delay, ClassLoader loader) {
+	public static void init(long delay, Object obj) {
 		
 		try {
 			Thread.sleep(delay);
@@ -191,13 +200,19 @@ public class SensoringController {
 		intervals = new LinkedList<Interval>();
 		preIntervals = new LinkedList<Interval>();
 		sensors = new HashMap<String, Map<String, Sensor>> ();
-		sender = new Sender(loader);
+		
 		
 		try {
+			InputStream sendInput = (InputStream) obj.getClass().getMethod("getResourceAsStream", new Class[]{String.class})
+			.invoke(obj, "/WEB-INF/domU.properties");
+			sender = new Sender(sendInput);
 		
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = dbFactory.newDocumentBuilder();
-			Document doc = builder.parse(loader.getResourceAsStream("/domU.xml"));
+			
+			InputStream input = (InputStream) obj.getClass().getMethod("getResourceAsStream", new Class[]{String.class})
+			.invoke(obj, "/WEB-INF/domU.xml");
+			Document doc = builder.parse(input);
 			
 			doc.getDocumentElement().normalize();
 			
@@ -239,7 +254,7 @@ public class SensoringController {
 			}
 		
 		} catch (Exception e) {
-			
+		   e.printStackTrace();
 		}
 		
 		// This is temp implementation
@@ -280,7 +295,8 @@ public class SensoringController {
 	}
 	
 	public static double recordPriorToTask (String service, String name) {
-		if (!sensors.containsKey(service)) {
+		if (sensors == null ||!sensors.containsKey(service)
+				||  !sensors.get(service).containsKey(name)) {
 			return 0.0;
 		}
 		
@@ -291,7 +307,8 @@ public class SensoringController {
 	public static void recordPostToTask (String service, double value, String name) {
 
 		
-		if (!sensors.containsKey(service)) {
+		if (sensors == null || !sensors.containsKey(service) || 
+				!sensors.get(service).containsKey(name)) {
 			return;
 		}
 		
@@ -414,6 +431,9 @@ public class SensoringController {
 		timer = new Timer();
 	
 		System.out.print("Start loop\n");
+		
+		System.gc();
+		
 		timer.schedule(new TimerTask() {
 			@SuppressWarnings("unused")
 			public void run() {
@@ -485,9 +505,11 @@ public class SensoringController {
 			    		// To ensure that VM level CP's sensoring is run only once.
 			    		if (!vmResult.containsKey(monitor)) {
 			    			vmResult.put(monitor, monitor.runMonitoring());
+			    			// We only record hardware CP value once, not for each service-instance.
+			    			interval.setVMX( monitor.getName(), vmResult.get(monitor));
 			    		} 
 			    		//interval.setX(entry.getKey(), monitor.getName(), componentResult.get(monitor));
-			    		interval.setVMX( monitor.getName(), vmResult.get(monitor));
+			    		
 			    	}
 			    }
 		    }

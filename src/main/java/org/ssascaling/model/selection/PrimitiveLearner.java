@@ -8,12 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ssascaling.model.selection.mi.MutualInformation;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.qos.QualityOfService;
 import org.ssascaling.util.Repository;
 
 public class PrimitiveLearner {
+	
+	protected static final Logger logger = LoggerFactory
+	.getLogger(PrimitiveLearner.class);
 
 	public static final double threshold = 0.5;
 
@@ -55,8 +60,8 @@ public class PrimitiveLearner {
 			 }
 		}
 		
-		System.out.print("Number of direrct primitives: " + inputs.size() + "\n");
-		System.out.print("Number of possible primitives: " + primitives.size() + "\n");
+		//System.out.print("Number of direrct primitives: " + inputs.size() + "\n");
+		//System.out.print("Number of possible primitives: " + primitives.size() + "\n");
 		
 		
 		if (isConsiderDirectSpaceInRedundancy) {
@@ -102,15 +107,15 @@ public class PrimitiveLearner {
 		}
 		
 		
-		System.out.print("Number of total selected primitives: " + inputs.size() + "\n");
+		//System.out.print("Number of total selected primitives: " + inputs.size() + "\n");
 		
-		for (Primitive p : inputs) {
+		/*for (Primitive p : inputs) {
 			System.out.print("=========================\n");
 			System.out.print("Final Selected: " + p.getAlias() + " : " + p.getName() + "\n");
 			System.out.print("=========================\n");
-		}
+		}*/
 		
-		System.out.print("Time for primitives selection:" + (System.currentTimeMillis() - time) + "ms\n");
+		//System.out.print("Time for primitives selection:" + (System.currentTimeMillis() - time) + "ms\n");
 		return inputs;
 	}
 	
@@ -249,15 +254,15 @@ public class PrimitiveLearner {
 			//System.out.print("Best so far: " + finalp + ", with number of " + finalInputs.size() + ", Fine " + total + " with number of "
 					//+ newInputes.size() + "\n");
 		}
-		System.out.print("Total " + finalp + "\n");
+		//System.out.print("Total " + finalp + "\n");
 		
 
 		
-		for (Primitive p : finalInputs) {
+		/*for (Primitive p : finalInputs) {
 			System.out.print("=========================\n");
 			System.out.print("Selected: " + p.getAlias() + " : " + p.getName() + "\n");
 			System.out.print("=========================\n");
-		}
+		}*/
 		
 		return finalInputs;
 	}

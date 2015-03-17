@@ -9,7 +9,7 @@ public class BasicAnt extends Ant {
 	
 	public BasicAnt(String antID, AntColony antColony, Structure strcture) {
 		super(antID, antColony, strcture);
-		System.out.print(strcture.getObjective().getName() + "\n");
+		//System.out.print(strcture.getObjective().getName() + "\n");
 	}
 
 

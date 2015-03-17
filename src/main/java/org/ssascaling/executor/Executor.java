@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.ssascaling.ControlBus;
 import org.ssascaling.Service;
 import org.ssascaling.actuator.ActuationSender;
 import org.ssascaling.actuator.Actuator;
@@ -54,7 +55,7 @@ public class Executor {
 	public static void init (int noOfCPU /**This should be >= the number of initial VMs*/){
 		
 		
-		totalMemory = 1800 - 500;
+		totalMemory = 1800 - 600;
 		remainingMemory = totalMemory;
 		
 		int index = 0;
@@ -144,6 +145,7 @@ public class Executor {
 				 */
 				if (entry.getKey().isHardware()) {
 				
+					entry.getKey().outputCurrentVector();
 					// Logging, here we assume that any actions of hardware CP can be taken placed on Dom0.
 					if (!hardwareCPData.containsKey(entry.getKey().getAlias())) {
 						hardwareCPData.put(entry.getKey().getAlias(), new StringBuilder());
@@ -157,7 +159,7 @@ public class Executor {
 							
 							VM vm = Repository.getVM(entry.getKey().getAlias());
 							// Scale down, always remove the core with higher ID first.
-							if (!vm.isScaleUp(value)) {
+							if (vm.isScaleDown(value)) {
 								double v = 0;
 								
 								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(false, value, CPUThreshold))) {
@@ -210,7 +212,7 @@ public class Executor {
 	
 								// this is only the cap one.
 								entry.getKey().triggerActuator(new long[] { value });
-							} else /*Scale up*/ {
+							} else if (vm.isScaleUp(value)) /*Scale up*/ {
 								
 		                        double v = 0;
 								
@@ -341,7 +343,7 @@ public class Executor {
 								
 								remainingMemory += v;
 								
-							} else /*Scale up*/ {
+							} else if (value > entry.getKey().getProvision()) /*Scale up*/ {
 								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(true, value, remainingMemory))) {
 									
 									System.out.print("Small Scale out due to memory on " + entry.getKey().getAlias() + " \n");
@@ -395,7 +397,7 @@ public class Executor {
 				}	
 				
 			}
-			long count = Logger.getExecutionCount();
+			long count = ControlBus.getInstance().getCurrentSampleCount();
 			for (Map.Entry<String, StringBuilder> entry : hardwareCPData.entrySet()) {
 				Logger.logExecutionData(entry.getKey(), entry.getValue(), count);
 			}

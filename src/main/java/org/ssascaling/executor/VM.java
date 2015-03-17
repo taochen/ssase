@@ -33,6 +33,10 @@ public class VM {
 		return cap > map.get(Type.CPU).getProvision();
 	}
 	
+	public boolean isScaleDown(long cap) {
+		return cap < map.get(Type.CPU).getProvision();
+	}
+	
 	public long getCPUNo(){
 		return  Math.round(map.get(Type.CPU).getProvision())/100 + 1;
 	}

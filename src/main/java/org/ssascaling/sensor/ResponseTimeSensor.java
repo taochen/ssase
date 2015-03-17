@@ -5,19 +5,22 @@ import java.util.List;
 
 public class ResponseTimeSensor implements Sensor {
 
-	final private List<Double> requests = new LinkedList<Double>();
-	
-
+	//final private List<Double> requests = new LinkedList<Double>();
+	double total = 0.0;
+	int requests = 0;
 	@Override
 	public synchronized double[] runMonitoring() {
 
-		double total = 0.0;
-		for (double value : requests) {
+		//double total = 0.0;
+		/*for (double value : requests) {
 			total += value;
-		}
-		int size = requests.size() == 0? 1 : requests.size();
-		requests.clear();
-		return new double[]{total/size};
+		}*/
+		int size = requests == 0? 1 : requests;
+		//requests.clear();
+		double[] result = new double[]{total/size};
+		requests = 0;
+		total = 0;
+		return result;
 	}
 
 	@Override
@@ -27,7 +30,9 @@ public class ResponseTimeSensor implements Sensor {
 
 	@Override
 	public synchronized double recordPostToTask(double value) {
-		requests.add((System.currentTimeMillis() - value) / 1000);
+		//requests.add((System.currentTimeMillis() - value) / 1000);
+		total += (System.currentTimeMillis() - value) / 1000;
+		requests++;
 		return 0;
 	}
 

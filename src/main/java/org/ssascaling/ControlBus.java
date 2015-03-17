@@ -20,23 +20,33 @@ import org.ssascaling.util.SSAScalingThreadPool;
 
 public class ControlBus {
 	
-	public static final boolean isTestMonitoringOnly = true;
+	public static final boolean isTestMonitoringOnly = false;
 	public static final boolean isTestQoSModelingOnly = false;
 
 	// Ensure only one MAPE loop running at a time.
 	// This is the main lock of MAPE loop, in case the repository 
 	// would change, it also need to rely on this lock.
-	private final static AtomicInteger lock = new AtomicInteger(-1);
-	private static List<Objective> objectivesToBeOptimized = null;
+	protected final AtomicInteger lock = new AtomicInteger(-1);
+	protected List<Objective> objectivesToBeOptimized = null;
 	
-	private static long expectedSample = Monitor.getNumberOfNewSamples();
+	protected long expectedSample = Monitor.getNumberOfNewSamples();
+	
+	private static ControlBus instance = new ControlBus();
+	
+	protected ControlBus (){
+		
+	}
+	
+	public static ControlBus getInstance(){
+		return instance;
+	}
 	
 	// This is the samples that current MAPE should deal with, as when too much pending MAPE, the
 	// later ones can simply abort.
 	//private static long targetSample = 0;
 	//private static boolean isThereIsMAPEwaiting = false;
 	@SuppressWarnings("unused")
-	public static void begin(DataInputStream is){
+	public void begin(DataInputStream is){
 		
 		
 		// This is the Monitor, do not detect symptons but record historical data.
@@ -69,6 +79,7 @@ public class ControlBus {
 			// Can not just get rid of as this may be newly measured data.	
 				while (lock.get() != -1 || samples != expectedSample) {
 					System.out.print("**** this one is waiting: " + samples  + "\n");
+					System.out.print("**** expected: " + expectedSample  + "\n");
 					try {
 						//System.out.print("========================== Break ===============================\n");
 						//System.out.print(Thread.currentThread() + " break\n");
@@ -109,7 +120,7 @@ public class ControlBus {
 		}
 		
 		
-		
+		long time = System.currentTimeMillis();
 		if (ifAnalyze) {
 			System.out.print("***** will trigger training *********\n");
 			/*
@@ -117,7 +128,7 @@ public class ControlBus {
 			 ***/
 			objectivesToBeOptimized = Analyzer.doAnalysis(samples);
 		}
-		
+		System.out.print("Modeling takes " + (System.currentTimeMillis() - time) + " ms \n");
 	
 		if (isTestQoSModelingOnly) {
 			synchronized(lock) {
@@ -134,10 +145,13 @@ public class ControlBus {
 		}*/
 		// ===================== force one trigger (should be removed) =====================
 		
+		time = System.currentTimeMillis();
 		// If need trigger optimization in the Planer, then the Analyzer should tell.
 		// TODO only trigger if the current setup has been longer than t intervals.
 		if (objectivesToBeOptimized != null) {
 		
+			System.out.print("Number of regions that need to be optimized: " 
+					+ objectivesToBeOptimized.size() + "\n");
 			
 			for (final Objective obj : objectivesToBeOptimized) {
 				final String uuid = UUID.randomUUID().toString();
@@ -158,7 +172,6 @@ public class ControlBus {
 			}
 		}
 		
-		
 		synchronized(lock) {
 			while (objectivesToBeOptimized != null && lock.get() != objectivesToBeOptimized.size()) {
 				try {
@@ -176,6 +189,7 @@ public class ControlBus {
 			lock.notifyAll();
 			System.out.print("***** MAPE finished " + samples + " *********\n");
 		}
+		System.out.print("Decision making takes " + (System.currentTimeMillis() - time) + " ms \n");
 		
 		System.gc();
 	}
@@ -188,7 +202,7 @@ public class ControlBus {
 	 * optimization or region partitioning.
 	 * @param obj
 	 */
-	public static void doDecisionMaking (Objective obj, String uuid){
+	public void doDecisionMaking (Objective obj, String uuid){
 		/*
 		 *The P part 
 		 ***/
@@ -214,5 +228,14 @@ public class ControlBus {
 				lock.notifyAll();
 			}
 		}
+	}
+	
+	public long getCurrentSampleCount(){
+		return expectedSample - Monitor.getNumberOfNewSamples();
+	}
+	
+	public void increaseCurrentSampleCount(){
+		expectedSample += Monitor.getNumberOfNewSamples();
+		System.out.print("Expected: " + expectedSample + "\n");
 	}
 }

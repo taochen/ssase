@@ -55,7 +55,7 @@ public abstract class AntColony implements  ModelListener {
 	    protected int      numberOfAnt;
 	    protected int      antRatio = 5;
 	    protected int      iterCounter = 0;
-	    protected int      iterations = 10;
+	    protected int      iterations = 5;
 	    
 	    protected int completedAnt=0;
 	    
@@ -135,9 +135,9 @@ public abstract class AntColony implements  ModelListener {
 	    }
 	    
 	    private void print(){	        
-	    	for (int i = 0; i < mu.length; i++) {
+	    	/*for (int i = 0; i < mu.length; i++) {
 	    		System.out.print(Arrays.toString(mu[i]) + "\n");
-	    	}
+	    	}*/
 	    }
 	    
 	    public  void calculateMu(){
@@ -181,7 +181,7 @@ public abstract class AntColony implements  ModelListener {
 	        // loop for all iterations
 	        while(iterCounter < iterations && !isStop)
 	        {
-	        	System.out.print("Run " + iterCounter + "\n");
+	        	//System.out.print("Run " + iterCounter + "\n");
 	        	// creates all ants
 		        ants  = createAnts(numberOfAnt);
 	            // run an iteration
@@ -584,7 +584,7 @@ public abstract class AntColony implements  ModelListener {
 	    		for (int i =0; i < inputs.length;i++) {
 	    			inputs[i] = entry.getValue().get(i).getVal2();
 	    		}
-	    		System.out.print("Inputs: " + Arrays.toString(inputs) + "\n");
+	    		//System.out.print("Inputs: " + Arrays.toString(inputs) + "\n");
 	    		results[k] = entry.getKey().predict(inputs);
 	    		k++;
 	    	}
