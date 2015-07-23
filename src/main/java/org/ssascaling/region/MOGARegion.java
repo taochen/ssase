@@ -1,33 +1,22 @@
 package org.ssascaling.region;
 
-import org.ssascaling.Service;
-import org.ssascaling.objective.Cost;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 import org.ssascaling.objective.Objective;
-import org.ssascaling.objective.correlation.Spearmans;
 import org.ssascaling.objective.optimization.BasicAntColony;
+import org.ssascaling.objective.optimization.MOGA.NSGAII;
 import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.primitive.EnvironmentalPrimitive;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.util.Tuple;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
-
-/**
- * Create new instance whenever region distribution change.
- * @author tao
- *
- */
-public class Region {
-
+public class MOGARegion extends Region {
 	// private Map<Service, List<Objective>> serviceMap;
 
 	protected List<Objective> objectives;
@@ -41,12 +30,7 @@ public class Region {
 	protected int finishedUpdateCounter = 0;
 	
 	
-	public static Region getNewRegionInstance () {
-		return new MOGARegion();//new Region();
-	}
-	
-	
-	protected Region () {
+	protected MOGARegion () {
 		this.objectives = new ArrayList<Objective>();
 	}
 	
@@ -162,9 +146,8 @@ public class Region {
 			}*/
 			
 			
-			BasicAntColony aco = new BasicAntColony(new Random().nextInt(),
-					primitives, objectiveMap, objectiveMap);
-			result = aco.doOptimization();
+			NSGAII ga = new NSGAII(objectiveMap);
+			result = ga.doOptimization();
 
 			print(result);
 

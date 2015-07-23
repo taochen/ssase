@@ -477,9 +477,9 @@ public class Ssascaling {
 			}
 			
 			Executor.init(3);
-			//new HistoryLoader().run();
+			new HistoryLoader().run();
 					
-			//new Receiver().receive();
+			new Receiver().receive();
 			
 			
 	}

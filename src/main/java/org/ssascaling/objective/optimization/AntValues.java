@@ -38,7 +38,15 @@ public class AntValues {
 
 				if (best >= 0) {
 					dealt = (isMin) ? 1 / (1 + current - best)
-							: (1 + current - best);
+							: 1 / (1 + (1/current) - (1/best));
+					/**
+					 * 
+					 * normalized
+					 * 
+					 dealt = (isMin) ? 1 / (1 + 1 - best/current)
+							: (1 + current/best - 1);
+					 * 
+					 * */
 				} else {
 					dealt = max - min;
 				}

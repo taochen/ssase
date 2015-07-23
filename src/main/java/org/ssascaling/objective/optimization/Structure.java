@@ -165,6 +165,7 @@ public class Structure {
 					.getDecision();
 
 			updateTrailLimits(localBestAnt.getValue());
+			//updateTrailLimits(localBestAnt.getValue(), globalBestAnt.getValue());
 		
 			for (Map.Entry<ControlPrimitive, Tuple<Integer, Double>> entry : decision
 					.entrySet()) {
@@ -315,15 +316,36 @@ public class Structure {
 		return writeLock;
 	}
 	
+	private void updateTrailLimits(double current, double best){
+		
+		P_MAX_VALUE_TAU = MAX_VALUE_TAU;
+		P_MIN_VALUE_TAU = MIN_VALUE_TAU;
+		if (objective.isMin()) {
+			MAX_VALUE_TAU = 1 / ((1 + current - best)*(/*1 -*/ VALUE_EVAPORATION));
+			
+			//MAX_VALUE_TAU = 1 / (value*(1 - VALUE_EVAPORATION));
+			MIN_VALUE_TAU = MAX_VALUE_TAU / g;
+		} else {
+			MAX_VALUE_TAU = 1 / ((1+(1/current) - (1/best))*(/*1 -*/ VALUE_EVAPORATION));
+			//MAX_VALUE_TAU = value*(1 - VALUE_EVAPORATION);
+			MIN_VALUE_TAU = MAX_VALUE_TAU / g;
+		}
+		
+		print();
+	}
+	
 	private void updateTrailLimits(double value){
 		
 		P_MAX_VALUE_TAU = MAX_VALUE_TAU;
 		P_MIN_VALUE_TAU = MIN_VALUE_TAU;
 		if (objective.isMin()) {
-			MAX_VALUE_TAU = 1 / (value*(1 - VALUE_EVAPORATION));
+			MAX_VALUE_TAU = 1 / ((value)*(1 - VALUE_EVAPORATION));
+			
+			//MAX_VALUE_TAU = 1 / (value*(1 - VALUE_EVAPORATION));
 			MIN_VALUE_TAU = MAX_VALUE_TAU / g;
 		} else {
-			MAX_VALUE_TAU = value*(1 - VALUE_EVAPORATION);
+			MAX_VALUE_TAU = 1 / (((1/value))*(1 - VALUE_EVAPORATION));
+			//MAX_VALUE_TAU = value*(1 - VALUE_EVAPORATION);
 			MIN_VALUE_TAU = MAX_VALUE_TAU / g;
 		}
 		
