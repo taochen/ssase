@@ -14,6 +14,7 @@ import org.ssascaling.actuator.ActuationSender;
 import org.ssascaling.actuator.Actuator;
 import org.ssascaling.actuator.linux.CPUNoActuator;
 import org.ssascaling.actuator.linux.CPUPinActuator;
+import org.ssascaling.actuator.linux.ReplicationActuator;
 import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.primitive.HardwareControlPrimitive;
 import org.ssascaling.primitive.SoftwareControlPrimitive;
@@ -127,6 +128,11 @@ public class Executor {
 		// VM_ID - data
 		Map<String, StringBuilder> hardwareCPData = new HashMap<String, StringBuilder> ();
 		LinkedHashMap<ControlPrimitive, Double> listMap = orderDecision(decisions);
+		// For horizontal scaling, VM_ID - data (0 for scale out, others for scale in)
+		Map<String, Integer> horizontalActions = new HashMap<String, Integer> ();
+		// Number of hardware CPs
+		int noOfHardwareCP = Repository.getAllVMs().iterator().next().getAllPrimitives().size();
+		
 		// Need to sync in order to consistent on the utilization of resource on the PM.
 		synchronized (lock) {
 			for (Map.Entry<ControlPrimitive, Double> entry :  listMap.entrySet()){
@@ -166,6 +172,8 @@ public class Executor {
 									System.out.print("Scale in due to CPU on " + entry.getKey().getAlias() + " \n");
 									// TODO do scale in and free all resources.
 									//return;
+									horizontalActions.put(entry.getKey().getAlias(), horizontalActions.containsKey(entry.getKey().getAlias())? 
+											horizontalActions.get(entry.getKey().getAlias()) + 1 : 1);
 									hardwareCPData.get(entry.getKey().getAlias()).append(entry.getKey().getAlias()).append("Scale in due to CPU on " + entry.getKey().getAlias() + "\n");
 									v = 0;
 								}
@@ -221,7 +229,7 @@ public class Executor {
 									System.out.print("Scale out due to CPU on " + entry.getKey().getAlias() + " \n");
 									System.out.print(value + " : " + remainingCPU+ " \n");
 									//return;
-									
+									horizontalActions.put(entry.getKey().getAlias(), 0);
 									hardwareCPData.get(entry.getKey().getAlias()).append("Scale out due to CPU on " + entry.getKey().getAlias() + ", "+ value + " : " + remainingCPU+  "\n");
 									v = 0;
 								}
@@ -298,6 +306,7 @@ public class Executor {
 									System.out.print("Small scale out due to CPU on " + entry.getKey().getAlias() + " \n");
 									System.out.print(value + " : " + remainingCPU+ " \n");
 									
+									horizontalActions.put(entry.getKey().getAlias(), 0);
 									hardwareCPData.get(entry.getKey().getAlias()).append("Small scale out due to CPU on " + entry.getKey().getAlias() + ", "+ value + " : " + remainingCPU+  "\n");
 									
 								}
@@ -337,6 +346,8 @@ public class Executor {
 									
 									// TODO do scale in and free all resources.
 									//return;
+									horizontalActions.put(entry.getKey().getAlias(), horizontalActions.containsKey(entry.getKey().getAlias())? 
+											horizontalActions.get(entry.getKey().getAlias()) + 1 : 1);
 									hardwareCPData.get(entry.getKey().getAlias()).append("Scale in due to memory on " + entry.getKey().getAlias() + "\n");
 									v = 0;
 								}
@@ -351,6 +362,7 @@ public class Executor {
 									// TODO should trigger migration or replication for scale out as
 									// the memory is insufficient.
 									//return;
+									horizontalActions.put(entry.getKey().getAlias(), 0);
 									hardwareCPData.get(entry.getKey().getAlias()).append("Small Scale out due to memory on " + entry.getKey().getAlias() + ", " + value + " : " + remainingMemory+  "\n");
 									v = 0;
 								}
@@ -408,6 +420,17 @@ public class Executor {
 				ActuationSender.getInsatnce().send(entry.getKey(), entry.getValue().toString());
 			}
 			
+			// Send the actions for horizontal scaling.
+			for (Map.Entry<String, Integer> entry : horizontalActions.entrySet()) {
+				
+				if (entry.getValue() == 0) {
+					ReplicationActuator.getInstance().execute(entry.getKey(), 0);
+				// Only scale in if all hardware CP fall below the thresholds.
+				} else if (entry.getValue() == noOfHardwareCP) {
+					ReplicationActuator.getInstance().execute(entry.getKey(), 1);
+				}
+				
+			}
 			
 		}
 		
