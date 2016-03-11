@@ -42,7 +42,7 @@ public class Region {
 	
 	
 	public static Region getNewRegionInstance () {
-		return new MOGARegion();//new Region();
+		return new MOEARegion();//new Region();
 	}
 	
 	
@@ -192,7 +192,7 @@ public class Region {
 		}
 	}
 	
-	private void print(LinkedHashMap<ControlPrimitive, Double> result){
+	protected void print(LinkedHashMap<ControlPrimitive, Double> result){
 		if (result == null) {
 			return;
 		}

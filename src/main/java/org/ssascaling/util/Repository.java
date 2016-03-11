@@ -20,6 +20,7 @@ import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.primitive.HardwareControlPrimitive;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.qos.QualityOfService;
+import org.ssascaling.variability.fm.FeatureModel;
 
 /**
  * Only the collections here and the ones in Service class need to be maintained.
@@ -33,6 +34,11 @@ import org.ssascaling.qos.QualityOfService;
  *
  */
 public class Repository {
+	
+	
+	
+	private static Map<Objective, FeatureModel> fms
+	 = new ConcurrentHashMap<Objective, FeatureModel>();
 
 	// ************** These are the collections contain unique instance of QoS and primitives, 
 	// which need to be updated when adding newly measured data ***********
@@ -168,5 +174,9 @@ public class Repository {
 		for (QualityOfService q : qoss) {
 			q.addListener(listener);
 		}
+	}
+	
+	public static List<ControlPrimitive> getSortedControlPrimitives (Objective obj) {
+		return fms.get(obj).getSortedControlPrimitives();
 	}
 }

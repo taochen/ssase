@@ -175,57 +175,6 @@ public class MOGARegion extends Region {
 		}
 	}
 	
-	private void print(LinkedHashMap<ControlPrimitive, Double> result){
-		if (result == null) {
-			return;
-		}
-		
-		
-		for (Map.Entry<ControlPrimitive, Double> e : result.entrySet()) {
-			   System.out.print(e.getKey().getAlias() + ", " + e.getKey().getName() + ", value: " + e.getValue() +  "\n");
-		}
-		int violated = 0;
-		for (Objective obj : objectives) {
-			double[] xValue = new double[obj.getPrimitivesInput().size()];
-			for (int i = 0; i < xValue.length; i++) {
-				
-				if (obj.getPrimitivesInput().get(i) instanceof ControlPrimitive) {
-					xValue[i] = result.get(obj.getPrimitivesInput().get(i));
-				} else {
-					xValue[i] = obj.getPrimitivesInput().get(i).getProvision();
-				}
-				
-				 
-			}
-			
-			double adapt = obj.predict(xValue);
-			
-			String out = "";
-			
-			EnvironmentalPrimitive ep = obj instanceof org.ssascaling.qos.QualityOfService? 
-					((org.ssascaling.qos.QualityOfService)obj).getEP() : null;
-
-			if (ep != null) {
-				// If make no sense if the required throughput even larger than the
-				// current workload.
-				if (obj.isMin() ? obj.getConstraint() < ep.getLatest() : obj.getConstraint() > ep
-						.getLatest()) {
-					
-				} else if (obj.isMin()? adapt > obj.getConstraint() : adapt < obj.getConstraint() )  {
-					out += "!!!! Violated " + obj.getConstraint()  + ", EP: " + ep.getLatest() + " - ";
-					violated++;
-				}
-
-			} else if (obj.isMin()? adapt > obj.getConstraint() : adapt < obj.getConstraint() ) {
-				out += "!!!! Violated " + obj.getConstraint()  + " - ";
-				violated++;
-			}
-			
-			System.out.print(out + obj.getName() + " current value: " + obj.getCurrentPrediction() + " - after adaptation: " + adapt + "\n");
-		}
-		System.out.print("Total number of objectives: " + objectives.size() + "\n");
-		System.out.print("Total number of violated objectives: " + violated + "\n");
-		
-	}
+	
 
 }

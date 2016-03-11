@@ -158,6 +158,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.moead</groupId>
+			<artifactId>org.moead-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.cloudbus.cloudsim</groupId>
 			<artifactId>cloudsim-toolkit</artifactId>
 			<version>2.1</version>
