@@ -60,4 +60,10 @@ public class ReliabilitySensor implements Sensor {
 
 	}
 
+	@Override
+	public void initInstance(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

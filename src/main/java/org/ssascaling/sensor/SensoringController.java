@@ -74,12 +74,21 @@ public class SensoringController {
 	
 	private static int readFileIndex = 0;
 	
+	private static String defaultService = "rubis_software";
+	
 	public static void setVMID(String VM_ID) {
 		SensoringController.VM_ID = VM_ID;
 	}
 	
 	public static void setSampleInterval(long sample) {
 		totalNumberOfSenceToTriggerSend = sample;
+	}
+	
+	public static Sensor getSensor(String service, String subname) {
+		if(service == null) {
+			service = defaultService;
+		}
+		return sensors.get(service).get(subname);
 	}
 	
 	public static void main (String[] a) {
@@ -291,7 +300,7 @@ public class SensoringController {
 		}
 		
 		 
-		run();
+		//run();
 	}
 	
 	public static double recordPriorToTask (String service, String name) {
@@ -306,6 +315,9 @@ public class SensoringController {
 		
 	public static void recordPostToTask (String service, double value, String name) {
 
+		if(service == null) {
+			service = defaultService;
+		}
 		
 		if (sensors == null || !sensors.containsKey(service) || 
 				!sensors.get(service).containsKey(name)) {
@@ -427,7 +439,7 @@ public class SensoringController {
 		return null;
 	}
 	
-	private static void run() {
+	public static void run() {
 		timer = new Timer();
 	
 		System.out.print("Start loop\n");

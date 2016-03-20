@@ -1,4 +1,4 @@
-package org.ssascaling.sensor.linux;
+package org.ssascaling.sensor.control;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,26 +8,24 @@ import java.util.TimerTask;
 
 import org.ssascaling.sensor.Sensor;
 
+public class QueryCacheSizeSensor implements Sensor {
 
-public class MemorySensor implements Sensor {
-	
-	final String command = "/bin/sh /root/monitor/mem_monitor.sh";
-
+	final String command = "/bin/sh /root/monitor/query_cache_size_monitor.sh";
 	private double total = 0.0;
 	private double number = 0.0;
 	private static final int SAMPLING_INTERVAL = 3000;
-	public static final int index = 6;
+	public static final int index = 5;
 	private Timer timer;
 	
-	public MemorySensor(){
+	public QueryCacheSizeSensor(){
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {
 				execute();
 			}
-		}, 1000, SAMPLING_INTERVAL);
+		}, 100, SAMPLING_INTERVAL);
 	}
-
+	
 	@Override
 	public double[] runMonitoring() {
 		double current = 0.0;
@@ -41,10 +39,10 @@ public class MemorySensor implements Sensor {
 		
 		return new double[] {current/no};
 	}
+
 	
 	private void execute() {
         double result = 0.0;
-		
         BufferedReader br = null;
         Process p = null;
 		try {
@@ -72,37 +70,41 @@ public class MemorySensor implements Sensor {
 			number ++;
 		}
 	}
-
 	@Override
 	public double recordPriorToTask(Object value) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public double recordPostToTask(double value) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
-
 	@Override
 	public boolean isOutput() {
+		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 
 	@Override
 	public boolean isVMLevel() {
-		return true;
+		// TODO Auto-generated method stub
+		return false;
 	}
-	
+
 	@Override
 	public String[] getName() {
-		return new String[]{"Memory"};
+		// TODO Auto-generated method stub
+		return new String[]{"query_cache_size"};
 	}
-	
+
 	@Override
 	public void destory() {
-		timer.cancel();
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -110,4 +112,5 @@ public class MemorySensor implements Sensor {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

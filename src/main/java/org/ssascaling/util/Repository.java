@@ -36,7 +36,7 @@ import org.ssascaling.variability.fm.FeatureModel;
 public class Repository {
 	
 	
-	
+	// For each software, the objectives use the same FM.
 	private static Map<Objective, FeatureModel> fms
 	 = new ConcurrentHashMap<Objective, FeatureModel>();
 

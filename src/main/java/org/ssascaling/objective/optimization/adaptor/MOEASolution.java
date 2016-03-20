@@ -76,6 +76,7 @@ public class MOEASolution extends SASSolution {
 			}
 			
 			result[i] = objectives.get(i).predict(xValue);
+			//result[i] = objectives.get(i).predict(xValue) * 100 / objectives.get(i).getMax();
 		}
 		
 		

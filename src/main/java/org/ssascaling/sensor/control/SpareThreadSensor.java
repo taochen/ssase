@@ -1,16 +1,22 @@
-package org.ssascaling.sensor;
+package org.ssascaling.sensor.control;
 
-public class ConcurrencySensor implements Sensor {
+import org.ssascaling.sensor.Sensor;
+
+public class SpareThreadSensor implements Sensor {
 
 	private double concurency = 0.0;
 	private double maxConcurency = 0.0;
 	
+	// If less than maxSpare, then this sensor should be the same
+	// as maxThread, but it can not exceed maxSpare.
+	private double maxSpare = 0.0;
 	
 	@Override
 	public double recordPriorToTask(Object value) {
 		synchronized (this) {
+			maxSpare = (Double)value;
 			concurency++;
-			if (maxConcurency < concurency) {
+			if (maxConcurency < concurency && concurency <= maxSpare) {
 				maxConcurency = concurency;
 			}
 		}
@@ -33,8 +39,13 @@ public class ConcurrencySensor implements Sensor {
 
 	@Override
 	public synchronized double[] runMonitoring() {
+		
+		if(maxConcurency > maxSpare) {
+			maxConcurency = maxSpare;
+		}
+		
 		double current = maxConcurency;
-		maxConcurency = concurency;
+		maxConcurency = concurency > maxSpare? maxSpare : concurency;
 		return new double[]{current};
 	}
 
@@ -46,13 +57,25 @@ public class ConcurrencySensor implements Sensor {
 
 	@Override
 	public String[] getName() {
-		return new String[]{"Concurrency"};
+		return new String[]{"minSpareThreads"};
 	}
 
 	@Override
 	public void destory() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void updateSpare(double maxSpare) {
+		synchronized (this) {
+		    this.maxSpare = maxSpare;
+		}
+	}
+
+	@Override
+	public void initInstance(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

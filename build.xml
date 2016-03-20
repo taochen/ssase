@@ -13,10 +13,12 @@
 	    <pathelement location="${maven.repo.local}/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar"/>
 	  	<pathelement location="${maven.repo.local}/org/encog/encog-core/2.5.3/encog-core-2.5.3.jar"/>
 	    <pathelement location="${maven.repo.local}/org/ssascaling/ssascaling-core/0.0.1/ssascaling-core-0.0.1.jar"/>
+	  	<pathelement location="${maven.repo.local}/uk/com/robust-it/cloning/1.9.2/cloning-1.9.2.jar"/>
 	  </path>
 	
 	  <path id="copy.classpath">
 	    <pathelement location="${maven.repo.local}/org/ssascaling/ssascaling-core/0.0.1/ssascaling-core-0.0.1.jar"/>
+	  	<pathelement location="${maven.repo.local}/uk/com/robust-it/cloning/1.9.2/cloning-1.9.2.jar"/>
 	  </path>
   
 <!-- ====================================================================== -->

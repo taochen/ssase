@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.ssascaling.Interval;
 import org.ssascaling.network.Sender;
 import org.ssascaling.sensor.*;
+import org.ssascaling.sensor.control.ThreadSensor;
 import org.ssascaling.sensor.linux.CpuSensor;
 import org.ssascaling.test.modeling.Configurator;
 import org.ssascaling.util.Ssascaling;
@@ -111,8 +112,8 @@ public class TestSensorB {
 				list.add(new WorkloadSensor());
 				interval.setX(service, new WorkloadSensor().getName(),
 						new double[] { new Random().nextInt() });
-				list.add(new ConcurrencySensor());
-				interval.setX(service, new ConcurrencySensor().getName(),
+				list.add(new ThreadSensor());
+				interval.setX(service, new ThreadSensor().getName(),
 						new double[] { new Random().nextInt() });
 
 				sensors.put(service, list);
@@ -218,7 +219,7 @@ public class TestSensorB {
 			list.add(new ResponseTimeSensor());
 			list.add(new ThroughputSensor());
 			list.add(new WorkloadSensor());
-			list.add(new ConcurrencySensor());
+			list.add(new ThreadSensor());
 			//list.add(cpu);
 			//list.add(memory);
 			list.add(new ReliabilitySensor());

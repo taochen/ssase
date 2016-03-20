@@ -173,4 +173,9 @@ public class Cost implements Objective  {
 		this.inputs = inputs;
 	}
 
+	@Override
+	public double getMax() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

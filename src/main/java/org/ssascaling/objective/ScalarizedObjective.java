@@ -133,4 +133,10 @@ public class ScalarizedObjective implements Objective {
 		return 0;
 	}
 
+	@Override
+	public double getMax() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

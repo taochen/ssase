@@ -58,4 +58,10 @@ public class ResponseTimeSensor implements Sensor {
 		
 	}
 
+	@Override
+	public void initInstance(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

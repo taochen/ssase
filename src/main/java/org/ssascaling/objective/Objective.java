@@ -43,4 +43,6 @@ public interface Objective {
 	public boolean isViolate();
 	
 	public double getCurrentPrediction();
+	
+	public double getMax();
 }

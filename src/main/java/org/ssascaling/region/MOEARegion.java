@@ -10,6 +10,7 @@ import java.util.Random;
 
 import jmetal.core.SolutionSet;
 import jmetal.metaheuristics.moead.MOEAD_SAS_main;
+import jmetal.problems.SASAlgorithmAdaptor;
 import jmetal.problems.test.DummySASSolution;
 import jmetal.problems.test.DummySASSolutionInstantiator;
 import jmetal.util.JMException;
@@ -34,6 +35,8 @@ public class MOEARegion extends Region {
 		vars = MOEASolutionAdaptor.getInstance().convertInitialLimits(objectives.get(0));
 	}
 
+	
+	
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
 		LinkedHashMap<ControlPrimitive, Double> result = null;
 		synchronized (lock) {
@@ -49,12 +52,12 @@ public class MOEARegion extends Region {
 			isLocked = true;
 
 
-            MOEASolutionInstantiator inst = new MOEASolutionInstantiator(objectives);
+			MOEASolutionInstantiator inst = new MOEASolutionInstantiator(objectives);
 			
-			MOEAD_SAS_main main = new MOEAD_SAS_main();
+            SASAlgorithmAdaptor algorithm = getAlgorithm();
 			SolutionSet set = null;
 			try {
-				set = main.execute(inst, vars, objectives.size(), 0);		
+				set = algorithm.execute(inst, vars, objectives.size(), 0);		
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -71,5 +74,9 @@ public class MOEARegion extends Region {
 		System.out.print("================= Finish optimization ! =================\n");
 		// TODO optimization.
 		return result;
+	}
+	
+	private SASAlgorithmAdaptor getAlgorithm(){
+		return new MOEAD_SAS_main();
 	}
 }

@@ -23,13 +23,13 @@ import org.ssascaling.primitive.ControlPrimitive;
 import org.ssascaling.primitive.Primitive;
 import org.ssascaling.qos.QualityOfService;
 import org.ssascaling.sensor.AvailabilitySensor;
-import org.ssascaling.sensor.ConcurrencySensor;
 import org.ssascaling.sensor.ReliabilitySensor;
 import org.ssascaling.sensor.ResponseTimeSensor;
 import org.ssascaling.sensor.Sensor;
 import org.ssascaling.sensor.ServabilitySensor;
 import org.ssascaling.sensor.ThroughputSensor;
 import org.ssascaling.sensor.WorkloadSensor;
+import org.ssascaling.sensor.control.ThreadSensor;
 import org.ssascaling.util.Repository;
 import org.ssascaling.util.Triple;
 
@@ -277,7 +277,7 @@ public class HistoryLoader {
 			list.add(new ResponseTimeSensor());
 			list.add(new ThroughputSensor());
 			list.add(new WorkloadSensor());
-			list.add(new ConcurrencySensor());
+			list.add(new ThreadSensor());
 			//list.add(cpu);
 			//list.add(memory);
 			list.add(new ReliabilitySensor());

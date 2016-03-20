@@ -105,4 +105,10 @@ public class CpuSensor implements Sensor {
 	public void destory() {
 		timer.cancel();
 	}
+
+	@Override
+	public void initInstance(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
 }
