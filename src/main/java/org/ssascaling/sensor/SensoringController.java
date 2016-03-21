@@ -304,6 +304,12 @@ public class SensoringController {
 	}
 	
 	public static double recordPriorToTask (String service, String name) {
+
+		if(service == null) {
+			service = defaultService;
+		}
+		
+		
 		if (sensors == null ||!sensors.containsKey(service)
 				||  !sensors.get(service).containsKey(name)) {
 			return 0.0;

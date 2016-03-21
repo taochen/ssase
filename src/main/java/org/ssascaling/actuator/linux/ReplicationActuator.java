@@ -17,11 +17,16 @@ public class ReplicationActuator implements Actuator {
 		return instance;
 	}
 	
+	@Override
+	public boolean execute(String alias, long... value) {
+		return true;
+	}
+	
 	/**
 	 * Value: 0 = scale out, 1 = scale in
 	 */
-	@Override
-	public boolean execute(String alias, long... value) {
+	
+	public boolean oldExecute(String alias, long... value) {
 		
 		if (Executor.isTest) {
 			System.out.print("Setting " + alias + " for " + (value[0]==0?"scale out" : "scale in") + "\n");

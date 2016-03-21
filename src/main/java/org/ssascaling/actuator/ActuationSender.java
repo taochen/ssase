@@ -110,7 +110,7 @@ public class ActuationSender {
 
 				if (os != null) {
 					os.close();
-				};
+				}
 			} catch (IOException ioe) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

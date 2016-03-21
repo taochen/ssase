@@ -8,13 +8,13 @@ import org.ssascaling.primitive.Type;
  * @author tao
  *
  */
-public class ThreadActuator implements Actuator {
+public class MaxThreadActuator implements Actuator {
 	
 	private Invoker invoker;
 	
 	
 	
-	public ThreadActuator(Invoker invoker) {
+	public MaxThreadActuator(Invoker invoker) {
 		super();
 		this.invoker = invoker;
 	}

@@ -20,7 +20,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.ssascaling.Service;
-import org.ssascaling.actuator.ThreadActuator;
+import org.ssascaling.actuator.MaxThreadActuator;
 import org.ssascaling.actuator.linux.CPUCapActuator;
 import org.ssascaling.actuator.linux.MemoryActuator;
 import org.ssascaling.executor.Executor;
@@ -95,13 +95,13 @@ public class Ssascaling {
 	
 	public static void testExecution(){
 		ControlPrimitive threadOfService1 = new SoftwareControlPrimitive(null, "jeos-edu.rice.rubis.servlets.SearchItemsByCategory", false, null, null, 0,0,1, 0.7,0.1,2, 80);
-		threadOfService1.setType(Type.Thread);
+		threadOfService1.setType(Type.maxThread);
 		//threadOfService1.setAlias("test.service1");
-		threadOfService1.setActuator(new ThreadActuator(null));
+		threadOfService1.setActuator(new MaxThreadActuator(null));
 		ControlPrimitive threadOfService2 = new SoftwareControlPrimitive(null, "jeos-edu.rice.rubis.servlets.BrowseCategories", false, null, null, 0,0,1, 0.7,0.1,2, 80);
-		threadOfService2.setType(Type.Thread);
+		threadOfService2.setType(Type.maxThread);
 		//threadOfService2.setAlias("test.service2");
-		threadOfService2.setActuator(new ThreadActuator(null));
+		threadOfService2.setActuator(new MaxThreadActuator(null));
 		
 		HardwareControlPrimitive jeosCPU = new HardwareControlPrimitive(null, "jeos", true, null, null, 0,0,1, 0.9,0.1,5, 80);
 		jeosCPU.setType(Type.CPU);

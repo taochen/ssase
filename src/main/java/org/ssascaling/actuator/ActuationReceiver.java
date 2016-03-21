@@ -78,9 +78,10 @@ public class ActuationReceiver {
 
 					@Override
 					public void run() {
+						DataInputStream is = null;
 						try {
 
-							DataInputStream is = new DataInputStream(
+							is = new DataInputStream(
 									clientSocket.getInputStream());
 						
 							doActuation(is);
@@ -89,6 +90,7 @@ public class ActuationReceiver {
 						} finally {
 							try {
 								clientSocket.close();
+								if(is != null) is.close();
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
