@@ -3,6 +3,7 @@ package org.ssascaling.primitive;
 import java.util.Arrays;
 
 import org.ssascaling.actuator.Actuator;
+import org.ssascaling.executor.Executor;
 import org.ssascaling.objective.Objective;
 import org.ssascaling.util.Repository;
 import org.ssascaling.util.Timer;
@@ -93,6 +94,11 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		this.b = b;
 		this.h = h;
 		valueVector = new double[]{maxProvision};
+		
+		if(!Executor.isEnableLowerBoundUpdate /*This is triggered in every sampling interval
+		so if it is not enable, then we need to initilize the range here*/) {
+			updateValueVector(h, valueVector[valueVector.length - 1]);
+		}
 	}
 
 	@Deprecated
@@ -358,7 +364,12 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	 * @param threshold the remaining hardware resources or the min resources that can be removed (remove the VM)
 	 * @return true if need to scale in/out
 	 */
+	@SuppressWarnings("unused")
 	public double triggerMaxProvisionUpdate (boolean isIncrease, double decidedValue, double threshold){
+		if(!Executor.isEnableUpperBoundUpdate) {
+			return 0;
+		}
+		
 		// If increase
 		if (isIncrease && decidedValue / valueVector[valueVector.length - 1] > b  &&
 				value / valueVector[valueVector.length - 1] > b  /*consider the latest observed value as well*/) {
@@ -410,7 +421,11 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		System.out.print(this.getAlias() + " Min: " + valueVector[0] + ", Max: " + valueVector[valueVector.length - 1] +"\n");
 	}
 	
+	@SuppressWarnings("unused")
 	protected void triggerMinProvisionUpdate (double value){
+		if(!Executor.isEnableLowerBoundUpdate) {
+			return;
+		}
 		// Make the min provision a bit larger than the actual usage.
 		value = (value < h)? h : value;
 		

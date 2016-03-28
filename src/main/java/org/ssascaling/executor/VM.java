@@ -13,7 +13,9 @@ public class VM {
 	private String VM_ID;
 	private Map<Type, HardwareControlPrimitive> map;
 	private List<HardwareControlPrimitive> list = new ArrayList<HardwareControlPrimitive>();
-	
+	// Software CP that shared by all services on the VM, however, they are still controlled
+	// via DomU not Dom0.
+	private List<SoftwareControlPrimitive> software = new ArrayList<SoftwareControlPrimitive>();
 	
 	public VM(String VM_ID, HardwareControlPrimitive... primitives) {
 		super();
@@ -27,6 +29,10 @@ public class VM {
 
 	public HardwareControlPrimitive getHardwareControlPrimitive(String name) {
 		return map.get(Type.getTypeByString(name));
+	}
+	
+	public void setSharedSoftwareControlPrimitives (List<SoftwareControlPrimitive> software) {
+		this.software = software;
 	}
 	
 	public boolean isScaleUp(long cap) {
@@ -58,8 +64,13 @@ public class VM {
 		return Math.round(map.get(Type.Memory).getValueVector()[map.get(Type.Memory).getValueVector().length - 1]);
 	}
 	
-	public Collection<HardwareControlPrimitive> getAllPrimitives(){
+	public Collection<HardwareControlPrimitive> getAllHardwarePrimitives(){
 		return list;
+	}
+	
+	
+	public Collection<SoftwareControlPrimitive> getAllSharedSoftwarePrimitives(){
+		return software;
 	}
 	
 	public String getID (){

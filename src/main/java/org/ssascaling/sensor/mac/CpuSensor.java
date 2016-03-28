@@ -111,4 +111,10 @@ public class CpuSensor implements Sensor {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setAlias(String alias) {
+		// TODO Auto-generated method stub
+		
+	}
 }

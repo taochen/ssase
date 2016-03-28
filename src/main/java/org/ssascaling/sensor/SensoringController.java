@@ -48,9 +48,24 @@ public class SensoringController {
 	private static Map<String, Map<String, Sensor>> sensors;
 	// If the data is sent to Dom0 gradually (one per sample) or sent as batch.
 	// false means send one per sample, true otherwise.
+	/**********************
+	 * 
+	 * This is an important
+	 * variable the should be changed.
+	 * 
+	 * 
+	 * 
+	 * *********************/
 	private static final boolean isWriteOnce = false;
 	
-	
+	/**********************
+	 * 
+	 * This is an important
+	 * variable the should be changed, when 
+	 * batch sensing is used.
+	 * 
+	 * 
+	 * *********************/
 	private static long totalNumberOfSenceToTriggerSend = 2;
 	private static long numberOfSenceToTriggerSend = 0;
 	
@@ -235,6 +250,7 @@ public class SensoringController {
 				if ("sensor".equals(node.item(i).getNodeName())){
 					
 					Class clazz = Class.forName(node.item(i).getAttributes().getNamedItem("class").getNodeValue());
+					// This may be software that are shared amongst services.
 					hardwareSensors.put(node.item(i).getAttributes().getNamedItem("name").getNodeValue(),
 							(Sensor) clazz.newInstance());
 				}
@@ -252,6 +268,13 @@ public class SensoringController {
 							Class clazz = Class.forName(insideService.item(l).getAttributes().getNamedItem("class").getNodeValue());
 							serviceSensors.put(insideService.item(l).getAttributes().getNamedItem("name").getNodeValue(),
 									(Sensor) clazz.newInstance());
+							// If some sensors is using the same class, then their getName() should be changed.
+							if(insideService.item(l).getAttributes().getNamedItem("alias") != null) {
+								Method m = Sensor.class.getMethod("setAlias", String.class);
+								m.invoke(serviceSensors.get(insideService.item(l).getAttributes().getNamedItem("name").getNodeValue()),
+										insideService.item(l).getAttributes().getNamedItem("alias") );
+								
+							}
 						}
 						
 					}

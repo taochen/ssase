@@ -45,6 +45,27 @@ public class Executor {
 	private static List<CPUCore> cores = new ArrayList<CPUCore>();
 	
 	public final static boolean isTest = false;
+	
+	/**********************
+	 * 
+	 * This is an important
+	 * variable the should be changed.
+	 * 
+	 * 
+	 * 
+	 * *********************/
+	public final static boolean isEnableUpperBoundUpdate = false;
+	/**********************
+	 * 
+	 * This is an important
+	 * variable the should be changed.
+	 * 
+	 * 
+	 * 
+	 * *********************/
+	public final static boolean isEnableLowerBoundUpdate = false;
+	
+	
 	public final static long memoryThreshold = 50;
 	public final static long CPUThreshold = 3;
 	
@@ -131,7 +152,7 @@ public class Executor {
 		// For horizontal scaling, VM_ID - data (0 for scale out, others for scale in)
 		Map<String, Integer> horizontalActions = new HashMap<String, Integer> ();
 		// Number of hardware CPs
-		int noOfHardwareCP = Repository.getAllVMs().iterator().next().getAllPrimitives().size();
+		int noOfHardwareCP = Repository.getAllVMs().iterator().next().getAllHardwarePrimitives().size();
 		
 		// Need to sync in order to consistent on the utilization of resource on the PM.
 		synchronized (lock) {

@@ -6,6 +6,7 @@ public class WorkloadSensor implements Sensor {
 	private double complete = 0.0;
 	private long startTime = System.currentTimeMillis();
 
+	private String alias = null;
 	
 	@Override
 	public synchronized double[] runMonitoring() {
@@ -49,7 +50,7 @@ public class WorkloadSensor implements Sensor {
 	
 	@Override
 	public String[] getName() {
-		return new String[]{"Workload"};
+		return alias == null ? new String[]{"Workload"} : new String[]{"Workload-"+alias};
 	}
 	
 	@Override
@@ -60,6 +61,12 @@ public class WorkloadSensor implements Sensor {
 	@Override
 	public void initInstance(Object object) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setAlias(String alias) {
+		this.alias = alias;
 		
 	}
 }

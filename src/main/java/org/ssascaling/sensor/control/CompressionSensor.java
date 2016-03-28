@@ -66,6 +66,12 @@ public class CompressionSensor implements Sensor {
 		return "off".equals(s)? 0 : 1;
 	}
 
+	@Override
+	public void setAlias(String alias) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	
 	

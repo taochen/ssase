@@ -17,6 +17,8 @@ public interface Sensor {
 	
 	public String[] getName();
 	
+	public void setAlias(String alias);
+	
 	public void destory();
 	
 	public interface Invoker {

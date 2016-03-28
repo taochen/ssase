@@ -32,8 +32,26 @@ public class Monitor {
 	
 	// Should equals to totalNumberOfVM if need 1 modeling interval = sampling interval
 	// This should be a multiple of totalNumberOfVM.
-	private static long totalNumberOfSenceToTriggerModeling = 3;
-	private static long totalNumberOfVM = 3;
+	/**********************
+	 * 
+	 * This is an important
+	 * variable the should be changed.
+	 * 
+	 * 
+	 * 
+	 * *********************/
+	private static long totalNumberOfSenceToTriggerModeling = 1;//3;
+	/**********************
+	 * 
+	 * This is an important
+	 * variable the should be changed.
+	 * 
+	 * 
+	 * 
+	 * *********************/
+	private static long totalNumberOfVM = 1;//3;
+	
+	
 	private static long numberOfSenceToTriggerModeling = 0;
 	
 	// Called by updatePrimitivesAndQoSFromFiles in Analyzer class, so do not need

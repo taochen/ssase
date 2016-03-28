@@ -129,7 +129,10 @@ public class Analyzer {
 		}
 		
 		for (VM v : Repository.getAllVMs()) {
-			for (Primitive p : v.getAllPrimitives()){
+			for (Primitive p : v.getAllHardwarePrimitives()){
+				p.addValue(samples);
+			}
+			for (Primitive p : v.getAllSharedSoftwarePrimitives()){
 				p.addValue(samples);
 			}
 		}
@@ -154,7 +157,10 @@ public class Analyzer {
 		}
 		
 		for (VM v : Repository.getAllVMs()) {
-			for (Primitive p : v.getAllPrimitives()){
+			for (Primitive p : v.getAllHardwarePrimitives()){
+				p.resetValues();
+			}
+			for (Primitive p : v.getAllSharedSoftwarePrimitives()){
 				p.resetValues();
 			}
 		}

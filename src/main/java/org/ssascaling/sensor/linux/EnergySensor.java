@@ -1,4 +1,4 @@
-package org.ssascaling.sensor.control;
+package org.ssascaling.sensor.linux;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,16 +8,16 @@ import java.util.TimerTask;
 
 import org.ssascaling.sensor.Sensor;
 
-public class QueryCacheSizeSensor implements Sensor {
+public class EnergySensor implements Sensor {
 
-	final String command = "/bin/sh /root/monitor/query_cache_size_monitor.sh";
+	final String command = null;//"/bin/sh /root/monitor/cpu_monitor.sh";
 	private double total = 0.0;
 	private double number = 0.0;
 	private static final int SAMPLING_INTERVAL = 3000;
 	public static final int index = 5;
 	private Timer timer;
 	
-	public QueryCacheSizeSensor(){
+	public EnergySensor(){
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {
@@ -70,6 +70,32 @@ public class QueryCacheSizeSensor implements Sensor {
 			number ++;
 		}
 	}
+
+
+	@Override
+	public boolean isVMLevel() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public String[] getName() {
+		// TODO Auto-generated method stub
+		return new String[]{"Energy"};
+	}
+
+	@Override
+	public void destory() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void initInstance(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public double recordPriorToTask(Object value) {
 		// TODO Auto-generated method stub
@@ -85,32 +111,7 @@ public class QueryCacheSizeSensor implements Sensor {
 	@Override
 	public boolean isOutput() {
 		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
-	public boolean isVMLevel() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String[] getName() {
-		// TODO Auto-generated method stub
-		return new String[]{"query_cache_size"};
-	}
-
-	@Override
-	public void destory() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void initInstance(Object object) {
-		// TODO Auto-generated method stub
-		
+		return true;
 	}
 
 	@Override

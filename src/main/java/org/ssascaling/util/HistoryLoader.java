@@ -121,7 +121,10 @@ public class HistoryLoader {
 			}
 			
 			for (VM v : Repository.getAllVMs()) {
-				for (Primitive p : v.getAllPrimitives()){
+				for (Primitive p : v.getAllHardwarePrimitives()){
+					p.addValue(i+1);
+				}
+				for (Primitive p : v.getAllSharedSoftwarePrimitives()){
 					p.addValue(i+1);
 				}
 			}

@@ -191,7 +191,7 @@ public class Ssascaling {
 				NodeList insideVmNodes = node.getChildNodes();
 				// Order from hardware CP then to software CP.
 				List<Double> hardwarePrices = new ArrayList<Double>();
-				
+				List<Double> sharedSoftwarePrices = new ArrayList<Double>();
 				for (int j = 0; j < insideVmNodes.getLength(); j++) {
 					
 					
@@ -226,6 +226,37 @@ public class Ssascaling {
 						
 						Repository.setVM(vmName, new VM(vmName, list.toArray(new HardwareControlPrimitive[list.size()]) ));
 					}
+					
+					if ("softwareControlPrimitive".equals(insideVmNodes.item(j).getNodeName())){
+						NodeList softwareCPs = insideVmNodes.item(j).getChildNodes();
+						List<SoftwareControlPrimitive> list = new ArrayList<SoftwareControlPrimitive>();
+						for (int k = 0; k < softwareCPs.getLength(); k++) {
+							
+							if (Node.ELEMENT_NODE == softwareCPs.item(k).getNodeType()) {
+								SoftwareControlPrimitive cp = new SoftwareControlPrimitive(
+										softwareCPs.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
+										vmName, 
+										true, 
+										Type.getTypeByString(softwareCPs.item(k).getAttributes().getNamedItem("name").getNodeValue()),
+										Type.getActuatorByString(softwareCPs.item(k).getAttributes().getNamedItem("name").getNodeValue()),
+										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("provision").getNodeValue()), 
+										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
+										Integer.parseInt(softwareCPs.item(k).getAttributes().getNamedItem("differences").getNodeValue()), 
+										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("pre_to_max").getNodeValue()),
+										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("pre_of_max").getNodeValue()),
+										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("min").getNodeValue()),
+										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("max").getNodeValue()));
+							
+								sharedSoftwarePrices.add(Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()));
+								list.add(cp);
+								
+							//System.out.print(hardwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()+ "\n");
+						    }
+						}
+						
+						Repository.getVM(vmName).setSharedSoftwareControlPrimitives(list);
+					}
+					
 					
 					
 					
@@ -326,17 +357,23 @@ public class Ssascaling {
 		    					
 		    					
 		    					results.addAll(Repository.getVM(vmName)
-		    							.getAllPrimitives());
+		    							.getAllHardwarePrimitives());
+		    					results.addAll(Repository.getVM(vmName)
+		    							.getAllSharedSoftwarePrimitives());
 		    					results.addAll(softs);
 		    					
 		    					
-		    					double[] p = new double[hardwarePrices.size() + softwarePrices.size()];
+		    					double[] p = new double[hardwarePrices.size() + softwarePrices.size() + sharedSoftwarePrices.size()];
 		    					for (int n = 0; n < hardwarePrices.size(); n++) {
 		    						p[n] = hardwarePrices.get(n);
 		    					}
 		    					
+		    					for (int n = 0; n < sharedSoftwarePrices.size(); n++) {
+		    						p[n + hardwarePrices.size()] = sharedSoftwarePrices.get(n);
+		    					}
+		    					
 		    					for (int n = 0; n < softwarePrices.size(); n++) {
-		    						p[n + hardwarePrices.size()] = softwarePrices.get(n);
+		    						p[n + sharedSoftwarePrices.size() + hardwarePrices.size()] = softwarePrices.get(n);
 		    					}
 		    					
 		    					
@@ -428,7 +465,9 @@ public class Ssascaling {
 
 							Set<Primitive> ps = new HashSet<Primitive>();
 							ps.addAll(subVm
-									.getAllPrimitives());
+									.getAllHardwarePrimitives());
+							ps.addAll(subVm
+									.getAllSharedSoftwarePrimitives());
 							service.addPossiblePrimitive(ps);
 					}
 					
@@ -463,7 +502,12 @@ public class Ssascaling {
 						}
 						
 						// Hardware CP
-						for (Primitive p : Repository.getVM(s.getVMID()).getAllPrimitives()) {
+						for (Primitive p : Repository.getVM(s.getVMID()).getAllHardwarePrimitives()) {
+							Repository.setDirectForAnObjective(obj, p);
+							//System.out.print(p.getAlias() + "\n");
+						}
+						
+						for (Primitive p : Repository.getVM(s.getVMID()).getAllSharedSoftwarePrimitives()) {
 							Repository.setDirectForAnObjective(obj, p);
 							//System.out.print(p.getAlias() + "\n");
 						}

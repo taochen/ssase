@@ -63,4 +63,10 @@ public class ThreadSensor implements Sensor {
 		
 	}
 
+	@Override
+	public void setAlias(String alias) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
