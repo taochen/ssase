@@ -42,7 +42,7 @@ public class Region {
 	
 	
 	public static Region getNewRegionInstance () {
-		return new MOEARegion();//new Region();
+		return new InitRegion();//new MOEARegion();//new Region();
 	}
 	
 	

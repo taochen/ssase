@@ -108,6 +108,10 @@ public class ActuationReceiver {
 
 	}
 	
+	public void invoke(String service, String type, long value){
+		map.get(type).invoke(service, value);
+	}
+	
 	private void doActuation (DataInputStream is){
 		String line = null;
 		try {

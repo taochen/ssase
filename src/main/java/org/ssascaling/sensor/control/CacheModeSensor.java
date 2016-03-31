@@ -37,7 +37,7 @@ public class CacheModeSensor implements Sensor {
 			if (invoker instanceof Invoker) {
 				Object obj = ((Invoker) invoker).execute(null);
 				// 0 = off, 1 = on.
-				return new double[] { (Double) obj };
+				return new double[] { (Integer) obj };
 			}
 		}
 		return new double[]{0};

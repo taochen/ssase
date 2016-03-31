@@ -9,12 +9,17 @@ public class SpareThreadSensor implements Sensor {
 	
 	// If less than maxSpare, then this sensor should be the same
 	// as maxThread, but it can not exceed maxSpare.
-	private double maxSpare = 0.0;
+	/**********
+	 * 
+	 * Need to be changed manually.
+	 * 
+	 */
+	private int maxSpare = 25;
 	
 	@Override
 	public double recordPriorToTask(Object value) {
 		synchronized (this) {
-			maxSpare = (Double)value;
+			
 			concurency++;
 			if (maxConcurency < concurency && concurency <= maxSpare) {
 				maxConcurency = concurency;
@@ -66,7 +71,7 @@ public class SpareThreadSensor implements Sensor {
 
 	}
 	
-	public void updateSpare(double maxSpare) {
+	public void updateSpare(int maxSpare) {
 		synchronized (this) {
 		    this.maxSpare = maxSpare;
 		}

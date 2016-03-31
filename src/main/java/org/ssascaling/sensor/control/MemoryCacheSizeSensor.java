@@ -27,7 +27,7 @@ public class MemoryCacheSizeSensor implements Sensor {
 			if (invoker instanceof Invoker) {
 				Object obj = ((Invoker) invoker).execute(null);
 				
-				long v = (Long) obj ;
+				int v = ((Long) obj).intValue();
 				if (v > size) {
 					size = v;
 				}
@@ -50,7 +50,7 @@ public class MemoryCacheSizeSensor implements Sensor {
 			if (invoker instanceof Invoker) {
 				Object obj = ((Invoker) invoker).execute(null);
 
-				int v = (Integer) obj;
+				int v = ((Long) obj).intValue();
 				size = v;
 
 			}

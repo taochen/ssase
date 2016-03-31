@@ -266,14 +266,19 @@ public class SensoringController {
 						if ("sensor".equals(insideService.item(l).getNodeName())){
 							
 							Class clazz = Class.forName(insideService.item(l).getAttributes().getNamedItem("class").getNodeValue());
-							serviceSensors.put(insideService.item(l).getAttributes().getNamedItem("name").getNodeValue(),
-									(Sensor) clazz.newInstance());
-							// If some sensors is using the same class, then their getName() should be changed.
+							
+							// If some sensors are using the same class, then their getName() should be changed.
 							if(insideService.item(l).getAttributes().getNamedItem("alias") != null) {
 								Method m = Sensor.class.getMethod("setAlias", String.class);
-								m.invoke(serviceSensors.get(insideService.item(l).getAttributes().getNamedItem("name").getNodeValue()),
-										insideService.item(l).getAttributes().getNamedItem("alias") );
-								
+								Sensor s = (Sensor) clazz.newInstance();
+								m.invoke(s, insideService.item(l).getAttributes().getNamedItem("alias").getNodeValue() );
+
+								serviceSensors.put(insideService.item(l).getAttributes().getNamedItem("name").getNodeValue()+"-"+insideService.item(l).getAttributes().getNamedItem("alias").getNodeValue() ,
+										s);
+							} else {
+							
+							    serviceSensors.put(insideService.item(l).getAttributes().getNamedItem("name").getNodeValue(),
+									(Sensor) clazz.newInstance());
 							}
 						}
 						

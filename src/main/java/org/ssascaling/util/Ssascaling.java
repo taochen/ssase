@@ -45,6 +45,7 @@ public class Ssascaling {
 		
 		if (arg == null || arg.length == 0) {
 			activate();
+			return;
 		}
 		
 		if ("0".equals(arg[0])) {
@@ -301,6 +302,7 @@ public class Ssascaling {
 	    								softwarePrices.add(Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()));
 	    								primitives.put(softwareCPs.item(k).getAttributes().getNamedItem("name").getNodeValue(), cp);
 	    								softs.add(cp);
+	    								System.out.print(cp.getName() + " min: " + cp.getValueVector()[0] + ", max: " + cp.getValueVector()[cp.getValueVector().length-1] + "\n");
 	    							 }
 	    						}
 	    						
@@ -314,13 +316,17 @@ public class Ssascaling {
 	    						for (int k = 0; k < eps.getLength(); k++) {
 	    							
 	    							if (Node.ELEMENT_NODE == eps.item(k).getNodeType()) {
+	    								String name = eps.item(k).getAttributes().getNamedItem("name").getNodeValue();
+	    								if(eps.item(k).getAttributes().getNamedItem("alias").getNodeValue() != null) {
+	    									name  = name + "-" + eps.item(k).getAttributes().getNamedItem("alias").getNodeValue();
+	    								}
 	    								EnvironmentalPrimitive ep = new EnvironmentalPrimitive(
 	    										vmName+"-"+serviceName,
-	    										eps.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
+	    										name, 
 	    										Type.getTypeByString(eps.item(k).getAttributes().getNamedItem("name").getNodeValue()));
 	    							
 	    								
-	    								primitives.put(eps.item(k).getAttributes().getNamedItem("name").getNodeValue(), ep);
+	    								primitives.put(name, ep);
 	    							 }
 	    						}
 	    						
@@ -521,7 +527,7 @@ public class Ssascaling {
 			}
 			
 			Executor.init(3);
-			new HistoryLoader().run();
+			//new HistoryLoader().run();
 					
 			new Receiver().receive();
 			

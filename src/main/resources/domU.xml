@@ -1,21 +1,59 @@
 <ssascaling>     
-            <sensor name="CPU" class="org.ssascaling.sensor.linux.CpuSensor"/>
-            <sensor name="Memory" class="org.ssascaling.sensor.linux.MemorySensor"/>
-        <service name="edu.rice.rubis.servlets.SearchItemsByCategory">
-            <sensor name="Availability" class="org.ssascaling.sensor.AvailabilitySensor"/>
+<!--             <sensor name="CPU" class="org.ssascaling.sensor.linux.CpuSensor"/> -->
+<!--             <sensor name="Memory" class="org.ssascaling.sensor.linux.MemorySensor"/> -->
+            
+        <service name="rubis_software">
+<!--             <sensor name="Energy" class="org.ssascaling.sensor.linux.EnergySensor"/> -->
             <sensor name="Response Time" class="org.ssascaling.sensor.ResponseTimeSensor"/>
-            <sensor name="Throughput" class="org.ssascaling.sensor.ThroughputSensor"/>                     
-            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor"/>
-            <sensor name="Concurrency" class="org.ssascaling.sensor.ConcurrencySensor"/>
-            <sensor name="Reliability" class="org.ssascaling.sensor.ReliabilitySensor"/>         
+            <sensor name="cacheMode" class="org.ssascaling.sensor.control.CacheModeSensor"/> 
+            <sensor name="Compression" class="org.ssascaling.sensor.control.CompressionSensor"/> 
+            <sensor name="Connection" class="org.ssascaling.sensor.control.ConnectionSensor"/> 
+            <sensor name="maxBytesLocalDisk" class="org.ssascaling.sensor.control.DiskCacheSizeSensor"/> 
+            <sensor name="maxBytesLocalHeap" class="org.ssascaling.sensor.control.MemoryCacheSizeSensor"/> 
+<!--             <sensor name="query_cache_size" class="org.ssascaling.sensor.control.QueryCacheSizeSensor"/>  -->
+            <sensor name="minSpareThreads" class="org.ssascaling.sensor.control.SpareThreadSensor"/> 
+            <sensor name="maxThread" class="org.ssascaling.sensor.control.ThreadSensor"/>                     
+            
+            <!-- Various workload for different services -->
+            
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.AboutMe"/>  
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.BrowseCategories"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.BrowseRegions"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.StoreBuyNow"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.BuyNow"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.BuyNowAuth"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.PutBid"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.PutBidAuth"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.PutComment"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.PutCommentAuth"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.RegisterItem"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.RegisterUser"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.SearchItemsByCategory"/>    
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.SearchItemsByRegion"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.SellItemForm"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.StoreBid"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.StoreComment"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.ViewBidHistory"/> 
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.ViewItem"/>  
+            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.ViewUserInfo"/>  
         </service>
-        <service name="edu.rice.rubis.servlets.BrowseCategories">
-            <sensor name="Availability" class="org.ssascaling.sensor.AvailabilitySensor"/>
-            <sensor name="Response Time" class="org.ssascaling.sensor.ResponseTimeSensor"/>
-            <sensor name="Throughput" class="org.ssascaling.sensor.ThroughputSensor"/>                     
-            <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor"/>
-            <sensor name="Concurrency" class="org.ssascaling.sensor.ConcurrencySensor"/>
-            <sensor name="Reliability" class="org.ssascaling.sensor.ReliabilitySensor"/>         
-        </service>
+            
+            
+<!--         <service name="edu.rice.rubis.servlets.SearchItemsByCategory"> -->
+<!--             <sensor name="Availability" class="org.ssascaling.sensor.AvailabilitySensor"/> -->
+<!--             <sensor name="Response Time" class="org.ssascaling.sensor.ResponseTimeSensor"/> -->
+<!--             <sensor name="Throughput" class="org.ssascaling.sensor.ThroughputSensor"/>                      -->
+<!--             <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor"/> -->
+<!--             <sensor name="Concurrency" class="org.ssascaling.sensor.ConcurrencySensor"/> -->
+<!--             <sensor name="Reliability" class="org.ssascaling.sensor.ReliabilitySensor"/>          -->
+<!--         </service> -->
+<!--         <service name="edu.rice.rubis.servlets.BrowseCategories"> -->
+<!--             <sensor name="Availability" class="org.ssascaling.sensor.AvailabilitySensor"/> -->
+<!--             <sensor name="Response Time" class="org.ssascaling.sensor.ResponseTimeSensor"/> -->
+<!--             <sensor name="Throughput" class="org.ssascaling.sensor.ThroughputSensor"/>                      -->
+<!--             <sensor name="Workload" class="org.ssascaling.sensor.WorkloadSensor"/> -->
+<!--             <sensor name="Concurrency" class="org.ssascaling.sensor.ConcurrencySensor"/> -->
+<!--             <sensor name="Reliability" class="org.ssascaling.sensor.ReliabilitySensor"/>          -->
+<!--         </service> -->
 </ssascaling>
 

@@ -24,6 +24,7 @@ public class Service {
 	// String name - QoS/Cost
 	private Map<String, Objective> objectives;
 	// String name - software CP/EP, these are all direct primitive, not including the functional dependent ones.
+	// This does not include the shraed software primitives.
 	private Map<String, Primitive> primitives;
 
 	private Set<Primitive> possibleInputs = new HashSet<Primitive>();

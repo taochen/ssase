@@ -135,7 +135,11 @@ public class Repository {
 	public static void prepareToUpdateHardwareControlPrimitive(String VM_ID, String name, double... values) {
 		
 		for (double v : values){
+			if(vms.get(VM_ID).getHardwareControlPrimitive(name) != null)
 			vms.get(VM_ID).getHardwareControlPrimitive(name).prepareToAddValue(v);
+			// Update the shared software primitives.
+			if(vms.get(VM_ID).getSoftwareControlPrimitive(name) != null)
+			vms.get(VM_ID).getSoftwareControlPrimitive(name).prepareToAddValue(v);
 		}
 		
 		

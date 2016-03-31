@@ -50,7 +50,7 @@ public class CPUCore {
 			result += entry.getKey().print() + ", actual CPU=" + entry.getValue() + "\n";
 		}
 		
-		result += "remaining=" + remaining + "\n";
+		result += "Acutal CPU remaining=" + remaining + "\n";
 		
 		System.out.print(result);
 	}

@@ -85,7 +85,7 @@ public class Executor {
 			index++;
 			cores.add(new CPUCore(index, new VM[]{v}));		
 			remainingMemory -= v.getMaxMemory();
-			remainingCPU += (int)(100 - v.getMaxCpuCap());
+			remainingCPU += (int)(100 * v.getMaxCPUNo() - v.getMaxCpuCap());
 		}
 		
 		
@@ -437,6 +437,7 @@ public class Executor {
 			
 			// Send the actions to VMs for certain software control primitives.
 			for (Map.Entry<String, StringBuilder> entry : softwareCPData.entrySet()) {
+				
 				Logger.logExecutionData(entry.getKey(), entry.getValue(), -1);
 				ActuationSender.getInsatnce().send(entry.getKey(), entry.getValue().toString());
 			}

@@ -26,6 +26,7 @@ public class Analyzer {
 	
 	private static boolean isReachTheLeastSamples = false;
 	
+	
 	public static List<Objective> doAnalysis(long samples){
 		
 		
@@ -70,6 +71,12 @@ public class Analyzer {
 		// updatePrimitivesAndQoSFromFiles();
 		// Actually adding the values.
 		doAddValues(samples);
+		
+		if(!ControlBus.isTriggerQoSModeling) {
+			// To avoid waiting.
+			updatedModel.set(Repository.getQoSSet().size());
+			return;
+		}
 		
 		for (final QualityOfService qos : Repository.getQoSSet()) {
 			
@@ -182,7 +189,7 @@ public class Analyzer {
 	private static  List<Objective> detectSymptoms(){
 		// Done! only trigger if the current violation has been longer than t intervals and the current
 		// configuration has been up and running for t intervals.
-		if (!isReachTheLeastSamples /*Only detect when essential number of samples have been collected*/) {
+		if (ControlBus.isTriggerQoSModeling && !isReachTheLeastSamples /*Only detect when essential number of samples have been collected*/) {
 			return null;
 		}
 		

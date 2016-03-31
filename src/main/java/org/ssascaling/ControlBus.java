@@ -22,7 +22,7 @@ public class ControlBus {
 	
 	public static final boolean isTestMonitoringOnly = false;
 	public static final boolean isTestQoSModelingOnly = false;
-
+	public static boolean isTriggerQoSModeling = false;
 	// Ensure only one MAPE loop running at a time.
 	// This is the main lock of MAPE loop, in case the repository 
 	// would change, it also need to rely on this lock.

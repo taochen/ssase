@@ -16,10 +16,11 @@ public class VM {
 	// Software CP that shared by all services on the VM, however, they are still controlled
 	// via DomU not Dom0.
 	private List<SoftwareControlPrimitive> software = new ArrayList<SoftwareControlPrimitive>();
-	
+	private Map<Type, SoftwareControlPrimitive> softwareMap;
 	public VM(String VM_ID, HardwareControlPrimitive... primitives) {
 		super();
 		map = new HashMap<Type, HardwareControlPrimitive>();
+		softwareMap = new HashMap<Type, SoftwareControlPrimitive>();
 		this.VM_ID = VM_ID;
 		for (HardwareControlPrimitive p : primitives) {
 			map.put(p.getType(), p);
@@ -31,8 +32,17 @@ public class VM {
 		return map.get(Type.getTypeByString(name));
 	}
 	
+
+	public SoftwareControlPrimitive getSoftwareControlPrimitive(String name) {
+		return softwareMap.get(Type.getTypeByString(name));
+	}
+	
 	public void setSharedSoftwareControlPrimitives (List<SoftwareControlPrimitive> software) {
 		this.software = software;
+		
+		for (SoftwareControlPrimitive p : software) {
+			softwareMap.put(p.getType(), p);
+		}
 	}
 	
 	public boolean isScaleUp(long cap) {
@@ -44,7 +54,9 @@ public class VM {
 	}
 	
 	public long getCPUNo(){
-		return  Math.round(map.get(Type.CPU).getProvision())/100 + 1;
+		double d = map.get(Type.CPU).getProvision()%100;
+		return  d > 0 ? (long)map.get(Type.CPU).getProvision()/100 + 1 : 
+			(long)map.get(Type.CPU).getProvision()/100;
 	}
 
 	public long getCpuCap() {
@@ -59,6 +71,12 @@ public class VM {
 	public long getMaxCpuCap() {
 		return Math.round(map.get(Type.CPU).getValueVector()[map.get(Type.CPU).getValueVector().length - 1]);
 	}
+	
+	public long getMaxCPUNo(){
+		double d = map.get(Type.CPU).getValueVector()[map.get(Type.CPU).getValueVector().length - 1]%100;
+		return  d > 0 ? (long)map.get(Type.CPU).getValueVector()[map.get(Type.CPU).getValueVector().length - 1]/100 + 1 : 
+			(long)map.get(Type.CPU).getValueVector()[map.get(Type.CPU).getValueVector().length - 1]/100;
+    }
 	
 	public long getMaxMemory(){
 		return Math.round(map.get(Type.Memory).getValueVector()[map.get(Type.Memory).getValueVector().length - 1]);

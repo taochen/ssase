@@ -12,8 +12,8 @@ import org.ssascaling.Interval.ValuePair;
 
 public class Logger { 
 
-	public static final String prefix = "/home/tao/monitor/";
-		//"/Users/tao/research/monitor/test/";
+	public static final String prefix = //"/home/tao/monitor/";
+		"/Users/tao/research/monitor/sas/";
 	
 	private static long executionCount = 0;
 	 

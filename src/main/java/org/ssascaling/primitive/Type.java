@@ -44,7 +44,7 @@ public enum Type {
 			return new CPUCapActuator();
 		} else if (name.equals("Memory")) {
 			return new MemoryActuator();
-		}
+		} 
 		
 		
 		return null;
