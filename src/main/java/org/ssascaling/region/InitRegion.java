@@ -33,8 +33,17 @@ public class InitRegion extends Region {
 				if(p instanceof ControlPrimitive && !map.containsKey(p)) {
 					
 //					if("cacheMode".equals(p.getName())) {
-//						map.put((ControlPrimitive)p, 1D);
-//						continue;
+//						//map.put((ControlPrimitive)p, 1D);
+////						int index = rand.nextInt(((ControlPrimitive) p).getValueVector().length-1);
+////						if(index != 2) {
+////							index++;
+////						}
+////						map.put((ControlPrimitive)p, ((ControlPrimitive) p).getValueVector()[index]);
+//						System.out.print("*********cacheMode number " + ((ControlPrimitive) p).getValueVector().length + "\n");
+//						System.out.print("*********cacheMode last number " + ((ControlPrimitive) p).getValueVector()[ ((ControlPrimitive) p).getValueVector().length -1] + "\n");
+//						
+//						
+//						//continue;
 //					}
 //					
 //					if("Compression".equals(p.getName())) {

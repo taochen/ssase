@@ -10,7 +10,7 @@ import org.ssascaling.sensor.Sensor;
 
 public class EnergySensor implements Sensor {
 
-	final String command = null;//"/bin/sh /root/monitor/cpu_monitor.sh";
+	final String command = "/bin/sh /root/monitor/energy_monitor.sh";
 	private double total = 0.0;
 	private double number = 0.0;
 	private static final int SAMPLING_INTERVAL = 3000;
