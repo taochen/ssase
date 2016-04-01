@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.ssascaling</groupId>
-	<artifactId>ssascaling-core</artifactId>
-	<version>0.0.1</version>
-	<name>SSASCALING-DISTRIBUTION</name>
+	<groupId>org.ssase</groupId>
+	<artifactId>ssase-core</artifactId>
+	<version>1.0.1</version>
+	<name>SSASE-DISTRIBUTION</name>
 	<build> 
 		<plugins>
 			<plugin>
@@ -55,7 +55,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>org.ssascaling.util.Ssascaling</mainClass>
+							<mainClass>org.ssase.util.Ssascaling</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -89,7 +89,7 @@
 						</goals>
 						<configuration>
 							<tasks>
-								 <scp file="${basedir}/target/ssascaling-core-0.0.1.one-jar.jar" todir="tao@192.168.0.21:/home/tao" password="Monday22" />
+								 <scp file="${basedir}/target/ssase-core-1.0.1.one-jar.jar" todir="tao@192.168.0.21:/home/tao" password="Monday22" />
 							</tasks>
 						</configuration>
 						
