@@ -1,4 +1,4 @@
-<ssascaling>
+<ssase>
 
 <vm id="sas">
 
@@ -603,5 +603,5 @@
 <!--            </environmentalPrimitive> -->
 <!--         </service> -->
 <!--   </vm> -->
-</ssascaling>
+</ssase>
 

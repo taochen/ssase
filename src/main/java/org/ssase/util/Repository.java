@@ -15,12 +15,12 @@ import org.ssase.Service;
 import org.ssase.executor.VM;
 import org.ssase.objective.Cost;
 import org.ssase.objective.Objective;
+import org.ssase.objective.QualityOfService;
+import org.ssase.objective.optimization.femosaa.variability.fm.FeatureModel;
 import org.ssase.observation.listener.ModelListener;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.HardwareControlPrimitive;
 import org.ssase.primitive.Primitive;
-import org.ssase.qos.QualityOfService;
-import org.ssase.variability.fm.FeatureModel;
 
 /**
  * Only the collections here and the ones in Service class need to be maintained.

@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ssase.model.selection.mi.MutualInformation;
+import org.ssase.objective.QualityOfService;
 import org.ssase.primitive.Primitive;
-import org.ssase.qos.QualityOfService;
 
 public class NaivePrimitiveLearner extends PrimitiveLearner{
 	private Map<Primitive, Double> newInputesMap = new HashMap<Primitive, Double>();

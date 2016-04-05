@@ -10,20 +10,15 @@ import org.ssase.sensor.Sensor;
 
 public class EnergySensor implements Sensor {
 
-	final String command = "/bin/sh /root/monitor/energy_monitor.sh";
+	final String command = "sudo /bin/sh /root/monitor/energy_monitor.sh";
 	private double total = 0.0;
 	private double number = 0.0;
-	private static final int SAMPLING_INTERVAL = 3000;
 	public static final int index = 5;
-	private Timer timer;
+	private BufferedReader br = null;
+	private Process p = null;
 	
 	public EnergySensor(){
-		timer = new Timer();
-		timer.schedule(new TimerTask() {
-			public void run() {
-				execute();
-			}
-		}, 100, SAMPLING_INTERVAL);
+		execute();
 	}
 	
 	@Override
@@ -42,20 +37,23 @@ public class EnergySensor implements Sensor {
 
 	
 	private void execute() {
-        double result = 0.0;
-        BufferedReader br = null;
-        Process p = null;
+     
+       
 		try {
 			p = Runtime.getRuntime().exec(command);
-			p.waitFor();
+			
 			br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			
-			final String line = br.readLine();
-			result = Double.parseDouble(line);
+			while(true) {
+			    final String line = br.readLine();
+			    String[] result = line.split("=");
+			    synchronized (this) {
+					total += Double.parseDouble(result[result.length - 1]);
+					number ++;
+				}
+			}
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
 			try {
@@ -65,13 +63,9 @@ public class EnergySensor implements Sensor {
 				e.printStackTrace();
 			}
 		}
-		synchronized (this) {
-			total += result;
-			number ++;
-		}
+		
 	}
-
-
+	
 	@Override
 	public boolean isVMLevel() {
 		// TODO Auto-generated method stub
@@ -86,7 +80,12 @@ public class EnergySensor implements Sensor {
 
 	@Override
 	public void destory() {
-		// TODO Auto-generated method stub
+		try {
+			p.destroy();
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 

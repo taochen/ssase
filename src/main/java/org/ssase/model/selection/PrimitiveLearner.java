@@ -11,8 +11,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.model.selection.mi.MutualInformation;
+import org.ssase.objective.QualityOfService;
 import org.ssase.primitive.Primitive;
-import org.ssase.qos.QualityOfService;
 import org.ssase.util.Repository;
 
 public class PrimitiveLearner {

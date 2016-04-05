@@ -1,6 +1,6 @@
 package org.ssase.model.selection;
 
-import org.ssase.ModelFunction;
+import org.ssase.model.sam.ModelFunction;
 
 public interface StructureSelector {
 	

@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.ssase.objective.Objective;
+import org.ssase.objective.QualityOfService;
 import org.ssase.objective.correlation.Spearmans;
-import org.ssase.qos.QualityOfService;
 
 
 /**

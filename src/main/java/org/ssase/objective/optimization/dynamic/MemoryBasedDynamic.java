@@ -13,9 +13,9 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
-import org.ssase.objective.optimization.Ant;
-import org.ssase.objective.optimization.AntColony;
-import org.ssase.objective.optimization.AntValues;
+import org.ssase.objective.optimization.moaco.Ant;
+import org.ssase.objective.optimization.moaco.AntColony;
+import org.ssase.objective.optimization.moaco.AntValues;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.util.Tuple;
 

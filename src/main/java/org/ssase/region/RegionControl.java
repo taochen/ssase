@@ -219,7 +219,7 @@ public class RegionControl implements ModelListener {
 							region.addObjective(obj);
 							objectiveMap.put(obj, region);
 					} else {
-						Region region = Region.getNewRegionInstance();
+						Region region = Region.getNewRegionInstanceByType(Region.selected);
 						region.addObjective(obj);
 						region.addObjective(subObj);
 						objectiveMap.put(obj, region);
@@ -236,7 +236,7 @@ public class RegionControl implements ModelListener {
 			for (Objective obj : objs) {
 				if (!objectiveMap.containsKey(obj)) {
 					//System.out.print("single: " + obj.getName()+"\n");
-					Region region = Region.getNewRegionInstance();
+					Region region = Region.getNewRegionInstanceByType(Region.selected);
 					region.addObjective(obj);;
 					objectiveMap.put(obj, region);
 				}

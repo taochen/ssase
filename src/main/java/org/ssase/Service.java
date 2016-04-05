@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.ssase.model.sam.ModelFunctionConfigGenerator;
 import org.ssase.objective.Cost;
 import org.ssase.objective.Objective;
+import org.ssase.objective.QualityOfService;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.primitive.SoftwareControlPrimitive;
-import org.ssase.qos.QualityOfService;
 import org.ssase.util.Repository;
 /**
  * This is actually a service-instance.
@@ -74,6 +75,10 @@ public class Service {
 		for (Objective obj : objectives.values()) {
 			if(obj instanceof QualityOfService) {
 				QualityOfService qos = (QualityOfService)obj;
+				/**
+				 * 
+				 * We use SAM (Sensitivity Aware Model) models by default
+				 * */
 				qos.buildModel(
 						possibleInputs, 
 						ModelFunctionConfigGenerator.getFunctionConfiguration(obj.getName()), 

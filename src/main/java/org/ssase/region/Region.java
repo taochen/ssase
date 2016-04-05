@@ -1,24 +1,19 @@
 package org.ssase.region;
 
-import org.ssase.Service;
-import org.ssase.objective.Cost;
 import org.ssase.objective.Objective;
-import org.ssase.objective.correlation.Spearmans;
-import org.ssase.objective.optimization.BasicAntColony;
+import org.ssase.objective.optimization.femosaa.FEMOSAARegion;
+import org.ssase.objective.optimization.moaco.MOACORegion;
+import org.ssase.objective.optimization.moga.MOGARegion;
+import org.ssase.objective.optimization.random.HillClimbingRegion;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
-import org.ssase.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
 
 /**
@@ -26,7 +21,7 @@ import java.util.Set;
  * @author tao
  *
  */
-public class Region {
+public abstract class Region {
 
 	// private Map<Service, List<Objective>> serviceMap;
 
@@ -40,10 +35,28 @@ public class Region {
 
 	protected int finishedUpdateCounter = 0;
 	
-	
-	public static Region getNewRegionInstance () {
-		return new InitRegion();//new MOEARegion();//new Region();
+	public static final OptimizationType selected = OptimizationType.INIT;
+
+
+	public static Region getNewRegionInstanceByType (OptimizationType type) {
+		
+		if (type == null) return new InitRegion();
+		
+		if(OptimizationType.INIT.equals(type)) {
+			return new InitRegion();
+		} else if(OptimizationType.RANDOM.equals(type)) {
+			return new HillClimbingRegion();
+		} else if(OptimizationType.MOACO.equals(type)) {
+			return new MOACORegion();
+		} else if(OptimizationType.MOGA.equals(type)) {
+			return new MOGARegion();
+		} else if(OptimizationType.FEMOSAA.equals(type)) {
+			return new FEMOSAARegion();
+		}
+		
+		return new InitRegion();
 	}
+	
 	
 	
 	protected Region () {
@@ -109,72 +122,7 @@ public class Region {
 
 	}
 
-	public LinkedHashMap<ControlPrimitive, Double> optimize() {
-
-		LinkedHashMap<ControlPrimitive, Double> result = null;
-		synchronized (lock) {
-			while (waitingUpdateCounter != 0) {
-				try {
-					lock.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-			}
-
-			isLocked = true;
-
-			// TODO reduction
-
-			List<ControlPrimitive> primitives = new ArrayList<ControlPrimitive>();
-			LinkedHashMap<Objective, List<Tuple<Primitive, Double>>> objectiveMap = new LinkedHashMap<Objective, List<Tuple<Primitive, Double>>>();
-
-			Map<Primitive, Tuple<Primitive, Double>> set = new HashMap<Primitive, Tuple<Primitive, Double>>();
-
-			for (Objective obj : objectives) {
-
-				objectiveMap
-						.put(obj, new ArrayList<Tuple<Primitive, Double>>());
-
-				for (Primitive p : obj.getPrimitivesInput()) {
-
-					if (!set.containsKey(p)) {
-
-						set.put(p,
-								new Tuple<Primitive, Double>(p,
-										(p instanceof ControlPrimitive) ? p
-												.getProvision()
-												: ((EnvironmentalPrimitive) p)
-														.getLatest()));
-					}
-					if (p instanceof ControlPrimitive) {
-						if (!primitives.contains(p)) {
-							primitives.add((ControlPrimitive) p);
-						}
-					}
-
-					objectiveMap.get(obj).add(set.get(p));
-				}
-			}
-			
-			/*for (Primitive p : primitives) {
-				   System.out.print("The CP for optimization: " + p.getAlias() + " : " + p.getName() + "\n");
-			}*/
-			
-			
-			BasicAntColony aco = new BasicAntColony(new Random().nextInt(),
-					primitives, objectiveMap, objectiveMap);
-			result = aco.doOptimization();
-
-			print(result);
-
-			isLocked = false;
-			lock.notifyAll();
-		}
-		System.out.print("================= Finish optimization ! =================\n");
-		// TODO optimization.
-		return result;
-	}
+	public abstract LinkedHashMap<ControlPrimitive, Double> optimize();
 	
 
 	public void print(){
@@ -219,8 +167,8 @@ public class Region {
 			
 			String out = "";
 			
-			EnvironmentalPrimitive ep = obj instanceof org.ssase.qos.QualityOfService? 
-					((org.ssase.qos.QualityOfService)obj).getEP() : null;
+			EnvironmentalPrimitive ep = obj instanceof org.ssase.objective.QualityOfService? 
+					((org.ssase.objective.QualityOfService)obj).getEP() : null;
 
 			if (ep != null) {
 				// If make no sense if the required throughput even larger than the

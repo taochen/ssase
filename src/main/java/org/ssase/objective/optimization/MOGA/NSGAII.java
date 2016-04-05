@@ -1,4 +1,4 @@
-package org.ssase.objective.optimization.MOGA;
+package org.ssase.objective.optimization.moga;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.ssase.objective.Objective;
-import org.ssase.objective.optimization.Ant;
+import org.ssase.objective.optimization.moaco.Ant;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.util.Tuple;

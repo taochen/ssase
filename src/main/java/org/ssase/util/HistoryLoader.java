@@ -19,9 +19,9 @@ import org.ssase.Interval;
 import org.ssase.Service;
 import org.ssase.executor.VM;
 import org.ssase.monitor.Monitor;
+import org.ssase.objective.QualityOfService;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.Primitive;
-import org.ssase.qos.QualityOfService;
 import org.ssase.sensor.AvailabilitySensor;
 import org.ssase.sensor.ReliabilitySensor;
 import org.ssase.sensor.ResponseTimeSensor;
@@ -38,39 +38,37 @@ public class HistoryLoader {
 	
 	private String[] qosStrings = new String[] {
 		"Response Time",
-		"Throughput",
-		"Availability",
-		"Reliability"
+		"Energy"
 	};
 
 	private  String[] notModeledServiceStrings = new String[] {
 		
-		"edu.rice.rubis.servlets.SearchItemsByCategory",
-		"edu.rice.rubis.servlets.PutBid",
-		"edu.rice.rubis.servlets.StoreBid",
-		"edu.rice.rubis.servlets.BrowseCategories",
-		"edu.rice.rubis.servlets.RegisterUser",
-		
-		
-		"edu.rice.rubis.servlets.AboutMe",
-		"edu.rice.rubis.servlets.BrowseRegions",
-		"edu.rice.rubis.servlets.StoreBuyNow",
-		"edu.rice.rubis.servlets.BuyNow",
-		"edu.rice.rubis.servlets.BuyNowAuth",
-		"edu.rice.rubis.servlets.PutBidAuth",
-		"edu.rice.rubis.servlets.PutComment",
-		"edu.rice.rubis.servlets.PutCommentAuth",
-		"edu.rice.rubis.servlets.RegisterItem",
-		"edu.rice.rubis.servlets.SearchItemsByRegion",
-		"edu.rice.rubis.servlets.SellItemForm",
-		"edu.rice.rubis.servlets.StoreComment",
-		"edu.rice.rubis.servlets.ViewBidHistory",
-		"edu.rice.rubis.servlets.ViewItem",
-		"edu.rice.rubis.servlets.ViewUserInfo"
+//		"edu.rice.rubis.servlets.SearchItemsByCategory",
+//		"edu.rice.rubis.servlets.PutBid",
+//		"edu.rice.rubis.servlets.StoreBid",
+//		"edu.rice.rubis.servlets.BrowseCategories",
+//		"edu.rice.rubis.servlets.RegisterUser",
+//		
+//		
+//		"edu.rice.rubis.servlets.AboutMe",
+//		"edu.rice.rubis.servlets.BrowseRegions",
+//		"edu.rice.rubis.servlets.StoreBuyNow",
+//		"edu.rice.rubis.servlets.BuyNow",
+//		"edu.rice.rubis.servlets.BuyNowAuth",
+//		"edu.rice.rubis.servlets.PutBidAuth",
+//		"edu.rice.rubis.servlets.PutComment",
+//		"edu.rice.rubis.servlets.PutCommentAuth",
+//		"edu.rice.rubis.servlets.RegisterItem",
+//		"edu.rice.rubis.servlets.SearchItemsByRegion",
+//		"edu.rice.rubis.servlets.SellItemForm",
+//		"edu.rice.rubis.servlets.StoreComment",
+//		"edu.rice.rubis.servlets.ViewBidHistory",
+//		"edu.rice.rubis.servlets.ViewItem",
+//		"edu.rice.rubis.servlets.ViewUserInfo"
 	};
 	
-	private  final String prefix = "/home/tao/backup/bak4/";
-		//"/Users/tao/research/monitor/";
+	private  final String prefix = //"/home/tao/backup/bak4/";
+		"/Users/tao/research/monitor/sas/sas/";
 	
 	public  int counterNo = 0;
 	
@@ -102,10 +100,10 @@ public class HistoryLoader {
 			
 			
 			System.out.print("The " + i + " run \n");
-			
-			simulateSendAndReceive("jeos");
-			simulateSendAndReceive("kitty");
-			simulateSendAndReceive("miku");
+			simulateSendAndReceive("sas");
+//			simulateSendAndReceive("jeos");
+//			simulateSendAndReceive("kitty");
+//			simulateSendAndReceive("miku");
 		
 			
 			if (finished) {
@@ -248,26 +246,7 @@ public class HistoryLoader {
 		// This is temp implementation
 		String[] services = new String[] {
 			
-				"edu.rice.rubis.servlets.AboutMe",
-				"edu.rice.rubis.servlets.BrowseCategories",
-				"edu.rice.rubis.servlets.BrowseRegions",
-				"edu.rice.rubis.servlets.StoreBuyNow",
-				"edu.rice.rubis.servlets.BuyNow",
-				"edu.rice.rubis.servlets.BuyNowAuth",
-				"edu.rice.rubis.servlets.PutBid",
-				"edu.rice.rubis.servlets.PutBidAuth",
-				"edu.rice.rubis.servlets.PutComment",
-				"edu.rice.rubis.servlets.PutCommentAuth",
-				"edu.rice.rubis.servlets.RegisterItem",
-				"edu.rice.rubis.servlets.RegisterUser",
-				"edu.rice.rubis.servlets.SearchItemsByCategory",
-				"edu.rice.rubis.servlets.SearchItemsByRegion",
-				"edu.rice.rubis.servlets.SellItemForm",
-				"edu.rice.rubis.servlets.StoreBid",
-				"edu.rice.rubis.servlets.StoreComment",
-				"edu.rice.rubis.servlets.ViewBidHistory",
-				"edu.rice.rubis.servlets.ViewItem",
-				"edu.rice.rubis.servlets.ViewUserInfo"
+				"rubis_software"
 		};
 		// Remember to uncomment this.
 		Sensor cpu;// = new org.closlaes.sensor.linux.CpuSensor();
@@ -276,15 +255,15 @@ public class HistoryLoader {
 		List<Sensor> list = null;
 		for (String service : services) {
 			list = new ArrayList<Sensor>();
-			list.add(new AvailabilitySensor());
-			list.add(new ResponseTimeSensor());
-			list.add(new ThroughputSensor());
-			list.add(new WorkloadSensor());
-			list.add(new ThreadSensor());
-			//list.add(cpu);
-			//list.add(memory);
-			list.add(new ReliabilitySensor());
-			list.add(new ServabilitySensor());
+//			list.add(new AvailabilitySensor());
+//			list.add(new ResponseTimeSensor());
+//			list.add(new ThroughputSensor());
+//			list.add(new WorkloadSensor());
+//			list.add(new ThreadSensor());
+//			//list.add(cpu);
+//			//list.add(memory);
+//			list.add(new ReliabilitySensor());
+//			list.add(new ServabilitySensor());
 			sensors.put(service, list);
 		}
 		
@@ -300,45 +279,45 @@ public class HistoryLoader {
 		File root = new File(prefix +VM_ID+"/");
 		
 		
-		Map<String, List<String>> services = new HashMap<String, List<String>>();
-		Map<String, List<String>> notModeledService = new HashMap<String, List<String>>();
-	
-		
-		
-		services.put("jeos", new ArrayList<String>());
-		services.put("kitty", new ArrayList<String>());
-		services.put("miku", new ArrayList<String>());
-		
-		notModeledService.put("jeos", new ArrayList<String>());
-		notModeledService.put("kitty", new ArrayList<String>());
-		notModeledService.put("miku", new ArrayList<String>());
-		
-		
-		for (String s : notModeledServiceStrings) {
-			notModeledService.get("jeos").add(s);
-			notModeledService.get("kitty").add(s);
-			notModeledService.get("miku").add(s);
-			
-			/*services.get("jeos").add(s);
-			services.get("kitty").add(s);
-			services.get("miku").add(s);*/
-		}
-		
-		
-		services.get("jeos").add("edu.rice.rubis.servlets.SearchItemsByCategory");
-		services.get("jeos").add("edu.rice.rubis.servlets.BrowseCategories");
-		notModeledService.get("jeos").remove("edu.rice.rubis.servlets.SearchItemsByCategory");
-		notModeledService.get("jeos").remove("edu.rice.rubis.servlets.BrowseCategories");
-		
-		services.get("kitty").add("edu.rice.rubis.servlets.SearchItemsByRegion");
-		services.get("kitty").add("edu.rice.rubis.servlets.BrowseCategories");
-		notModeledService.get("kitty").remove("edu.rice.rubis.servlets.SearchItemsByRegion");
-		notModeledService.get("kitty").remove("edu.rice.rubis.servlets.BrowseCategories");
-		
-		services.get("miku").add("edu.rice.rubis.servlets.BrowseRegions");
-		services.get("miku").add("edu.rice.rubis.servlets.SearchItemsByCategory");
-		notModeledService.get("miku").remove("edu.rice.rubis.servlets.BrowseRegions");
-		notModeledService.get("miku").remove("edu.rice.rubis.servlets.SearchItemsByCategory");
+//		Map<String, List<String>> services = new HashMap<String, List<String>>();
+//		Map<String, List<String>> notModeledService = new HashMap<String, List<String>>();
+//	
+//		
+//		
+//		services.put("jeos", new ArrayList<String>());
+//		services.put("kitty", new ArrayList<String>());
+//		services.put("miku", new ArrayList<String>());
+//		
+//		notModeledService.put("jeos", new ArrayList<String>());
+//		notModeledService.put("kitty", new ArrayList<String>());
+//		notModeledService.put("miku", new ArrayList<String>());
+//		
+//		
+//		for (String s : notModeledServiceStrings) {
+//			notModeledService.get("jeos").add(s);
+//			notModeledService.get("kitty").add(s);
+//			notModeledService.get("miku").add(s);
+//			
+//			/*services.get("jeos").add(s);
+//			services.get("kitty").add(s);
+//			services.get("miku").add(s);*/
+//		}
+//		
+//		
+//		services.get("jeos").add("edu.rice.rubis.servlets.SearchItemsByCategory");
+//		services.get("jeos").add("edu.rice.rubis.servlets.BrowseCategories");
+//		notModeledService.get("jeos").remove("edu.rice.rubis.servlets.SearchItemsByCategory");
+//		notModeledService.get("jeos").remove("edu.rice.rubis.servlets.BrowseCategories");
+//		
+//		services.get("kitty").add("edu.rice.rubis.servlets.SearchItemsByRegion");
+//		services.get("kitty").add("edu.rice.rubis.servlets.BrowseCategories");
+//		notModeledService.get("kitty").remove("edu.rice.rubis.servlets.SearchItemsByRegion");
+//		notModeledService.get("kitty").remove("edu.rice.rubis.servlets.BrowseCategories");
+//		
+//		services.get("miku").add("edu.rice.rubis.servlets.BrowseRegions");
+//		services.get("miku").add("edu.rice.rubis.servlets.SearchItemsByCategory");
+//		notModeledService.get("miku").remove("edu.rice.rubis.servlets.BrowseRegions");
+//		notModeledService.get("miku").remove("edu.rice.rubis.servlets.SearchItemsByCategory");
 		
 		
 		List<String> qos = new ArrayList<String>();
@@ -366,11 +345,12 @@ public class HistoryLoader {
 					BufferedReader reader = new BufferedReader(new FileReader(file));
 					String line = null;
 					String name = null;
-					if ("CPU.rtf".equals(file.getName())) {
-						name = "CPU";
-					} else if ("Memory.rtf".equals(file.getName())) {
-						name = "Memory";
-					}
+//					if ("CPU.rtf".equals(file.getName())) {
+//						name = "CPU";
+//					} else if ("Memory.rtf".equals(file.getName())) {
+//						name = "Memory";
+//					}
+					name = file.getName().split(".")[0];
 					int k = 0;
 					int j = 0;
 					while((line = reader.readLine()) != null) {
@@ -411,48 +391,52 @@ public class HistoryLoader {
 					String line = null;
 					String name = null;
 					
-					boolean isY = true;
+					boolean isY = false;
 					
-					// If the subfile is not workload and the service is not being modeled
-					if (notModeledService.get(VM_ID).contains(file.getName()) && !("Workload.rtf".equals(subFile.getName()))) {
-						continue;
+					name = file.getName().split(".")[0];
+					if(qos.contains(name)) {
+						isY = true;
 					}
-					
-					//System.out.print(file.getName()+"-"+subFile.getName()+"\n");
-					if ("Concurrency.rtf".equals(subFile.getName())) {
-						name = "Concurrency";
-						isY = false;
-					} else if ("Workload.rtf".equals(subFile.getName())) {
-						name = "Workload";
-						isY = false;
-					}else if ("Response Time.rtf".equals(subFile.getName())) {
-					
-						name = "Response Time";
-						isY = true;
-						if(!qos.contains(name)) {
-							continue;
-						}
-					}else if ("Throughput.rtf".equals(subFile.getName())) {
-						name = "Throughput";
-						isY = true;
-						if(!qos.contains(name)) {
-							continue;
-						}
-					}else if ("Availability.rtf".equals(subFile.getName())) {
-						name = "Availability";
-						isY = true;
-						if(!qos.contains(name)) {
-							continue;
-						}
-					}else if ("Reliability.rtf".equals(subFile.getName())) {
-						name = "Reliability";
-						isY = true;
-						if(!qos.contains(name)) {
-							continue;
-						}
-					} else {
-						continue;
-					}
+//					// If the subfile is not workload and the service is not being modeled
+//					if (notModeledService.get(VM_ID).contains(file.getName()) && !("Workload.rtf".equals(subFile.getName()))) {
+//						continue;
+//					}
+//					
+//					//System.out.print(file.getName()+"-"+subFile.getName()+"\n");
+//					if ("Concurrency.rtf".equals(subFile.getName())) {
+//						name = "Concurrency";
+//						isY = false;
+//					} else if ("Workload.rtf".equals(subFile.getName())) {
+//						name = "Workload";
+//						isY = false;
+//					}else if ("Response Time.rtf".equals(subFile.getName())) {
+//					
+//						name = "Response Time";
+//						isY = true;
+//						if(!qos.contains(name)) {
+//							continue;
+//						}
+//					}else if ("Throughput.rtf".equals(subFile.getName())) {
+//						name = "Throughput";
+//						isY = true;
+//						if(!qos.contains(name)) {
+//							continue;
+//						}
+//					}else if ("Availability.rtf".equals(subFile.getName())) {
+//						name = "Availability";
+//						isY = true;
+//						if(!qos.contains(name)) {
+//							continue;
+//						}
+//					}else if ("Reliability.rtf".equals(subFile.getName())) {
+//						name = "Reliability";
+//						isY = true;
+//						if(!qos.contains(name)) {
+//							continue;
+//						}
+//					} else {
+//						continue;
+//					}
 					//System.out.print("Read " + subFile.getAbsolutePath() + "\n");
 					BufferedReader reader = new BufferedReader(new FileReader(subFile));
 					int k = 0;
@@ -657,8 +641,7 @@ public class HistoryLoader {
 		// The newly measured values.
 		final Map<String, List<Double>> xValues = new HashMap<String, List<Double>>();
 		final Map<String, List<Double>> yValues = new HashMap<String, List<Double>>();
-		BufferedWriter bw = null;
-		File file = null;
+	
 		try {
 
 			if ( interval.getXData(service) != null) {

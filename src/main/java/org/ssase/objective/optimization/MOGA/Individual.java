@@ -1,4 +1,4 @@
-package org.ssase.objective.optimization.MOGA;
+package org.ssase.objective.optimization.moga;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

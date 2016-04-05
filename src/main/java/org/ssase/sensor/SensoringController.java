@@ -242,7 +242,7 @@ public class SensoringController {
 			
 			Map<String, Sensor> hardwareSensors = new HashMap<String, Sensor>();
 			
-			NodeList node = doc.getElementsByTagName("ssascaling").item(0).getChildNodes();
+			NodeList node = doc.getElementsByTagName("ssase").item(0).getChildNodes();
 			
 			for (int i = 0; i < node.getLength(); i++) {
 				

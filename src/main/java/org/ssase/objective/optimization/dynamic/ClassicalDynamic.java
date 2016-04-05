@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import org.ssase.objective.optimization.Ant;
-import org.ssase.objective.optimization.AntValues;
+import org.ssase.objective.optimization.moaco.Ant;
+import org.ssase.objective.optimization.moaco.AntValues;
 import org.ssase.primitive.ControlPrimitive;
 
 public class ClassicalDynamic implements Dynamics {

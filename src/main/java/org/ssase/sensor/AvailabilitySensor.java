@@ -3,7 +3,7 @@ package org.ssase.sensor;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.ssase.qos.QualityOfService;
+import org.ssase.objective.QualityOfService;
 
 public class AvailabilitySensor implements Sensor {
 

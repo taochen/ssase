@@ -1,8 +1,8 @@
 package org.ssase.model.selection;
 
-import org.ssase.ModelFunction;
-import org.ssase.model.ann.NeuralNetwork;
-import org.ssase.qos.QualityOfService;
+import org.ssase.model.sam.ModelFunction;
+import org.ssase.model.sam.ml.ann.NeuralNetwork;
+import org.ssase.objective.QualityOfService;
 
 public class AIC  {
 
