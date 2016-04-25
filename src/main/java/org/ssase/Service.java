@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ssase.model.sam.ModelFunctionConfigGenerator;
 import org.ssase.objective.Cost;
 import org.ssase.objective.Objective;
@@ -22,10 +24,12 @@ import org.ssase.util.Repository;
  */
 public class Service {
 
+	protected static final Logger logger = LoggerFactory
+	.getLogger(Service.class);
 	// String name - QoS/Cost
 	private Map<String, Objective> objectives;
 	// String name - software CP/EP, these are all direct primitive, not including the functional dependent ones.
-	// This does not include the shraed software primitives.
+	// This does not include the shared software primitives.
 	private Map<String, Primitive> primitives;
 
 	private Set<Primitive> possibleInputs = new HashSet<Primitive>();
@@ -174,21 +178,21 @@ public class Service {
 	}
 	
 	public void print(){
-		System.out.print(name + " \n");
-		System.out.print("Objective: \n");
+		logger.debug(name + " \n");
+		logger.debug("Objective: \n");
 		for (Map.Entry<String, Objective> en : objectives.entrySet()) {
-			System.out.print("--------" + en.getKey() + "," + en.getValue().getName() + ":" +  en.getValue() + " \n");
-			System.out.print("Direct Primitives: \n");
+			logger.debug("--------" + en.getKey() + "," + en.getValue().getName() + ":" +  en.getValue() + " \n");
+			logger.debug("Direct Primitives: \n");
 			for (Primitive p : possibleInputs) {
 				if (Repository.isDirectForAnObjective(en.getValue(), p)) {
-					System.out.print(p.getName() + "=" + p.getAlias()  + ":" +  p + " \n");
+					logger.debug(p.getName() + "=" + p.getAlias()  + ":" +  p + " \n");
 				}
 				
 			}
 		}
-		System.out.print(possibleInputs.size() + " Possible Primitives: \n");
+		logger.debug(possibleInputs.size() + " Possible Primitives: \n");
 		for (Primitive p : possibleInputs) {
-			System.out.print(p.getName() + "=" + p.getAlias()  + ":" +  p + " \n");
+			logger.debug(p.getName() + "=" + p.getAlias()  + ":" +  p + " \n");
 		}
 	
 	}

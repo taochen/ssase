@@ -40,22 +40,24 @@
               pre_to_max="0.7"
               pre_of_max="0.1"
               min="10485760"
-              max="52428800"
+              max="314572800"
               price_per_unit="0.5"/>
                 <!-- Unit is bytes -->
                 <item name="maxBytesLocalHeap" provision="5242880" constraint="-1" differences="1048576" 
               pre_to_max="0.7"
               pre_of_max="0.1"
               min="5242880"
-              max="52428800"
-              price_per_unit="0.5"/>
+              max="26214400"
+              price_per_unit="0.5"
+              switchoff="true"/>
                 <!-- Unit is bytes -->
                 <item name="maxBytesLocalDisk" provision="5242880" constraint="-1" differences="1048576" 
               pre_to_max="0.7"
               pre_of_max="0.1"
               min="5242880"
-              max="52428800"
-              price_per_unit="0.5"/>
+              max="26214400"
+              price_per_unit="0.5"
+              switchoff="true"/>
                 <item name="Connection" provision="20" constraint="-1" differences="1" 
               pre_to_max="0.7"
               pre_of_max="0.1"

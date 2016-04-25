@@ -12,6 +12,8 @@ import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ssase.ControlBus;
 import org.ssase.Service;
 import org.ssase.objective.Objective;
@@ -30,6 +32,8 @@ import org.ssase.util.Tuple;
 @SuppressWarnings("rawtypes")
 public class RegionControl implements ModelListener {
 	
+	protected static final Logger logger = LoggerFactory
+	.getLogger(RegionControl.class);
 	
 	protected String id;
 
@@ -86,8 +90,9 @@ public class RegionControl implements ModelListener {
 			map.put(region, new Tuple(obj, uuid));
 		}
 		
+		long time = System.currentTimeMillis();
 		LinkedHashMap<ControlPrimitive, Double> result = region.optimize();
-		
+		org.ssase.util.Logger.logOptimizationTime(null, String.valueOf((System.currentTimeMillis() - time)));
 		synchronized (lock) {
 			map.remove(region);
 		}
@@ -173,7 +178,7 @@ public class RegionControl implements ModelListener {
 	 * @param objs
 	 */
 	public void calculateRegions(Set<Objective> objs){
-		System.out.print("******** start regioning **************\n");
+		logger.debug("******** start regioning **************\n");
 		objectiveMap.clear();
 		//totalNumberOfObjective = 0;
 		for (Objective obj : objs) {
@@ -192,10 +197,10 @@ public class RegionControl implements ModelListener {
 				
 				
 				if (obj.isSensitiveToTheSamePrimitive(subObj, null)) {
-					//System.out.print(obj.getName() + " and " + subObj.getName() + " does sensitive\n");
+					//logger.debug(obj.getName() + " and " + subObj.getName() + " does sensitive\n");
 					
 					if (objectiveMap.containsKey(obj) && objectiveMap.containsKey(subObj) ) {
-						//System.out.print("******here!\n");
+						//logger.debug("******here!\n");
 						// Change the region!
 						Region target = objectiveMap.get(obj);
 						Region source = objectiveMap.get(subObj);
@@ -232,10 +237,10 @@ public class RegionControl implements ModelListener {
 		
 		// Assign the regions that have only single objective.
 		if (objectiveMap.size() != objs.size()) {
-			//System.out.print("single:\n");
+			//logger.debug("single:\n");
 			for (Objective obj : objs) {
 				if (!objectiveMap.containsKey(obj)) {
-					//System.out.print("single: " + obj.getName()+"\n");
+					//logger.debug("single: " + obj.getName()+"\n");
 					Region region = Region.getNewRegionInstanceByType(Region.selected);
 					region.addObjective(obj);;
 					objectiveMap.put(obj, region);
@@ -278,19 +283,19 @@ public class RegionControl implements ModelListener {
 	}
 	
 	private void print(){
-		System.out.print("******** region results **************\n");
+		logger.debug("******** region results **************\n");
 		Set<Region> re = new HashSet<Region>();
 		for (Map.Entry<Objective, Region> entry : objectiveMap.entrySet()) {
-			//System.out.print("Objective: " + entry.getKey().getName() + ", region: " + entry.getValue() + "\n");
+			//logger.debug("Objective: " + entry.getKey().getName() + ", region: " + entry.getValue() + "\n");
 			if (re.contains(entry.getValue())) {
 				continue;
 			}
 			re.add(entry.getValue());
-			System.out.print("\n"+entry.getValue() + "====================\n");
+			logger.debug("\n"+entry.getValue() + "====================\n");
 			entry.getValue().print();
 			//entry.getValue().print();
 		}
-		System.out.print("******** region results **************\n");
-		System.out.print("******** total " + re.size() + " regions **************\n");
+		logger.debug("******** region results **************\n");
+		logger.debug("******** total " + re.size() + " regions **************\n");
 	}
 }

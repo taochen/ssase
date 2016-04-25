@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.ssase.ControlBus;
 import org.ssase.monitor.Monitor;
+import org.ssase.region.Region;
 import org.ssase.util.Ssascaling;
 import org.ssase.util.Timer;
 
@@ -86,6 +87,7 @@ public class Receiver {
 			configProp.load(Ssascaling.class.getClassLoader().getResourceAsStream("dom0.properties"));
 			port = Integer.parseInt(configProp.getProperty("port"));
 			Timer.setThreshold(Integer.parseInt(configProp.getProperty("violation_threshold")));
+			Region.setSelectedOptimizationType(configProp.getProperty("optimization_type"));
 			//Monitor.setSampleInterval(Integer.parseInt(configProp.getProperty("sampling_interval")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

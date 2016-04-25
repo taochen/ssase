@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
 import org.ssase.ControlBus;
 import org.ssase.Service;
 import org.ssase.actuator.ActuationSender;
@@ -24,6 +25,8 @@ import org.ssase.util.Repository;
 
 public class Executor {
 	
+	protected static final org.slf4j.Logger logger = LoggerFactory
+	.getLogger(Executor.class);
 	/*Mainly need to record the provision of hardware CPs*/
 	private static int totalMemory; /*Mb*/
 	// these are based on the max possible provision value,
@@ -94,12 +97,13 @@ public class Executor {
 		noOfCPU -= index;
 		
 		// Add vcpus that has not been occupied at the beginning.
-		for (int i = 0; i > noOfCPU; i++) {
+		for (int i = 0; i < noOfCPU; i++) {
 			index++;
 			cores.add(new CPUCore(index, new VM[]{}));		
 		}
 		
 		print();
+		
 	}
 	
 	public static void init(HardwareControlPrimitive... primitives) {
@@ -190,7 +194,7 @@ public class Executor {
 								double v = 0;
 								
 								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(false, value, CPUThreshold))) {
-									System.out.print("Scale in due to CPU on " + entry.getKey().getAlias() + " \n");
+									logger.debug("Scale in due to CPU on " + entry.getKey().getAlias() + " \n");
 									// TODO do scale in and free all resources.
 									//return;
 									horizontalActions.put(entry.getKey().getAlias(), horizontalActions.containsKey(entry.getKey().getAlias())? 
@@ -247,8 +251,8 @@ public class Executor {
 								
 								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(true, value, remainingCPU))) {
 									//TODO should trigger scale out.
-									System.out.print("Scale out due to CPU on " + entry.getKey().getAlias() + " \n");
-									System.out.print(value + " : " + remainingCPU+ " \n");
+									logger.debug("Scale out due to CPU on " + entry.getKey().getAlias() + " \n");
+									logger.debug(value + " : " + remainingCPU+ " \n");
 									//return;
 									horizontalActions.put(entry.getKey().getAlias(), 0);
 									hardwareCPData.get(entry.getKey().getAlias()).append("Scale out due to CPU on " + entry.getKey().getAlias() + ", "+ value + " : " + remainingCPU+  "\n");
@@ -261,6 +265,8 @@ public class Executor {
 								
 								
 								long add = value - vm.getCpuCap();
+							
+								//System.out.print("add1: " + add + "\n");
 								// new cpu core number
 								long newNo = 0;
 								
@@ -297,7 +303,7 @@ public class Executor {
 									add -= allocated;
 								}
 							}
-								
+							//System.out.print("add2: " + add + "\n");	
 								// Then try the other cores
 								for (CPUCore core : cores) {
 									
@@ -321,11 +327,11 @@ public class Executor {
 									
 									add -= allocated;
 								}
-								
+								System.out.print("add3: " + add + "\n");
 								if (add > 0) {
 									//TODO should trigger scale out.
-									System.out.print("Small scale out due to CPU on " + entry.getKey().getAlias() + " \n");
-									System.out.print(value + " : " + remainingCPU+ " \n");
+									logger.debug("Small scale out due to CPU on " + entry.getKey().getAlias() + " \n");
+									logger.debug(value + " : " + remainingCPU+ " \n");
 									
 									horizontalActions.put(entry.getKey().getAlias(), 0);
 									hardwareCPData.get(entry.getKey().getAlias()).append("Small scale out due to CPU on " + entry.getKey().getAlias() + ", "+ value + " : " + remainingCPU+  "\n");
@@ -363,7 +369,7 @@ public class Executor {
 							if (value < entry.getKey().getProvision()) {
 								
 								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(false, value, memoryThreshold))) {
-									System.out.print("Scale in due to memory on " + entry.getKey().getAlias() + " \n");
+									logger.debug("Scale in due to memory on " + entry.getKey().getAlias() + " \n");
 									
 									// TODO do scale in and free all resources.
 									//return;
@@ -378,8 +384,8 @@ public class Executor {
 							} else if (value > entry.getKey().getProvision()) /*Scale up*/ {
 								if (Double.isNaN(v = entry.getKey().triggerMaxProvisionUpdate(true, value, remainingMemory))) {
 									
-									System.out.print("Small Scale out due to memory on " + entry.getKey().getAlias() + " \n");
-									System.out.print(value + " : " + remainingMemory+ " \n");
+									logger.debug("Small Scale out due to memory on " + entry.getKey().getAlias() + " \n");
+									logger.debug(value + " : " + remainingMemory+ " \n");
 									// TODO should trigger migration or replication for scale out as
 									// the memory is insufficient.
 									//return;
@@ -407,7 +413,7 @@ public class Executor {
 							} else {
 								// TODO should trigger migration or replication for scale out as
 								// the memory is insufficient.
-								System.out.print("Scale out due to memory on " + entry.getKey().getAlias() + " \n");
+								logger.debug("Scale out due to memory on " + entry.getKey().getAlias() + " \n");
 							}*/
 						}
 					
@@ -462,15 +468,15 @@ public class Executor {
 	public static void print(){
 		
 		for (VM v : Repository.getAllVMs()) {
-			System.out.print(v.print() +"\n");	
+			logger.debug(v.print() +"\n");	
 		}
 		
 		for (CPUCore core : cores) {
 			core.print();
 		}
 		
-		System.out.print("Remaining memory=" + remainingMemory+"\n");
-		System.out.print("Remaining CPU=" + remainingCPU+"\n");
+		logger.debug("Remaining memory=" + remainingMemory+"\n");
+		logger.debug("Remaining CPU=" + remainingCPU+"\n");
 	}
 	
 	private static LinkedHashMap<ControlPrimitive, Double> orderDecision(final LinkedHashMap<ControlPrimitive, Double> decisions){

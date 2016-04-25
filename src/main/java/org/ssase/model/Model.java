@@ -1,6 +1,7 @@
 package org.ssase.model;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.ssase.objective.QualityOfService;
@@ -22,7 +23,7 @@ import org.ssase.primitive.Primitive;
  * @author tao
  *
  */
-public interface Model {
+public interface Model extends Serializable{
 	
 	// Eliminate cases where the objective has zero value.
 	public static final boolean isEliminateZero = true;

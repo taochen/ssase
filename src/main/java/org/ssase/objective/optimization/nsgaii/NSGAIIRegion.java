@@ -1,36 +1,27 @@
-package org.ssase.objective.optimization.femosaa;
+package org.ssase.objective.optimization.nsgaii;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.metaheuristics.moead.MOEAD_SAS_main;
+import jmetal.metaheuristics.nsgaII.NSGA2_SAS_main;
 import jmetal.problems.SASAlgorithmAdaptor;
-import jmetal.problems.test.DummySASSolution;
-import jmetal.problems.test.DummySASSolutionInstantiator;
-import jmetal.util.JMException;
+import jmetal.problems.SASSolution;
 
-import org.ssase.objective.Objective;
-import org.ssase.objective.optimization.moaco.BasicAntColony;
+import org.ssase.objective.optimization.femosaa.FEMOSAASolutionAdaptor;
+import org.ssase.objective.optimization.femosaa.FEMOSAASolutionInstantiator;
 import org.ssase.primitive.ControlPrimitive;
-import org.ssase.primitive.EnvironmentalPrimitive;
-import org.ssase.primitive.Primitive;
 import org.ssase.region.Region;
-import org.ssase.util.Repository;
-import org.ssase.util.Tuple;
 
-public class FEMOSAARegion extends Region {
+public class NSGAIIRegion extends Region {
 
-	// The order is the same as Repository.getSortedControlPrimitives(obj)
 	private int[][] vars = null;
 	
-	public FEMOSAARegion() {
+	public NSGAIIRegion() {
 		super();		
 	}
 
@@ -40,6 +31,9 @@ public class FEMOSAARegion extends Region {
 		
 		if(vars == null) {
 			vars = FEMOSAASolutionAdaptor.getInstance().convertInitialLimits(objectives.get(0));
+			// This is needed for approach that do not consider categorical/numeric dependency
+			// in the optimization process.
+			SASSolution.getDependencyMap().clear();
 		}
 		
 		LinkedHashMap<ControlPrimitive, Double> result = null;
@@ -81,11 +75,17 @@ public class FEMOSAARegion extends Region {
 	}
 	
 	private SASAlgorithmAdaptor getAlgorithm(){
-		return new MOEAD_SAS_main(){
+		return new NSGA2_SAS_main(){
 			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){
+		
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
+			}
+			protected SolutionSet correctDependencyAfterEvolution(
+					SolutionSet pareto_front) {
+				return Region.correctDependencyAfterEvolution(pareto_front);
 			}
 			
 		};
 	}
+
 }

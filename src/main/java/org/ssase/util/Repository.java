@@ -183,4 +183,8 @@ public class Repository {
 	public static List<ControlPrimitive> getSortedControlPrimitives (Objective obj) {
 		return fms.get(obj).getSortedControlPrimitives();
 	}
+	
+	public static void setSortedControlPrimitives(Objective obj, FeatureModel fm){
+		fms.put(obj, fm);
+	}
 }

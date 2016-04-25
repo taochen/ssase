@@ -67,7 +67,12 @@ public class SuperRegionControl implements SuperRegionListener{
 	}
 	
 	private SuperRegionControl(){
-		
+		if (control == null) {
+			running = new HashMap<Objective, String>();
+			control =  new RegionControl(Repository.getAllObjectives());
+			
+			Repository.setModelListeners(control);
+		}
 	}
 	
 	

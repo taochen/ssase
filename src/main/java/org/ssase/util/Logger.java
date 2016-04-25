@@ -86,6 +86,52 @@ public class Logger {
 		}
 	}
 	
+	public static synchronized void logOptimizationTime(String VM_ID, String data){
+		
+		if(VM_ID == null) VM_ID = "sas";
+		
+		File file = null;
+		if(!(file = new File(prefix
+				+ VM_ID + "/")).exists()){
+			file.mkdir();
+		} 
+		
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(prefix
+					+ VM_ID + "/Execution-time.rtf", true));
+
+			
+			//System.out.print(data.toString() + "\n");
+			bw.write(data);
+			bw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+    public static synchronized void logDependencyEnforcement(String VM_ID, String data){
+		
+		if(VM_ID == null) VM_ID = "sas";
+		
+		File file = null;
+		if(!(file = new File(prefix
+				+ VM_ID + "/")).exists()){
+			file.mkdir();
+		} 
+		
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(prefix
+					+ VM_ID + "/Dependency.rtf", true));
+
+			
+			//System.out.print(data.toString() + "\n");
+			bw.write(data);
+			bw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static synchronized long getExecutionCount(){
 		executionCount++;
 		return executionCount;

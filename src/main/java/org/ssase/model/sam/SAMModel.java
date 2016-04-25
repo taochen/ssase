@@ -1,5 +1,6 @@
 package org.ssase.model.sam;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1367,7 +1368,7 @@ public class SAMModel implements Model{
 		}
 	}*/
 	
-	private class ClusterPair{
+	private class ClusterPair implements Serializable{
 		
 		@SuppressWarnings("rawtypes")
 		private List inputs;

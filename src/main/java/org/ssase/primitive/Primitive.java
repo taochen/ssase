@@ -1,8 +1,10 @@
 package org.ssase.primitive;
 
+import java.io.Serializable;
+
 import org.ssase.objective.Objective;
 
-public interface Primitive {
+public interface Primitive extends Serializable {
 
 	public double[] getArray();	
 	

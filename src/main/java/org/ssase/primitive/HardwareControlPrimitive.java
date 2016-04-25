@@ -11,8 +11,9 @@ public class HardwareControlPrimitive  extends ControlPrimitive {
 			double b,
 			double g,
 			double h,
-			double maxProvision) {
-		super(name, VM_ID, isHardware, type, actuator, provision, constraint, a, b, g, h , maxProvision);
+			double maxProvision,
+			boolean isFixedZero) {
+		super(name, VM_ID, isHardware, type, actuator, provision, constraint, a, b, g, h , maxProvision, isFixedZero);
 		// TODO Auto-generated constructor stub
 	}
 	@Deprecated

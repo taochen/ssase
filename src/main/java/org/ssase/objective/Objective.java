@@ -1,11 +1,12 @@
 package org.ssase.objective;
 
+import java.io.Serializable;
 import java.util.List;
  
 import org.ssase.observation.listener.Listener;
 import org.ssase.primitive.Primitive;
 
-public interface Objective {
+public interface Objective extends Serializable{
 
 	
 	public double[] getArray();

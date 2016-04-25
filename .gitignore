@@ -11,7 +11,9 @@ META-INF/
 target/
 temp/
 *.jar
+MOEAD.log
 
 # Testing files
 src/test/
-
+SASM2/
+weight/

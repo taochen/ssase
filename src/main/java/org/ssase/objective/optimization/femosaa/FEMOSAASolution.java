@@ -15,9 +15,10 @@ import jmetal.util.JMException;
 
 public class FEMOSAASolution extends SASSolution {
 
+	// This should be the same instance as the one in Region.
 	private List<Objective> objectives;
 	
-	// Key = objective, Value = the index of variable in MOEASolution, this order
+	// Key = objective, Value = the index of variable in FEMOSAASolution, this order
 	// is consistent with the CP in QoS object.
 	private Map<Objective, Integer[]> modelMap;
 
@@ -78,6 +79,9 @@ public class FEMOSAASolution extends SASSolution {
 				}
 			}
 			
+//			result[i] = org.ssase.util.test.FEMOSAATester.objectives.size() > 0?
+//					org.ssase.util.test.FEMOSAATester.objectives.get(i).predict(xValue) :
+//					objectives.get(i).predict(xValue);
 			result[i] = objectives.get(i).predict(xValue);
 			//result[i] = objectives.get(i).predict(xValue) * 100 / objectives.get(i).getMax();
 		}

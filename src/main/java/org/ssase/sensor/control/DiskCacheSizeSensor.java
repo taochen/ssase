@@ -28,10 +28,19 @@ public class DiskCacheSizeSensor implements Sensor {
 			if (invoker instanceof Invoker) {
 				Object obj = ((Invoker) invoker).execute(null);
 				
-				int v = ((Long) obj).intValue();
-				if (v > size) {
-					size = v;
+				if (obj instanceof Integer) {
+					int v = ((Integer) obj);
+					if (v > size) {
+						size = v;
+					}
+				} else {
+					int v = ((Long) obj).intValue();
+					if (v > size) {
+						size = v;
+					}
 				}
+				
+				
 			} 
 			
 		}
@@ -51,8 +60,21 @@ public class DiskCacheSizeSensor implements Sensor {
 			if (invoker instanceof Invoker) {
 				Object obj = ((Invoker) invoker).execute(null);
 
-				int v = ((Long) obj).intValue();
-				size = v;
+				if (obj instanceof Integer) {
+					int v = (Integer) obj;
+					if(v == 0) {
+						current = 0;
+					}
+					size = v;
+				} else {
+
+					int v = ((Long) obj).intValue();
+					if(v == 0) {
+						current = 0;
+					}
+					size = v;
+				}
+				
 
 			}
 			return new double[] { current };

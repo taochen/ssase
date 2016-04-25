@@ -67,6 +67,8 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	protected Timer timer = new Timer();
 	
 
+	// Use this when this control primitive can be switch off.
+	protected boolean isFixedZero = false;
 	public ControlPrimitive(
 			String name, 
 			String VMIDorService,
@@ -79,7 +81,8 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 			double b,
 			double g,
 			double h,
-			double maxProvision) {
+			double maxProvision,
+			boolean isFixedZero) {
 		super();
 		array = new double[0];
 		this.alias = VMIDorService;
@@ -94,6 +97,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		this.b = b;
 		this.h = h;
 		valueVector = new double[]{maxProvision};
+		this.isFixedZero = isFixedZero;
 		
 		if(!Executor.isEnableLowerBoundUpdate /*This is triggered in every sampling interval
 		so if it is not enable, then we need to initilize the range here*/) {
@@ -458,21 +462,38 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		
 		
 		int length = 1 + (max - min)/a;
-		if (length % a != 0) {
-			length += 1;
-		}
+//		if (length % a != 0) {
+//			length += 1;
+//		}
 		
-		valueVector = new double[length]; 
-		double value = min - a;
-		for (int i = 0; i < valueVector.length; i++) {
-			if (value + a >= max) {
-				value = max;
-			} else {
-				value = value + a;
+		if(isFixedZero) {
+			valueVector = new double[length+1]; 
+			valueVector[0] = 0D;
+			double value = min - a;
+			for (int i = 1; i < valueVector.length; i++) {
+				if (value + a >= max) {
+					value = max;
+				} else {
+					value = value + a;
+				}
+				
+				
+				valueVector[i] = value;
 			}
+		} else {
 			
-			
-			valueVector[i] = value;
+			valueVector = new double[length]; 
+			double value = min - a;
+			for (int i = 0; i < valueVector.length; i++) {
+				if (value + a >= max) {
+					value = max;
+				} else {
+					value = value + a;
+				}
+				
+				
+				valueVector[i] = value;
+			}
 		}
 		
 		//System.out.print(name + " new optional value: " + Arrays.toString(valueVector) + "\n");

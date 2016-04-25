@@ -68,12 +68,12 @@ public class HistoryLoader {
 	};
 	
 	private  final String prefix = //"/home/tao/backup/bak4/";
-		"/Users/tao/research/monitor/sas/sas/";
+		"/Users/tao/research/monitor/sas/";
 	
 	public  int counterNo = 0;
 	
 	private  int readFileIndex = 0;
-	private  int cap = 88;//340/*342*/;
+	private  int cap = 288;//88//340/*342*/;
 	private  boolean finished = false;
 	private  List<Interval> intervals;
 	private  Map<String, List<Sensor>> sensors;
@@ -91,6 +91,7 @@ public class HistoryLoader {
 	 */
 	public void run() {
 		//Ssascaling.main(new String[]{"0"});
+		QualityOfService.leastNumberOfSample = cap;
 		init();
 		
 		System.out.print("Start the pre-loading\n");
@@ -114,6 +115,7 @@ public class HistoryLoader {
 			
 			for (Service s : Repository.getAllServices() ) {
 				for (Primitive p : s.getPrimitives()) {
+					System.out.print(p.getName()+"\n");
 					p.addValue(i+1);
 				}
 			}
@@ -139,6 +141,7 @@ public class HistoryLoader {
 			
 			for (final QualityOfService qos : Repository.getQoSSet()) {
 				
+				//if(qos.getName().equals("Energy")) continue;
 				
 				
 				new Thread(new Runnable(){
@@ -195,8 +198,9 @@ public class HistoryLoader {
 	private  void train (QualityOfService qos) {
 		
 	
-		qos.doTraining();
-		
+		if(org.ssase.util.test.FEMOSAATester.objectives.size() == 0) {
+		   qos.doTraining();
+		}
 		
 		synchronized (counter){
 			counter.incrementAndGet();
@@ -350,7 +354,9 @@ public class HistoryLoader {
 //					} else if ("Memory.rtf".equals(file.getName())) {
 //						name = "Memory";
 //					}
-					name = file.getName().split(".")[0];
+					
+					name = file.getName().split("\\.")[0];
+					//System.out.print("name " + name + "\n");
 					int k = 0;
 					int j = 0;
 					while((line = reader.readLine()) != null) {
@@ -393,7 +399,8 @@ public class HistoryLoader {
 					
 					boolean isY = false;
 					
-					name = file.getName().split(".")[0];
+					name = subFile.getName().split("\\.rtf")[0];
+					//System.out.print("name " + name + "\n");
 					if(qos.contains(name)) {
 						isY = true;
 					}

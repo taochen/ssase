@@ -19,6 +19,8 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ssase.Service;
 import org.ssase.actuator.MaxThreadActuator;
 import org.ssase.actuator.linux.CPUCapActuator;
@@ -40,6 +42,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Ssascaling {
+	
+	protected static final Logger logger = LoggerFactory
+	.getLogger(Ssascaling.class);
 	
 	public static void main (String[] arg) {
 		
@@ -76,7 +81,7 @@ public class Ssascaling {
 			conn.setRequestMethod("GET");
 			conn.connect();
 
-			System.out.print(dest + " : " + conn.getResponseCode() + "\n");
+			logger.debug(dest + " : " + conn.getResponseCode() + "\n");
 
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host: hostname");
@@ -95,48 +100,48 @@ public class Ssascaling {
 
 	
 	public static void testExecution(){
-		ControlPrimitive threadOfService1 = new SoftwareControlPrimitive(null, "jeos-edu.rice.rubis.servlets.SearchItemsByCategory", false, null, null, 0,0,1, 0.7,0.1,2, 80);
+		ControlPrimitive threadOfService1 = new SoftwareControlPrimitive(null, "jeos-edu.rice.rubis.servlets.SearchItemsByCategory", false, null, null, 0,0,1, 0.7,0.1,2, 80, false);
 		threadOfService1.setType(Type.maxThread);
 		//threadOfService1.setAlias("test.service1");
 		threadOfService1.setActuator(new MaxThreadActuator(null));
-		ControlPrimitive threadOfService2 = new SoftwareControlPrimitive(null, "jeos-edu.rice.rubis.servlets.BrowseCategories", false, null, null, 0,0,1, 0.7,0.1,2, 80);
+		ControlPrimitive threadOfService2 = new SoftwareControlPrimitive(null, "jeos-edu.rice.rubis.servlets.BrowseCategories", false, null, null, 0,0,1, 0.7,0.1,2, 80, false);
 		threadOfService2.setType(Type.maxThread);
 		//threadOfService2.setAlias("test.service2");
 		threadOfService2.setActuator(new MaxThreadActuator(null));
 		
-		HardwareControlPrimitive jeosCPU = new HardwareControlPrimitive(null, "jeos", true, null, null, 0,0,1, 0.9,0.1,5, 80);
+		HardwareControlPrimitive jeosCPU = new HardwareControlPrimitive(null, "jeos", true, null, null, 0,0,1, 0.9,0.1,5, 80, false);
 		jeosCPU.setType(Type.CPU);
 		//jeosCPU.setAlias("jeos");
 		((ControlPrimitive)jeosCPU).setProvision(30);
 		jeosCPU.setActuator(new CPUCapActuator());
 		jeosCPU.setHardware(true);
-		HardwareControlPrimitive jeosMemory = new HardwareControlPrimitive(null, "jeos", true, null, null, 0,0,5, 0.9,0.1,100, 300);
+		HardwareControlPrimitive jeosMemory = new HardwareControlPrimitive(null, "jeos", true, null, null, 0,0,5, 0.9,0.1,100, 300, false);
 		jeosMemory.setType(Type.Memory);
 		//jeosMemory.setAlias("jeos");
 		((ControlPrimitive)jeosMemory).setProvision(128);
 		jeosMemory.setActuator(new MemoryActuator());
 		jeosMemory.setHardware(true);
 		
-		HardwareControlPrimitive kittyCPU = new HardwareControlPrimitive(null, "kitty", true, null, null, 0,0,1, 0.9,0.1,5, 80);
+		HardwareControlPrimitive kittyCPU = new HardwareControlPrimitive(null, "kitty", true, null, null, 0,0,1, 0.9,0.1,5, 80, false);
 		kittyCPU.setType(Type.CPU);
 		//kittyCPU.setAlias("kitty");
 		((ControlPrimitive)kittyCPU).setProvision(30);
 		kittyCPU.setActuator(new CPUCapActuator());
 		kittyCPU.setHardware(true);
-		HardwareControlPrimitive kittyMemory = new HardwareControlPrimitive(null, "kitty", true, null, null, 0,0,5, 0.9,0.1,100, 300);
+		HardwareControlPrimitive kittyMemory = new HardwareControlPrimitive(null, "kitty", true, null, null, 0,0,5, 0.9,0.1,100, 300, false);
 		kittyMemory.setType(Type.Memory);
 		//kittyMemory.setAlias("kitty");
 		((ControlPrimitive)kittyMemory).setProvision(128);
 		kittyMemory.setActuator(new MemoryActuator());
 		kittyMemory.setHardware(true);
 		
-		HardwareControlPrimitive mikuCPU = new HardwareControlPrimitive(null, "miku", true, null, null, 0,0,1, 0.9,0.1,5, 80);
+		HardwareControlPrimitive mikuCPU = new HardwareControlPrimitive(null, "miku", true, null, null, 0,0,1, 0.9,0.1,5, 80, false);
 		mikuCPU.setType(Type.CPU);
 		//mikuCPU.setAlias("miku");
 		((ControlPrimitive)mikuCPU).setProvision(30);
 		mikuCPU.setActuator(new CPUCapActuator());
 		mikuCPU.setHardware(true);
-		HardwareControlPrimitive mikuMemory = new HardwareControlPrimitive(null, "miku", true, null, null, 0,0,5, 0.9,0.1,100, 300);
+		HardwareControlPrimitive mikuMemory = new HardwareControlPrimitive(null, "miku", true, null, null, 0,0,5, 0.9,0.1,100, 300, false);
 		mikuMemory.setType(Type.Memory);
 		//mikuMemory.setAlias("miku");
 		((ControlPrimitive)mikuMemory).setProvision(128);
@@ -146,7 +151,7 @@ public class Ssascaling {
 		Executor.init(new HardwareControlPrimitive[]{jeosCPU, jeosMemory, kittyCPU, kittyMemory, mikuCPU, mikuMemory});
 		Executor.print();
 		
-		System.out.print("-------------- \n");
+		logger.debug("-------------- \n");
 		LinkedHashMap<ControlPrimitive, Double> decisions = new LinkedHashMap<ControlPrimitive, Double>();
 		
 		decisions.put(jeosCPU, 120.5);
@@ -167,8 +172,8 @@ public class Ssascaling {
 		Executor.execute(decisions);
 		Executor.print();
 		
-		System.out.print("Time -------------- " +(System.currentTimeMillis() - time)+"\n");	
-		System.out.print("-------------- \n");
+		logger.debug("Time -------------- " +(System.currentTimeMillis() - time)+"\n");	
+		logger.debug("-------------- \n");
 		
 	}
 	
@@ -216,12 +221,13 @@ public class Ssascaling {
 										Double.parseDouble(hardwareCPs.item(k).getAttributes().getNamedItem("pre_to_max").getNodeValue()),
 										Double.parseDouble(hardwareCPs.item(k).getAttributes().getNamedItem("pre_of_max").getNodeValue()),
 										Double.parseDouble(hardwareCPs.item(k).getAttributes().getNamedItem("min").getNodeValue()),
-										Double.parseDouble(hardwareCPs.item(k).getAttributes().getNamedItem("max").getNodeValue()));
+										Double.parseDouble(hardwareCPs.item(k).getAttributes().getNamedItem("max").getNodeValue()),
+										hardwareCPs.item(k).getAttributes().getNamedItem("switchoff") == null? false : "true".equals(hardwareCPs.item(k).getAttributes().getNamedItem("switchoff").getNodeValue())? true : false);
 							
 								hardwarePrices.add(Double.parseDouble(hardwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()));
 								list.add(cp);
 								
-							//System.out.print(hardwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()+ "\n");
+							//logger.debug(hardwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()+ "\n");
 						    }
 						}
 						
@@ -246,12 +252,13 @@ public class Ssascaling {
 										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("pre_to_max").getNodeValue()),
 										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("pre_of_max").getNodeValue()),
 										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("min").getNodeValue()),
-										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("max").getNodeValue()));
+										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("max").getNodeValue()),
+										softwareCPs.item(k).getAttributes().getNamedItem("switchoff") == null? false : "true".equals(softwareCPs.item(k).getAttributes().getNamedItem("switchoff").getNodeValue())? true : false);
 							
 								sharedSoftwarePrices.add(Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()));
 								list.add(cp);
 								
-							//System.out.print(hardwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()+ "\n");
+							//logger.debug(hardwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()+ "\n");
 						    }
 						}
 						
@@ -278,7 +285,7 @@ public class Ssascaling {
 	    				List<Double> softwarePrices = new ArrayList<Double>();
 	    				
 	    				for (int l = 0; l < insideService.getLength(); l++) {
-	    					//System.out.print(insideService.item(l).getNodeName()+ "\n");
+	    					//logger.debug(insideService.item(l).getNodeName()+ "\n");
 	    					if ("softwareControlPrimitive".equals(insideService.item(l).getNodeName())){
 	    						NodeList softwareCPs = insideService.item(l).getChildNodes();
 	    						
@@ -297,12 +304,13 @@ public class Ssascaling {
 	    										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("pre_to_max").getNodeValue()),
 	    										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("pre_of_max").getNodeValue()),
 	    										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("min").getNodeValue()),
-	    										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("max").getNodeValue()));
+	    										Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("max").getNodeValue()),
+	    										softwareCPs.item(k).getAttributes().getNamedItem("switchoff") == null? false : "true".equals(softwareCPs.item(k).getAttributes().getNamedItem("switchoff").getNodeValue())? true : false);
 	    							 
 	    								softwarePrices.add(Double.parseDouble(softwareCPs.item(k).getAttributes().getNamedItem("price_per_unit").getNodeValue()));
 	    								primitives.put(softwareCPs.item(k).getAttributes().getNamedItem("name").getNodeValue(), cp);
 	    								softs.add(cp);
-	    								System.out.print(cp.getName() + " min: " + cp.getValueVector()[0] + ", max: " + cp.getValueVector()[cp.getValueVector().length-1] + "\n");
+	    								logger.debug(cp.getName() + " min: " + cp.getValueVector()[0] + ", max: " + cp.getValueVector()[cp.getValueVector().length-1] + "\n");
 	    							 }
 	    						}
 	    						
@@ -392,9 +400,9 @@ public class Ssascaling {
 		    					Repository.setCost(cost); 
 		    					
 		    					
-		    					System.out.print("Number of CP in cost " + results.size() + "\n");
+		    					logger.debug("Number of CP in cost " + results.size() + "\n");
 		    					for (int m = 0; m < results.size() ; m++) {
-		    						System.out.print(p[m]+ " : " + results.get(m).getName() + " : "+ results.get(m) + "\n");
+		    						logger.debug(p[m]+ " : " + results.get(m).getName() + " : "+ results.get(m) + "\n");
 		    					}  
 		    					
 	    					}
@@ -406,13 +414,13 @@ public class Ssascaling {
 	    				
 	    				Service service = new Service(vmName, serviceName, objectives, primitives);
 	    				Repository.setService(vmName+"-"+serviceName, service);
-	    				System.out.print("Number of obj in service " + service.getObjectives().size() + "\n");
+	    				logger.debug("Number of obj in service " + service.getObjectives().size() + "\n");
 						
 					}
 					
 	                
 	                
-					//System.out.print(insideVmNodes.item(j).getNodeType()+ "\n");
+					//logger.debug(insideVmNodes.item(j).getNodeType()+ "\n");
 				}
 				
 				
@@ -426,7 +434,7 @@ public class Ssascaling {
 		
 		
 		
-		 System.out.print("***** total qos " + Repository.getQoSSet().size() + "\n");
+		 logger.debug("***** total qos " + Repository.getQoSSet().size() + "\n");
 			
 			/**
 			 * Setting the possible relevant primitives and the direct primitives.
@@ -478,7 +486,7 @@ public class Ssascaling {
 					}
 					
 					
-					//System.out.print(service.getObjectives().size() +  " Number of possible relevant primitives " + service.getPossiblePrimitives().size()  + "\n");
+					//logger.debug(service.getObjectives().size() +  " Number of possible relevant primitives " + service.getPossiblePrimitives().size()  + "\n");
 					
 					   
 					
@@ -504,32 +512,32 @@ public class Ssascaling {
 					    // Software CP and EP
 						for (Primitive p : s.getPrimitives()) {
 							Repository.setDirectForAnObjective(obj, p);
-							//System.out.print(p.getAlias() + "\n");
+							//logger.debug(p.getAlias() + "\n");
 						}
 						
 						// Hardware CP
 						for (Primitive p : Repository.getVM(s.getVMID()).getAllHardwarePrimitives()) {
 							Repository.setDirectForAnObjective(obj, p);
-							//System.out.print(p.getAlias() + "\n");
+							//logger.debug(p.getAlias() + "\n");
 						}
 						
 						for (Primitive p : Repository.getVM(s.getVMID()).getAllSharedSoftwarePrimitives()) {
 							Repository.setDirectForAnObjective(obj, p);
-							//System.out.print(p.getAlias() + "\n");
+							//logger.debug(p.getAlias() + "\n");
 						}
 						
 					
-					System.out.print("Number of direct primitives " + Repository.countDirectForAnObjective(obj)  + "\n");
+					logger.debug("Number of direct primitives " + Repository.countDirectForAnObjective(obj)  + "\n");
 				}
 				
 				s.print();
 				s.initializeModelForQoS();
 			}
 			
-			Executor.init(3);
+			//Executor.init(3);
 			//new HistoryLoader().run();
 					
-			new Receiver().receive();
+			//new Receiver().receive();
 			
 			
 	}

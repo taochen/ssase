@@ -14,7 +14,9 @@ import org.ssase.util.Repository;
 public class FEMOSAASolutionAdaptor {
 
 	
-	private static final FEMOSAASolutionAdaptor adaptor = null;
+	private static final FEMOSAASolutionAdaptor adaptor = new FEMOSAASolutionAdaptor();
+	
+
 	
 	public static FEMOSAASolutionAdaptor getInstance(){
 		return adaptor;
@@ -31,7 +33,6 @@ public class FEMOSAASolutionAdaptor {
 		
 		// This is a static method
 		SASSolution.init(optionalVariables);
-		
 		return vars;
 	}
 	

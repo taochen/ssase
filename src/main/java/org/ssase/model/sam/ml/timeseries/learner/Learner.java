@@ -1,7 +1,9 @@
 package org.ssase.model.sam.ml.timeseries.learner;
 
+import java.io.Serializable;
 
-public interface Learner {
+
+public interface Learner extends Serializable {
 
 	public double[][] train(double[][] ARx,
 			double[][] MAx, double[] y);

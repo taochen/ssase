@@ -8,6 +8,8 @@ import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ssase.analyzer.Analyzer;
 import org.ssase.executor.Executor;
 import org.ssase.monitor.Monitor;
@@ -23,6 +25,10 @@ public class ControlBus {
 	public static final boolean isTestMonitoringOnly = false;
 	public static final boolean isTestQoSModelingOnly = false;
 	public static boolean isTriggerQoSModeling = false;
+	
+	protected static final Logger logger = LoggerFactory
+	.getLogger(ControlBus.class);
+	
 	// Ensure only one MAPE loop running at a time.
 	// This is the main lock of MAPE loop, in case the repository 
 	// would change, it also need to rely on this lock.
@@ -60,7 +66,7 @@ public class ControlBus {
 			return;
 		}
 		
-		System.out.print("**** MAPE start: " + samples  + "\n");
+		logger.debug("**** MAPE start: " + samples  + "\n");
 		synchronized(lock) {
 			
 			// We do not allow more than two MAPEs loop that one for current processing and one for waiting,			
@@ -78,12 +84,12 @@ public class ControlBus {
 			// Ensure only one MAPE loop running at a time.
 			// Can not just get rid of as this may be newly measured data.	
 				while (lock.get() != -1 || samples != expectedSample) {
-					System.out.print("**** this one is waiting: " + samples  + "\n");
-					System.out.print("**** expected: " + expectedSample  + "\n");
+					logger.debug("**** this one is waiting: " + samples  + "\n");
+					logger.debug("**** expected: " + expectedSample  + "\n");
 					try {
-						//System.out.print("========================== Break ===============================\n");
-						//System.out.print(Thread.currentThread() + " break\n");
-						//System.out.print("========================== Break ===============================\n");
+						//logger.debug("========================== Break ===============================\n");
+						//logger.debug(Thread.currentThread() + " break\n");
+						//logger.debug("========================== Break ===============================\n");
 						lock.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -91,12 +97,12 @@ public class ControlBus {
 					
 					
 				}
-				System.out.print("**** is trigger analyzer: " + samples  + "\n");
-				System.out.print("**** is trigger analyzer, expected: " + expectedSample  + "\n");
+				logger.debug("**** is trigger analyzer: " + samples  + "\n");
+				logger.debug("**** is trigger analyzer, expected: " + expectedSample  + "\n");
 				
-				//System.out.print("========================== Run ===============================\n");
-				//System.out.print(Thread.currentThread() + " running\n");
-				//System.out.print("========================== Run ===============================\n");
+				//logger.debug("========================== Run ===============================\n");
+				//logger.debug(Thread.currentThread() + " running\n");
+				//logger.debug("========================== Run ===============================\n");
 				lock.set(0);
 				
 				/*isThereIsMAPEwaiting = false;
@@ -122,13 +128,13 @@ public class ControlBus {
 		
 		long time = System.currentTimeMillis();
 		if (ifAnalyze) {
-			System.out.print("***** will trigger training *********\n");
+			logger.debug("***** will trigger training *********\n");
 			/*
 			 *The A part 
 			 ***/
 			objectivesToBeOptimized = Analyzer.doAnalysis(samples);
 		}
-		System.out.print("Modeling takes " + (System.currentTimeMillis() - time) + " ms \n");
+		logger.debug("Modeling takes " + (System.currentTimeMillis() - time) + " ms \n");
 	
 		if (isTestQoSModelingOnly) {
 			synchronized(lock) {
@@ -150,7 +156,7 @@ public class ControlBus {
 		// TODO only trigger if the current setup has been longer than t intervals.
 		if (objectivesToBeOptimized != null) {
 		
-			System.out.print("Number of regions that need to be optimized: " 
+			logger.debug("Number of regions that need to be optimized: " 
 					+ objectivesToBeOptimized.size() + "\n");
 			
 			for (final Objective obj : objectivesToBeOptimized) {
@@ -187,9 +193,9 @@ public class ControlBus {
 			lock.set(-1);
 			objectivesToBeOptimized = null;
 			lock.notifyAll();
-			System.out.print("***** MAPE finished " + samples + " *********\n");
+			logger.debug("***** MAPE finished " + samples + " *********\n");
 		}
-		System.out.print("Decision making takes " + (System.currentTimeMillis() - time) + " ms \n");
+		logger.debug("Decision making takes " + (System.currentTimeMillis() - time) + " ms \n");
 		
 		System.gc();
 	}
@@ -219,7 +225,7 @@ public class ControlBus {
 			Executor.execute(decisions);
 			Executor.print();
 		} else {
-			System.out.print("There is no proper solutions found!\n");
+			logger.debug("There is no proper solutions found!\n");
 		}
 		
 		synchronized(lock) {
@@ -236,6 +242,6 @@ public class ControlBus {
 	
 	public void increaseCurrentSampleCount(){
 		expectedSample += Monitor.getNumberOfNewSamples();
-		System.out.print("Expected: " + expectedSample + "\n");
+		logger.debug("Expected: " + expectedSample + "\n");
 	}
 }

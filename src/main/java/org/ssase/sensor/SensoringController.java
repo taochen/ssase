@@ -225,10 +225,11 @@ public class SensoringController {
 		preIntervals = new LinkedList<Interval>();
 		sensors = new HashMap<String, Map<String, Sensor>> ();
 		
-		
+		System.out.print("********read start\n");
 		try {
 			InputStream sendInput = (InputStream) obj.getClass().getMethod("getResourceAsStream", new Class[]{String.class})
 			.invoke(obj, "/WEB-INF/domU.properties");
+			
 			sender = new Sender(sendInput);
 		
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -236,6 +237,7 @@ public class SensoringController {
 			
 			InputStream input = (InputStream) obj.getClass().getMethod("getResourceAsStream", new Class[]{String.class})
 			.invoke(obj, "/WEB-INF/domU.xml");
+		
 			Document doc = builder.parse(input);
 			
 			doc.getDocumentElement().normalize();
@@ -289,8 +291,8 @@ public class SensoringController {
 				}
 				
 			}
-		
-		} catch (Exception e) {
+			System.out.print("********first read finish\n");
+		} catch (Throwable e) {
 		   e.printStackTrace();
 		}
 		
@@ -327,7 +329,7 @@ public class SensoringController {
 			}
 		}
 		
-		 
+		
 		//run();
 	}
 	
@@ -477,6 +479,22 @@ public class SensoringController {
 		timer = new Timer();
 	
 		System.out.print("Start loop\n");
+		
+		
+        for (Map.Entry<String, Map<String, Sensor>> entry : sensors.entrySet()) {
+			
+			System.out.print(entry.getKey() + "---------\n");
+			
+			for (Map.Entry<String, Sensor> en : entry.getValue().entrySet()) {
+				if(en.getValue() instanceof org.ssase.sensor.linux.CpuSensor) {
+					((org.ssase.sensor.linux.CpuSensor)en.getValue()).run();
+				} else if(en.getValue() instanceof org.ssase.sensor.linux.MemorySensor) {
+					((org.ssase.sensor.linux.MemorySensor)en.getValue()).run();
+				} else if(en.getValue() instanceof org.ssase.sensor.linux.EnergySensor) {
+					((org.ssase.sensor.linux.EnergySensor)en.getValue()).run();
+				}
+			}
+		}
 		
 		System.gc();
 		

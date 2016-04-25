@@ -61,7 +61,7 @@ public class QualityOfService implements Objective, Comparable{
 	
 
 	// Least number of samples received before triggering training.
-	public final static int leastNumberOfSample = 88; //340,88
+	public static int leastNumberOfSample = 50; //340,88
 	// Some QoS e.g., throughput's constraints need to rely on some EP.
 	private EnvironmentalPrimitive ep;
 	
@@ -74,6 +74,7 @@ public class QualityOfService implements Objective, Comparable{
 	protected int samplingCounter = 0;
 	protected int addingCounter = 0;
 	protected Timer timer = new Timer();
+	
 	
 	protected QualityOfService(){
 		
@@ -492,7 +493,7 @@ public class QualityOfService implements Objective, Comparable{
 		
 	
 		reuslt = model.predict(x, true, a, b)*max/100;
-		
+		//reuslt = model.predict(x, 0)*max/100;
 		
 		synchronized(writeLock) {
 			writeLock.decrementAndGet();

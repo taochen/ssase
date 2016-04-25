@@ -60,7 +60,7 @@ public class InitRegion extends Region {
 //					}
 					
 					if("maxThread".equals(p.getName())) {
-						int index = rand.nextInt(((ControlPrimitive) p).getValueVector().length-1);
+						int index = rand.nextInt(((ControlPrimitive) p).getValueVector().length);
 						max = ((ControlPrimitive) p).getValueVector()[index];
 						maxP = p;
 						map.put((ControlPrimitive)p, ((ControlPrimitive) p).getValueVector()[index]);
@@ -68,14 +68,14 @@ public class InitRegion extends Region {
 					}
 					
 					if("minSpareThreads".equals(p.getName())) {
-						int index = rand.nextInt(((ControlPrimitive) p).getValueVector().length-1);
+						int index = rand.nextInt(((ControlPrimitive) p).getValueVector().length);
 						min =  ((ControlPrimitive) p).getValueVector()[index];
 						minP = p;
 						map.put((ControlPrimitive)p, ((ControlPrimitive) p).getValueVector()[index]);
 						continue;
 					}
 					
-					int index = rand.nextInt(((ControlPrimitive) p).getValueVector().length-1);
+					int index = rand.nextInt(((ControlPrimitive) p).getValueVector().length);
 					map.put((ControlPrimitive)p, ((ControlPrimitive) p).getValueVector()[index]);
 				}
 				

@@ -1,9 +1,12 @@
 package org.ssase.region;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ssase.objective.Objective;
 import org.ssase.objective.optimization.femosaa.FEMOSAARegion;
 import org.ssase.objective.optimization.moaco.MOACORegion;
 import org.ssase.objective.optimization.moga.MOGARegion;
+import org.ssase.objective.optimization.nsgaii.NSGAIIRegion;
 import org.ssase.objective.optimization.random.HillClimbingRegion;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.EnvironmentalPrimitive;
@@ -11,9 +14,14 @@ import org.ssase.primitive.Primitive;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import jmetal.core.Solution;
+import jmetal.core.SolutionSet;
+import jmetal.problems.SASSolution;
 
 
 /**
@@ -23,6 +31,8 @@ import java.util.Map;
  */
 public abstract class Region {
 
+	protected static final Logger logger = LoggerFactory
+	.getLogger(Region.class);
 	// private Map<Service, List<Objective>> serviceMap;
 
 	protected List<Objective> objectives;
@@ -35,8 +45,26 @@ public abstract class Region {
 
 	protected int finishedUpdateCounter = 0;
 	
-	public static final OptimizationType selected = OptimizationType.INIT;
+	public static OptimizationType selected = OptimizationType.INIT;
 
+	public static void setSelectedOptimizationType(String type){
+		if(type == null) return;
+		
+		
+		if("init".equals(type)) {
+			selected = OptimizationType.INIT;
+		} else if("random".equals(type)) {
+			selected = OptimizationType.RANDOM;
+		} else if("moaco".equals(type)) {
+			selected = OptimizationType.MOACO;
+		} else if("moga".equals(type)) {
+			selected = OptimizationType.MOGA;
+		} else if("femosaa".equals(type)) {
+			selected = OptimizationType.FEMOSAA;
+		} else if("nsgaii".equals(type)) {
+			selected = OptimizationType.NSGAII;
+		}
+	}
 
 	public static Region getNewRegionInstanceByType (OptimizationType type) {
 		
@@ -52,6 +80,8 @@ public abstract class Region {
 			return new MOGARegion();
 		} else if(OptimizationType.FEMOSAA.equals(type)) {
 			return new FEMOSAARegion();
+		} else if(OptimizationType.NSGAII.equals(type)) {
+			return new NSGAIIRegion();
 		}
 		
 		return new InitRegion();
@@ -124,19 +154,86 @@ public abstract class Region {
 
 	public abstract LinkedHashMap<ControlPrimitive, Double> optimize();
 	
+	public static SolutionSet correctDependencyAfterEvolution(
+			SolutionSet pareto_front) {
+		Iterator<Solution> itr = pareto_front.iterator();
+		double count = 0;
+		double total = pareto_front.size();
+		
+		List<Solution> list = new ArrayList<Solution>();
+		
+		
+		while(itr.hasNext()) {
+			Solution s = itr.next();
+			if(((SASSolution)s).isSolutionValid()) {
+				count++;
+				list.add(s);
+			}
+		}
+		
+		double score = count / total;
+		org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
 
+		SolutionSet set = new SolutionSet(list.size());
+		for(Solution s : list) {
+			set.add(s);
+		}
+		
+		return set;
+	}
+
+	
+	public static SolutionSet filterRequirementsAfterEvolution(
+			SolutionSet pareto_front,  List<Objective> objectives) {
+		Iterator<Solution> itr = pareto_front.iterator();
+		
+		
+		List<Solution> list = new ArrayList<Solution>();
+		
+		
+		while(itr.hasNext()) {
+			Solution s = itr.next();
+			boolean isAdd = true;
+			for (int i = 0; i < s.numberOfObjectives(); i++) {
+				if(objectives.get(i).isMin()? objectives.get(i).getConstraint() < s.getObjective(i): 
+					objectives.get(i).getConstraint() > s.getObjective(i)) {
+					isAdd = false;
+					break;
+				}
+			}
+			
+			if(isAdd) {
+				list.add(s);
+			}
+		}
+		
+
+		
+		// If no satisfied solutions, return all as default.
+		if(list.size() == 0) {
+			return pareto_front;
+		}
+		
+		SolutionSet set = new SolutionSet(list.size());
+		for(Solution s : list) {
+			set.add(s);
+		}
+		
+		return set;
+	}
+	
 	public void print(){
 		for (Objective obj : objectives) {
 			
 			
 			
-			System.out.print("It has " + objectives.size() + " objectives, contain "+ obj.getName() + "\n");
-			System.out.print(" ========= Contain CP start ========== \n");
+			logger.debug("It has " + objectives.size() + " objectives, contain "+ obj.getName() + "\n");
+			logger.debug(" ========= Contain CP start ========== \n");
 			for (Primitive p : obj.getPrimitivesInput()) {
-				System.out.print("CP "+ p.getAlias() + " : " + p.getName() + "\n");
+				logger.debug("CP "+ p.getAlias() + " : " + p.getName() + "\n");
 			}
 			
-			System.out.print(" ========= Contain CP end ========== \n");
+			logger.debug(" ========= Contain CP end ========== \n");
 		}
 	}
 	
@@ -147,7 +244,7 @@ public abstract class Region {
 		
 		
 		for (Map.Entry<ControlPrimitive, Double> e : result.entrySet()) {
-			   System.out.print(e.getKey().getAlias() + ", " + e.getKey().getName() + ", value: " + e.getValue() +  "\n");
+			   logger.debug(e.getKey().getAlias() + ", " + e.getKey().getName() + ", value: " + e.getValue() +  "\n");
 		}
 		int violated = 0;
 		for (Objective obj : objectives) {
@@ -186,10 +283,10 @@ public abstract class Region {
 				violated++;
 			}
 			
-			System.out.print(out + obj.getName() + " current value: " + obj.getCurrentPrediction() + " - after adaptation: " + adapt + "\n");
+			logger.debug(out + obj.getName() + " current value: " + obj.getCurrentPrediction() + " - after adaptation: " + adapt + "\n");
 		}
-		System.out.print("Total number of objectives: " + objectives.size() + "\n");
-		System.out.print("Total number of violated objectives: " + violated + "\n");
+		logger.debug("Total number of objectives: " + objectives.size() + "\n");
+		logger.debug("Total number of violated objectives: " + violated + "\n");
 		
 	}
 

@@ -1,7 +1,9 @@
 package org.ssase.model.sam;
 
+import java.io.Serializable;
 
-public interface ModelFunction {
+
+public interface ModelFunction extends Serializable {
 
 	public final int ANN = 0;
 	

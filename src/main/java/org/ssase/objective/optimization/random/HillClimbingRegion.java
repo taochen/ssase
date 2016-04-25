@@ -1,5 +1,10 @@
 package org.ssase.objective.optimization.random;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import jmetal.util.Configuration;
 
 import org.ssase.objective.Objective;
 import org.ssase.primitive.ControlPrimitive;
@@ -49,7 +56,7 @@ public class HillClimbingRegion extends Region {
 			lock.notifyAll();
 		}
 		
-		return randomHillClimbing();
+		return pureRandom();//randomHillClimbing();
 	}
 	
 	private LinkedHashMap<ControlPrimitive, Double> randomHillClimbing(){
@@ -263,6 +270,112 @@ public class HillClimbingRegion extends Region {
 		}
 		results.clear();
 		return satisfied == null? unsatisfied : satisfied;
+	}
+	
+	private LinkedHashMap<ControlPrimitive, Double> pureRandom(){
+		// Random optimization.
+		long interation = 600;
+		long count = 0;
+		
+		//double bestValue = 0;
+		//LinkedHashMap<ControlPrimitive, Double> best = new LinkedHashMap<ControlPrimitive, Double>();
+		LinkedHashMap<ControlPrimitive, Double> current = new LinkedHashMap<ControlPrimitive, Double>();
+		
+		List<LinkedHashMap<ControlPrimitive, Double>> results = new ArrayList<LinkedHashMap<ControlPrimitive, Double>>();
+		
+		
+		Map<Objective, Double> map = getBasis();
+		
+		for (Objective obj : objectives) {
+			for(Primitive p : obj.getPrimitivesInput()){
+				if (p instanceof ControlPrimitive) {
+					current.put((ControlPrimitive)p, (double)p.getProvision());
+				}
+			}
+		}
+		
+		Random random = new Random();
+		
+		do {
+			count ++;
+			for (Map.Entry<ControlPrimitive, Double> entry : current.entrySet()) {
+			
+				entry.setValue(entry.getKey().getValueVector()[
+						random.nextInt(entry.getKey().getValueVector().length)]);
+			}
+			
+			
+			//System.out.print("current: " + result + ", best: " + bestValue + "\n");
+			/*if (result > bestValue || count == 1) {
+				//System.out.print("Find a new best decision!\n");
+				best.clear();
+				best.putAll(current);
+				bestValue = result;
+			}*/
+			
+			results.add(copy(current));
+			
+		} while (count<interation);
+		
+		
+		/*for (Map.Entry<ControlPrimitive, Double> entry : current.entrySet()) {
+			System.out.print(entry.getKey().getAlias() + "-" + entry.getKey().getName() + " : " + entry.getValue() + "\n");
+		}*/
+		
+		//
+		
+		String global_output = "";
+		for (LinkedHashMap<ControlPrimitive, Double> decision : results) {
+			double[] xValue = null;
+			List<Double> l = null;
+			String output = "";
+			for (Objective obj : objectives) {
+				l = new ArrayList<Double>();
+				xValue = new double[ obj.getPrimitivesInput().size()];
+				//System.out.print(obj.getPrimitivesInput().size()+"\n");
+				for(int i = 0; i < obj.getPrimitivesInput().size();i++){
+					if (obj.getPrimitivesInput().get(i) instanceof ControlPrimitive) {
+						xValue[i] = decision.get(obj.getPrimitivesInput().get(i));
+						l.add(xValue[i] );
+					} else {
+						xValue[i] = ((EnvironmentalPrimitive)obj.getPrimitivesInput().get(i)).getLatest();
+					}
+				}
+				
+				output = output +  obj.predict(xValue) + " ";
+				global_output = global_output + obj.predict(xValue) + " ";
+				//result = obj.isMin()? result - (obj.predict(xValue)/(1+map.get(obj))) : result + (obj.predict(xValue)/(1+map.get(obj))) ;
+			}
+			global_output = global_output + "\n";
+			String o = "";
+			for (double d : l) {
+				o = o + d + ", ";
+			}
+			
+			System.out.print(output + " " + o + "\n");
+		}
+		
+	    try {
+	    	new File("data/RANDOM/results.dat").delete();
+	        /* Open the file */
+	        FileOutputStream fos   = new FileOutputStream("data/RANDOM/results.dat")     ;
+	        OutputStreamWriter osw = new OutputStreamWriter(fos)    ;
+	        BufferedWriter bw      = new BufferedWriter(osw)        ;
+	                          
+	        //for (int i = 0; i < solutionsList_.size(); i++) {
+	          //if (this.vector[i].getFitness()<1.0) {
+	          bw.write(global_output);
+	          bw.newLine();
+	          //}
+	        //}
+	        
+	        /* Close the file */
+	        bw.close();
+	      }catch (IOException e) {
+	        e.printStackTrace();
+	      }
+		
+		return current;
 	}
 	
 	private LinkedHashMap<ControlPrimitive, Double> copy (LinkedHashMap<ControlPrimitive, Double> current) {

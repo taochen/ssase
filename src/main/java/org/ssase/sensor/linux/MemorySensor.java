@@ -20,6 +20,11 @@ public class MemorySensor implements Sensor {
 	private Timer timer;
 	
 	public MemorySensor(){
+		
+	}
+	
+	public void run(){
+		if(timer != null) return;
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {

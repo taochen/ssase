@@ -19,6 +19,11 @@ public class CpuSensor implements Sensor {
 	private Timer timer;
 	
 	public CpuSensor(){
+	
+	}
+	
+	public void run(){
+		if(timer != null) return;
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {
