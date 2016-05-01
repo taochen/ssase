@@ -469,11 +469,32 @@ public class FeatureModel {
 				 VarEntity[] ve = null;
 				 if(i == 0) {
 					
+					 if(logger.isDebugEnabled()) {
+						 String r = "Do intersection for " + b.getName() + " in the following order: ";
+						 
+						 for(Map.Entry<Branch, Integer[][]> entry : list.get(i).entrySet()) {
+							 r = r + entry.getKey().getName() + " ";
+						 }
+						 
+						 logger.debug(r);
+					 }
+					 
 					 
 					 Iterator<Map.Entry<Branch, Integer[][]>> itr = map.entrySet().iterator();
 					 ve = setIntersectionEntity(tempMap, b, itr.next(), itr,
 								null, -1);
 				 } else {
+					 
+					 if(logger.isDebugEnabled()) {
+						 String r = "Do union for " + b.getName() + " in the following order: ";
+						 
+						 for(Map.Entry<Branch, Integer[][]> entry : list.get(i).entrySet()) {
+							 r = r + entry.getKey().getName() + " ";
+						 }
+						 
+						 logger.debug(r);
+					 }
+					 
 					 Iterator<Map.Entry<Branch, Integer[][]>> itr = map.entrySet().iterator();
 					 ve = setUnionEntity(tempMap, b, itr.next(), itr,
 								null, -1);
@@ -487,13 +508,32 @@ public class FeatureModel {
 			 for (int i = 1; i < varList.size();i++) {
 				
 				 
+				 
+				 
 				 List<Integer> layerIndexA = new ArrayList<Integer>();
 				 List<Integer> layerIndexB = new ArrayList<Integer>();
 				 
 				 finalOne[0].getMainVariablesByDependentVariable(layerIndexA);
 				 varList.get(i)[0].getMainVariablesByDependentVariable(layerIndexB);
 				 
-				 insertMissingVarEntityFromBtoA(finalOne, layerIndexA, varList.get(i), layerIndexB);
+				 if(logger.isDebugEnabled()) {
+					 String r = "Do group intersection for " + b.getName() + " in the following order: \n";
+					 r = r + "set1=";
+					 for(Integer in : layerIndexA) {
+						 r = r + chromosome.get(in).getName() + " ";
+					 }
+					 
+					 
+					 r = r + "\nset2=";
+					 
+					 for(Integer in : layerIndexB) {
+						 r = r + chromosome.get(in).getName() + " ";
+					 }
+					 
+					 logger.debug(r);
+				 }
+				 
+				 insertMissingVarEntityFromBtoA(b, finalOne, layerIndexA, varList.get(i), layerIndexB);
 			 }
 			// if(finalOne != null)
 			 dependencyMap.put(chromosome.indexOf(b), finalOne);
@@ -552,7 +592,7 @@ public class FeatureModel {
 		root = null;
 	}
 	
-	private void insertMissingVarEntityFromBtoA( VarEntity[] veA, List<Integer> layerIndexA, VarEntity[] veB, List<Integer> layerIndexB){
+	private void insertMissingVarEntityFromBtoA(Branch key, VarEntity[] veA, List<Integer> layerIndexA, VarEntity[] veB, List<Integer> layerIndexB){
 		
 		List<Integer> toAdd = new ArrayList<Integer>();
 		
@@ -572,11 +612,11 @@ public class FeatureModel {
 			values.put(chromosome.get(i), -1);
 		}
 		
-		intersect(veA, veB, values, layerIndexB);
+		intersect(key, veA, veB, values, layerIndexB);
 	}
 	
 	
-	private void intersect(VarEntity[] veA, VarEntity[] veB, Map<Branch, Integer> values, List<Integer> layerIndexB) {
+	private void intersect(Branch key, VarEntity[] veA, VarEntity[] veB, Map<Branch, Integer> values, List<Integer> layerIndexB) {
 		for (int i = 0; i < veA.length; i++) {
 			if(values.containsKey(chromosome.get(veA[i].getVarIndex()))) {
 				values.put(chromosome.get(veA[i].getVarIndex()), i);
@@ -591,10 +631,10 @@ public class FeatureModel {
 					enArray = en.getNext();
 				}
 				
-				veA[i].replace(getIntersection(veA[i].getOptionalValues(), en.getOptionalValues()));
+				veA[i].replace(getIntersection(veA[i].getOptionalValues(), en.getOptionalValues(), key, null, veB));
 				
 			} else {
-				intersect(veA[i].getNext(), veB, values, layerIndexB);
+				intersect(key, veA[i].getNext(), veB, values, layerIndexB);
 			}
 		}
 	}
@@ -680,7 +720,7 @@ public class FeatureModel {
 			for (int i = 0; i < entry.getValue().length; i++) {
 
 				VarEntity[] v = setIntersectionEntity(tempMap, branch, next, itr,
-						getIntersection(values, entry.getValue()[i]), layer);
+						getIntersection(values, entry.getValue()[i], branch, entry.getKey(), null), layer);
 				VarEntity temp = null;
 				if (tempMap.containsKey(branch)
 						&& (temp = isSameRange(tempMap.get(branch).get(layer),
@@ -697,7 +737,7 @@ public class FeatureModel {
 
 			for (int i = 0; i < entry.getValue().length; i++) {
 
-				Integer[] v = getIntersection(values, entry.getValue()[i]);
+				Integer[] v = getIntersection(values, entry.getValue()[i], branch, entry.getKey(), null);
 				VarEntity temp = null;
 				if (tempMap.containsKey(branch)
 						&& (temp = isSameRange(tempMap.get(branch).get(layer),
@@ -788,7 +828,7 @@ public class FeatureModel {
 	}
 	
 	
-	private Integer[] getIntersection(Integer[] a, Integer[] b) {
+	private Integer[] getIntersection(Integer[] a, Integer[] b, Branch key, Branch added, VarEntity[] entities) {
 		
 		if(a == null) return b;
 		if(b == null) return a;
@@ -807,25 +847,30 @@ public class FeatureModel {
 		
 		// Resolve extreme null cases of at-least-one-exist
 		if(inter.size() == 0) { 
-			logger.warn("Found a case where intersection results in null, fix 0 to represent the feature can only be disable under such secnario");
-			if(a.length == 1 && a[0] == 0) {
-//				set.clear();
-//				for(Integer i : b) {
-//					set.add(i);
-//				}
-//				
-//				if(!set.contains(0)) {
-//					inter.add(0);
-//				}
-				inter.add(0);
-			} else if(b.length == 1 && b[0] == 0) {
+			String name = "";
+			
+			if(added != null) {
+				name = added.getName() + " ";
+			} else {
+				List<Integer> l = new ArrayList<Integer>();
+				for (Integer i : entities[0].getMainVariablesByDependentVariable(l)) {
+					name = name + chromosome.get(i).getName() + " ";
+				}
+			}
+			
+			if((a.length == 1 && a[0] == 0 && key.isCanSwitchOff()) ||
+					(b.length == 1 && b[0] == 0 && key.isCanSwitchOff())) {
+				logger.warn("When perform intersection for " + key.getName() + ", adding " + name + "causing empty set, we try fix 0 to represent the feature can only be disable under such secnario");
 				
-//				if(!set.contains(0)) {
-//					inter.add(0);
-//				}
+				inter.add(0);
+			} else if(key.isCanSwitchOff()) {
+				
+				logger.warn("When perform intersection for " + key.getName() + ", adding " + name + "causing empty set, we try fix 0 to represent the feature can only be disable under such secnario"
+						+ ", notice that both end can have more optional values than switch off");
+				
 				inter.add(0);
 			} else {
-				throw new RuntimeException("Possibly a design error, as intersection leads to empty set while no features can only be switch off?");
+				throw new RuntimeException("When perform intersection for " + key.getName() + ", adding " + name + "causing empty set. This is possibly a design error, as intersection leads to empty set while the depedent features cannot be switch off?");
 			}
 		}
 		

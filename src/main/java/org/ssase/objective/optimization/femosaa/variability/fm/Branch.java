@@ -2,6 +2,7 @@ package org.ssase.objective.optimization.femosaa.variability.fm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -169,7 +170,7 @@ public class Branch {
 		
 		List<Map<Branch, Integer[][]>> list = new ArrayList<Map<Branch, Integer[][]>>();
 		
-		Map<Branch, Integer[][]> intercetion = new HashMap<Branch, Integer[][]>();
+		Map<Branch, Integer[][]> intercetion = new LinkedHashMap<Branch, Integer[][]>();
 		
 		// First one is intercetion
 		list.add(intercetion);
@@ -179,7 +180,7 @@ public class Branch {
 		for (Dependency d : crossMain) {	
 			Map<Branch, Integer[][]> m = ((CrossDependency)d).getRangeBasedonMainVariableInOrGroup();
 			if(m != null) {
-				Map<Branch, Integer[][]> union = new HashMap<Branch, Integer[][]>();
+				Map<Branch, Integer[][]> union = new LinkedHashMap<Branch, Integer[][]>();
 				union.putAll(m);
 				list.add(union);
 			} else {		
@@ -192,7 +193,7 @@ public class Branch {
 		for (Dependency d : inBranchMain) {		
 			Map<Branch, Integer[][]> m = ((InBranchDependency)d).getRangeBasedonMainVariableInOrGroup();
 			if(m != null) {
-				Map<Branch, Integer[][]> union = new HashMap<Branch, Integer[][]>();
+				Map<Branch, Integer[][]> union = new LinkedHashMap<Branch, Integer[][]>();
 				union.putAll(m);
 				list.add(union);
 			} else {		
