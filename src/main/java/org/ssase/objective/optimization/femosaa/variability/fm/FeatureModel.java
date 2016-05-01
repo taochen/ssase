@@ -20,7 +20,11 @@ import jmetal.problems.VarEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.primitive.ControlPrimitive;
+import org.ssase.primitive.SoftwareControlPrimitive;
+import org.ssase.region.OptimizationType;
+import org.ssase.region.Region;
 import org.ssase.util.Ssascaling;
+import org.ssase.util.Tuple;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -41,6 +45,27 @@ public class FeatureModel {
 
 	private Branch root = null;
 	
+	
+	// Key = cp, value = lower, upper
+	Map<ControlPrimitive, Tuple<Integer, Integer>> zeroAndOneTupleMap; 
+	
+	List<Integer[]> zeroAndOneOptionalValueList;
+	
+	
+	public Map<ControlPrimitive, Tuple<Integer, Integer>> getZeroAndOneTupleMap() {
+		if(Region.selected != OptimizationType.FEMOSAA01) {
+			throw new RuntimeException("Only 0/1 representation needs this function");
+		}
+		return zeroAndOneTupleMap;
+	}
+
+	public List<Integer[]> getZeroAndOneOptionalValueList() {
+		if(Region.selected != OptimizationType.FEMOSAA01) {
+			throw new RuntimeException("Only 0/1 representation needs this function");
+		}
+		return zeroAndOneOptionalValueList;
+	}
+
 	public static void readFile(List<FeatureModel> models) {
 		
 		try {
@@ -63,18 +88,34 @@ public class FeatureModel {
 				FeatureModel model = models.get(i);
 				
 				Node node = modelNodes.item(i);
-			
+				
+
 				// This is the grow step
 				grow(model, node, map, crossDependencyMap, null, false);
+				
 				// This is the prune step			
 				prune(map, crossDependencyMap, model);
 				
 				
 				// This is the step that create dependency chain and the network for valid values.
-				model.configureDependencyChain(map, model);
+				model.configureDependencyChain(map);
 				
+			
+				
+				// Use 0/1 translation
+				if(Region.selected == OptimizationType.FEMOSAA01) {
+					
+					model.zeroAndOneTupleMap = new HashMap<ControlPrimitive, Tuple<Integer, Integer>>();
+					model.zeroAndOneOptionalValueList = new ArrayList<Integer[]>();
+					
+					
+					normalParse(model, model.root, model.zeroAndOneTupleMap, model.zeroAndOneOptionalValueList);
+				} 
+				
+				model.release();
 				map.clear();
 				crossDependencyMap.clear();
+				
 			}
 
 		} catch (Exception e) {
@@ -83,6 +124,87 @@ public class FeatureModel {
 
 	}
 	
+   private static void normalParse(FeatureModel model, Branch branch, Map<ControlPrimitive, Tuple<Integer, Integer>> tupleMap, List<Integer[]> list){
+		
+		if(branch.isNumeric() && !branch.isRoot()) {
+			Tuple<Integer, Integer> tuple = new Tuple<Integer, Integer>(list.size(), list.size() + branch.getRange().length - 1);
+			
+			for(int i = 0; i < branch.getRange().length; i++) {
+				list.add(new Integer[]{0,1});
+			}
+			
+			ControlPrimitive p = null;
+			for (ControlPrimitive sub : model.list) {
+				if(sub.getName().equals(branch.getName())){
+					p = sub;
+					break;
+				}
+			}
+			
+			if(p == null) {
+				p = new SoftwareControlPrimitive(null); //dummy
+			}
+			
+			tupleMap.put(p, tuple);
+			
+		} else if(!branch.isRoot()){
+			
+			if (branch.getRange() !=null && branch.getRange().length != 0) {
+				Tuple<Integer, Integer> tuple = new Tuple<Integer, Integer>(list.size(), list.size() + branch.getRange().length - 1);
+				
+				for(int i = 0; i < branch.getRange().length; i++) {
+					list.add(new Integer[]{0,1});
+				}
+				
+				ControlPrimitive p = null;
+				for (ControlPrimitive sub : model.list) {
+					if(sub.getName().equals(branch.getName())){
+						p = sub;
+						break;
+					}
+				}
+				
+				if(p == null) {
+					p = new SoftwareControlPrimitive(null); //dummy
+				}
+				
+				tupleMap.put(p, tuple);
+			} else {
+				// Only have switch on/off
+				Tuple<Integer, Integer> tuple = new Tuple<Integer, Integer>(list.size(), list.size() + 1);
+				
+				for(int i = 0; i < 1; i++) {
+					list.add(new Integer[]{0,1});
+				}
+				
+				ControlPrimitive p = null;
+				for (ControlPrimitive sub : model.list) {
+					if(sub.getName().equals(branch.getName())){
+						p = sub;
+						break;
+					}
+				}
+				
+				if(p == null) {
+					p = new SoftwareControlPrimitive(null); //dummy
+				}
+				
+				tupleMap.put(p, tuple);
+			}
+			
+		}
+		
+	
+		for(Branch b : branch.getNormalGroup()) {
+			normalParse(model, b,  tupleMap,list);
+		}
+		for(Branch b : branch.getORGroup()) {
+			normalParse(model,  b,  tupleMap,list);
+		}
+		for(Branch b : branch.getXORGroup()) {
+			normalParse(model,  b,  tupleMap,list);
+		}
+	}
 	
 	private static Branch grow(FeatureModel model, Node node, Map<String, Branch> map, Map<String, CrossDependency> crossDependencyMap, String currentGroup, boolean isAddOff){
 		
@@ -298,34 +420,34 @@ public class FeatureModel {
 		model.chromosome = list;
 	}
 
-	public void configureDependencyChain(Map<String, Branch> allMap, FeatureModel model){
+	public void configureDependencyChain(Map<String, Branch> allMap){
 		// Key = dependent variable, Value = main variable, the range matrix.
 		//Map<Branch, Map<Branch, Integer[][]>> map = new HashMap<Branch, Map<Branch, Integer[][]>>();
 		
 		//----------------Analyze the dependency----------------
 		
 		for(Map.Entry<String, Branch> entry : allMap.entrySet()) {
-			entry.getValue().inheritCrossDepedencyToChildrenOrParent(model.chromosome);
+			entry.getValue().inheritCrossDepedencyToChildrenOrParent(chromosome);
 		}
 		
 		// Parse the in-branch dependency.
-	    model.root.generateInBranchOptionalDependency(model.chromosome);
-	    model.root.generateInBranchMandatoryDependency(model.chromosome);
-	    model.root.generateInBranchXORDependency(model.chromosome);
-	    model.root.generateInBranchORDependency(model.chromosome);
-	    sort(model);
+	    root.generateInBranchOptionalDependency(chromosome);
+	    root.generateInBranchMandatoryDependency(chromosome);
+	    root.generateInBranchXORDependency(chromosome);
+	    root.generateInBranchORDependency(chromosome);
+	    sort(this);
 	    
-	    for (Branch b : model.chromosome) {
+	    for (Branch b : chromosome) {
 	    	b.mergeIntersectableDependency();
 	    }
 	    
 
 		
-		for(Branch b : model.chromosome) {
+		for(Branch b : chromosome) {
 			logger.debug("\n");
     	    b.debug();
 		}
-		
+	
 		//----------------Analyze the dependency----------------
 		
 		Map<Integer, VarEntity[]> dependencyMap = SASSolution.getDependencyMap();
@@ -415,19 +537,20 @@ public class FeatureModel {
 			for(int i = 0; i < entry.getValue().length ; i++) {
 				printVariableTree(list.get(entry.getKey()), 
 						entry.getValue()[i],
-						i + "(" + chromosome.get(entry.getValue()[i].getVarIndex()).getRange()[i] + ")");
+						chromosome.get(entry.getValue()[i].getVarIndex()).getName() + "-" + i + "(" + chromosome.get(entry.getValue()[i].getVarIndex()).getRange()[i] + ")");
 			}
 			
 			
 		}
 		logger.debug("-----------Dependency Chain-----------");
 		
-		// Release
-		model.chromosome.clear();
-		model.chromosome = null;
-		model.root = null;
 	}
 	
+	private void release(){
+		chromosome.clear();
+		chromosome = null;
+		root = null;
+	}
 	
 	private void insertMissingVarEntityFromBtoA( VarEntity[] veA, List<Integer> layerIndexA, VarEntity[] veB, List<Integer> layerIndexB){
 		
@@ -499,7 +622,7 @@ public class FeatureModel {
 		if(ve.getNext() != null) {
 			for(int i = 0; i < ve.getNext().length ; i++) {
 				String temp = log;
-				printVariableTree(dependenct, ve.getNext()[i], temp + ", " + i + "(" + chromosome.get(ve.getNext()[i].getVarIndex()).getRange()[i] + ")");
+				printVariableTree(dependenct, ve.getNext()[i], temp + ", " + chromosome.get(ve.getNext()[i].getVarIndex()).getName() + "-" + i + "(" + chromosome.get(ve.getNext()[i].getVarIndex()).getRange()[i] + ")");
 			}
 			
 		} else {
@@ -684,21 +807,25 @@ public class FeatureModel {
 		
 		// Resolve extreme null cases of at-least-one-exist
 		if(inter.size() == 0) { 
-			
+			logger.warn("Found a case where intersection results in null, fix 0 to represent the feature can only be disable under such secnario");
 			if(a.length == 1 && a[0] == 0) {
-				set.clear();
-				for(Integer i : b) {
-					set.add(i);
-				}
-				
-				if(!set.contains(0)) {
-					inter.add(0);
-				}
+//				set.clear();
+//				for(Integer i : b) {
+//					set.add(i);
+//				}
+//				
+//				if(!set.contains(0)) {
+//					inter.add(0);
+//				}
+				inter.add(0);
 			} else if(b.length == 1 && b[0] == 0) {
 				
-				if(!set.contains(0)) {
-					inter.add(0);
-				}
+//				if(!set.contains(0)) {
+//					inter.add(0);
+//				}
+				inter.add(0);
+			} else {
+				throw new RuntimeException("Possibly a design error, as intersection leads to empty set while no features can only be switch off?");
 			}
 		}
 		

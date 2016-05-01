@@ -102,7 +102,7 @@ public class Logger {
 
 			
 			//System.out.print(data.toString() + "\n");
-			bw.write(data);
+			bw.write(data + "\n");
 			bw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -125,13 +125,37 @@ public class Logger {
 
 			
 			//System.out.print(data.toString() + "\n");
-			bw.write(data);
+			bw.write(data + "\n");
 			bw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+  public static synchronized void logDependencyEnforcementFinal(String VM_ID, String data){
+		
+		if(VM_ID == null) VM_ID = "sas";
+		
+		File file = null;
+		if(!(file = new File(prefix
+				+ VM_ID + "/")).exists()){
+			file.mkdir();
+		} 
+		
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(prefix
+					+ VM_ID + "/Dependency-final.rtf", true));
+
+			
+			//System.out.print(data.toString() + "\n");
+			bw.write(data + "\n");
+			bw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+    
 	public static synchronized long getExecutionCount(){
 		executionCount++;
 		return executionCount;

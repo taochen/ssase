@@ -533,9 +533,9 @@ public class Ssascaling {
 				s.print();
 				s.initializeModelForQoS();
 			}
-			
-			//Executor.init(3);
-			//new HistoryLoader().run();
+		
+			Executor.init(3);
+			new HistoryLoader().run();
 					
 			//new Receiver().receive();
 			

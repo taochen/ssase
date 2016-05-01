@@ -15,11 +15,11 @@ import jmetal.problems.SASSolutionInstantiator;
 
 public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 
-	private List<Objective> objectives;
+	protected List<Objective> objectives;
 	// Key = objective, Value = the index of control variable in MOEASolution, the order
 	// is consistent with the CP in QoS object. This include EP, in which case the 
 	// -1 value would be used.
-	private Map<Objective, Integer[]> map;
+	protected Map<Objective, Integer[]> map;
 	
 	private FEMOSAASolutionInstantiator(){
 		

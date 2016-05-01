@@ -8,6 +8,7 @@ import jmetal.problems.SASSolution;
 
 import org.ssase.objective.Objective;
 import org.ssase.primitive.ControlPrimitive;
+import org.ssase.region.Region;
 import org.ssase.util.Repository;
 
 
@@ -27,6 +28,8 @@ public class FEMOSAASolutionAdaptor {
 		int[][] vars = new int[list.size()][];
 		double[][] optionalVariables = new double[list.size()][];
 		for (int i = 0; i < vars.length; i++) {
+			// These are not used for fetch values, but used to count
+			// the boundary.
 			vars[i] = new int[]{0, list.get(i).getValueVector().length - 1};
 			optionalVariables[i] = list.get(i).getValueVector();
 		}
@@ -48,6 +51,8 @@ public class FEMOSAASolutionAdaptor {
 			result.put(list.get(i), sol.getVariableValueFromIndex(i));
 		}
 			
+		Region.logDependencyForFinalSolution(sol);
+		
 		return result;
 	}
 }

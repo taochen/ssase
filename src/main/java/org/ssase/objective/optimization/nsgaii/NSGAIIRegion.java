@@ -19,22 +19,24 @@ import org.ssase.region.Region;
 
 public class NSGAIIRegion extends Region {
 
-	private int[][] vars = null;
+	protected int[][] vars = null;
 	
 	public NSGAIIRegion() {
 		super();		
 	}
 
-	
-	
-	public LinkedHashMap<ControlPrimitive, Double> optimize() {
-		
+	protected void init(){
 		if(vars == null) {
 			vars = FEMOSAASolutionAdaptor.getInstance().convertInitialLimits(objectives.get(0));
 			// This is needed for approach that do not consider categorical/numeric dependency
 			// in the optimization process.
-			SASSolution.getDependencyMap().clear();
+			SASSolution.clearAndStoreForValidationOnly();
 		}
+	}
+	
+	public LinkedHashMap<ControlPrimitive, Double> optimize() {
+		
+		init();
 		
 		LinkedHashMap<ControlPrimitive, Double> result = null;
 		synchronized (lock) {
@@ -74,17 +76,18 @@ public class NSGAIIRegion extends Region {
 		return result;
 	}
 	
-	private SASAlgorithmAdaptor getAlgorithm(){
+	protected SASAlgorithmAdaptor getAlgorithm(){
 		return new NSGA2_SAS_main(){
-			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){
-		
+			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){		
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
 			}
 			protected SolutionSet correctDependencyAfterEvolution(
 					SolutionSet pareto_front) {
 				return Region.correctDependencyAfterEvolution(pareto_front);
 			}
-			
+			protected void logDependencyAfterEvolution(SolutionSet pareto_front_without_ranking){
+				Region.logDependencyAfterEvolution(pareto_front_without_ranking);
+			}
 		};
 	}
 

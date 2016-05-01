@@ -73,7 +73,7 @@ public class HistoryLoader {
 	public  int counterNo = 0;
 	
 	private  int readFileIndex = 0;
-	private  int cap = 288;//88//340/*342*/;
+	private  int cap = 287;//88//340/*342*/;
 	private  boolean finished = false;
 	private  List<Interval> intervals;
 	private  Map<String, List<Sensor>> sensors;
@@ -340,7 +340,10 @@ public class HistoryLoader {
 					continue;
 				}
 				
-				if (file.getName().equals("Executions.rtf")) {
+				if (file.getName().equals("Executions.rtf") || 
+						file.getName().equals("Execution-time.rtf")  || 
+						file.getName().equals("Dependency.rtf") ||
+						file.getName().equals("Dependency-final.rtf")) {
 					continue;
 				}
 			

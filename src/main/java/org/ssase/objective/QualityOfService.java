@@ -29,7 +29,8 @@ public class QualityOfService implements Objective, Comparable{
 	protected double[] array;
 	// The max numerical value
 	protected double max = 0;
-	
+	// The min numerical value
+	//protected double min = 0;
 	protected String name;
 	
 	

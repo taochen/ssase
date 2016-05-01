@@ -989,9 +989,7 @@ public class Branch {
 //			length += 1;
 //		}
 		
-		if(getName().equals("Memory")) {
-			System.currentTimeMillis();
-		}
+		
 		
 		double[] valueVector = new double[length]; 
 		double value = min - a;
@@ -1012,6 +1010,20 @@ public class Branch {
 	}
 	
 	
+	
+	
+	public List<Branch> getNormalGroup() {
+		return normalGroup;
+	}
+
+	public List<Branch> getORGroup() {
+		return ORGroup;
+	}
+
+	public List<Branch> getXORGroup() {
+		return XORGroup;
+	}
+
 	public void debug(){
 		logger.debug(getName() + " can be considered as gene, range is: " + getRangeAsPlain());
 		logger.debug("Parent: " + parent.getName());
