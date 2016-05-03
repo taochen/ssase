@@ -3,12 +3,15 @@ package org.ssase.region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.objective.Objective;
+import org.ssase.objective.optimization.bb.BranchAndBoundRegion;
+import org.ssase.objective.optimization.bb.BranchAndBoundwithDRegion;
 import org.ssase.objective.optimization.femosaa.*;
 import org.ssase.objective.optimization.gp.*;
 import org.ssase.objective.optimization.moaco.MOACORegion;
 import org.ssase.objective.optimization.moga.MOGARegion;
 import org.ssase.objective.optimization.nsgaii.*;
 import org.ssase.objective.optimization.random.HillClimbingRegion;
+import org.ssase.objective.optimization.random.HillClimbingwithDRegion;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
@@ -48,7 +51,7 @@ public abstract class Region {
 
 	protected int finishedUpdateCounter = 0;
 	
-	public static OptimizationType selected = OptimizationType.INIT;
+	public static OptimizationType selected;
 
 	public static void setSelectedOptimizationType(String type){
 		if(type == null) throw new RuntimeException("No proper OptimizationType found!");
@@ -80,7 +83,14 @@ public abstract class Region {
 			selected = OptimizationType.GP;
 		} else if("gp-k-d".equals(type)) {
 			selected = OptimizationType.GPkd;
+		} else if("random-d".equals(type)) {
+			selected = OptimizationType.RANDOMd;
+		} else if("bb".equals(type)) {
+			selected = OptimizationType.BB;
+		} else if("bb-d".equals(type)) {
+			selected = OptimizationType.BBd;
 		}
+		
 		
 		if(selected == null) throw new RuntimeException("Can not find region for type " + type);
 	}
@@ -114,7 +124,13 @@ public abstract class Region {
 		} else if(OptimizationType.GP.equals(type)) {
 			return new GPRegion();
 		} else if(OptimizationType.GPkd.equals(type)) {
-			return new GPwithKAndDRegion();
+			return new GPwithDRegion();
+		} else if(OptimizationType.RANDOMd.equals(type)) {
+			return new HillClimbingwithDRegion();
+		} else if(OptimizationType.BB.equals(type)) {
+			return new BranchAndBoundRegion();
+		} else if(OptimizationType.BBd.equals(type)) {
+			return new BranchAndBoundwithDRegion();
 		}
 		
 		throw new RuntimeException("Can not find region for type " + type);

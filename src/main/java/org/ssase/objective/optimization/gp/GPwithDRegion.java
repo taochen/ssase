@@ -7,7 +7,7 @@ import jmetal.problems.SASAlgorithmAdaptor;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionAdaptor;
 import org.ssase.region.Region;
 import jmetal.metaheuristics.gp.GP_SAS_main;
-public class GPwithKAndDRegion extends GPRegion {
+public class GPwithDRegion extends GPRegion {
 	
 	protected void init(){
 		if(vars == null) {

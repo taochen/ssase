@@ -13,13 +13,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import jmetal.core.Variable;
+import jmetal.encodings.variable.Int;
+import jmetal.problems.SASSolution;
 import jmetal.util.Configuration;
+import jmetal.util.JMException;
 
 import org.ssase.objective.Objective;
+import org.ssase.objective.optimization.femosaa.FEMOSAASolution;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.region.Region;
+import org.ssase.util.Repository;
 
 public class HillClimbingRegion extends Region {
 
@@ -56,14 +62,16 @@ public class HillClimbingRegion extends Region {
 			lock.notifyAll();
 		}
 		
-		return pureRandom();//randomHillClimbing();
+		return randomHillClimbing();
 	}
 	
 	private LinkedHashMap<ControlPrimitive, Double> randomHillClimbing(){
 		// Random optimization.
-		long interation = 5;
+		long maxEvaluation = 3000;
 		long count = 0;
 		
+		
+		SASSolution.clearAndStoreForValidationOnly();
 		//double bestValue = 0;
 		//LinkedHashMap<ControlPrimitive, Double> best = new LinkedHashMap<ControlPrimitive, Double>();
 		LinkedHashMap<ControlPrimitive, Double> current = new LinkedHashMap<ControlPrimitive, Double>();
@@ -89,23 +97,53 @@ public class HillClimbingRegion extends Region {
 		//Random random = new Random();
 		
 		do {
-			//System.out.print("Run " + count + "\n");
-			count ++;
+			
+			
 			current.clear();
 			current.putAll(copy);
 			double localBestValue = doWeightSum(current, map)[0];
 			Collections.shuffle(list);
 			
-			for (ControlPrimitive cp : list) {
-			
-				for (double d : cp.getValueVector()) {
+			for (int i = 0; i < list.size(); i++) {
+				ControlPrimitive cp = list.get(i);
+				double[] values = getValueVector(cp, i, list, current);
+				for (double d : values) {
+					//System.out.print("Run " + count + "\n");
+					count ++;
+					
 					double temp = current.get(cp);
 					current.put(cp, d);
-					if (localBestValue < doWeightSum(current, map)[0]) {
-						localBestValue = doWeightSum(current, map)[0];
+					Double[] result = doWeightSum(current, map);
+					if (localBestValue < result[0]) {
+						localBestValue = result[0];
 						//break;
 					} else {
 						current.put(cp, temp);
+					}
+					
+					
+					if(count>maxEvaluation) {
+						
+						try {
+						
+							// Assume equal weight on all objectives
+						   result = doWeightSum(current, map);
+						} catch (RuntimeException re) {
+							//re.printStackTrace();
+							//System.out.print( "Not satisfied\n");
+							continue;
+						}
+						
+						//System.out.print("current: " + result + ", best: " + bestValue + "\n");
+						/*if (result > bestValue || count == 1) {
+							//System.out.print("Find a new best decision!\n");
+							best.clear();
+							best.putAll(current);
+							bestValue = result;
+						}*/
+						
+						results.put(result, copy(current));
+						break;
 					}
 					
 				}
@@ -134,7 +172,7 @@ public class HillClimbingRegion extends Region {
 			
 			results.put(result, copy(current));
 			
-		} while (count<interation);
+		} while (count<=maxEvaluation);
 		
 		
 		/*for (Map.Entry<ControlPrimitive, Double> entry : current.entrySet()) {
@@ -167,13 +205,78 @@ public class HillClimbingRegion extends Region {
 			}
 		}
 		
-		if (satisfied == null) {
+		if (satisfied != null) {
 			System.out.print("We have satisfied solution!\n");
 		} else {
 			System.out.print("We do not have satisfied solution\n");
 		}
 		results.clear();
-		return satisfied == null? unsatisfied : satisfied;
+		
+		LinkedHashMap<ControlPrimitive, Double> finalResult = satisfied == null? unsatisfied : satisfied;
+		
+		
+		List<ControlPrimitive> rList = Repository.getSortedControlPrimitives(objectives.get(0));
+		
+		
+		double[][] optionalVariables = new double[rList.size()][];
+		for (int i = 0; i < optionalVariables.length; i++) {
+			optionalVariables[i] = rList.get(i).getValueVector();
+		}
+		
+		// This is a static method
+		SASSolution.init(optionalVariables);
+		
+        FEMOSAASolution dummy = new FEMOSAASolution();
+        dummy.init(objectives, null);
+		Variable[] variables = new Variable[rList.size()];
+		for (int i = 0; i < rList.size(); i ++) {
+			variables[i] = new Int(0, rList.get(i).getValueVector().length-1);		
+		}
+		
+		dummy.setDecisionVariables(variables);
+		
+		for (int i = 0; i < rList.size(); i ++) {
+			
+			double v = finalResult.get(rList.get(i));
+			double value = 0;
+			
+			for (int j = 0; j < rList.get(i).getValueVector().length; j++) {
+				if(rList.get(i).getValueVector()[j] == v) {
+					value = j;
+					break;					
+				}
+			}
+			
+			try {
+				dummy.getDecisionVariables()[i].setValue(value);
+			} catch (JMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		Region.logDependencyForFinalSolution(dummy);
+		
+		if (!dummy.isSolutionValid()) {
+			try {
+				dummy.correctDependency();
+				
+				for (int i = 0; i < rList.size(); i ++) {
+					finalResult.clear();
+					
+					finalResult.put(rList.get(i), dummy.getDecisionVariables()[i].getValue());
+				}
+				
+				System.out.print("The final result does not satisfy all dependency, thus correct it\n");
+				
+			} catch (JMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+			
+		print(finalResult);
+		return finalResult;
 	}
 	
 	private LinkedHashMap<ControlPrimitive, Double> random(){
@@ -263,7 +366,7 @@ public class HillClimbingRegion extends Region {
 			}
 		}
 		
-		if (satisfied == null) {
+		if (satisfied != null) {
 			System.out.print("We have satisfied solution!\n");
 		} else {
 			System.out.print("We do not have satisfied solution\n");
@@ -388,10 +491,11 @@ public class HillClimbingRegion extends Region {
 	}
 	
 	
-	private Double[] doWeightSum(LinkedHashMap<ControlPrimitive, Double> decision, Map<Objective, Double> map ) throws RuntimeException{
+	private Double[] doWeightSum(LinkedHashMap<ControlPrimitive, Double> decision, Map<Objective, Double> map ) {
 		double result = 0;
 		double satisfied = 1;
 		double[] xValue;
+		double w = 1 / objectives.size();
 		for (Objective obj : objectives) {
 			xValue = new double[ obj.getPrimitivesInput().size()];
 			//System.out.print(obj.getPrimitivesInput().size()+"\n");
@@ -409,7 +513,7 @@ public class HillClimbingRegion extends Region {
 				satisfied = -1;
 			}
 			
-			result = obj.isMin()? result - (obj.predict(xValue)/(1+map.get(obj))) : result + (obj.predict(xValue)/(1+map.get(obj))) ;
+			result = obj.isMin()? result - w * (obj.predict(xValue)/(1+map.get(obj))) : result + w * (obj.predict(xValue)/(1+map.get(obj))) ;
 		}
 		
 		return new Double[]{result, satisfied};
@@ -434,5 +538,42 @@ public class HillClimbingRegion extends Region {
 		}
 		
 		return map;
+	}
+	
+	protected double[] getValueVector(ControlPrimitive cp, int k, List<ControlPrimitive> list, LinkedHashMap<ControlPrimitive, Double> current){
+		
+		if(cp.getName().equals("maxBytesLocalHeap")) {
+			
+			for (int i = 0 ; i < k; i++) {
+				if(list.get(i).getName().equals("cacheMode") && current.get(list.get(i)) == 0.0) {
+					return new double[]{0.0};
+				}
+				
+				if(list.get(i).getName().equals("maxBytesLocalDisk") && current.get(list.get(i)) == 0.0) {
+					double[] d = new double[cp.getValueVector().length - 1];
+					System.arraycopy(cp.getValueVector(), 1, d, 0, d.length);
+					return d;
+				}
+			}
+			
+		}
+		
+	    if(cp.getName().equals("maxBytesLocalDisk")) {
+			
+			for (int i = 0 ; i < k; i++) {
+				if(list.get(i).getName().equals("cacheMode") && current.get(list.get(i)) == 0.0) {
+					return new double[]{0.0};
+				}
+				
+				if(list.get(i).getName().equals("maxBytesLocalHeap") && current.get(list.get(i)) == 0.0) {
+					double[] d = new double[cp.getValueVector().length - 1];
+					System.arraycopy(cp.getValueVector(), 1, d, 0, d.length);
+					return d;
+				}
+			}
+			
+		}
+		
+		return cp.getValueVector();
 	}
 }
