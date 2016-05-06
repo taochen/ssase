@@ -70,7 +70,7 @@
 
 	<feature name="hardware" type="categorical">
 		<feature name="CPU" type="numeric" range="15 300" gap="5" />
-		<feature name="Memory" type="numeric" range="230 1200" gap="10" />
+		<feature name="Memory" type="numeric" range="250 2000" gap="10" />
 	</feature>
 </model>
 </ssase>

@@ -24,7 +24,7 @@ public class ControlBus {
 	
 	public static final boolean isTestMonitoringOnly = false;
 	public static final boolean isTestQoSModelingOnly = false;
-	public static boolean isTriggerQoSModeling = false;
+	public static boolean isTriggerQoSModeling = true;
 	
 	protected static final Logger logger = LoggerFactory
 	.getLogger(ControlBus.class);

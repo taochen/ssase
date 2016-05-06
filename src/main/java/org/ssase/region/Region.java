@@ -93,6 +93,8 @@ public abstract class Region {
 		
 		
 		if(selected == null) throw new RuntimeException("Can not find region for type " + type);
+		
+		Repository.centralizedOptimizationConfiguration(selected);
 	}
 
 	public static Region getNewRegionInstanceByType (OptimizationType type) {

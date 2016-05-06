@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ssase.ControlBus;
 import org.ssase.Interval;
 import org.ssase.Service;
@@ -35,6 +37,9 @@ import org.ssase.util.Triple;
 
 
 public class HistoryLoader {
+	
+	protected static final Logger logger = LoggerFactory
+	.getLogger(HistoryLoader.class);
 	
 	private String[] qosStrings = new String[] {
 		"Response Time",
@@ -93,6 +98,13 @@ public class HistoryLoader {
 		//Ssascaling.main(new String[]{"0"});
 		QualityOfService.leastNumberOfSample = cap;
 		init();
+		
+		if(!ControlBus.isTriggerQoSModeling) {
+			// To avoid waiting.
+			logger.debug("Notice that ControlBus.isTriggerQoSModeling has been set to false!");
+			return;
+		}
+		
 		
 		System.out.print("Start the pre-loading\n");
 		long time = System.currentTimeMillis();

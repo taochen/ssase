@@ -535,9 +535,12 @@ public class Ssascaling {
 			}
 		
 			Executor.init(3);
+			
+			Receiver r = new Receiver();
+			
 			new HistoryLoader().run();
 					
-			//new Receiver().receive();
+			//r.receive();
 			
 			
 	}

@@ -1,9 +1,19 @@
 package org.ssase.region;
 
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
+import jmetal.core.Variable;
+import jmetal.encodings.variable.Int;
+import jmetal.problems.SASSolution;
+import jmetal.util.JMException;
+import jmetal.util.PseudoRandom;
+
 import org.ssase.objective.Objective;
+import org.ssase.objective.optimization.femosaa.FEMOSAASolution;
+import org.ssase.objective.optimization.femosaa.FEMOSAASolutionAdaptor;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.util.Repository;
@@ -14,8 +24,50 @@ import org.ssase.util.Repository;
  *
  */
 public class InitRegion extends Region {
-
+	
+	boolean init = false;
+	
+	
+	
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
+		if (!init) {
+			FEMOSAASolutionAdaptor.getInstance().convertInitialLimits(
+					objectives.get(0));
+			init = true;
+		}
+
+		List<ControlPrimitive> list = Repository
+				.getSortedControlPrimitives(objectives.get(0));
+
+		FEMOSAASolution dummy = new FEMOSAASolution();
+		dummy.init(objectives, null);
+		Variable[] variables = new Variable[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			variables[i] = new Int(0, list.get(i).getValueVector().length - 1);
+		}
+
+		dummy.setDecisionVariables(variables);
+
+		for (int i = 0; i < dummy.getDecisionVariables().length; i++) {
+			try {
+				((SASSolution) dummy).mutateWithDependency(i, true);
+			} catch (JMException e) {
+				e.printStackTrace();
+			}
+		}
+
+		
+		LinkedHashMap<ControlPrimitive, Double> result = FEMOSAASolutionAdaptor.getInstance().convertSolution(dummy,
+				objectives.get(0));
+
+	
+		print(result);
+		
+		return result;
+		
+	}
+
+	public LinkedHashMap<ControlPrimitive, Double> backupOptimize() {
 		
 		Random rand = new Random();
 		LinkedHashMap<ControlPrimitive, Double> map = new LinkedHashMap<ControlPrimitive, Double>();

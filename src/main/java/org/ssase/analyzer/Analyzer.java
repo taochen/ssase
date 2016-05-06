@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ssase.ControlBus;
 import org.ssase.Service;
 import org.ssase.executor.VM;
@@ -20,7 +22,8 @@ import org.ssase.util.SSAScalingThreadPool;
 public class Analyzer {
 
 	
-	
+	protected static final Logger logger = LoggerFactory
+	.getLogger(Analyzer.class);
 	// Ensure it proceeds to Plan phase only if all the models are trained and updated. 
 	private final static AtomicInteger updatedModel = new AtomicInteger(0);
 	
@@ -75,6 +78,7 @@ public class Analyzer {
 		if(!ControlBus.isTriggerQoSModeling) {
 			// To avoid waiting.
 			updatedModel.set(Repository.getQoSSet().size());
+			logger.debug("Notice that ControlBus.isTriggerQoSModeling has been set to false!");
 			return;
 		}
 		

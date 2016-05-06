@@ -11,7 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import org.ssase.ControlBus;
 import org.ssase.Service;
+import org.ssase.executor.Executor;
 import org.ssase.executor.VM;
 import org.ssase.objective.Cost;
 import org.ssase.objective.Objective;
@@ -21,6 +23,7 @@ import org.ssase.observation.listener.ModelListener;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.HardwareControlPrimitive;
 import org.ssase.primitive.Primitive;
+import org.ssase.region.OptimizationType;
 
 /**
  * Only the collections here and the ones in Service class need to be maintained.
@@ -190,5 +193,15 @@ public class Repository {
 	
 	public static FeatureModel getFeatureModel(Objective obj) {
 		return fms.get(obj);
+	}
+	
+	public static void centralizedOptimizationConfiguration(OptimizationType type) {
+		if(OptimizationType.INIT.equals(type)) {
+			ControlBus.isTriggerQoSModeling = false;
+			Executor.isChangeHW = false;
+		} else {
+			ControlBus.isTriggerQoSModeling = true;
+			Executor.isChangeHW = true;
+		}
 	}
 }

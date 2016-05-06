@@ -68,6 +68,17 @@ public class Executor {
 	 * *********************/
 	public final static boolean isEnableLowerBoundUpdate = false;
 	
+	/**********************
+	 * 
+	 * This is an important
+	 * variable the should be changed.
+	 * 
+	 * 
+	 * 
+	 * *********************/
+	
+	public static boolean isChangeHW = true;
+	
 	
 	public final static long memoryThreshold = 50;
 	public final static long CPUThreshold = 3;
@@ -80,7 +91,7 @@ public class Executor {
 	public static void init (int noOfCPU /**This should be >= the number of initial VMs*/){
 		
 		
-		totalMemory = 1800 - 600;
+		totalMemory = 1800 - 600; // 3000 - 1000
 		remainingMemory = totalMemory;
 		
 		int index = 0;
@@ -107,7 +118,7 @@ public class Executor {
 	}
 	
 	public static void init(HardwareControlPrimitive... primitives) {
-		totalMemory = 1800 - 500;
+		totalMemory = 3200 - 1200;
 		remainingMemory = 0;
 		// 3 vcpus
 		remainingCPU = 0;
@@ -175,6 +186,11 @@ public class Executor {
 				 * Hardware CP allocation require special treatments.
 				 */
 				if (entry.getKey().isHardware()) {
+					
+					if(!isChangeHW) {
+						logger.debug("Notice that Executor.isChangeHW has been set to false!");
+						continue;
+					}
 				
 					entry.getKey().outputCurrentVector();
 					// Logging, here we assume that any actions of hardware CP can be taken placed on Dom0.
@@ -327,7 +343,7 @@ public class Executor {
 									
 									add -= allocated;
 								}
-								System.out.print("add3: " + add + "\n");
+								//System.out.print("add3: " + add + "\n");
 								if (add > 0) {
 									//TODO should trigger scale out.
 									logger.debug("Small scale out due to CPU on " + entry.getKey().getAlias() + " \n");

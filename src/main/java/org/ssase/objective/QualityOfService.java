@@ -62,7 +62,8 @@ public class QualityOfService implements Objective, Comparable{
 	
 
 	// Least number of samples received before triggering training.
-	public static int leastNumberOfSample = 50; //340,88
+	// This will be set by historyLoader externally.
+	public static int leastNumberOfSample; //340,88
 	// Some QoS e.g., throughput's constraints need to rely on some EP.
 	private EnvironmentalPrimitive ep;
 	

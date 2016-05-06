@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import jmetal.core.Variable;
 import jmetal.encodings.variable.Int;
@@ -27,7 +28,7 @@ import org.ssase.util.Repository;
 public class BranchAndBoundRegion extends Region {
 
 	
-	protected static final long EXECUTION_TIME = 50000;
+	protected static final long EXECUTION_TIME = 40000;
 	
 	@Override
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
@@ -52,7 +53,7 @@ public class BranchAndBoundRegion extends Region {
 		}
 		
 		
-		 PriorityQueue<Node> q = new PriorityQueue<Node>();
+		LinkedBlockingQueue <Node> q = new LinkedBlockingQueue <Node>();
 		
 		 
 		 for (double d : list.get(0).getValueVector()) {
@@ -60,13 +61,16 @@ public class BranchAndBoundRegion extends Region {
 		 }
 		 
 		 long start = System.currentTimeMillis();
-		 
+		 int count = 0;
 		 do {
 			 
 			 // To avoid a extremly long runtime
 			 if (( System.currentTimeMillis() - start) > EXECUTION_TIME) {
 				 break;
 			 }
+			 
+			 count++;
+			 //System.out.print("Rune " + count + "\n");
 			 
 			 Node node = q.poll();
 			 Double[] v = doWeightSum(list, node.decision, map);

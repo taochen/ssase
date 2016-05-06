@@ -68,6 +68,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	
 
 	// Use this when this control primitive can be switch off.
+	// This can not be true if the value vector can change.
 	protected boolean isFixedZero = false;
 	public ControlPrimitive(
 			String name, 

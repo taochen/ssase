@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.ssase.Service;
+import org.ssase.executor.Executor;
 import org.ssase.network.Receiver;
 import org.ssase.objective.Objective;
 import org.ssase.objective.optimization.femosaa.variability.fm.FeatureModel;
@@ -54,7 +55,7 @@ public class FEMOSAATester {
 //		}
 
 		Ssascaling.activate();
-		new Receiver();
+		
 //		
 //		if (objectives.size() == 0) {
 //			if (!f.exists())
@@ -129,6 +130,6 @@ public class FEMOSAATester {
 		}
 		
 		
-		Planner.optimize(Repository.getAllObjectives().iterator().next(), UUID.randomUUID().toString());
+		Executor.execute(Planner.optimize(Repository.getAllObjectives().iterator().next(), UUID.randomUUID().toString()));
 	}
 }
