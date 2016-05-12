@@ -325,6 +325,22 @@ public class InBranchDependency implements Dependency {
 		return d;
 	}
 	
+	public boolean isMain(Branch b) {
+		
+		if(mergedFrom != null) {
+			for(Dependency d : mergedFrom) {
+				if(((CrossDependency)d).isMain(b)) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		
+		return main.equals(b);
+	}
+	
 	private Integer[] getIntersection(Integer[] a, Integer[] b) {
 		
 		if(a == null) return b;
@@ -347,6 +363,10 @@ public class InBranchDependency implements Dependency {
 		
 		return inter.toArray(new Integer[inter.size()]);
 	}
+	public boolean isRequired(){
+		return "required".equals(type);
+	}
+	
 	
 	@Override
 	public void debug() {
@@ -394,10 +414,12 @@ public class InBranchDependency implements Dependency {
 					logger.debug("Translation: " + ((CrossDependency)d).translation);
 					logger.debug("mainAltValue: " + ((CrossDependency)d).mainAltValue);
 					logger.debug("dependentAltValue: " + ((CrossDependency)d).dependentAltValue);
-					logger.debug("mainMin: " + ((CrossDependency)d).mainMin);
-					logger.debug("mainMax: " + ((CrossDependency)d).mainMax);
-					logger.debug("dependentMin: " + ((CrossDependency)d).dependentMin);
-					logger.debug("dependentMax: " + ((CrossDependency)d).dependentMax);
+					for (double dd : ((CrossDependency)d).mainValues) {
+						logger.debug("main value: " + dd);
+					}
+					for (double dd : ((CrossDependency)d).dependentValues) {
+						logger.debug("dependent value: " + dd);
+					}
 					}
 				
 			

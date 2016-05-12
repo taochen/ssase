@@ -1,5 +1,6 @@
 package org.ssase.objective.optimization.bb;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,11 +18,17 @@ import org.ssase.objective.optimization.femosaa.FEMOSAASolution;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
+import org.ssase.primitive.SoftwareControlPrimitive;
 import org.ssase.region.Region;
 import org.ssase.util.Repository;
 
 /**
  * This is for the integer non-/linear programming approach.
+ * 
+ * This is actually the same as 0/1 representation, as the branch is create based on dimension * values.
+ * 
+ * 
+ * 
  * @author tao
  *
  */
@@ -32,8 +39,13 @@ public class BranchAndBoundRegion extends Region {
 	
 	@Override
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
-		List<ControlPrimitive> list = Repository.getSortedControlPrimitives(objectives.get(0));
+		List<ControlPrimitive> tempList = Repository.getSortedControlPrimitives(objectives.get(0));
 		
+		List<ControlPrimitive> list = new ArrayList<ControlPrimitive>();
+		list.addAll(tempList);
+	
+		addRemoveFeatureFor01Representation(list);
+		sortForDependency(list);
 		
 		LinkedHashMap<ControlPrimitive, Double> current = new LinkedHashMap<ControlPrimitive, Double>();
 		Map<Objective, Double> map = getBasis();
@@ -49,6 +61,13 @@ public class BranchAndBoundRegion extends Region {
 					current.put((ControlPrimitive)p, (double)p.getProvision());
 					currentDecision[list.indexOf((ControlPrimitive)p)] = (double)p.getProvision();
 				}
+			}
+		}
+		
+		for (ControlPrimitive cp : list) {
+			if(!current.containsKey(cp)) {
+				current.put(cp, (double)cp.getProvision());
+				currentDecision[list.indexOf(cp)] = cp.getProvision();
 			}
 		}
 		
@@ -90,9 +109,17 @@ public class BranchAndBoundRegion extends Region {
 		 
 		 q.clear();
 		 
-		 for (int i = 0; i < best.decision.length; i++) {
-			 current.put(list.get(i), best.decision[i]);
+		 for (int i = 0; i < best.decision.length; i++) {		
+			    current.put(list.get(i), best.decision[i]);			 
 		 }
+		 
+			for (ControlPrimitive cp : list) {
+				if (!tempList.contains(cp)) {
+					current.remove(cp);
+				}
+			}
+		
+			list = tempList;
 		 
 		 // Starting the dependency check and log
 		 
@@ -209,9 +236,35 @@ public class BranchAndBoundRegion extends Region {
 	
 	protected double[] getValueVector(Node node, List<ControlPrimitive> list){
 		
-		if(list.get(node.index).getName().equals("maxBytesLocalHeap")) {
-			
+		if(list.get(node.index).getName().equals("cacheMode")) {
+			double[] r = null; 
 			for (int i = 0 ; i < node.index; i++) {
+				
+
+				if(list.get(i).getName().equals("cache") && node.decision[i] == 0.0) {
+					return new double[]{0.0};
+				}
+				
+				if(list.get(i).getName().equals("Compression") && node.decision[i] == 1.0) {
+					if(r != null) {
+						return new double[]{0.0}; 
+					}
+					r = new double[]{0.0, 2.0};
+				}
+				
+			
+				
+				if(r !=null) {
+					return r;
+				}
+			}
+		}
+		
+		if(list.get(node.index).getName().equals("maxBytesLocalHeap")) {
+			double[] r = null; 
+			for (int i = 0 ; i < node.index; i++) {
+				
+				
 				if(list.get(i).getName().equals("cacheMode") && node.decision[i] == 0.0) {
 					return new double[]{0.0};
 				}
@@ -219,14 +272,19 @@ public class BranchAndBoundRegion extends Region {
 				if(list.get(i).getName().equals("maxBytesLocalDisk") && node.decision[i]  == 0.0) {
 					double[] d = new double[list.get(node.index).getValueVector().length - 1];
 					System.arraycopy(list.get(node.index).getValueVector(), 1, d, 0, d.length);
-					return d;
+					r = d;
 				}
 			}
+			
+			if(r != null) {
+				return r;
+			}
+			
 			
 		}
 		
 	    if(list.get(node.index).getName().equals("maxBytesLocalDisk")) {
-			
+	    	double[] r = null; 
 			for (int i = 0 ; i < node.index; i++) {
 				if(list.get(i).getName().equals("cacheMode") && node.decision[i] == 0.0) {
 					return new double[]{0.0};
@@ -235,13 +293,95 @@ public class BranchAndBoundRegion extends Region {
 				if(list.get(i).getName().equals("maxBytesLocalHeap") && node.decision[i] == 0.0) {
 					double[] d = new double[list.get(node.index).getValueVector().length - 1];
 					System.arraycopy(list.get(node.index).getValueVector(), 1, d, 0, d.length);
-					return d;
+					r = d;
 				}
+			}
+			
+			if(r != null) {
+				return r;
 			}
 			
 		}
 		
 		return list.get(node.index).getValueVector();
+	}
+	
+	private void sortForDependency(List<ControlPrimitive> list) {
+		ControlPrimitive compression = null;
+		ControlPrimitive cache = null;
+		ControlPrimitive cacheMode = null;
+		ControlPrimitive minSpareThread = null;
+		ControlPrimitive maxThread = null;		
+		ControlPrimitive memory = null;
+		for (ControlPrimitive cp : list) {
+			if(cp.getName().equals("Compression")) {
+				compression = cp;
+			}
+			if(cp.getName().equals("cache")) {
+				cache = cp;
+			}
+			if(cp.getName().equals("cacheMode")) {
+				cacheMode = cp;
+			}
+			if(cp.getName().equals("minSpareThreads")) {
+				minSpareThread = cp;
+			}
+			if(cp.getName().equals("maxThread")) {
+				maxThread = cp;
+			}
+			if(cp.getName().equals("Memory")) {
+				memory = cp;
+			}
+		}
+		
+		list.remove(compression);
+		list.remove(cache);
+		list.remove(cacheMode);
+		list.remove(minSpareThread);
+		list.remove(maxThread);
+		list.remove(memory);
+		
+		
+		list.add(0, compression);
+		list.add(1, cache);
+		list.add(2, cacheMode);
+		list.add(3, minSpareThread);
+		list.add(4, maxThread);
+		list.add(5, memory);
+	}
+	
+	private void addRemoveFeatureFor01Representation(List<ControlPrimitive> list) {
+		SoftwareControlPrimitive c = null;
+		
+		c = new SoftwareControlPrimitive("cache", "sas", false, null, null, 1, 1, 1, 1, 1, 1, 1, true);
+		c.setValueVector(new double[]{0,1});
+		c.setProvision(1);
+		list.add(c);
+		
+		c = new SoftwareControlPrimitive("cache_config", "sas", false, null, null, 1, 1, 1, 1, 1, 1, 1, true);
+		c.setValueVector(new double[]{1});
+		c.setProvision(1);
+		list.add(c);
+		
+		c = new SoftwareControlPrimitive("thread_pool", "sas", false, null, null,1, 1, 1, 1, 1, 1, 1, true);
+		c.setValueVector(new double[]{1});
+		c.setProvision(1);
+		list.add(c);
+		
+		c = new SoftwareControlPrimitive("connection_pool", "sas", false, null, null, 1, 1, 1, 1, 1, 1, 1, true);
+		c.setValueVector(new double[]{1});
+		c.setProvision(1);
+		list.add(c);
+		
+		c = new SoftwareControlPrimitive("database", "sas", false, null, null, 1, 1, 1, 1, 1, 1, 1, true);
+		c.setValueVector(new double[]{1});
+		c.setProvision(1);
+		list.add(c);
+		
+		c = new SoftwareControlPrimitive("database", "sas", false, null, null, 1, 1, 1, 1, 1, 1, 1, true);
+		c.setValueVector(new double[]{1});
+		c.setProvision(1);
+		list.add(c);
 	}
 	
 	

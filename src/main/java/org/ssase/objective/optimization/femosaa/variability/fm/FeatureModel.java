@@ -101,6 +101,7 @@ public class FeatureModel {
 				model.configureDependencyChain(map);
 				
 			
+				//model.checkClosedLoop();
 				
 				// Use 0/1 translation
 				if(Region.selected == OptimizationType.FEMOSAA01) {
@@ -110,6 +111,7 @@ public class FeatureModel {
 					
 					
 					normalParse(model, model.root, model.zeroAndOneTupleMap, model.zeroAndOneOptionalValueList);
+					//parseGeneFor01(model, model.root, model.zeroAndOneTupleMap, model.zeroAndOneOptionalValueList);
 				} 
 				
 				model.release();
@@ -123,6 +125,32 @@ public class FeatureModel {
 		}
 
 	}
+	
+	 private static void parseGeneFor01(FeatureModel model, Branch branch, Map<ControlPrimitive, Tuple<Integer, Integer>> tupleMap, List<Integer[]> list){
+			
+		
+				Tuple<Integer, Integer> tuple = new Tuple<Integer, Integer>(list.size(), list.size() + branch.getRange().length - 1);
+				
+				for(int i = 0; i < branch.getRange().length; i++) {
+					list.add(new Integer[]{0,1});
+				}
+				
+				ControlPrimitive p = null;
+				for (ControlPrimitive sub : model.list) {
+					if(sub.getName().equals(branch.getName())){
+						p = sub;
+						break;
+					}
+				}
+				
+				if(p == null) {
+					throw new RuntimeException(branch.getName() + " has no CP");
+				}
+				
+				tupleMap.put(p, tuple);
+		
+			
+		}
 	
    private static void normalParse(FeatureModel model, Branch branch, Map<ControlPrimitive, Tuple<Integer, Integer>> tupleMap, List<Integer[]> list){
 		
@@ -170,7 +198,7 @@ public class FeatureModel {
 				
 				tupleMap.put(p, tuple);
 			} else {
-				// Only have switch on/off
+				// Only have switch on/off, including the mandatory ones
 				Tuple<Integer, Integer> tuple = new Tuple<Integer, Integer>(list.size(), list.size() + 1);
 				
 				for(int i = 0; i < 1; i++) {
@@ -225,7 +253,9 @@ public class FeatureModel {
 						.getNamedItem("optional").getNodeValue(), node
 						.getAttributes().getNamedItem("type").getNodeValue(),
 						min, max, Double.parseDouble(node.getAttributes()
-								.getNamedItem("gap").getNodeValue()));
+								.getNamedItem("gap").getNodeValue()), node.getAttributes().getNamedItem(
+								"switchoff") == null ? "false" : node.getAttributes()
+								.getNamedItem("switchoff").getNodeValue());
 
 			} else {
 
@@ -303,16 +333,56 @@ public class FeatureModel {
 				if(insideNodes.item(j).getAttributes().getNamedItem("main_range") != null) {
 					String range = insideNodes.item(j).getAttributes().getNamedItem("main_range").getNodeValue();
 					
-					d.setMainRange(Double.parseDouble(range.split(" ")[0]), 
-							Double.parseDouble(range.split(" ")[1]));
+					List<Double> list = new ArrayList<Double>();
+					String[] individual = range.split(" ");
+					for( String s : individual) {
+						if(s.contains("-")) {
+							String gap = insideNodes.item(j).getAttributes().getNamedItem("main_gap").getNodeValue();
+							double[] r = getRange(Double.parseDouble(s.split("-")[0]), Double.parseDouble(s.split("-")[1]), 
+									Double.parseDouble(gap));
+							for (double dou : r) {
+								list.add(dou);
+							}
+							
+							
+						} else {
+							list.add(Double.parseDouble(s));
+						}
+						
+						
+					}
+					
+					Collections.sort(list);
+					
+					d.setMainRange(list);
 				}
 				
 				
 				if(insideNodes.item(j).getAttributes().getNamedItem("dependent_range") != null) {
 		            String range = insideNodes.item(j).getAttributes().getNamedItem("dependent_range").getNodeValue();
 					
-					d.setDependentRange(Double.parseDouble(range.split(" ")[0]), 
-							Double.parseDouble(range.split(" ")[1]));
+		        	List<Double> list = new ArrayList<Double>();
+					String[] individual = range.split(" ");
+					for( String s : individual) {
+						if(s.contains("-")) {
+							String gap = insideNodes.item(j).getAttributes().getNamedItem("dependent_gap").getNodeValue();
+							double[] r = getRange(Double.parseDouble(s.split("-")[0]), Double.parseDouble(s.split("-")[1]), 
+									Double.parseDouble(gap));
+							for (double dou : r) {
+								list.add(dou);
+							}
+							
+							
+						} else {
+							list.add(Double.parseDouble(s));
+						}
+						
+						
+					}
+					
+					Collections.sort(list);
+					
+					d.setDependentRange(list);
 				}
 				
 	            if(insideNodes.item(j).getAttributes().getNamedItem("translate") != null) {
@@ -468,6 +538,10 @@ public class FeatureModel {
 				 Map<Branch, Integer[][]> map = list.get(i);
 				 VarEntity[] ve = null;
 				 if(i == 0) {
+					 
+					 if(map.size() == 0) {
+						 continue;
+					 }
 					
 					 if(logger.isDebugEnabled()) {
 						 String r = "Do intersection for " + b.getName() + " in the following order: ";
@@ -479,11 +553,18 @@ public class FeatureModel {
 						 logger.debug(r);
 					 }
 					 
+					 List<Map.Entry<Branch, Integer[][]>> itr = new ArrayList<Map.Entry<Branch, Integer[][]>>();
+					 for (Map.Entry<Branch, Integer[][]> e :  map.entrySet()) {
+						 itr.add(e);
+					 }
 					 
-					 Iterator<Map.Entry<Branch, Integer[][]>> itr = map.entrySet().iterator();
-					 ve = setIntersectionEntity(tempMap, b, itr.next(), itr,
-								null, -1);
+					 ve = setIntersectionEntity(tempMap, b, itr.get(0), itr,
+								null, 0);
 				 } else {
+					 
+					 if(map.size() == 0) {
+						 continue;
+					 }
 					 
 					 if(logger.isDebugEnabled()) {
 						 String r = "Do union for " + b.getName() + " in the following order: ";
@@ -495,9 +576,13 @@ public class FeatureModel {
 						 logger.debug(r);
 					 }
 					 
-					 Iterator<Map.Entry<Branch, Integer[][]>> itr = map.entrySet().iterator();
-					 ve = setUnionEntity(tempMap, b, itr.next(), itr,
-								null, -1);
+					 List<Map.Entry<Branch, Integer[][]>> itr = new ArrayList<Map.Entry<Branch, Integer[][]>>();
+					 for (Map.Entry<Branch, Integer[][]> e :  map.entrySet()) {
+						 itr.add(e);
+					 }
+					 
+					 ve = setUnionEntity(tempMap, b, itr.get(0), itr,
+								null, 0);
 				 }
 				 varList.add(ve);
 				 tempMap.clear();
@@ -615,6 +700,36 @@ public class FeatureModel {
 		intersect(key, veA, veB, values, layerIndexB);
 	}
 	
+	public static double[] getRange (double minProvision, double maxProvision, double a){
+		int max = (int)Math.ceil(maxProvision);
+		int min = (int)Math.ceil(minProvision);
+		
+		
+		
+		int length = (int) (1 + (max - min)/a);
+//		if (length % a != 0) {
+//			length += 1;
+//		}
+		double[] valueVector = valueVector = new double[length]; 
+			double value = min - a;
+			for (int i = 0; i < valueVector.length; i++) {
+				if (value + a >= max) {
+					value = max;
+				} else {
+					value = value + a;
+				}
+				
+				
+				valueVector[i] = value;
+			}
+			
+		
+		
+		
+		
+		
+		return valueVector;
+	}
 	
 	private void intersect(Branch key, VarEntity[] veA, VarEntity[] veB, Map<Branch, Integer> values, List<Integer> layerIndexB) {
 		for (int i = 0; i < veA.length; i++) {
@@ -649,6 +764,14 @@ public class FeatureModel {
 				e.extend(newVe);
 			} else {
 				insert(e.getNext(), indexToAdd);
+			}
+		}
+	}
+	
+	public void checkClosedLoop(){
+		for(Branch b : chromosome) {
+			if(b.isHasClosedLoopWithNumericDependency(b)) {
+				logger.warn(b.getName() + " is in a closed loop which involve numeric dependency, please double check and try to break the loop otherwise it might cause deadlock in the mutation operation");
 			}
 		}
 	}
@@ -701,22 +824,22 @@ public class FeatureModel {
 	 * @return
 	 */
 	private VarEntity[] setIntersectionEntity(Map<Branch, List<List<VarEntity>>> tempMap, Branch branch, Map.Entry<Branch, Integer[][]> entry,
-			Iterator<Map.Entry<Branch, Integer[][]>> itr, Integer[] values, int layer) {
+			List<Map.Entry<Branch, Integer[][]>> itr, Integer[] values, int layer) {
 		layer++;
 		VarEntity[] ve = new VarEntity[entry.getValue().length];
 		List<VarEntity> l = new ArrayList<VarEntity>();
 
-		if (!tempMap.containsKey(branch)) {
-			tempMap.put(branch, new ArrayList<List<VarEntity>>());
-				
-		}
+//		if (!tempMap.containsKey(branch)) {
+//			tempMap.put(branch, new ArrayList<List<VarEntity>>());
+//				
+//		}
+//		
+//		if(layer == tempMap.get(branch).size()) {
+//			tempMap.get(branch).add(layer, l);	
+//		}
 		
-		if(layer == tempMap.get(branch).size()) {
-			tempMap.get(branch).add(layer, l);	
-		}
-		
-		if (itr.hasNext()) {
-			Map.Entry<Branch, Integer[][]> next = itr.next();
+		if (layer < itr.size()) {
+			Map.Entry<Branch, Integer[][]> next = itr.get(layer);
 			for (int i = 0; i < entry.getValue().length; i++) {
 
 				VarEntity[] v = setIntersectionEntity(tempMap, branch, next, itr,
@@ -755,32 +878,32 @@ public class FeatureModel {
 		}
 
 		// This should not occur.
-		if(!tempMap.get(branch).get(layer).equals(l)) {
-			tempMap.get(branch).get(layer).addAll(l);
-		}
-		
+//		if(!tempMap.get(branch).get(layer).equals(l)) {
+//			tempMap.get(branch).get(layer).addAll(l);
+//		}
+//		
 		
 		return ve;
 	}
 	
 	
 	private VarEntity[] setUnionEntity(Map<Branch, List<List<VarEntity>>> tempMap, Branch branch, Map.Entry<Branch, Integer[][]> entry,
-			Iterator<Map.Entry<Branch, Integer[][]>> itr, Integer[] values, int layer) {
+			List<Map.Entry<Branch, Integer[][]>> itr, Integer[] values, int layer) {
 		layer++;
 		VarEntity[] ve = new VarEntity[entry.getValue().length];
 		List<VarEntity> l = new ArrayList<VarEntity>();
 
-		if (!tempMap.containsKey(branch)) {
-			tempMap.put(branch, new ArrayList<List<VarEntity>>());
-				
-		}
+//		if (!tempMap.containsKey(branch)) {
+//			tempMap.put(branch, new ArrayList<List<VarEntity>>());
+//				
+//		}
+//		
+//		if(layer == tempMap.get(branch).size()) {
+//			tempMap.get(branch).add(layer, l);	
+//		}
 		
-		if(layer == tempMap.get(branch).size()) {
-			tempMap.get(branch).add(layer, l);	
-		}
-		
-		if (itr.hasNext()) {
-			Map.Entry<Branch, Integer[][]> next = itr.next();
+		if (layer < itr.size()) {
+			Map.Entry<Branch, Integer[][]> next = itr.get(layer);
 			for (int i = 0; i < entry.getValue().length; i++) {
 
 				VarEntity[] v = setUnionEntity(tempMap, branch, next, itr,
@@ -818,10 +941,10 @@ public class FeatureModel {
 
 		}
 
-		// This should not occur.
-		if(!tempMap.get(branch).get(layer).equals(l)) {
-			tempMap.get(branch).get(layer).addAll(l);
-		}
+//		// This should not occur.
+//		if(!tempMap.get(branch).get(layer).equals(l)) {
+//			tempMap.get(branch).get(layer).addAll(l);
+//		}
 		
 		
 		return ve;
@@ -848,15 +971,23 @@ public class FeatureModel {
 		// Resolve extreme null cases of at-least-one-exist
 		if(inter.size() == 0) { 
 			String name = "";
-			
+			boolean isHasNumeric = false;
 			if(added != null) {
 				name = added.getName() + " ";
 			} else {
 				List<Integer> l = new ArrayList<Integer>();
+				
 				for (Integer i : entities[0].getMainVariablesByDependentVariable(l)) {
+					if(key.isMainOfNumericDependency(chromosome.get(i))) {
+						isHasNumeric = true;
+					}
 					name = name + chromosome.get(i).getName() + " ";
 				}
 			}
+			
+//			if(isHasNumeric) {
+//				throw new RuntimeException("When perform intersection for " + key.getName() + ", adding " + name + "causing empty set. This is possibly a design error, as intersection leads to empty set while the dependency chain involve numeric dependency, please double check and revist if necessary");	
+//			}
 			
 			if((a.length == 1 && a[0] == 0 && key.isCanSwitchOff()) ||
 					(b.length == 1 && b[0] == 0 && key.isCanSwitchOff())) {

@@ -1,7 +1,5 @@
 package org.ssase.primitive;
 
-import java.util.Arrays;
-
 import org.ssase.actuator.Actuator;
 import org.ssase.executor.Executor;
 import org.ssase.objective.Objective;
@@ -425,6 +423,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	public void outputCurrentVector(){
 		System.out.print(this.getAlias() + " Min: " + valueVector[0] + ", Max: " + valueVector[valueVector.length - 1] +"\n");
 	}
+	
 	
 	@SuppressWarnings("unused")
 	protected void triggerMinProvisionUpdate (double value){

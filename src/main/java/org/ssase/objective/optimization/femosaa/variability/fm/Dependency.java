@@ -10,4 +10,6 @@ public interface Dependency {
 	public Dependency copy(Branch main, Branch dependent);
 	
 	public void debug();
+	
+	public boolean isRequired();
 }

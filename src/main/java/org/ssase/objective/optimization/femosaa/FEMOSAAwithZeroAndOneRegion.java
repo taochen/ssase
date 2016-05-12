@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import jmetal.core.Problem;
 import jmetal.core.Solution;
@@ -112,58 +113,65 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 				SolutionSet pareto_front = findParetoFront(factory, vars,
 						numberOfObjectives_, numberOfConstraints_);
 				
-				logDependencyAfterEvolution(getAllFoundSolutions());
+				//logDependencyAfterEvolution(pareto_front);
 				
 				SolutionSet result = correctDependencyAfterEvolution(pareto_front);
 				if(result.size() == 0) {
-					pareto_front = filterRequirementsAfterEvolution(pareto_front);
-					SASSolution s = (SASSolution)findSoleSolutionAfterEvolution(pareto_front);
+					
+					FEMOSAASolutionInstantiator solInt = new FEMOSAASolutionInstantiator(objectives);
 					
 					List<ControlPrimitive> list = Repository.getSortedControlPrimitives(objectives.get(0));
-					
-	                FEMOSAASolution dummy = new FEMOSAASolution();
-	                dummy.init(objectives, null);
-					Variable[] variables = new Variable[list.size()];
-					for (int i = 0; i < list.size(); i ++) {
-						variables[i] = new Int(0, list.get(i).getValueVector().length-1);		
-					}
-					
-					dummy.setDecisionVariables(variables);
-					
-					boolean isValid = true;
-					for (int i = 0; i < list.size(); i ++) {
-						int index = ((ZeroAndOneFEMOSAASolution)s).translateToIndexWhenDepdencyInjection(i, true);
-						int sub = ((ZeroAndOneFEMOSAASolution)s).translateToIndexWhenDepdencyInjection(i, false);
-						
-						if(sub == -1) {
-							isValid = false;
+					SolutionSet set = new SolutionSet(pareto_front.size());
+					for (int k = 0; k < pareto_front.size(); k++) {
+						Solution s = pareto_front.get(k);
+		                FEMOSAASolution dummy = (FEMOSAASolution)solInt.getSolution(2);
+		               
+						Variable[] variables = new Variable[list.size()];
+						for (int i = 0; i < list.size(); i ++) {
+							variables[i] = new Int(0, list.get(i).getValueVector().length-1);		
 						}
 						
-						try {
-							dummy.getDecisionVariables()[i].setValue(index);
-						} catch (JMException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+					
+						
+					
+						dummy.setDecisionVariables(variables);
+						
+						//boolean isValid = true;
+						for (int i = 0; i < list.size(); i ++) {
+							int index = ((ZeroAndOneFEMOSAASolution)s).translateToIndexWhenDepdencyInjection(i, true);
+							//int sub = ((ZeroAndOneFEMOSAASolution)s).translateToIndexWhenDepdencyInjection(i, false);
+							
+//							if(sub == -1) {
+//								isValid = false;
+//							}
+							
+							try {
+								dummy.getDecisionVariables()[i].setValue(index);
+							} catch (JMException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
+						
+					
+						dummy.correctDependency();
+						 double[] f = dummy.getObjectiveValuesFromIndexValue();
+							
+							for (int l = 0; l < f.length ; l ++) {
+								dummy.setObjective(l, f[l]);
+							}
+						set.add(dummy);
 					}
 					
+					pareto_front = set;
 					
-					if(isValid && ((SASSolution)s).isSolutionValid()) {
-					    org.ssase.util.Logger.logDependencyEnforcementFinal(null, String.valueOf(1));
-					} else {
-						org.ssase.util.Logger.logDependencyEnforcementFinal(null, String.valueOf(0));
-					}
-
-				
-					dummy.correctDependency();
-					return dummy;
 				} else {
 					pareto_front = result;
 				}
 				
 				pareto_front = filterRequirementsAfterEvolution(pareto_front);
-
-				
+				pareto_front = doRanking(pareto_front);
+				Region.printParetoFront(pareto_front, objectives);
 				return findSoleSolutionAfterEvolution(pareto_front);
 			}
 
@@ -174,26 +182,26 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 				
 				List<Solution> list = new ArrayList<Solution>();
 				
-				logger.debug("Pareto front size: " + pareto_front.size());
+				logger.debug("Decisions for checking requirements: " + pareto_front.size());
 				while(itr.hasNext()) {
 					Solution s = itr.next();
 					
-					if (logger.isDebugEnabled() && s instanceof FEMOSAASolution) {
-
-						List<ControlPrimitive> cps = Repository
-								.getSortedControlPrimitives(objectives.get(0));
-						String r = "";
-						for (int i = 0; i < cps.size(); i++) {
-							
-								r = r
-										+ cps.get(i).getName()
-										+ "="
-										+ ((FEMOSAASolution)s).getVariableValueFromIndex(i)
-										+ " ";
-							
-						}
-						logger.debug("Decision: " + r);
-					}
+//					if (logger.isDebugEnabled() && s instanceof FEMOSAASolution) {
+//
+//						List<ControlPrimitive> cps = Repository
+//								.getSortedControlPrimitives(objectives.get(0));
+//						String r = "";
+//						for (int i = 0; i < cps.size(); i++) {
+//							
+//								r = r
+//										+ cps.get(i).getName()
+//										+ "="
+//										+ ((FEMOSAASolution)s).getVariableValueFromIndex(i)
+//										+ " ";
+//							
+//						}
+//						logger.debug("Decision: " + r);
+//					}
 					boolean isAdd = true;
 					for (int i = 0; i < s.numberOfObjectives(); i++) {
 						if(objectives.get(i).isMin()? objectives.get(i).getConstraint() < s.getObjective(i): 
@@ -268,17 +276,18 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 				}
 				
 				
-				logger.debug("Non-dominated solutions, before dependency check size: " + total);
-				logger.debug("Non-dominated solutions, after dependency check size: " + count);
+				logger.debug("before checking dependency size: " + total);
+				logger.debug("after checking dependency size: " + count);
 				
-				//double score = count / total;
-				//org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
+				double score = count / total;
+				org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
 
 				if(finalList.size() == 0) {
-					logger.debug("No decision that satisfies all dependency, thus return all decisions found");
+					logger.debug("No decision that satisfies all dependency, thus use all for requirements check");
 				    // We do not return here as we need to give the other class an indication
 					// about if there are decisions that satisfy all dependency, hence that they
 					// can mutate the final decision to a valid one.
+					return new SolutionSet(0);
 				}
 				
 				SolutionSet set = new SolutionSet(finalList.size());
@@ -464,9 +473,10 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 				
 				
 				if(isEnsureValidReturn && result == -1) {
-					// return the first one as protented that it is selected.
+					// return a random one as protented that it is selected.
 					// this could still violate dependency if the first one is not switch off.
-					return 0;
+					
+					return new Random().nextInt(tuple.getVal2() - tuple.getVal1() + 1);
 				} else {
 					// This might still be -1 if no feature has been selected.
 					return result;

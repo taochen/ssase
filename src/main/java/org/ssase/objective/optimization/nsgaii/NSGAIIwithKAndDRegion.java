@@ -48,6 +48,9 @@ public class NSGAIIwithKAndDRegion extends NSGAIIRegion {
 				
 				return individual;
 			}
+			protected void printParetoFront(SolutionSet pareto_front) {
+				Region.printParetoFront(pareto_front, objectives);
+		    }
 
 		};
 	}

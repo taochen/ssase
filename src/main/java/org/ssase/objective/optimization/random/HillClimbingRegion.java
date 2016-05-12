@@ -255,7 +255,7 @@ public class HillClimbingRegion extends Region {
 			}
 		}
 		
-		Region.logDependencyForFinalSolution(dummy);
+		//Region.logDependencyForFinalSolution(dummy);
 		
 		if (!dummy.isSolutionValid()) {
 			try {

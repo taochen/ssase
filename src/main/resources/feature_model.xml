@@ -19,7 +19,12 @@
 				<feature name="gzip" type="categorical">
 					<cross-dependency type="excluded" main="Compression" />
 				</feature>
-				<feature name="ungzip" type="categorical" />
+				<feature name="ungzip" type="categorical" >
+					<cross-dependency type="required" operator="range" main="maxBytesLocalHeap"
+						main_range="0 13631488-26214400" main_gap="1048576" />
+					<cross-dependency type="required" operator="range" main="maxBytesLocalDisk"
+						main_range="0 13631488-26214400" main_gap="1048576" />
+				</feature>
 			</alt>
 		</feature>
 
@@ -27,15 +32,14 @@
 		<!--<cross-dependency type="required" main="cacheMode" />  -->	
 			<or>
 				<feature name="maxBytesLocalHeap" type="numeric" range="5242880 26214400"
-					gap="1048576">
-					<cross-dependency type="required" operator="range" main="ungzip"
-						dependent_range="13107200 26214400" />
+					gap="1048576" switchoff="true">
+<!-- 					<cross-dependency type="required" operator="range" main="gzip" -->
+<!-- 						dependent_range="0 5242880-13107200" dependent_gap="1048576" /> -->
+
 
 				</feature>
 				<feature name="maxBytesLocalDisk" type="numeric" range="5242880 26214400"
-					gap="1048576">
-					<cross-dependency type="required" operator="range"  main="ungzip"
-						dependent_range="13107200 26214400" />
+					gap="1048576" switchoff="true">
 
 				</feature>
 

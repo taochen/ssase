@@ -21,6 +21,9 @@ public class FEMOSAAwithDRegion extends FEMOSAARegion {
 				//Region.correctDependencyAfterEvolution(pareto_front);
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
 			}
+			protected void printParetoFront(SolutionSet pareto_front) {
+				Region.printParetoFront(pareto_front, objectives);
+		    }
 		};
 	}
 }

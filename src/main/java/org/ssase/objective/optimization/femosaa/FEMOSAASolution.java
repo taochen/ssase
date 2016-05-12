@@ -43,6 +43,10 @@ public class FEMOSAASolution extends SASSolution {
 		super(solution);
 	}
 
+	public FEMOSAASolution(int numberOfObjectives) {
+		super(numberOfObjectives);
+	}
+	
 	public FEMOSAASolution() {
 		super();
 	}

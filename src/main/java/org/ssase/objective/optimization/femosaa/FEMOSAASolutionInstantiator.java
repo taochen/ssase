@@ -88,5 +88,12 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 		return sol;
 	}
 
+	@Override
+	public Solution getSolution(int objective_number) {
+		FEMOSAASolution sol = new FEMOSAASolution(objective_number);
+		sol.init(objectives, map);
+		return sol;
+	}
+
 
 }

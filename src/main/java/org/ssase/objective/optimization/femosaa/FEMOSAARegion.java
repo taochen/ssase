@@ -91,10 +91,14 @@ public class FEMOSAARegion extends Region {
 				//Region.correctDependencyAfterEvolution(pareto_front);
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
 			}
-//			protected SolutionSet correctDependencyAfterEvolution(
-//					SolutionSet pareto_front) {
-//				return Region.correctDependencyAfterEvolution(pareto_front);
-//			}
+			protected SolutionSet correctDependencyAfterEvolution(
+					SolutionSet pareto_front) {
+				return Region.correctDependencyAfterEvolution(pareto_front);
+			}
+			protected void printParetoFront(SolutionSet pareto_front) {
+				Region.printParetoFront(pareto_front, objectives);
+		    }
+			
 //			protected void logDependencyAfterEvolution(SolutionSet pareto_front_without_ranking){
 //				Region.logDependencyAfterEvolution(pareto_front_without_ranking);
 //			}

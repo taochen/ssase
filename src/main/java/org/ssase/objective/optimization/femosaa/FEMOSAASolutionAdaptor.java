@@ -51,7 +51,7 @@ public class FEMOSAASolutionAdaptor {
 			result.put(list.get(i), sol.getVariableValueFromIndex(i));
 		}
 			
-		Region.logDependencyForFinalSolution(sol);
+		//Region.logDependencyForFinalSolution(sol);
 		
 		return result;
 	}

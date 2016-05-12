@@ -188,8 +188,10 @@ public class Branch {
 			}
 			
 		}
-		
-		
+//		if(name.equals("cacheMode")) {
+//			System.currentTimeMillis();
+//		}
+// 		
 		for (Dependency d : inBranchMain) {		
 			Map<Branch, Integer[][]> m = ((InBranchDependency)d).getRangeBasedonMainVariableInOrGroup();
 			if(m != null) {
@@ -222,13 +224,13 @@ public class Branch {
 		}
 	}
 	
-	public Branch(String name, String isOptional, String type, double min, double max, double gap) {
+	public Branch(String name, String isOptional, String type, double min, double max, double gap, String fixedZero) {
 		super();
 		this.name = name;
 		this.isOptional = "true".equals(isOptional);
 		this.isNumeric = "numeric".equals(type)? true : false;
 	
-		range = getRange(min, max, gap);
+		range = getRange("true".equals(fixedZero), min, max, gap);
 
 		
 		if(this.isOptional) {
@@ -943,10 +945,8 @@ public class Branch {
 		if (isNumeric) {
 
 			if (isCanSwitchOff() && range[0] != 0) {
-				double[] newRange = new double[range.length + 1];
-				newRange[0] = 0D;
-				System.arraycopy(range, 0, newRange, 1, range.length);
-				range = newRange;
+				throw new RuntimeException(name + " is a numeric feautre and it needs to be siwtch off, but it does not have predfeind " +
+						"0 in its children, this is needed as all children of numeric feature  needs to be given a validated for correctness in the FM");
 			}
 		} else {
 			if (isCanSwitchOff()) {
@@ -979,7 +979,7 @@ public class Branch {
 		return s;
 	}
 	
-	private double[] getRange (double minProvision, double maxProvision, double a){
+	private double[] getRange (boolean fixedZero, double minProvision, double maxProvision, double a){
 		int max = (int)Math.ceil(maxProvision);
 		int min = (int)Math.ceil(minProvision);
 		
@@ -989,21 +989,39 @@ public class Branch {
 //		if (length % a != 0) {
 //			length += 1;
 //		}
+		double[] valueVector = null;
 		
-		
-		
-		double[] valueVector = new double[length]; 
-		double value = min - a;
-		for (int i = 0; i < valueVector.length; i++) {
-			if (value + a >= max) {
-				value = max;
-			} else {
-				value = value + a;
+		if(fixedZero) {
+			valueVector = new double[length+1];
+			valueVector[0] = 0;
+			double value = min - a;
+			for (int i = 1; i < valueVector.length; i++) {
+				if (value + a >= max) {
+					value = max;
+				} else {
+					value = value + a;
+				}
+				
+				
+				valueVector[i] = value;
 			}
 			
+		} else {
+			valueVector = new double[length]; 
+			double value = min - a;
+			for (int i = 0; i < valueVector.length; i++) {
+				if (value + a >= max) {
+					value = max;
+				} else {
+					value = value + a;
+				}
+				
+				
+				valueVector[i] = value;
+			}
 			
-			valueVector[i] = value;
 		}
+		
 		
 		
 		
@@ -1011,7 +1029,31 @@ public class Branch {
 	}
 	
 	
+	public boolean isMainOfNumericDependency(Branch b){
+		for(Dependency d : crossMain) {
+			if(((CrossDependency)d).isMain(b) && ((CrossDependency)d).isNumeric()) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
+	public boolean isHasClosedLoopWithNumericDependency(Branch origin){
+		
+		// Only cross dependency might involve numeric dependency.
+		for(Dependency d : crossMain) {
+		  if(((CrossDependency)d).isMain(origin) &&	((CrossDependency)d).isNumeric()) {
+			  return true;
+		  }
+		  
+		  if(d.getMain().isHasClosedLoopWithNumericDependency(origin)){
+			  return true;
+		  }
+		}
+		
+		return false;
+	}
 	
 	public List<Branch> getNormalGroup() {
 		return normalGroup;

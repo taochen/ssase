@@ -88,9 +88,9 @@ public class GPRegion extends Region {
 					SolutionSet pareto_front) {
 				return Region.correctDependencyAfterEvolution(pareto_front);
 			}
-			protected void logDependencyAfterEvolution(SolutionSet pareto_front_without_ranking){
-				Region.logDependencyAfterEvolution(pareto_front_without_ranking);
-			}
+			protected void printParetoFront(SolutionSet pareto_front) {
+				Region.printParetoFront(pareto_front, objectives);
+		    }
 		};
 	}
 

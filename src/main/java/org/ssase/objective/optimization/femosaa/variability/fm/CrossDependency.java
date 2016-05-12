@@ -24,12 +24,14 @@ public class CrossDependency implements Dependency {
 	protected String operator;
 	protected String translation;
 	
-	protected double mainMin = -1;
-	protected double mainMax = -1;
+//	protected double mainMin = -1;
+//	protected double mainMax = -1;
+//	
+//	protected double dependentMin = -1;
+//	protected double dependentMax = -1;
 	
-	protected double dependentMin = -1;
-	protected double dependentMax = -1;
-	
+	List<Double> mainValues = new ArrayList<Double>();
+	List<Double> dependentValues = new ArrayList<Double>();
 	// This can occur for required, excluded and range with no mainMax and mainMin.
 	// Used when leaf move up
 	protected int mainAltValue = -1;
@@ -57,10 +59,8 @@ public class CrossDependency implements Dependency {
 		CrossDependency copy = new CrossDependency(main, dependent, type);
 		copy.translation = translation;
 		copy.operator = operator;
-		copy.mainMin = mainMin;
-		copy.mainMax = mainMax;
-		copy.dependentMin = dependentMin;
-		copy.dependentMax = dependentMax;
+		copy.mainValues = mainValues;
+		copy.dependentValues = dependentValues;
 		copy.mainAltValue = mainAltValue;
 		copy.dependentAltValue = dependentAltValue;
 		copy.mergeResult = mergeResult;
@@ -104,8 +104,7 @@ public class CrossDependency implements Dependency {
 			 if ("range".equals(operator)) {
 				
 				 for (int j = 0; j < dependent.getRange().length; j++) {
-						if(dependentMin <= translate(dependent.getRange()[j]) && 
-								dependentMax >= translate(dependent.getRange()[j])) {
+						if(dependentValues.contains(dependent.getRange()[j])) {
 						
 						} else {
 							when_zero.add(j);
@@ -232,10 +231,10 @@ public class CrossDependency implements Dependency {
 							&& translate(dependent.getRange()[j]) <= main
 									.getRange()[i]) {
 						list.add(j);
-					} else if ("less".equals(operator)
-							&& translate(dependent.getRange()[j]) < main
-									.getRange()[i]) {
+					} else if ("less".equals(operator)&& translate(dependent.getRange()[j]) < main
+							.getRange()[i]) {
 						list.add(j);
+						
 					} else if ("greater_or_equal".equals(operator)
 							&& translate(dependent.getRange()[j]) >= main
 									.getRange()[i]) {
@@ -250,42 +249,46 @@ public class CrossDependency implements Dependency {
 						list.add(j);
 					} else if ("range".equals(operator)) {
 
-						if (mainMin < 0 && mainMax < 0 && dependentMin > 0 && dependentMax > 0) {
+						if (mainValues.size() == 0 && dependentValues.size() > 0) {
 							// If this case, the dependent values fall in to the
 							// range only
 							// when the main variable is selected. 0 means
 							// deselected.
 
+							//range depends selection
 							if (mainAltValue != -1) {
 								if (i == mainAltValue) {
-									if (dependentMin <= dependent.getRange()[j]
-											&& dependentMax >= dependent
-													.getRange()[j]) {
+									if (dependentValues.contains(dependent
+													.getRange()[j])) {
 										list.add(j);
 									}
 								} else {
-									list.add(j);
+									if (!dependentValues.contains(dependent
+											.getRange()[j])) {
+																			list.add(j);
+																		}
 								}
+								//range dependes existence
 							} else {
 
 								if (i != 0) {
-									if (dependentMin <= dependent.getRange()[j]
-											&& dependentMax >= dependent
-													.getRange()[j]) {
+									if (dependentValues.contains(dependent
+											.getRange()[j])) {
 										list.add(j);
 									}
 								} else {
-									list.add(j);
+									if (!dependentValues.contains(dependent
+											.getRange()[j])) {
+																		list.add(j);
+																	}
 								}
 							}
 
-						} else if (mainMin > 0 && mainMax > 0 && dependentMin < 0 && dependentMax < 0) {
+						} else if (mainValues.size() > 0 && dependentValues.size() == 0) {
 							
 							if (dependentAltValue != -1) {
-								if (mainMin <= main.getRange()[i]
-																&& mainMax >= main
-																		.getRange()[i]) {
-								if (j == dependentAltValue) {
+								if (!mainValues.contains(main.getRange()[i])) {
+								if (j != dependentAltValue) {
 									
 										list.add(j);
 									
@@ -294,12 +297,10 @@ public class CrossDependency implements Dependency {
 									list.add(j);
 								}
 							} else {
-								if (mainMin <= main.getRange()[i]
-																&& mainMax >= main
-																		.getRange()[i]) {
-								if (j != 0) {
+								if (!mainValues.contains(main.getRange()[i])) {
+								if (!list.contains(0)) {
 								
-										list.add(j);
+										list.add(0);
 									
 								} 
 							}else {
@@ -313,14 +314,16 @@ public class CrossDependency implements Dependency {
 							// range only
 							// when the main variable is with the given range. 0
 							// means deselected.
-							if (mainMax <= main.getRange()[i]
-									&& mainMin >= main.getRange()[i]) {
-								if (dependentMin <= dependent.getRange()[j]
-										&& dependentMax >= dependent.getRange()[j]) {
+							if (mainValues.contains(main.getRange()[i])) {
+								if (dependentValues.contains(dependent
+										.getRange()[j])) {
 									list.add(j);
 								}
 							} else {
-								list.add(j);
+								if (!dependentValues.contains(dependent
+										.getRange()[j])) {
+								 									list.add(j);
+								 								}
 							}
 						}
 					} else if (operator == null) {
@@ -376,9 +379,8 @@ public class CrossDependency implements Dependency {
 							&& translate(dependent.getRange()[j]) >= main
 									.getRange()[i]) {
 						list.add(j);
-					} else if ("greater_or_equal".equals(operator)
-							&& translate(dependent.getRange()[j]) < main
-									.getRange()[i]) {
+					} else if ("greater_or_equal".equals(operator)&& translate(dependent.getRange()[j]) < main
+							.getRange()[i]) {
 						list.add(j);
 					} else if ("greater".equals(operator)
 							&& translate(dependent.getRange()[j]) <= main
@@ -390,7 +392,7 @@ public class CrossDependency implements Dependency {
 						list.add(j);
 					} else if ("range".equals(operator)) {
 
-						if (mainMin < 0 && mainMax < 0 && dependentMin > 0 && dependentMax > 0) {
+						if (mainValues.size() == 0 && dependentValues.size() > 0) {
 							// If this case, the dependent values fall in to the
 							// range only
 							// when the main variable is selected. 0 means
@@ -398,9 +400,8 @@ public class CrossDependency implements Dependency {
 
 							if (mainAltValue != -1) {
 								if (i == mainAltValue) {
-									if (dependentMin > dependent.getRange()[j]
-											&& dependentMax < dependent
-													.getRange()[j]) {
+									if (!dependentValues.contains(dependent
+											.getRange()[j])) {
 										list.add(j);
 									}
 								} else {
@@ -409,9 +410,8 @@ public class CrossDependency implements Dependency {
 							} else {
 
 								if (i != 0) {
-									if (dependentMin > dependent.getRange()[j]
-											&& dependentMax < dependent
-													.getRange()[j]) {
+									if (!dependentValues.contains(dependent
+											.getRange()[j])) {
 										list.add(j);
 									}
 								} else {
@@ -419,12 +419,10 @@ public class CrossDependency implements Dependency {
 								}
 							}
 
-						} else if (mainMin > 0 && mainMax > 0 && dependentMin < 0 && dependentMax < 0) {
+						} else if (mainValues.size() > 0 && dependentValues.size() == 0) {
 							
 							if (dependentAltValue != -1) {
-								if (mainMin <= main.getRange()[i]
-																&& mainMax >= main
-																		.getRange()[i]) {
+								if (mainValues.contains(main.getRange()[i])) {
 								if (j != dependentAltValue) {
 								
 										list.add(j);
@@ -434,12 +432,10 @@ public class CrossDependency implements Dependency {
 									list.add(j);
 								}
 							} else {
-								if (mainMin <= main.getRange()[i]
-																&& mainMax >= main
-																		.getRange()[i]) {
-								if (j == 0) {
+								if (mainValues.contains(main.getRange()[i])) {
+								if (!list.contains(0)) {
 									
-										list.add(j);
+										list.add(0);
 									
 								}
 							} else {
@@ -453,10 +449,9 @@ public class CrossDependency implements Dependency {
 							// range only
 							// when the main variable is with the given range. 0
 							// means deselected.
-							if (mainMax <= main.getRange()[i]
-									&& mainMin >= main.getRange()[i]) {
-								if (dependentMin > dependent.getRange()[j]
-										&& dependentMax < dependent.getRange()[j]) {
+							if (mainValues.contains(main.getRange()[i])) {
+								if (!dependentValues.contains(dependent
+										.getRange()[j])) {
 									list.add(j);
 								}
 							} else {
@@ -529,14 +524,12 @@ public class CrossDependency implements Dependency {
 		return dependent;
 	}
 	
-	public void setMainRange(double min, double max) {
-		mainMax = max;
-		mainMin = min;
+	public void setMainRange(List<Double> list) {
+		mainValues.addAll(list);
 	}
 	
-	public void setDependentRange(double min, double max) {
-		dependentMax = max;
-		dependentMin = min;
+	public void setDependentRange(List<Double> list) {
+		dependentValues.addAll(list);
 	}
 	
 	public void setTranslation(String translation) {
@@ -677,6 +670,42 @@ public class CrossDependency implements Dependency {
 	public void setDependentAltValue(int dependentAltValue) {
 		this.dependentAltValue = dependentAltValue;
 	}
+	
+	public boolean isMain(Branch b) {
+		
+		if(mergedFrom != null) {
+			for(Dependency d : mergedFrom) {
+				if(((CrossDependency)d).isMain(b)) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		
+		return main.equals(b);
+	}
+	
+	public boolean isNumeric(){
+		
+		if(mergedFrom != null) {
+			for(Dependency d : mergedFrom) {
+				if(((CrossDependency)d).isNumeric()) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		return operator != null;
+	}
+	
+	public boolean isRequired(){
+		return "required".equals(type);
+	}
+	
 
 	@Override
 	public void debug() {
@@ -688,10 +717,12 @@ public class CrossDependency implements Dependency {
 			logger.debug("Translation: " + translation);
 			logger.debug("mainAltValue: " + mainAltValue);
 			logger.debug("dependentAltValue: " + dependentAltValue);
-			logger.debug("mainMin: " + mainMin);
-			logger.debug("mainMax: " + mainMax);
-			logger.debug("dependentMin: " + dependentMin);
-			logger.debug("dependentMax: " + dependentMax);
+			for (double d : mainValues) {
+				logger.debug("main value: " + d);
+			}
+			for (double d : dependentValues) {
+				logger.debug("dependent value: " + d);
+			}
 			logger.debug("-----------OR group main member-----------");
 			for(Branch b : ORGroup) {
 				logger.debug(b.getName());
@@ -706,10 +737,12 @@ public class CrossDependency implements Dependency {
 		logger.debug("Translation: " + translation);
 		logger.debug("mainAltValue: " + mainAltValue);
 		logger.debug("dependentAltValue: " + dependentAltValue);
-		logger.debug("mainMin: " + mainMin);
-		logger.debug("mainMax: " + mainMax);
-		logger.debug("dependentMin: " + dependentMin);
-		logger.debug("dependentMax: " + dependentMax);
+		for (double d : mainValues) {
+			logger.debug("main value: " + d);
+		}
+		for (double d : dependentValues) {
+			logger.debug("dependent value: " + d);
+		}
 		
 		if(mergedFrom != null) {
 			logger.debug("-----------merged from-----------");
@@ -741,10 +774,12 @@ public class CrossDependency implements Dependency {
 				logger.debug("Translation: " + ((CrossDependency)d).translation);
 				logger.debug("mainAltValue: " + ((CrossDependency)d).mainAltValue);
 				logger.debug("dependentAltValue: " + ((CrossDependency)d).dependentAltValue);
-				logger.debug("mainMin: " + ((CrossDependency)d).mainMin);
-				logger.debug("mainMax: " + ((CrossDependency)d).mainMax);
-				logger.debug("dependentMin: " + ((CrossDependency)d).dependentMin);
-				logger.debug("dependentMax: " + ((CrossDependency)d).dependentMax);
+				for (double dd : ((CrossDependency)d).mainValues) {
+					logger.debug("main value: " + dd);
+				}
+				for (double dd : ((CrossDependency)d).dependentValues) {
+					logger.debug("dependent value: " + dd);
+				}
 				}
 			}
 		}

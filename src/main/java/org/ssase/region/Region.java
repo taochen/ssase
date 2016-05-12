@@ -223,17 +223,18 @@ public abstract class Region {
 			}
 		}
 		
-		logger.debug("Non-dominated solutions, before dependency check size: " + total);
-		logger.debug("Non-dominated solutions, after dependency check size: " + count);
+		logger.debug("before checking dependency size: " + total);
+		logger.debug("after checking dependency size: " + count);
 		
-		//double score = count / total;
-		//org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
+		double score = count / total;
+		org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
 
 		if(list.size() == 0) {
-			logger.debug("No decision that satisfies all dependency, thus return all decisions found");
+			logger.debug("No decision that satisfies all dependency, thus use all for requirements check");
 		    // We do not return here as we need to give the other class an indication
 			// about if there are decisions that satisfy all dependency, hence that they
 			// can mutate the final decision to a valid one.
+			return new SolutionSet(0);
 		}
 		
 		SolutionSet set = new SolutionSet(list.size());
@@ -244,28 +245,28 @@ public abstract class Region {
 		return set;
 	}
 
-	public static void logDependencyAfterEvolution(
-			SolutionSet pareto_front_without_ranking) {
-		Iterator<Solution> itr = pareto_front_without_ranking.iterator();
-		double count = 0;
-		double total = pareto_front_without_ranking.size();
-		
-		
-		while(itr.hasNext()) {
-			Solution s = itr.next();
-			if(((SASSolution)s).isSolutionValid()) {
-				count++;
-			}
-		}
-		
-		logger.debug("All solutions (including dominated ones), before dependency check size: " + total);
-		logger.debug("All solutions (including dominated ones), after dependency check size: " + count);
-		
-		double score = count / total;
-		org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
-
-		
-	}
+//	public static void logDependencyAfterEvolution(
+//			SolutionSet pareto_front_without_ranking) {
+//		Iterator<Solution> itr = pareto_front_without_ranking.iterator();
+//		double count = 0;
+//		double total = pareto_front_without_ranking.size();
+//		
+//		
+//		while(itr.hasNext()) {
+//			Solution s = itr.next();
+//			if(((SASSolution)s).isSolutionValid()) {
+//				count++;
+//			}
+//		}
+//		
+//		logger.debug("All solutions (including dominated ones), before dependency check size: " + total);
+//		logger.debug("All solutions (including dominated ones), after dependency check size: " + count);
+//		
+//		double score = count / total;
+//		org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
+//
+//		
+//	}
 	
 	public static void logDependencyForFinalSolution(
 			Solution solution) {		
@@ -286,29 +287,29 @@ public abstract class Region {
 		
 		List<Solution> list = new ArrayList<Solution>();
 		
-		logger.debug("Pareto front size: " + pareto_front.size());
+		logger.debug("Decisions for checking requirements: " + pareto_front.size());
 		while(itr.hasNext()) {
 			Solution s = itr.next();
 			
-			if (logger.isDebugEnabled() && s instanceof FEMOSAASolution) {
-
-				List<ControlPrimitive> cps = Repository
-						.getSortedControlPrimitives(objectives.get(0));
-				String r = "";
-				for (int i = 0; i < s.getDecisionVariables().length; i++) {
-					try {
-						r = r
-								+ cps.get(i).getName()
-								+ "="
-								+ cps.get(i).getValueVector()[(int) s
-										.getDecisionVariables()[i].getValue()]
-								+ " ";
-					} catch (JMException e) {
-						e.printStackTrace();
-					}
-				}
-				logger.debug("Decision: " + r);
-			}
+//			if (logger.isDebugEnabled() && s instanceof FEMOSAASolution) {
+//
+//				List<ControlPrimitive> cps = Repository
+//						.getSortedControlPrimitives(objectives.get(0));
+//				String r = "";
+//				for (int i = 0; i < s.getDecisionVariables().length; i++) {
+//					try {
+//						r = r
+//								+ cps.get(i).getName()
+//								+ "="
+//								+ cps.get(i).getValueVector()[(int) s
+//										.getDecisionVariables()[i].getValue()]
+//								+ " ";
+//					} catch (JMException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//				logger.debug("Decision: " + r);
+//			}
 			boolean isAdd = true;
 			for (int i = 0; i < s.numberOfObjectives(); i++) {
 				if(objectives.get(i).isMin()? objectives.get(i).getConstraint() < s.getObjective(i): 
@@ -337,6 +338,34 @@ public abstract class Region {
 		}
 		
 		return set;
+	}
+	
+	public static void printParetoFront(SolutionSet pareto_front,
+			List<Objective> objectives) {
+		logger.debug("Pareto front size: " + pareto_front.size());
+
+		for (int k = 0; k < pareto_front.size(); k++) {
+			Solution s = pareto_front.get(k);
+
+			if (logger.isDebugEnabled() && s instanceof FEMOSAASolution) {
+				List<ControlPrimitive> cps = Repository
+						.getSortedControlPrimitives(objectives.get(0));
+				String r = "";
+				for (int i = 0; i < s.getDecisionVariables().length; i++) {
+					try {
+						r = r
+								+ cps.get(i).getName()
+								+ "="
+								+ cps.get(i).getValueVector()[(int) s
+										.getDecisionVariables()[i].getValue()]
+								+ " ";
+					} catch (JMException e) {
+						e.printStackTrace();
+					}
+				}
+				logger.debug("Decision: " + r);
+			}
+		}
 	}
 	
 	public void print(){
