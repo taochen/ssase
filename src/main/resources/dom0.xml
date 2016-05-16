@@ -3,10 +3,10 @@
 <vm id="sas">
 
            <hardwareControlPrimitive>
-              <item name="CPU" provision="30" constraint="-1" differences="5" 
+              <item name="CPU" provision="50" constraint="-1" differences="5" 
               pre_to_max="0.7"
               pre_of_max="0.1"
-              min="15"
+              min="25"
               max="300"
 
               price_per_unit="0.3"/>
@@ -112,7 +112,7 @@
            <!-- This constraint="-1" will forcly trigger adaptation at each sampling interval -->
              <!-- Unit is sec -->
             <item name="Response Time" constraint="-1" is_min="true" pre_to_change="0.7"/>
-            <item name="Energy" constraint="2" is_min="true" pre_to_change="0.7"/>
+            <item name="Energy" constraint="100" is_min="true" pre_to_change="0.7"/>
            </QoS>
            
            

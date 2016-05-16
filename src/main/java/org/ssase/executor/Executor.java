@@ -91,7 +91,7 @@ public class Executor {
 	public static void init (int noOfCPU /**This should be >= the number of initial VMs*/){
 		
 		
-		totalMemory = 1800 - 600; // 3000 - 1000
+		totalMemory = 3200 - 1200; // 3000 - 1000
 		remainingMemory = totalMemory;
 		
 		int index = 0;

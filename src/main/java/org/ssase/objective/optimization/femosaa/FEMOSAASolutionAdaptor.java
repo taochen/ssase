@@ -23,17 +23,20 @@ public class FEMOSAASolutionAdaptor {
 		return adaptor;
 	}
 	
-	public int[][] convertInitialLimits(Objective obj){
+	public synchronized int[][] convertInitialLimits(Objective obj){
+		
 		List<ControlPrimitive> list = Repository.getSortedControlPrimitives(obj);
+		
 		int[][] vars = new int[list.size()][];
 		double[][] optionalVariables = new double[list.size()][];
+		
 		for (int i = 0; i < vars.length; i++) {
 			// These are not used for fetch values, but used to count
 			// the boundary.
 			vars[i] = new int[]{0, list.get(i).getValueVector().length - 1};
 			optionalVariables[i] = list.get(i).getValueVector();
 		}
-		
+	
 		// This is a static method
 		SASSolution.init(optionalVariables);
 		return vars;

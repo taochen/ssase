@@ -89,7 +89,9 @@
 						</goals>
 						<configuration>
 							<tasks>
-								 <scp file="${basedir}/target/ssase-core-1.0.1.one-jar.jar" todir="tao@172.16.177.128:/home/tao" password="Monday22" />
+<!-- 								 <scp file="${basedir}/target/ssase-core-1.0.1.one-jar.jar" todir="tao@172.16.177.128:/home/tao" password="Monday22" /> -->
+								  <scp file="${basedir}/target/ssase-core-1.0.1.one-jar.jar" todir="tao@10.42.0.1://home/tao" port="1111" password="cercia" /> 
+								 
 							</tasks>
 						</configuration>
 						

@@ -14,6 +14,7 @@ import jmetal.util.PseudoRandom;
 import org.ssase.objective.Objective;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolution;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionAdaptor;
+import org.ssase.objective.optimization.femosaa.FEMOSAASolutionInstantiator;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.util.Repository;
@@ -30,17 +31,19 @@ public class InitRegion extends Region {
 	
 	
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
+	
 		if (!init) {
 			FEMOSAASolutionAdaptor.getInstance().convertInitialLimits(
 					objectives.get(0));
 			init = true;
 		}
-
+		
 		List<ControlPrimitive> list = Repository
 				.getSortedControlPrimitives(objectives.get(0));
 
-		FEMOSAASolution dummy = new FEMOSAASolution();
-		dummy.init(objectives, null);
+		FEMOSAASolutionInstantiator inst = new FEMOSAASolutionInstantiator(objectives);
+		FEMOSAASolution dummy = (FEMOSAASolution)inst.getSolution(objectives.size());
+		
 		Variable[] variables = new Variable[list.size()];
 		for (int i = 0; i < list.size(); i++) {
 			variables[i] = new Int(0, list.get(i).getValueVector().length - 1);
@@ -56,12 +59,15 @@ public class InitRegion extends Region {
 			}
 		}
 
-		
+
 		LinkedHashMap<ControlPrimitive, Double> result = FEMOSAASolutionAdaptor.getInstance().convertSolution(dummy,
 				objectives.get(0));
 
 	
-		print(result);
+		
+		for (Map.Entry<ControlPrimitive, Double> e : result.entrySet()) {
+			   logger.debug(e.getKey().getAlias() + ", " + e.getKey().getName() + ", value: " + e.getValue() +  "\n");
+		}
 		
 		return result;
 		

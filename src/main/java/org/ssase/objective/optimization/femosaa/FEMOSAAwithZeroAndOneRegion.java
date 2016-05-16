@@ -37,22 +37,7 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
 		
-		FeatureModel model = Repository.getFeatureModel(objectives.get(0));
 		
-		List<Integer[]> list = model.getZeroAndOneOptionalValueList();
-		
-		vars = new int[list.size()][];
-		double[][] optionalVariables = new double[list.size()][];
-		for (int i = 0; i < vars.length; i++) {
-			// These are not used for fetch values, but used to count
-			// the boundary.
-			vars[i] = new int[]{0, 1};
-			optionalVariables[i] = new double[]{0d, 1d};
-		}
-		
-		// This is a static method
-		SASSolution.init(optionalVariables);
-		SASSolution.clearAndStoreForValidationOnly();
 		
 		
 		LinkedHashMap<ControlPrimitive, Double> result = null;
@@ -68,6 +53,23 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 
 			isLocked = true;
 			
+			
+			FeatureModel model = Repository.getFeatureModel(objectives.get(0));
+			
+			List<Integer[]> list = model.getZeroAndOneOptionalValueList();
+			
+			vars = new int[list.size()][];
+			double[][] optionalVariables = new double[list.size()][];
+			for (int i = 0; i < vars.length; i++) {
+				// These are not used for fetch values, but used to count
+				// the boundary.
+				vars[i] = new int[]{0, 1};
+				optionalVariables[i] = new double[]{0d, 1d};
+			}
+			
+			// This is a static method
+			SASSolution.init(optionalVariables);
+			SASSolution.clearAndStoreForValidationOnly();
 			
 
 			ZeroAndOneFEMOSAASolutionInstantiator inst = new ZeroAndOneFEMOSAASolutionInstantiator(objectives);
@@ -124,7 +126,7 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 					SolutionSet set = new SolutionSet(pareto_front.size());
 					for (int k = 0; k < pareto_front.size(); k++) {
 						Solution s = pareto_front.get(k);
-		                FEMOSAASolution dummy = (FEMOSAASolution)solInt.getSolution(2);
+		                FEMOSAASolution dummy = (FEMOSAASolution)solInt.getSolution(objectives.size());
 		               
 						Variable[] variables = new Variable[list.size()];
 						for (int i = 0; i < list.size(); i ++) {
