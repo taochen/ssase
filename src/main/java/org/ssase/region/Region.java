@@ -223,14 +223,14 @@ public abstract class Region {
 			}
 		}
 		
-		logger.debug("before checking dependency size: " + total);
-		logger.debug("after checking dependency size: " + count);
+		System.out.print("before checking dependency size: " + total + "\n");
+		System.out.print("after checking dependency size: " + count + "\n");
 		
 		double score = count / total;
 		org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
 
 		if(list.size() == 0) {
-			logger.debug("No decision that satisfies all dependency, thus use all for requirements check");
+			System.out.print("No decision that satisfies all dependency, thus use all for requirements check\n");
 		    // We do not return here as we need to give the other class an indication
 			// about if there are decisions that satisfy all dependency, hence that they
 			// can mutate the final decision to a valid one.
@@ -259,8 +259,8 @@ public abstract class Region {
 //			}
 //		}
 //		
-//		logger.debug("All solutions (including dominated ones), before dependency check size: " + total);
-//		logger.debug("All solutions (including dominated ones), after dependency check size: " + count);
+//		System.out.print("All solutions (including dominated ones), before dependency check size: " + total);
+//		System.out.print("All solutions (including dominated ones), after dependency check size: " + count);
 //		
 //		double score = count / total;
 //		org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
@@ -287,7 +287,7 @@ public abstract class Region {
 		
 		List<Solution> list = new ArrayList<Solution>();
 		
-		logger.debug("Decisions for checking requirements: " + pareto_front.size());
+		System.out.print("Decisions for checking requirements: " + pareto_front.size() + "\n");
 		while(itr.hasNext()) {
 			Solution s = itr.next();
 			
@@ -308,7 +308,7 @@ public abstract class Region {
 //						e.printStackTrace();
 //					}
 //				}
-//				logger.debug("Decision: " + r);
+//				System.out.print("Decision: " + r);
 //			}
 			boolean isAdd = true;
 			for (int i = 0; i < s.numberOfObjectives(); i++) {
@@ -325,10 +325,10 @@ public abstract class Region {
 		}
 		
 
-		logger.debug("Number of decisions that satisfies all requirements: " + list.size());
+		System.out.print("Number of decisions that satisfies all requirements: " + list.size() + "\n");
 		// If no satisfied solutions, return all as default.
 		if(list.size() == 0) {
-			logger.debug("No decision that satisfies all requirements, thus return all decisions found");
+			System.out.print("No decision that satisfies all requirements, thus return all decisions found\n");
 			return pareto_front;
 		}
 		
@@ -342,12 +342,12 @@ public abstract class Region {
 	
 	public static void printParetoFront(SolutionSet pareto_front,
 			List<Objective> objectives) {
-		logger.debug("Pareto front size: " + pareto_front.size());
+		System.out.print("Pareto front size: " + pareto_front.size() + "\n");
 
 		for (int k = 0; k < pareto_front.size(); k++) {
 			Solution s = pareto_front.get(k);
 
-			if (logger.isDebugEnabled() && s instanceof FEMOSAASolution) {
+			if (/*logger.isDebugEnabled() && */s instanceof FEMOSAASolution) {
 				List<ControlPrimitive> cps = Repository
 						.getSortedControlPrimitives(objectives.get(0));
 				String r = "";
@@ -363,7 +363,7 @@ public abstract class Region {
 						e.printStackTrace();
 					}
 				}
-				logger.debug("Decision: " + r);
+				System.out.print("Decision: " + r  + "\n");
 			}
 		}
 	}
@@ -373,13 +373,13 @@ public abstract class Region {
 			
 			
 			
-			logger.debug("It has " + objectives.size() + " objectives, contain "+ obj.getName() + "\n");
-			logger.debug(" ========= Contain CP start ========== \n");
+			System.out.print("It has " + objectives.size() + " objectives, contain "+ obj.getName() + "\n");
+			System.out.print(" ========= Contain CP start ========== \n");
 			for (Primitive p : obj.getPrimitivesInput()) {
-				logger.debug("CP "+ p.getAlias() + " : " + p.getName() + "\n");
+				System.out.print("CP "+ p.getAlias() + " : " + p.getName() + "\n");
 			}
 			
-			logger.debug(" ========= Contain CP end ========== \n");
+			System.out.print(" ========= Contain CP end ========== \n");
 		}
 	}
 	
@@ -390,7 +390,7 @@ public abstract class Region {
 		
 		
 		for (Map.Entry<ControlPrimitive, Double> e : result.entrySet()) {
-			   logger.debug(e.getKey().getAlias() + ", " + e.getKey().getName() + ", value: " + e.getValue() +  "\n");
+			   System.out.print(e.getKey().getAlias() + ", " + e.getKey().getName() + ", value: " + e.getValue() +  "\n");
 		}
 		int violated = 0;
 		for (Objective obj : objectives) {
@@ -429,10 +429,10 @@ public abstract class Region {
 				violated++;
 			}
 			
-			logger.debug(out + obj.getName() + " current value: " + obj.getCurrentPrediction() + " - after adaptation: " + adapt + "\n");
+			System.out.print(out + obj.getName() + " current value: " + obj.getCurrentPrediction() + " - after adaptation: " + adapt + "\n");
 		}
-		logger.debug("Total number of objectives: " + objectives.size() + "\n");
-		logger.debug("Total number of violated objectives: " + violated + "\n");
+		System.out.print("Total number of objectives: " + objectives.size() + "\n");
+		System.out.print("Total number of violated objectives: " + violated + "\n");
 		
 	}
 

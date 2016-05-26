@@ -58,10 +58,13 @@ public class BranchAndBoundRegion extends Region {
 
 			List<ControlPrimitive> list = new ArrayList<ControlPrimitive>();
 			list.addAll(tempList);
-
+			
 			addRemoveFeatureFor01Representation(list);
 			sortForDependency(list);
-
+			
+			
+			
+			
 			Map<Objective, Double> map = getBasis();
 
 			double[] currentDecision = new double[list.size()];
@@ -79,7 +82,8 @@ public class BranchAndBoundRegion extends Region {
 					}
 				}
 			}
-
+		
+			
 			for (ControlPrimitive cp : list) {
 				if (!current.containsKey(cp)) {
 					current.put(cp, (double) cp.getProvision());
@@ -97,16 +101,17 @@ public class BranchAndBoundRegion extends Region {
 			int count = 0;
 			do {
 
-				// To avoid a extremly long runtime
+				// To avoid an extrmely long runtime
 				if ((System.currentTimeMillis() - start) > EXECUTION_TIME) {
 					break;
 				}
 
 				count++;
-				// System.out.print("Rune " + count + "\n");
+				// System.out.print("Run " + count + "\n");
 
 				Node node = q.poll();
 				Double[] v = doWeightSum(list, node.decision, map);
+				
 				if (bestResult == null || v[0] > bestResult[0]) {
 					best = node;
 					bestResult = v;
@@ -211,7 +216,7 @@ public class BranchAndBoundRegion extends Region {
 		double result = 0;
 		double satisfied = 1;
 		double[] xValue;
-		double w = 1 / objectives.size();
+		double w = 1.0 / objectives.size();
 		for (Objective obj : objectives) {
 			xValue = new double[obj.getPrimitivesInput().size()];
 			// System.out.print(obj.getPrimitivesInput().size()+"\n");
@@ -231,12 +236,12 @@ public class BranchAndBoundRegion extends Region {
 				// throw new RuntimeException();
 				satisfied = -1;
 			}
-
+			
 			result = obj.isMin() ? result - w
 					* (obj.predict(xValue) / (1 + map.get(obj))) : result + w
 					* (obj.predict(xValue) / (1 + map.get(obj)));
 		}
-
+		
 		return new Double[] { result, satisfied };
 	}
 
@@ -345,6 +350,7 @@ public class BranchAndBoundRegion extends Region {
 		ControlPrimitive minSpareThread = null;
 		ControlPrimitive maxThread = null;
 		ControlPrimitive memory = null;
+		ControlPrimitive cpu = null;
 		for (ControlPrimitive cp : list) {
 			if (cp.getName().equals("Compression")) {
 				compression = cp;
@@ -364,6 +370,9 @@ public class BranchAndBoundRegion extends Region {
 			if (cp.getName().equals("Memory")) {
 				memory = cp;
 			}
+			if (cp.getName().equals("CPU")) {
+				cpu = cp;
+			}
 		}
 
 		list.remove(compression);
@@ -372,13 +381,18 @@ public class BranchAndBoundRegion extends Region {
 		list.remove(minSpareThread);
 		list.remove(maxThread);
 		list.remove(memory);
+		//list.remove(cpu);
 
+		//list.add(0, cpu);
+		
 		list.add(0, compression);
 		list.add(1, cache);
 		list.add(2, cacheMode);
 		list.add(3, minSpareThread);
 		list.add(4, maxThread);
 		list.add(5, memory);
+		
+		
 	}
 
 	private void addRemoveFeatureFor01Representation(List<ControlPrimitive> list) {

@@ -66,7 +66,7 @@ public class ControlBus {
 			return;
 		}
 		
-		logger.debug("**** MAPE start: " + samples  + "\n");
+		System.out.print("**** MAPE start: " + samples  + "\n");
 		synchronized(lock) {
 			
 			// We do not allow more than two MAPEs loop that one for current processing and one for waiting,			
@@ -84,12 +84,12 @@ public class ControlBus {
 			// Ensure only one MAPE loop running at a time.
 			// Can not just get rid of as this may be newly measured data.	
 				while (lock.get() != -1 || samples != expectedSample) {
-					logger.debug("**** this one is waiting: " + samples  + "\n");
-					logger.debug("**** expected: " + expectedSample  + "\n");
+					System.out.print("**** this one is waiting: " + samples  + "\n");
+					System.out.print("**** expected: " + expectedSample  + "\n");
 					try {
-						//logger.debug("========================== Break ===============================\n");
-						//logger.debug(Thread.currentThread() + " break\n");
-						//logger.debug("========================== Break ===============================\n");
+						//System.out.print("========================== Break ===============================\n");
+						//System.out.print(Thread.currentThread() + " break\n");
+						//System.out.print("========================== Break ===============================\n");
 						lock.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -97,12 +97,12 @@ public class ControlBus {
 					
 					
 				}
-				logger.debug("**** is trigger analyzer: " + samples  + "\n");
-				logger.debug("**** is trigger analyzer, expected: " + expectedSample  + "\n");
+				System.out.print("**** is trigger analyzer: " + samples  + "\n");
+				System.out.print("**** is trigger analyzer, expected: " + expectedSample  + "\n");
 				
-				//logger.debug("========================== Run ===============================\n");
-				//logger.debug(Thread.currentThread() + " running\n");
-				//logger.debug("========================== Run ===============================\n");
+				//System.out.print("========================== Run ===============================\n");
+				//System.out.print(Thread.currentThread() + " running\n");
+				//System.out.print("========================== Run ===============================\n");
 				lock.set(0);
 				
 				/*isThereIsMAPEwaiting = false;
@@ -128,13 +128,13 @@ public class ControlBus {
 		
 		long time = System.currentTimeMillis();
 		if (ifAnalyze) {
-			logger.debug("***** will trigger training *********\n");
+			System.out.print("***** will trigger training *********\n");
 			/*
 			 *The A part 
 			 ***/
 			objectivesToBeOptimized = Analyzer.doAnalysis(samples);
 		}
-		logger.debug("Modeling takes " + (System.currentTimeMillis() - time) + " ms \n");
+		System.out.print("Modeling takes " + (System.currentTimeMillis() - time) + " ms \n");
 	
 		if (isTestQoSModelingOnly) {
 			synchronized(lock) {
@@ -156,7 +156,7 @@ public class ControlBus {
 		// TODO only trigger if the current setup has been longer than t intervals.
 		if (objectivesToBeOptimized != null) {
 		
-			logger.debug("Number of regions that need to be optimized: " 
+			System.out.print("Number of regions that need to be optimized: " 
 					+ objectivesToBeOptimized.size() + "\n");
 			
 			for (final Objective obj : objectivesToBeOptimized) {
@@ -193,9 +193,9 @@ public class ControlBus {
 			lock.set(-1);
 			objectivesToBeOptimized = null;
 			lock.notifyAll();
-			logger.debug("***** MAPE finished " + samples + " *********\n");
+			System.out.print("***** MAPE finished " + samples + " *********\n");
 		}
-		logger.debug("Decision making takes " + (System.currentTimeMillis() - time) + " ms \n");
+		System.out.print("Decision making takes " + (System.currentTimeMillis() - time) + " ms \n");
 		
 		System.gc();
 	}
@@ -225,7 +225,7 @@ public class ControlBus {
 			Executor.execute(decisions);
 			Executor.print();
 		} else {
-			logger.debug("There is no proper solutions found!\n");
+			System.out.print("There is no proper solutions found!\n");
 		}
 		
 		synchronized(lock) {
@@ -242,6 +242,6 @@ public class ControlBus {
 	
 	public void increaseCurrentSampleCount(){
 		expectedSample += Monitor.getNumberOfNewSamples();
-		logger.debug("Expected: " + expectedSample + "\n");
+		System.out.print("Expected: " + expectedSample + "\n");
 	}
 }

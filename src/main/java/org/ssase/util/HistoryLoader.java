@@ -72,13 +72,14 @@ public class HistoryLoader {
 //		"edu.rice.rubis.servlets.ViewUserInfo"
 	};
 	
-	private  final String prefix = //"/home/tao/backup/bak4/";
-		"/Users/tao/research/monitor/sas/";
+	private  final String prefix = "/home/tao/sas-init/";
+		//"/Users/tao/research/monitor/sas/";
 	
 	public  int counterNo = 0;
 	
 	private  int readFileIndex = 0;
-	private  int cap = 287;//88//340/*342*/;
+	private int startIndex = 1;
+	private  int cap = 122;//88//340/*342*/;
 	private  boolean finished = false;
 	private  List<Interval> intervals;
 	private  Map<String, List<Sensor>> sensors;
@@ -96,7 +97,7 @@ public class HistoryLoader {
 	 */
 	public void run() {
 		//Ssascaling.main(new String[]{"0"});
-		QualityOfService.leastNumberOfSample = cap;
+		QualityOfService.leastNumberOfSample = cap - startIndex;
 		init();
 		
 		if(!ControlBus.isTriggerQoSModeling) {
@@ -108,6 +109,7 @@ public class HistoryLoader {
 		
 		System.out.print("Start the pre-loading\n");
 		long time = System.currentTimeMillis();
+		readFileIndex = startIndex;
 		for (int i = 0; i < (cap+1)/*343*/; i ++) {
 			
 			
@@ -471,8 +473,11 @@ public class HistoryLoader {
 						}*/
 						
 						if (k == readFileIndex) {
-						
+//							if(name.startsWith("Workload")) {
+//								System.out.print("***RT: " + Double.parseDouble(line) + "\n");
+//							}
 							if (isY) {
+								
 							  interval.setY(file.getName(), new String[]{ name}, new double[]{Double.parseDouble(line)} );
 									
 							} else {

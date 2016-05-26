@@ -17,6 +17,8 @@ public class EnergySensor implements Sensor {
 	private int process_live_count = 3;
 	public static final int index = 5;
 	
+	private double max = 0.0;
+	
 	private static final int SAMPLING_INTERVAL = 60000; // We can make the frequency on monitor as 3000ms, last for 60s
 	private Timer timer;
 	
@@ -40,9 +42,15 @@ public class EnergySensor implements Sensor {
 			no = number;
 			total = 0.0;
 			number = 0.0;
-//			if (no == 0) {
-//				no = 1;
-//			}
+			// When NaN, we use the max possible energy value.
+			if (no == 0) {
+				current = max;
+				no = 1;
+			}
+			
+			if((current / no) > max) {
+				max = current / no;
+			}
 			
 			System.out.print("********current="+current+"\n");
 			System.out.print("********no="+no+"\n");

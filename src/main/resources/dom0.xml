@@ -3,18 +3,18 @@
 <vm id="sas">
 
            <hardwareControlPrimitive>
-              <item name="CPU" provision="50" constraint="-1" differences="5" 
+              <item name="CPU" provision="100" constraint="-1" differences="5" 
               pre_to_max="0.7"
               pre_of_max="0.1"
-              min="25"
+              min="100"
               max="300"
 
               price_per_unit="0.3"/>
                 <!-- Unit is MB -->
-            <item name="Memory" provision="250" constraint="-1" differences="10" 
+            <item name="Memory" provision="500" constraint="-1" differences="10" 
               pre_to_max="0.7"
               pre_of_max="0.1"
-              min="250"
+              min="500"
               max="2000"
 
               price_per_unit="0.07"/>
@@ -40,7 +40,7 @@
               pre_to_max="0.7"
               pre_of_max="0.1"
               min="10485760"
-              max="314572800"
+              max="104857600"
               price_per_unit="0.5"/>
                 <!-- Unit is bytes -->
                 <item name="maxBytesLocalHeap" provision="5242880" constraint="-1" differences="1048576" 
@@ -111,8 +111,10 @@
            <QoS>
            <!-- This constraint="-1" will forcly trigger adaptation at each sampling interval -->
              <!-- Unit is sec -->
+             <!-- constraint="5"  -->
             <item name="Response Time" constraint="-1" is_min="true" pre_to_change="0.7"/>
-            <item name="Energy" constraint="100" is_min="true" pre_to_change="0.7"/>
+             <!-- constraint="6"  -->
+            <item name="Energy" constraint="1000" is_min="true" pre_to_change="0.7"/>
            </QoS>
            
            

@@ -1,5 +1,8 @@
 package org.ssase.util;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,9 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
+
+import jmetal.metaheuristics.moead.MOEAD_SAS_main;
 
 import org.ssase.ControlBus;
 import org.ssase.Service;
@@ -37,7 +43,7 @@ import org.ssase.region.OptimizationType;
  *
  */
 public class Repository {
-	
+	public static double[][] lambda_ ; 
 	
 	// For each software, the objectives use the same FM.
 	private static Map<Objective, FeatureModel> fms
@@ -198,10 +204,43 @@ public class Repository {
 	public static void centralizedOptimizationConfiguration(OptimizationType type) {
 		if(OptimizationType.INIT.equals(type)) {
 			ControlBus.isTriggerQoSModeling = false;
-			Executor.isChangeHW = false;
+			Executor.isChangeHW = true;
 		} else {
 			ControlBus.isTriggerQoSModeling = true;
 			Executor.isChangeHW = true;
 		}
+		initUniformWeight();
 	}
+	
+	public static void initUniformWeight() {
+		//Always 2 objectives
+		String dataFileName;
+		dataFileName = "W2D_" + MOEAD_SAS_main.popsize + ".dat";
+		lambda_   = new double[MOEAD_SAS_main.popsize][2];
+		try {
+			// Open the file
+			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/tao/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/tao/weight" + "/"
+					+ dataFileName);
+			InputStreamReader isr = new InputStreamReader(fis);
+			BufferedReader br = new BufferedReader(isr);
+
+			int i = 0;
+			int j = 0;
+			String aux = br.readLine();
+			while (aux != null) {
+				StringTokenizer st = new StringTokenizer(aux);
+				j = 0;
+				while (st.hasMoreTokens()) {
+					double value = (new Double(st.nextToken())).doubleValue();
+					lambda_[i][j] = value;
+					j++;
+				}
+				aux = br.readLine();
+				i++;
+			}
+			br.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	} // initUniformWeight
 }

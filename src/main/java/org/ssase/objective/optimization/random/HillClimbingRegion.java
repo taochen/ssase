@@ -495,7 +495,7 @@ public class HillClimbingRegion extends Region {
 		double result = 0;
 		double satisfied = 1;
 		double[] xValue;
-		double w = 1 / objectives.size();
+		double w = 1.0 / objectives.size();
 		for (Objective obj : objectives) {
 			xValue = new double[ obj.getPrimitivesInput().size()];
 			//System.out.print(obj.getPrimitivesInput().size()+"\n");

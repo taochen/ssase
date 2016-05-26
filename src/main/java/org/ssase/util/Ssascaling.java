@@ -553,43 +553,19 @@ public class Ssascaling {
 	private static void loadFeatureModel(){
         List<ControlPrimitive> list = new ArrayList<ControlPrimitive>();
 		
-		ControlPrimitive Connection = null;
-		ControlPrimitive maxThread = null;
-		ControlPrimitive minSpareThreads = null;
-		ControlPrimitive Compression = null;
-		ControlPrimitive cacheMode = null;
-		//Set<ControlPrimitive> set = new HashSet<ControlPrimitive>();
+		Set<ControlPrimitive> set = new HashSet<ControlPrimitive>();
 		for(Service s : Repository.getAllServices()){
 			
 			for (Primitive p : s.getPossiblePrimitives()) {
-				
-				if(p instanceof ControlPrimitive && !list.contains(p)){
-					if(p.getName().equals("Connection")) {
-						Connection = (ControlPrimitive)p;
-					} else if(p.getName().equals("maxThread")) {
-						maxThread = (ControlPrimitive)p;
-					} else if(p.getName().equals("minSpareThreads")) {
-						minSpareThreads = (ControlPrimitive)p;
-					} else if(p.getName().equals("Compression")) {
-						Compression = (ControlPrimitive)p;
-					} else if(p.getName().equals("cacheMode")) {
-						cacheMode = (ControlPrimitive)p;
-					}else {
-						list.add((ControlPrimitive)p);
-					}
+				if(p instanceof ControlPrimitive){
+					set.add((ControlPrimitive)p);
 				}
 			}
 			
 		}
 		
 		
-		list.add(0, Connection);
-		list.add(1, minSpareThreads);
-		list.add(2, maxThread);
-		list.add(3, Compression);
-		list.add(cacheMode);
-		
-		//list.addAll(set);
+		list.addAll(set);
 		FeatureModel fm = new FeatureModel(list);
 		
 		List<FeatureModel> models = new ArrayList<FeatureModel>();

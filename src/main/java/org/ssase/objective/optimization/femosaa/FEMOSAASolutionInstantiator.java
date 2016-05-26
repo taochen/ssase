@@ -95,5 +95,10 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 		return sol;
 	}
 
+	@Override
+	public double[][] getLambda() {
+		return Repository.lambda_;
+	}
+
 
 }

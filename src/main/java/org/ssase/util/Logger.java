@@ -105,6 +105,7 @@ public class Logger {
 			bw.write(data + "\n");
 			bw.close();
 		} catch (Exception e) {
+			System.out.print("exeution time is : " + data + "\n");
 			e.printStackTrace();
 		}
 	}
