@@ -278,14 +278,14 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 				}
 				
 				
-				logger.debug("before checking dependency size: " + total);
-				logger.debug("after checking dependency size: " + count);
+				System.out.print("before checking dependency size: " + total);
+				System.out.print("after checking dependency size: " + count);
 				
 				double score = count / total;
 				org.ssase.util.Logger.logDependencyEnforcement(null, String.valueOf(score));
 
 				if(finalList.size() == 0) {
-					logger.debug("No decision that satisfies all dependency, thus use all for requirements check");
+					System.out.print("No decision that satisfies all dependency, thus use all for requirements check");
 				    // We do not return here as we need to give the other class an indication
 					// about if there are decisions that satisfy all dependency, hence that they
 					// can mutate the final decision to a valid one.
@@ -423,11 +423,18 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 				
 				Tuple<Integer, Integer> tuple = zeroAndOneTupleMap.get(cp);
 				
+				List<Integer> list = new ArrayList<Integer>();
 				for (int i = tuple.getVal1(); i <= tuple.getVal2(); i++) {
 					// Use the first selected one (==1)
 					if(super.getDecisionVariables()[i].getValue() == 1) {
-						return cp.getValueVector()[ i - tuple.getVal1()];
+						list.add(i - tuple.getVal1());
+						//return cp.getValueVector()[ i - tuple.getVal1()];
 					}
+				}
+				
+				if(list.size() != 0) {	
+			       	 return cp.getValueVector()[new Random().nextInt(list.size())];
+					//return cp.getValueVector()[(int)Math.round(list.size() * 0.1)];
 				}
 				
 				// this means no one has been selected so simply return the first one.
@@ -452,14 +459,15 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 				Tuple<Integer, Integer> tuple = zeroAndOneTupleMap.get(cp);
 				
 				int result = -1;
-				
+				List<Integer> list = new ArrayList<Integer>();
 				for (int i = tuple.getVal1(); i <= tuple.getVal2(); i++) {
 					
 					if(super.getDecisionVariables()[i].getValue() == 1) {
 						
 						if(isEnsureValidReturn) {
 							// Use the first selected one (==1)
-							return result = i - tuple.getVal1();
+							//return result = i - tuple.getVal1();
+							list.add(i - tuple.getVal1());
 						} else {
 							// Means more than one has been selected, return -1
 							// indicate invalid.
@@ -473,12 +481,17 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 					}
 				}
 				
+				if(isEnsureValidReturn && list.size() != 0) {			
+					result = list.get(new Random().nextInt(list.size()));
+					//result = list.get((int)Math.round(list.size() * 0.1));
+				}
+				
 				
 				if(isEnsureValidReturn && result == -1) {
 					// return a random one as protented that it is selected.
 					// this could still violate dependency if the first one is not switch off.
 					
-					return new Random().nextInt(tuple.getVal2() - tuple.getVal1() + 1);
+					return 0;//new Random().nextInt(tuple.getVal2() - tuple.getVal1() + 1);
 				} else {
 					// This might still be -1 if no feature has been selected.
 					return result;

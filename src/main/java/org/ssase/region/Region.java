@@ -56,6 +56,7 @@ public abstract class Region {
 	public static void setSelectedOptimizationType(String type){
 		if(type == null) throw new RuntimeException("No proper OptimizationType found!");
 		
+		type = type.trim();
 		
 		if("init".equals(type)) {
 			selected = OptimizationType.INIT;

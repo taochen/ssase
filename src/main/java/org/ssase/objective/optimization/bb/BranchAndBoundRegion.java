@@ -35,7 +35,7 @@ import org.ssase.util.Repository;
  */
 public class BranchAndBoundRegion extends Region {
 
-	protected static final long EXECUTION_TIME = 40000;
+	protected static final long EXECUTION_TIME = 25000;
 
 	@Override
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
@@ -148,7 +148,9 @@ public class BranchAndBoundRegion extends Region {
 
 			// This is a static method
 			SASSolution.init(optionalVariables);
-
+			SASSolution.clearAndStoreForValidationOnly();
+			
+			
 			FEMOSAASolution dummy = new FEMOSAASolution();
 			dummy.init(objectives, null);
 			Variable[] variables = new Variable[list.size()];
@@ -171,6 +173,7 @@ public class BranchAndBoundRegion extends Region {
 					}
 				}
 
+				//System.out.print(list.get(i).getName() + ", v=" + v + ", index=" + value +"\n");
 				try {
 					dummy.getDecisionVariables()[i].setValue(value);
 				} catch (JMException e) {
@@ -184,12 +187,12 @@ public class BranchAndBoundRegion extends Region {
 			if (!dummy.isSolutionValid()) {
 				try {
 					dummy.correctDependency();
-
+					current.clear();
 					for (int i = 0; i < list.size(); i++) {
-						current.clear();
+						
 
 						current.put(list.get(i),
-								dummy.getDecisionVariables()[i].getValue());
+								list.get(i).getValueVector()[ (int)dummy.getDecisionVariables()[i].getValue()]);
 					}
 
 					System.out
@@ -350,7 +353,7 @@ public class BranchAndBoundRegion extends Region {
 		ControlPrimitive minSpareThread = null;
 		ControlPrimitive maxThread = null;
 		ControlPrimitive memory = null;
-		ControlPrimitive cpu = null;
+		//ControlPrimitive cpu = null;
 		for (ControlPrimitive cp : list) {
 			if (cp.getName().equals("Compression")) {
 				compression = cp;
@@ -370,9 +373,9 @@ public class BranchAndBoundRegion extends Region {
 			if (cp.getName().equals("Memory")) {
 				memory = cp;
 			}
-			if (cp.getName().equals("CPU")) {
-				cpu = cp;
-			}
+//			if (cp.getName().equals("CPU")) {
+//				cpu = cp;
+//			}
 		}
 
 		list.remove(compression);
