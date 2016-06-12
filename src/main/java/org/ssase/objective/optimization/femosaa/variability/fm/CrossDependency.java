@@ -663,6 +663,10 @@ public class CrossDependency implements Dependency {
 		ORGroup.add(branch);
 	}
 	
+	public List<Branch> getORGroup() {
+		return ORGroup;
+	}
+	
 	public void setMainAltValue(int mainAltValue) {
 		this.mainAltValue = mainAltValue;
 	}

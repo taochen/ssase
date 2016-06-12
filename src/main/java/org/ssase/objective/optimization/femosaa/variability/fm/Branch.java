@@ -438,6 +438,8 @@ public class Branch {
 		}
 	}
 	
+
+	
 	
 	private void getNextLayerChildrenGeneWithoutOR(List<Branch> chromosome, List<Branch> result) {
 		for(Branch b : normalGroup) {
@@ -596,13 +598,14 @@ public class Branch {
 	
 	public void generateInBranchMandatoryDependency(List<Branch> chromosome) {
 		
-		if (chromosome.contains(this) && isMandatory()  && isCanSwitchOff() && !chromosome.contains(getFirstSwitchOffNonMandatoryParent())) {
+		if (chromosome.contains(this) && isMandatory()  && isCanSwitchOff()) {
 
 			List<Branch> all = new ArrayList<Branch>();
 			
+			
 	        Branch firstSwitchoff = getFirstSwitchOffNonMandatoryParent();
 			// For the neighbours.
-			if(firstSwitchoff != null) {
+			if(firstSwitchoff != null && !chromosome.contains(firstSwitchoff)) {
 				firstSwitchoff.getNextLayerChildrenGene(chromosome, all);
 				
 				if(!all.contains(this)) {
@@ -618,42 +621,42 @@ public class Branch {
 					
 					CrossDependency d = new CrossDependency(this, b, "required");
 					b.addCrossDependency(d);
-					
-					
-					
+		
 					
 				}
 				
-				// For itself
-				all.clear();
-				List<Branch> allWithoutOR = new ArrayList<Branch>();
-				getNextLayerChildrenGene(chromosome, all);
-				getNextLayerChildrenGeneWithoutOR(chromosome, allWithoutOR);
-				
-				for (Branch b : all) {
-					
-					if(allWithoutOR.contains(b)) {
-						Branch firstSwitchoffNoMandatory = b.getFirstSwitchOffNonMandatoryParent();
-						if(b.isCanSwitchOff() && b.isMandatory() && this.equals(firstSwitchoffNoMandatory)) {
-							  InBranchDependency d = new InBranchDependency(this, b, "required");
-							  b.addInBranchDependency(d);
-							  d = new InBranchDependency(b, this, "required");
-							  addInBranchDependency(d);
-						} else {
-							  InBranchDependency d = new InBranchDependency(this, b, "required");
-							   b.addInBranchDependency(d);
-						}
-					} else {
-					   InBranchDependency d = new InBranchDependency(this, b, "required");
-					   b.addInBranchDependency(d);
-					}
-					
-					
-					
-				}
+			
 				
 			} else {
 				throw new RuntimeException("May be a bug, " + name + " has no FirstSwitchOffNonMandatoryParent?");
+			}
+			
+			// For itself
+			all.clear();
+			List<Branch> allWithoutOR = new ArrayList<Branch>();
+			getNextLayerChildrenGene(chromosome, all);
+			getNextLayerChildrenGeneWithoutOR(chromosome, allWithoutOR);
+			
+			for (Branch b : all) {
+				
+				if(allWithoutOR.contains(b)) {
+					Branch firstSwitchoffNoMandatory = b.getFirstSwitchOffNonMandatoryParent();
+					if(b.isCanSwitchOff() && b.isMandatory() && this.equals(firstSwitchoffNoMandatory)) {
+						  InBranchDependency d = new InBranchDependency(this, b, "required");
+						  b.addInBranchDependency(d);
+						  d = new InBranchDependency(b, this, "required");
+						  addInBranchDependency(d);
+					} else {
+						  InBranchDependency d = new InBranchDependency(this, b, "required");
+						   b.addInBranchDependency(d);
+					}
+				} else {
+				   InBranchDependency d = new InBranchDependency(this, b, "required");
+				   b.addInBranchDependency(d);
+				}
+				
+				
+				
 			}
 		
 		}
@@ -669,13 +672,192 @@ public class Branch {
 		}
 	}
 	
+	private boolean isParentBelongsToORGroup(Branch branch) {
+		
+		
+		Branch b = branch.parent;
+		do {
+			
+			if(ORGroup.contains(b)) {
+				return true;
+			}
+			b = b.parent;
+		} while(b.equals(this));
+		
+		return false;
+		
+	}
+	
 	public void generateInBranchORDependency(List<Branch> chromosome) {
 		
 		// Do the at-least-one dependency
-		if (parent != null && parent.ORGroup.contains(this) && !parent.isOptional) {
-
+		if (parent != null && parent.ORGroup.contains(this)) {
+			boolean isNeedORGroupConstraint = true;
 		
+			if(!parent.isOptional && parent.isCanSwitchOff()) {
+				isNeedORGroupConstraint = false;
+				if(chromosome.contains(parent)) {
+					isNeedORGroupConstraint = true;
+				}
+				// Conditionally optional
+					
+					Branch firstSwitchoff = parent.getFirstSwitchOffNonMandatoryParent();
+					
+					if (firstSwitchoff != null) {
+						
+						if(chromosome.contains(firstSwitchoff)) {
+							isNeedORGroupConstraint = true;
+						} else {
+							List<Branch> all = new ArrayList<Branch>();
+							firstSwitchoff.getNextLayerChildrenGene(chromosome, all);
+							
+							for (Branch b : all) {
+								
+								if(b.isMandatory() && chromosome.contains(b) 
+										&& firstSwitchoff.equals( b.getFirstSwitchOffNonMandatoryParent())) {
+									isNeedORGroupConstraint = true;
+									break;
+								}
+							}
+						}
+						
+						
+					} else {
+						isNeedORGroupConstraint = true;
+					}
+					
+				
+				
+			}
 			
+			if (parent.isOptional) {
+				isNeedORGroupConstraint = false;
+				if(chromosome.contains(parent)) {
+					isNeedORGroupConstraint = true;
+				}
+				
+					List<Branch> all = new ArrayList<Branch>();
+					parent.getNextLayerChildrenGene(chromosome, all);
+					
+					for (Branch b : all) {
+						if(b.isMandatory() && chromosome.contains(b)
+								&& parent.equals( b.getFirstSwitchOffNonMandatoryParent())) {
+							isNeedORGroupConstraint = true;
+							break;
+						}
+					}
+				
+			}
+			
+			System.out.print("isNeedORGroupConstraint: " + isNeedORGroupConstraint + "******\n");
+			
+			// Handle the optional to OR group member
+			if(!isNeedORGroupConstraint) {
+				
+				if(parent.isOptional) {
+					
+					
+					List<Branch> all = new ArrayList<Branch>();
+					parent.getNextLayerChildrenGene(chromosome, all);
+					
+					for (Branch b : all) {
+						
+						if(!parent.isParentBelongsToORGroup(b) && (!b.isMandatory() || !parent.equals( b.getFirstSwitchOffNonMandatoryParent()))) {
+							boolean already = false;
+							for(Dependency d : b.crossMain) {
+								CrossDependency cd = (CrossDependency)d;
+								
+								if(cd.getORGroup().size() != 0) {
+									if(parent.isParentBelongsToORGroup(cd.getORGroup().get(0))) {
+										already = true;
+									}
+								}
+								
+							}
+							
+							if(!already) {
+								  InBranchDependency d = new InBranchDependency(null, b, "at-least-one-required");
+								  for (Branch temp : parent.ORGroup) {
+									  
+									  if(chromosome.contains(temp)) {
+										  d.addBranchInGroup(temp);
+									  } else {
+										  List<Branch> tempList = new ArrayList<Branch>();
+										  temp.getNextLayerChildrenGene(chromosome, tempList);
+										  
+										  for (Branch nest : tempList) {
+											  d.addBranchInGroup(nest);
+										  }
+									  }
+									  
+									  
+								  }
+								  b.addInBranchDependency(d);
+							}
+							
+						}
+						
+					
+					}
+					
+					
+					
+					
+				} else if(parent.isMandatory() && parent.isCanSwitchOff()) {
+					
+					List<Branch> all = new ArrayList<Branch>();
+					
+					Branch firstSwitchoff = parent.getFirstSwitchOffNonMandatoryParent();
+					
+					firstSwitchoff.getNextLayerChildrenGene(chromosome, all);
+					
+					for (Branch b : all) {
+						
+						if(!parent.isParentBelongsToORGroup(b) &&  (!b.isMandatory() || !firstSwitchoff.equals( b.getFirstSwitchOffNonMandatoryParent()))) {
+							boolean already = false;
+							for(Dependency d : b.crossMain) {
+								CrossDependency cd = (CrossDependency)d;
+								
+								if(cd.getORGroup().size() != 0) {
+									if(parent.isParentBelongsToORGroup(cd.getORGroup().get(0))) {
+										already = true;
+									}
+								}
+								
+							}
+							
+							if(!already) {
+								  InBranchDependency d = new InBranchDependency(null, b, "at-least-one-required");
+								  for (Branch temp : parent.ORGroup) {
+									  
+									  if(chromosome.contains(temp)) {
+										  d.addBranchInGroup(temp);
+									  } else {
+										  List<Branch> tempList = new ArrayList<Branch>();
+										  temp.getNextLayerChildrenGene(chromosome, tempList);
+										  
+										  for (Branch nest : tempList) {
+											  d.addBranchInGroup(nest);
+										  }
+									  }
+									  
+									
+									  
+									  
+								  }
+								  
+								  b.addInBranchDependency(d);
+							}
+							
+						}
+						
+					
+					}
+					
+				}
+				
+				return;
+			}
        
 			List<List<Branch>> total = new ArrayList<List<Branch>>();
 			List<Branch> targetList = null;
