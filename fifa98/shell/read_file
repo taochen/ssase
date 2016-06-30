@@ -1,0 +1,1 @@
+/usr/bin/gzip -dc /Users/tao/research/projects/fifa98-workload/$1 | /Users/tao/research/projects/fifa98-workload/ita_public_tools/bin/checklog
