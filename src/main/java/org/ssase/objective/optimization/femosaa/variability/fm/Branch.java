@@ -474,6 +474,20 @@ public class Branch {
 		return null;
 	}
 	
+	private Branch getRoot(){
+		Branch temp = parent;
+		do {
+			if(temp.isRoot) {
+				return temp;
+			}
+			
+			temp = temp.parent;
+			
+		} while (temp != null);
+		
+		return null;
+	}
+	
 
 	
 	public boolean isMandatory(){
@@ -604,8 +618,22 @@ public class Branch {
 			
 			
 	        Branch firstSwitchoff = getFirstSwitchOffNonMandatoryParent();
+	        
+	    	Branch p = parent;
+			boolean isHasGene = false;
+			while(!firstSwitchoff.equals(p)) {
+				
+				if(chromosome.contains(p)) {
+					isHasGene = true;
+					break;
+				}
+				
+				
+				p = p.parent;
+			}
+	        
 			// For the neighbours.
-			if(firstSwitchoff != null && !chromosome.contains(firstSwitchoff)) {
+			if(firstSwitchoff != null && !chromosome.contains(firstSwitchoff) && !isHasGene) {
 				firstSwitchoff.getNextLayerChildrenGene(chromosome, all);
 				
 				if(!all.contains(this)) {
@@ -640,8 +668,22 @@ public class Branch {
 			for (Branch b : all) {
 				
 				if(allWithoutOR.contains(b)) {
-					Branch firstSwitchoffNoMandatory = b.getFirstSwitchOffNonMandatoryParent();
-					if(b.isCanSwitchOff() && b.isMandatory() && this.equals(firstSwitchoffNoMandatory)) {
+					//Branch firstSwitchoffNoMandatory = b.getFirstSwitchOffNonMandatoryParent();
+					
+					p = b.parent;
+					boolean isOnlyMan = true;
+					while(!this.equals(p)) {
+						
+						if(!p.isMandatory()) {
+							isOnlyMan = false;
+							break;
+						}
+						
+						
+						p = p.parent;
+					}
+					
+					if(b.isCanSwitchOff() && b.isMandatory() && isOnlyMan) {
 						  InBranchDependency d = new InBranchDependency(this, b, "required");
 						  b.addInBranchDependency(d);
 						  d = new InBranchDependency(b, this, "required");
@@ -703,9 +745,30 @@ public class Branch {
 					
 					Branch firstSwitchoff = parent.getFirstSwitchOffNonMandatoryParent();
 					
+					// if there exist at least one ancestor is gene.
+					// in case no firstSwitchoff.
+//					if (firstSwitchoff == null) {
+//						firstSwitchoff = getRoot();
+//					}
+					
+				
 					if (firstSwitchoff != null) {
+					
+					  	Branch p = parent;
+						boolean isHasGene = false;
+						while(!firstSwitchoff.equals(p)) {
+							
+							if(chromosome.contains(p)) {
+								isHasGene = true;
+								break;
+							}
+							
+							
+							p = p.parent;
+						} 
+				        
 						
-						if(chromosome.contains(firstSwitchoff)) {
+						if(chromosome.contains(firstSwitchoff) || isHasGene) {
 							isNeedORGroupConstraint = true;
 						} else {
 							List<Branch> all = new ArrayList<Branch>();

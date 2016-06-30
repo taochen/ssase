@@ -3,6 +3,7 @@ package org.ssase.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Data {
@@ -62,7 +63,7 @@ public class Data {
 //		for (String n : compare) {
 //		for (String o : obj) {
 //			try {
-//				double t = read(prefix+n+o);
+//				double t = read(prefix+n+o,o);
 //				System.out.print("Mean: " + n +", "+o+"="+t+"\n");
 //			} catch (Throwable e) {
 //				// TODO Auto-generated catch block
@@ -110,6 +111,19 @@ public class Data {
 			}
 		}
 		
+		System.out.print("\n");
+		
+		for (String n : compare) {
+			
+			try {
+				double t = readTime(prefix+n);
+				System.out.print("Execution Time: " + n +"="+t+"\n");
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 //		for (String n : compare) {
 //			for (String o : obj) {
 //				try {
@@ -125,7 +139,7 @@ public class Data {
 	}
 	
 	
-	private static double read(String name) throws Throwable {
+	private static double read(String name, String obj) throws Throwable {
 		BufferedReader reader = new BufferedReader(new FileReader(new File(name)));
 		String line = null;
 		double total = 0;
@@ -138,8 +152,14 @@ public class Data {
 				continue;
 			} 
 			if(Double.parseDouble(line) != 0 ) {
-				list.add(Double.parseDouble(line));
-				total += Double.parseDouble(line) ;
+				if(obj.equals("Response Time.rtf")) {
+					list.add(Double.parseDouble(line)* 1000);
+					total += Double.parseDouble(line)* 1000 ;
+				} else {
+					list.add(Double.parseDouble(line)* 1);
+					total += Double.parseDouble(line)* 1 ;
+				}
+			
 				i++;
 				no++;
 			}
@@ -162,6 +182,29 @@ public class Data {
 		return total/no;
 	}
 	
+	private static double readTime(String name) throws Throwable {
+		BufferedReader reader = new BufferedReader(new FileReader(new File(name.replace("rubis_software/", "Execution-Time.rtf"))));
+		String line = null;
+		double total = 0;
+		int i = 0;
+		int no = 0;
+		List<Double> list = new ArrayList<Double>();
+		while((line = reader.readLine()) != null) {
+			if(i < startIndex) {
+				i++;
+				continue;
+			} 
+			//if(Double.parseDouble(line) != 0) {
+				total += Double.parseDouble(line)  ;
+				i++;
+				no++;
+			//}
+			
+		}
+		reader.close();
+		return total/no;
+	}
+	
 	private static double readDependency(String name) throws Throwable {
 		BufferedReader reader = new BufferedReader(new FileReader(new File(name.replace("rubis_software/", "Dependency.rtf"))));
 		String line = null;
@@ -170,15 +213,15 @@ public class Data {
 		int no = 0;
 		List<Double> list = new ArrayList<Double>();
 		while((line = reader.readLine()) != null) {
-			if(Double.parseDouble(line) != 0 && i < startIndex) {
+			if(i < startIndex) {
 				i++;
 				continue;
 			} 
-			if(Double.parseDouble(line) != 0) {
-				total += Double.parseDouble(line) ;
+			//if(Double.parseDouble(line) != 0) {
+				total += Double.parseDouble(line)  ;
 				i++;
 				no++;
-			}
+			//}
 			
 		}
 		reader.close();
@@ -188,10 +231,11 @@ public class Data {
 	private static double readGSD(Double[] values, double geoMean) {
 		double gsd = 0.0;
 		for (int i = 0; i < values.length; i++) {
-			if (values[i] > 0 && geoMean > 0) {
-				gsd = gsd + (Math.log(values[i]) - Math.log(geoMean))
-						* (Math.log(values[i]) - Math.log(geoMean));
-			}
+			//System.out.print(Math.log10(values[i])+"\n");
+			//if (values[i] > 0 && geoMean > 0) {
+				gsd = gsd + (Math.log10(values[i]) - Math.log10(geoMean) 
+						* (Math.log10(values[i]) - Math.log10(geoMean)));
+			//}
 		}
 		gsd = gsd / (values.length);
 		gsd = Math.sqrt(gsd);
@@ -199,13 +243,45 @@ public class Data {
 		return gsd;
 	}
 	
+	
+	private static void log(Double[] values) {
+		double gsd = 0.0;
+		String d = "";
+		String n = "";
+		Double[] newValues = new Double[values.length];
+		for (int i = 0; i < values.length; i++) {
+			newValues[i] = Math.log10(values[i]);
+		}
+		
+		for (int i = 0; i < newValues.length; i++) {
+			System.out.print(newValues[i] + "\n");
+			//System.out.print("("+i+","+newValues[i] + ")\n");
+			d = d + newValues[i] + ",";
+			n = n + (i + 1) + ",";
+			gsd += newValues[i];
+		}
+		
+		System.out.print("Mean " + gsd/newValues.length + "\n");
+		
+		double mean = gsd/newValues.length;
+		double var = 0.0;
+		for (int i = 0; i < newValues.length; i++) {
+			var += Math.pow((newValues[i] - mean), 2);
+		}
+		
+		System.out.print("Var "+var/newValues.length + "\n");
+		System.out.print(d + "\n");
+		System.out.print(n + "\n");
+	}
+	
+	
 	private static double readGmean(String name, String approach, String obj) throws Throwable {
 		BufferedReader reader = new BufferedReader(new FileReader(new File(name)));
 		String line = null;
 		double total = 1;
 		int i = 0;
 		int no = 0;
-		
+		BigDecimal bd = new BigDecimal(1);
 		double htotal = 0;
 		
 		List<Double> list = new ArrayList<Double>();
@@ -216,9 +292,16 @@ public class Data {
 				continue;
 			} 
 			if(Double.parseDouble(line) != 0) {
-				list.add(Double.parseDouble(line));
+				if(obj.equals("Response Time.rtf")) {
+
+					list.add(Double.parseDouble(line)*1000);		
+					bd = bd.multiply(new BigDecimal(Double.parseDouble(line))).multiply(new BigDecimal(1000));
+				} else {
+					list.add(Double.parseDouble(line)*1);		
+					bd = bd.multiply(new BigDecimal(Double.parseDouble(line))).multiply(new BigDecimal(1));
+				}
 				
-				total = total * Double.parseDouble(line) ;
+				total = total * (Double.parseDouble(line)) ;
 				htotal = htotal + 1 / Double.parseDouble(line) ;
 				i++;
 				no++;
@@ -260,9 +343,18 @@ public class Data {
             Emap.put(approach, Math.pow(total, 1.0/no));
 		}
 		
-		double gsd = readGSD(list.toArray(new Double[list.size()]),Math.pow(total, 1.0/no));
-		//System.out.print("GSD: " + approach +", "+obj+"="+gsd+"\n");
+	
+			double gsd = readGSD(list.toArray(new Double[list.size()]),Math.pow(bd.doubleValue(), 1.0/no));
+			System.out.print("New Gmean: " + approach +", "+obj+"="+Math.pow(bd.doubleValue(), 1.0/no)+ ", G-SD="+gsd+"\n");
 		
+		
+		//System.out.print("GSD: " + approach +", "+obj+"="+gsd+"\n");
+		//System.out.print("CI: " + approach +", "+obj+"=["+(Math.pow(total, 1.0/no)-1.96*gsd/Math.sqrt(list.size())) + 
+			//	", " + (Math.pow(total, 1.0/no)+1.96*gsd/Math.sqrt(list.size())) +"]\n");
+		//System.out.print("GVAR: " + approach +", "+obj+"="+(gsd*gsd)+"\n");
+		
+		if(obj.equals("Response Time.rtf")) 
+		log(list.toArray(new Double[list.size()]));
 		htotal = no / htotal;
 		
 		return Math.pow(total, 1.0/no);
@@ -322,4 +414,25 @@ public class Data {
 		return list.get(p);
 		
 	}
+	private static final int SCALE = 10;
+	  private static final int ROUNDING_MODE = BigDecimal.ROUND_HALF_DOWN;
+	
+	  private static BigDecimal nthRoot(final int n, final BigDecimal a, final BigDecimal p) {
+		    if (a.compareTo(BigDecimal.ZERO) < 0) {
+		      throw new IllegalArgumentException("nth root can only be calculated for positive numbers");
+		    }
+		    if (a.equals(BigDecimal.ZERO)) {
+		        return BigDecimal.ZERO;
+		    }
+		    BigDecimal xPrev = a;
+		    BigDecimal x = a.divide(new BigDecimal(n), SCALE, ROUNDING_MODE);  // starting "guessed" value...
+		    while (x.subtract(xPrev).abs().compareTo(p) > 0) {
+		        xPrev = x;
+		        x = BigDecimal.valueOf(n - 1.0)
+		              .multiply(x)
+		              .add(a.divide(x.pow(n - 1), SCALE, ROUNDING_MODE))
+		              .divide(new BigDecimal(n), SCALE, ROUNDING_MODE);
+		    }
+		    return x;
+		  }
 }

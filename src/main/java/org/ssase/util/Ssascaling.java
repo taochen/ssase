@@ -543,10 +543,10 @@ public class Ssascaling {
 			
 			
 			if(Region.selected != OptimizationType.INIT) {
-			   new HistoryLoader().run();				   
+			  // new HistoryLoader().run();				   
 			}
 			loadFeatureModel();
-			r.receive();
+			//r.receive();
 			
 	}
 	
