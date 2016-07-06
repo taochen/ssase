@@ -1,0 +1,65 @@
+<ssase>     
+            <sensor name="CPU" class="org.ssase.sensor.linux.CpuSensor"/>
+            <sensor name="Memory" class="org.ssase.sensor.linux.MemorySensor"/>
+            
+        <service name="rubis_software">
+             <sensor name="Energy" class="org.ssase.sensor.linux.EnergySensor"/> 
+            <sensor name="Response Time" class="org.ssase.sensor.ResponseTimeSensor"/>
+            <sensor name="cacheMode" class="org.ssase.sensor.control.CacheModeSensor"/> 
+            <sensor name="Compression" class="org.ssase.sensor.control.CompressionSensor"/> 
+            <sensor name="Connection" class="org.ssase.sensor.control.ConnectionSensor"/> 
+            <sensor name="maxBytesLocalDisk" class="org.ssase.sensor.control.DiskCacheSizeSensor"/> 
+            <sensor name="maxBytesLocalHeap" class="org.ssase.sensor.control.MemoryCacheSizeSensor"/> 
+             <sensor name="query_cache_size" class="org.ssase.sensor.control.QueryCacheSizeSensor"/>  
+            <sensor name="minSpareThreads" class="org.ssase.sensor.control.SpareThreadSensor"/> 
+            <sensor name="maxThread" class="org.ssase.sensor.control.ThreadSensor"/>                     
+            
+            <!-- Various workload for different services -->
+            
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.AboutMe"/>  
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.BrowseCategories"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.BrowseRegions"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.StoreBuyNow"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.BuyNow"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.BuyNowAuth"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.PutBid"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.PutBidAuth"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.PutComment"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.PutCommentAuth"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.RegisterItem"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.RegisterUser"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.SearchItemsByCategory"/>    
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.SearchItemsByRegion"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.SellItemForm"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.StoreBid"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.StoreComment"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.ViewBidHistory"/> 
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.ViewItem"/>  
+            <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="edu.rice.rubis.servlets.ViewUserInfo"/>  
+        
+        <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="index.html"/>  
+        <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="register.html"/>  
+        <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="browse.html"/>  
+        <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="sell.html"/>  
+        <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor" alias="about_me.html"/>  
+        </service>
+            
+            
+<!--         <service name="edu.rice.rubis.servlets.SearchItemsByCategory"> -->
+<!--             <sensor name="Availability" class="org.ssase.sensor.AvailabilitySensor"/> -->
+<!--             <sensor name="Response Time" class="org.ssase.sensor.ResponseTimeSensor"/> -->
+<!--             <sensor name="Throughput" class="org.ssase.sensor.ThroughputSensor"/>                      -->
+<!--             <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor"/> -->
+<!--             <sensor name="Concurrency" class="org.ssase.sensor.ConcurrencySensor"/> -->
+<!--             <sensor name="Reliability" class="org.ssase.sensor.ReliabilitySensor"/>          -->
+<!--         </service> -->
+<!--         <service name="edu.rice.rubis.servlets.BrowseCategories"> -->
+<!--             <sensor name="Availability" class="org.ssase.sensor.AvailabilitySensor"/> -->
+<!--             <sensor name="Response Time" class="org.ssase.sensor.ResponseTimeSensor"/> -->
+<!--             <sensor name="Throughput" class="org.ssase.sensor.ThroughputSensor"/>                      -->
+<!--             <sensor name="Workload" class="org.ssase.sensor.WorkloadSensor"/> -->
+<!--             <sensor name="Concurrency" class="org.ssase.sensor.ConcurrencySensor"/> -->
+<!--             <sensor name="Reliability" class="org.ssase.sensor.ReliabilitySensor"/>          -->
+<!--         </service> -->
+</ssase>
+
