@@ -256,6 +256,10 @@ public class InBranchDependency implements Dependency {
 		ORGroup.add(branch);
 	}
 
+	public boolean isExistInGroup(Branch branch) {
+		return ORGroup == null? false : ORGroup.contains(branch);
+	}
+	
 	@Override
 	public Dependency copy(Branch main, Branch dependent) {
 		// TODO Auto-generated method stub

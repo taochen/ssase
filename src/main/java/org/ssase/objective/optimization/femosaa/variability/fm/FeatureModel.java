@@ -994,6 +994,7 @@ public class FeatureModel {
 				logger.warn("When perform intersection for " + key.getName() + ", adding " + name + "causing empty set, we try fix 0 to represent the feature can only be disable under such secnario");
 				
 				inter.add(0);
+				// This should not occur for correct FM.
 			} else if(key.isCanSwitchOff()) {
 				
 				logger.warn("When perform intersection for " + key.getName() + ", adding " + name + "causing empty set, we try fix 0 to represent the feature can only be disable under such secnario"

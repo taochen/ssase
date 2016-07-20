@@ -948,10 +948,58 @@ public class Branch {
 	        	for (List<Branch> subList : total) {
 	        		
 	        		for (Branch main : subList) {
-						d.addBranchInGroup(main);
+	        	     // Do not add at-least-one-exist if there is one exist between two genes,
+	   	        	 // even if they are related to different root, as HR-3 would ensure the need of such.
+	        		 boolean exist = false;
+	   	        	 if(dependent.inBranchMain.size() != 0) {
+	   	        		
+	   	        		 for(Dependency dep : dependent.inBranchMain) {
+	   	        			if(((InBranchDependency)dep).isExistInGroup(main)) {
+	   	        				exist = true;
+	   	        				break;
+	   	        			}
+	   	        		 }
+	   	        		 
+	   	        	 }
+	   	        	 
+	   	        	 
+	   	        	 if(!exist) {
+	   	        		d.addBranchInGroup(main); 
+	   	        	 }
+						
 					}
 	        		
 	        	}
+	        	
+	        	// Add the same decedant in the target list
+	        	 for (Branch subMain : targetList) {
+	        		 if(!dependent.equals(subMain)) {
+	        			 
+	       	        	     // Do not add at-least-one-exist if there is one exist between two genes,
+	       	   	        	 // even if they are related to different root, as HR-3 would ensure the need of such.
+	       	        		 boolean exist = false;
+	       	   	        	 if(dependent.inBranchMain.size() != 0) {
+	       	   	        		
+	       	   	        		 for(Dependency dep : dependent.inBranchMain) {
+	       	   	        			if(((InBranchDependency)dep).isExistInGroup(subMain)) {
+	       	   	        				exist = true;
+	       	   	        				break;
+	       	   	        			}
+	       	   	        		 }
+	       	   	        		 
+	       	   	        	 }
+	       	   	        	 
+	       	   	        	 
+	       	   	        	 if(!exist) {
+	       	   	        	     d.addBranchInGroup(subMain);
+	       	   	        	 }
+	        			 
+	        			
+	        		 }
+	        	 }
+	        	 
+	        	
+	        	 
 	        	dependent.addInBranchDependency(d);
 	        }
 
