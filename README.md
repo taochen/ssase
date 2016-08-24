@@ -3,11 +3,11 @@ SSASE (including SAM, FEMOSAA, RCA and MOACO)
 
 This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering techniques to tackle modelings, architecting and decision making problems for self-adaptive software systems, especially at runtime.
 
-Currently it encapsulate the following sub-frameworks/components:
+Currently it encapsulates the following sub-frameworks/components:
 
 ###SAM: Self-Adaptive Modeling###
 
-This is a framework that enables self-adaptive feature selection and selection of learning algorithms to model the correlation between control features, environments, interference to Quality of Service (QoS) attributes (e.g., response time). More details can be found in the following publications:
+This is a framework that enables self-adaptive feature selection and selection of learning algorithms to model the correlation of control features, environments, interference to Quality of Service (QoS) attributes (e.g., response time). More details can be found in the following publications:
 
  > * T. Chen and R. Bahsoon , Self-Adaptive and Online QoS Modeling for Cloud-Based Software Services. IEEE Transactions on Software Engineering, to appear.
 
@@ -33,14 +33,14 @@ Source code directory:
 
 
 
-###FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software at Runtime### 
+###FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software at Runtime 
 
 This is a novel framework that automatically synergizes the feature model and Multi-Objective Evolutionary Algorithm (MOEA), to optimize SAS’s conflicting QoS objectives at runtime. At design time, FEMOSAA automatically transposes the design of SAS, which is expressed as a feature model, to the chromosome representation and the reproduction operators (mutation and crossover) in MOEA. At runtime, the feature model serves as the domain knowledge to guide the search, providing more chances to find better solutions. FEMOSAA contains a new method to search for the knee solutions, which can achieve balanced trade-off. This work is currently being submitted for publication.
 
 Source code directory:
    * src/main/java/org/ssase/objective/optimization/femosaa/
 
-###MOACO: Self-Adaptive and Interference-Aware Multi-Objective Ant Colony Optimisation for Decision Making in Self-Adaptive Software### 
+### MOACO: Self-Adaptive and Interference-Aware Multi-Objective Ant Colony Optimisation for Decision Making in Self-Adaptive Software ### 
 
 This is a component that exploits multi-objective ant colony algorithm to optimise adaptation decisions for self-adaptive software system at runtime. It particularly considers QoS interference caused by multi-tenants and virtualized environment, e.g. cloud computing. The approach leverage nash dominance, a popular economic principle, to find well-compromised/knee trade-off decisions. More details can be found in the following publications:
 
@@ -48,7 +48,7 @@ This is a component that exploits multi-objective ant colony algorithm to optimi
 
 Source code directory:
    * src/main/java/org/ssase/objective/optimization/moaco/
-
+==========
 
 For all experiments in the published papers, we have used the following benchmarks and workload trace:
 
