@@ -20,7 +20,7 @@ This is a framework that enables self-adaptive feature selection and selection o
 Source code directory:
   * src/main/java/org/ssase/model/
 
- ###RCA : Region Controlled Architecture (for cloud environment only)###
+###RCA : Region Controlled Architecture (for cloud environment only)###
 
 This is a component that intelligent divide the architecture with respect to objective-dependency, which is determined by the inputs of QoS model.  More details can be found in the following publications:
 
@@ -33,14 +33,14 @@ Source code directory:
 
 
 
- ###FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software at Runtime### 
+###FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software at Runtime### 
 
 This is a novel framework that automatically synergizes the feature model and Multi-Objective Evolutionary Algorithm (MOEA), to optimize SAS’s conflicting QoS objectives at runtime. At design time, FEMOSAA automatically transposes the design of SAS, which is expressed as a feature model, to the chromosome representation and the reproduction operators (mutation and crossover) in MOEA. At runtime, the feature model serves as the domain knowledge to guide the search, providing more chances to find better solutions. FEMOSAA contains a new method to search for the knee solutions, which can achieve balanced trade-off. This work is currently being submitted for publication.
 
 Source code directory:
    * src/main/java/org/ssase/objective/optimization/femosaa/
 
- ###MOACO: Self-Adaptive and Interference-Aware Multi-Objective Ant Colony Optimisation for Decision Making in Self-Adaptive Software### 
+###MOACO: Self-Adaptive and Interference-Aware Multi-Objective Ant Colony Optimisation for Decision Making in Self-Adaptive Software### 
 
 This is a component that exploits multi-objective ant colony algorithm to optimise adaptation decisions for self-adaptive software system at runtime. It particularly considers QoS interference caused by multi-tenants and virtualized environment, e.g. cloud computing. The approach leverage nash dominance, a popular economic principle, to find well-compromised/knee trade-off decisions. More details can be found in the following publications:
 
