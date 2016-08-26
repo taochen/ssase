@@ -1,7 +1,7 @@
 SSASE (including SAM, RCA, FEMOSAA and MOACO)
 ==========
 
-This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering techniques to tackle modelings, architecting and decision making problems for self-adaptive software systems, especially at runtime.
+This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering techniques to tackle modelings, architecting and decision making problems for self-adaptive software systems, especially at their runtime.
 
 Currently it encapsulates the following sub-frameworks/components:
 
@@ -37,7 +37,7 @@ Source code directory:
 
 This is a novel framework that automatically synergizes the feature model and Multi-Objective Evolutionary Algorithm (MOEA) to optimize SAS’s conflicting QoS objectives at runtime. At design time, FEMOSAA automatically transposes the design of SAS, which is expressed as a feature model, to the chromosome representation and the reproduction operators (mutation and crossover) in MOEA. At runtime, the feature model serves as the domain knowledge to guide the search, providing more chances to find better solutions. FEMOSAA contains a new method to search for the knee solutions, which can achieve balanced trade-off. This work is currently being submitted for publication.
 
-Currently, FEMOSAA exploits the recent MOEA/D variant, MOEA/D-STM, which extends the survival selection of the original MOEA/D. The source code of MOEA/D-STM, our feature dependency aware mutation/crossover operators and knee selection method can be found at [here](https://github.com/JerryI00/Software-Adaptive-System).
+Currently, FEMOSAA exploits the recent MOEA/D variant, MOEA/D-STM, which extends the survival selection of the original MOEA/D. The source code of MOEA/D-STM, our feature dependency aware mutation/crossover operators and knee selection method can be found at [here](https://github.com/JerryI00/Software-Adaptive-System). (Note that to build and use FEMOSAA, users are advised to download the source code of MOEA/D-STM with dependency injection and knee selection first.)
 
 Source code directory:
    * [src/main/java/org/ssase/objective/optimization/femosaa/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/objective/optimization/femosaa)
