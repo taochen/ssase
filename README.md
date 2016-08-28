@@ -37,7 +37,7 @@ Source code directory:
 
 This is a novel framework that automatically synergizes the feature model and Multi-Objective Evolutionary Algorithm (MOEA) to optimize SAS’s conflicting QoS objectives at runtime. At design time, FEMOSAA automatically transposes the design of SAS, which is expressed as a feature model, to the chromosome representation and the reproduction operators (mutation and crossover) in MOEA. At runtime, the feature model serves as the domain knowledge to guide the search, providing more chances to find better solutions. FEMOSAA contains a new method to search for the knee solutions, which can achieve balanced trade-off. This work is currently being submitted for publication.
 
-Currently, FEMOSAA exploits the recent MOEA/D variant, MOEA/D-STM, which extends the survival selection of the original MOEA/D. The source code of MOEA/D-STM, our feature dependency aware mutation/crossover operators and knee selection method can be found at [here](https://github.com/JerryI00/Software-Adaptive-System). (Note that to build and use FEMOSAA, users are advised to download the source code of MOEA/D-STM with dependency injection and knee selection first.)
+Currently, FEMOSAA exploits the recent MOEA/D variant, MOEA/D-STM, which extends the survival selection of the original MOEA/D. The source code of MOEA/D-STM, our feature dependency aware mutation/crossover operators and knee selection method can be found at [here](https://github.com/JerryI00/Software-Adaptive-System). (Note that to build and use FEMOSAA, users are advised to download and build the source code of MOEA/D-STM with dependency aware operators and knee selection first.)
 
 Source code directory:
    * [src/main/java/org/ssase/objective/optimization/femosaa/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/objective/optimization/femosaa)
@@ -75,6 +75,17 @@ To use this framework, the only necessary configurations are the files under [sr
 
  * _domU.xml_ specifies the various sensors that are placed with the adaptable software. It should be placed with the main framework as an adaptation engine. It should be placed with the adaptable software. In the future, we will refactor them to be more flexible similar to the installation of sensors.
 
- * _feature_model.xml_ specifies the control features and their dependency. This will be used by our FEMOSAA framework to perform feature guided multi-objective optimization. We currently only support XML, other formats, e.g., CNF, will be implemented shortly.
+ * _feature_model.xml_ specifies the control features and their dependency. This will be used by our FEMOSAA framework to perform feature guided multi-objective optimization. We currently only support XML representation of the feature model, other formats, e.g., CNF, will be implemented shortly.
 
 We are also in the process to add more exampled scenarios for using SSASE framework. We will update here once they have been completed.
+
+- - - -
+
+SSASE, including SAM, RCA, FEMOSAA and MOACO, can be setup and run via the following steps:
+
+1. Download/fork/clone the repository to your local codebase.
+2. Implement the sensors for the QoS attributes, control features and environmental factors in your domain of self-adaptive software by extending the [Sensor.java](https://github.com/taochen/ssase/blob/master/src/main/java/org/ssase/sensor/Sensor.java) interface. We have already provided implementation for the most commonly considered dimension in [src/main/java/org/ssase/sensor](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/sensor).
+3. Deploy and plug the sensors in the adaptable software, also, triggering their initialisation and the monitoring, see for example, [StimulusListener.java](https://github.com/taochen/ssase/blob/master/adaptable-software/rubis/src/main/java/edu/rice/rubis/servlets/StimulusListener.java) and [ContextListener.java](https://github.com/taochen/ssase/blob/master/adaptable-software/rubis/src/main/java/edu/rice/rubis/servlets/ContextListener.java)
+4. Implement the necessary actuators by extending on the [Actuator.java](https://github.com/taochen/ssase/blob/master/src/main/java/org/ssase/actuator/Actuator.java). Again, some popular ones have been provided in [src/main/java/org/ssase/actuator](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/actuator). Note that some actuations can only be triggered within the adaptable software, in those cases, trigger the [ActuationReceiver.java](https://github.com/taochen/ssase/blob/master/src/main/java/org/ssase/actuator/ActuationReceiver.java#L42) where appropriate.
+5. Properly configure the files mentioned above.
+6. Build and deploy SSASE along with the adaptable software. Note that we currently do not provide sub-build for each sub-framework explicitly. Thus, to use only one sub-framework (e.g., FEMOSAA), one need to manual switch off the others in [ControlBus.java](https://github.com/taochen/ssase/blob/master/src/main/java/org/ssase/ControlBus.java).
