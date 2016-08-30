@@ -2,6 +2,7 @@
 backup/
 lib/
 META-INF/
+data/
 
 # Other files and folders
 .classpath
