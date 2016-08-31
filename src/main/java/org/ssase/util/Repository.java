@@ -89,6 +89,21 @@ public class Repository {
 		directPrimitives.clear();
 	}
 	
+	public static void removeUnneededPrimitive(Set<Primitive> removals) {
+
+		for (Primitive removal : removals) {
+
+			for (Map.Entry<Objective, Set<Primitive>> e : directPrimitives
+					.entrySet()) {
+				e.getValue().remove(removal);
+			}
+
+			for (Service s : Repository.getAllServices()) {
+				s.removePossiblePrimitive(removal);
+			}
+		}
+	}
+	
 	public static Set<Objective> getAllObjectives(){
 		return directPrimitives.keySet();
 	}

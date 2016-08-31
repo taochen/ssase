@@ -20,9 +20,11 @@ import jmetal.problems.VarEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.primitive.ControlPrimitive;
+import org.ssase.primitive.Primitive;
 import org.ssase.primitive.SoftwareControlPrimitive;
 import org.ssase.region.OptimizationType;
 import org.ssase.region.Region;
+import org.ssase.util.Repository;
 import org.ssase.util.Ssascaling;
 import org.ssase.util.Tuple;
 import org.w3c.dom.Document;
@@ -465,10 +467,21 @@ public class FeatureModel {
 	private static void sort(FeatureModel model){
 		for (Branch b : model.chromosome) {
 			b.insertRange();
+			boolean isHas = false;
+			for (ControlPrimitive p : model.list) {
+				if(b.getName().equals(p.getName())) {
+					isHas = true;
+				}
+			}
+			// TODO We should really combine feature_model.xml and dom0.xml together.
+			if(!isHas) {
+				 throw new RuntimeException(b.getName() + " from feature_model.xml has been identified as an elitist feature (gene), but it has no entry in dom0.xml. Please make sure that elitist features in feature_model.xml are also detailed in dom0.xml");			
+			}
 		}
 		
 		
 		List<Branch> list = new ArrayList<Branch>();
+		Set<Primitive> removals = new HashSet<Primitive>();
 		for (ControlPrimitive p : model.list) {
 			boolean isHas = false;
 			for (Branch b : model.chromosome) {
@@ -482,12 +495,17 @@ public class FeatureModel {
 				}
 			}
 			
-			if(!isHas)
-			  throw new RuntimeException(p.getName() + " is inconsistent with the setup in dom0.xml and feature_model.xml");
-			
+			// TODO We should really combine feature_model.xml and dom0.xml together.
+			if(!isHas) {	
+				removals.add(p);
+				logger.warn(p.getName() + " is in dom0.xml but it has not been identified as an elitist feature (gene), thus it will be ignored");
+			}
+			 
 		}
 		
 		model.chromosome = list;
+		model.list.removeAll(removals);
+		Repository.removeUnneededPrimitive(removals);
 	}
 
 	public void configureDependencyChain(Map<String, Branch> allMap){
