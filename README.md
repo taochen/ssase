@@ -22,7 +22,7 @@ Source code directory:
 
 ###RCA : Region Controlled Architecture###
 
-This is a component that intelligent partitions the architecture of self-adaptive software with respect to objective-dependency, which is determined by the inputs of QoS model.  More details can be found in the following publications:
+This is a component that intelligently partitions the architecture of self-adaptive software with respect to objective-dependency, which is determined by the inputs of QoS model.  More details can be found in the following publications:
 
  > * T. Chen and R. Bahsoon. Symbiotic and Sensitivity-Aware Architecture for Globally-Optimal Benefit in Self-Adaptive Cloud. The 9th International Symposium on Software Engineering for Adaptive and Self-Managing Systems, SEAMS in conjunction with the 36th International Conference on Software Engineering (ICSE), India, 2014.
 
