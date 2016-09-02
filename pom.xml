@@ -199,6 +199,17 @@
 			<version>0.1.5</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>nz.ac.waikato.cms.weka</groupId>
+			<artifactId>weka-dev</artifactId>
+			<version>3.7.13</version>
+		</dependency>
+
+		<dependency>
+			<groupId>nz.ac.waikato.cms.moa</groupId>
+			<artifactId>moa</artifactId>
+			<version>2012.08</version>
+		</dependency>
 		<!-- <dependency> <groupId>libsvm</groupId> <artifactId>libsvm</artifactId> 
 			<version>0.0.1</version> <scope>compile</scope> </dependency> -->
 	</dependencies>
