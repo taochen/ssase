@@ -497,6 +497,7 @@ public class FeatureModel {
 			
 			// TODO We should really combine feature_model.xml and dom0.xml together.
 			if(!isHas) {	
+				// By doing so, we are removing the indirect primitives/features as well.
 				removals.add(p);
 				logger.warn(p.getName() + " is in dom0.xml but it has not been identified as an elitist feature (gene), thus it will be ignored");
 			}
