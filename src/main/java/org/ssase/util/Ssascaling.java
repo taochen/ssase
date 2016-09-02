@@ -350,11 +350,23 @@ public class Ssascaling {
 	    							
 	    							
 	    							if (Node.ELEMENT_NODE == qoss.item(k).getNodeType()) {
-	    								
-	    								QualityOfService qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
-	    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
-	    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
-	    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()));
+	    								QualityOfService qos = null;
+	    								if(qoss.item(k).getAttributes().getNamedItem("sla_per_unit") != null) {
+	    									 qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
+		    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()),
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("sla_per_unit").getNodeValue()));
+		    								
+		    							
+	    								} else {
+	    									 qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
+		    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()));
+		    								
+		    	
+	    								}
 	    								
 	    								if (qoss.item(k).getAttributes().getNamedItem("ep") != null) {
 	    								    qos.setEP((EnvironmentalPrimitive)primitives.get(qoss.item(k).getAttributes().getNamedItem("ep").getNodeValue()));

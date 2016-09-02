@@ -28,7 +28,7 @@ public class QualityOfService implements Objective, Comparable{
 	// 0 to 100
 	protected double[] array;
 	// The max numerical value
-	protected double max = 0;
+	protected double max = 0.0;
 	// The min numerical value
 	//protected double min = 0;
 	protected String name;
@@ -70,6 +70,8 @@ public class QualityOfService implements Objective, Comparable{
 	// Used for testing.
 	private boolean isReallyTrain = true;
 	
+	// The SLA panelty in money.
+	private double unit = 0.0;
 	
 	// The new values that has not yet being updated. This is raw value.
 	protected double[] pendingValues = null;
@@ -89,6 +91,16 @@ public class QualityOfService implements Objective, Comparable{
 		this.constraint = constraint;
 		this.isMin = isMin;
 		this.changeP = changeP;
+	}
+	
+	public QualityOfService (String name, double constraint, boolean isMin, double changeP, double unit) {
+		super();
+		this.name = name;
+		array = new double[0];
+		this.constraint = constraint;
+		this.isMin = isMin;
+		this.changeP = changeP;
+		this.unit = unit;
 	}
 
 	@Deprecated
@@ -270,6 +282,47 @@ public class QualityOfService implements Objective, Comparable{
 		return true;
 	}
 
+	
+	/**
+	 * This should not be use with doTraining, they are alternative.
+	 * @return
+	 */
+	public boolean doUpdate () {
+		
+		// Add some data first in case there is too less data samples.
+		if (!isReallyTrain || array.length < leastNumberOfSample) {
+			return false;
+		}
+		
+		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+		synchronized(writeLock) {
+			while (writeLock.get() != 0) {
+				try {
+					writeLock.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				
+			}
+			
+			// For determining if there is need to trigger structure change
+			// on the next training.
+			updateNewlyError();
+			
+			// For updating the heuristics of local and global errors.
+			updateGlobalAndLocalErrorHeuristics();
+		
+		
+			
+		}
+		
+		Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+		
+		return true;
+	}
+
+	
 	public double[] getArray() {
 		return array;
 	}
@@ -703,6 +756,21 @@ public class QualityOfService implements Objective, Comparable{
 		return isMin? constraint >= predict(xValue) : constraint <= predict(xValue);
 	}
 
+	public double getMonetaryUtility(boolean isLatest) {
+		int i = isLatest? 1 : 2;
+		if (ep != null) {
+			// If make no sense if the required throughput even larger than the
+			// current workload.
+			if (isMin ? constraint < ep.getLatest() : constraint > ep
+					.getLatest()) {
+				return 0;
+			}
+
+		}
+		
+		return unit * (isMin? constraint - array[array.length - i] : array[array.length - i] - constraint);
+
+	}
 
 	@Override
 	public boolean isBetter(double v1, double v2) {

@@ -178,4 +178,10 @@ public class Cost implements Objective  {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public double getMonetaryUtility(boolean isLatest) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
