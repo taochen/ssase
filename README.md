@@ -1,9 +1,15 @@
 SSASE (including SAM, RCA, FEMOSAA and MOACO)
 ==========
 
-This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering techniques to tackle modelings, architecting and decision making problems for self-adaptive software systems, especially at their runtime.
+This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering techniques to tackle modelings, architecting and decision making problems for self-adaptive software systems (SAS), especially at their runtime.
 
-Currently it encapsulates the following sub-frameworks/components:
+Currently it encapsulates the following sub-frameworks/components, some of which are alternative:
+
+- - - -
+
+1. SAM for QoS/performance modeling in SAS
+
+- - - -
 
 ###SAM: Self-Adaptive Modeling###
 
@@ -20,9 +26,15 @@ This is a framework that enables self-adaptive feature selection and selection o
 Source code directory:
   * [src/main/java/org/ssase/model/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/model)
 
+- - - -
+
+2. RCA for architecting SAS
+
+- - - -
+
 ###RCA : Region Controlled Architecture###
 
-This is a component that intelligently partitions the architecture of self-adaptive software with respect to objective-dependency, which is determined by the inputs of QoS model.  More details can be found in the following publications:
+This is a symbiotic component that intelligently partitions the architecture of self-adaptive software with respect to objective-dependency, which is determined by the inputs of QoS model.  More details can be found in the following publications:
 
  > * T. Chen and R. Bahsoon. Symbiotic and Sensitivity-Aware Architecture for Globally-Optimal Benefit in Self-Adaptive Cloud. The 9th International Symposium on Software Engineering for Adaptive and Self-Managing Systems, SEAMS in conjunction with the 36th International Conference on Software Engineering (ICSE), India, 2014.
 
@@ -31,18 +43,22 @@ This is a component that intelligently partitions the architecture of self-adapt
 Source code directory:
   * [src/main/java/org/ssase/region/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/region)
 
+- - - -
 
+3. FEMOSAA and MOACO-CD for decision making and optimization in SAS
+
+- - - -
 
 ###FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software at Runtime 
 
-This is a novel framework that automatically synergizes the feature model and Multi-Objective Evolutionary Algorithm (MOEA) to optimize SAS’s conflicting QoS objectives at runtime. At design time, FEMOSAA automatically transposes the design of SAS, which is expressed as a feature model, to the chromosome representation and the reproduction operators (mutation and crossover) in MOEA. At runtime, the feature model serves as the domain knowledge to guide the search, providing more chances to find better solutions. FEMOSAA contains a new method to search for the knee solutions, which can achieve balanced trade-off. This work is currently being submitted for publication.
+This is a novel framework that automatically synergizes the feature model and Multi-Objective Evolutionary Algorithm (MOEA) to optimize SAS’s conflicting QoS objectives at runtime. At design time, FEMOSAA automatically transposes the design of SAS, which is expressed as a feature model, to the chromosome representation and the reproduction operators (mutation and crossover) in MOEA. At runtime, the feature model serves as the domain knowledge to guide the search, providing more chances to find better solutions. FEMOSAA contains a new method to search for the knee solutions, which can achieve balanced trade-off. It does not cater for QoS interference, however. This work is currently being submitted for publication.
 
-Currently, FEMOSAA exploits the recent MOEA/D variant, MOEA/D-STM, which extends the survival selection of the original MOEA/D. The source code of MOEA/D-STM, our feature dependency aware mutation/crossover operators and knee selection method can be found at [here](https://github.com/JerryI00/Software-Adaptive-System). (Note that to build and use FEMOSAA, users are advised to download and build the source code of MOEA/D-STM with dependency aware operators and knee selection first.)
+Though FEMOSAA supports any EAs/MOEAs, currently, it exploits the recent MOEA/D variant, MOEA/D-STM, which extends the survival selection of the original MOEA/D. The source code of MOEA/D-STM, our feature dependency aware mutation/crossover operators and knee selection method can be found at [here](https://github.com/JerryI00/Software-Adaptive-System). (Note that to build and use FEMOSAA, users are advised to download and build the source code of MOEA/D-STM with dependency aware operators and knee selection first.)
 
 Source code directory:
    * [src/main/java/org/ssase/objective/optimization/femosaa/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/objective/optimization/femosaa)
 
-### MOACO: Self-Adaptive and Interference-Aware Multi-Objective Ant Colony Optimization for Decision Making in Self-Adaptive Software 
+### MOACO-CD: Self-Adaptive and Interference-Aware Multi-Objective Ant Colony Optimization for Decision Making in Self-Adaptive Software 
 
 This is a component that exploits multi-objective ant colony algorithm to optimise adaptation decisions for self-adaptive software system at runtime. It particularly considers QoS interference caused by multi-tenants and virtualized environment, e.g. cloud computing. The approach leverage nash dominance, a popular economic principle, to find well-compromised/knee trade-off decisions. More details can be found in the following publications:
 
