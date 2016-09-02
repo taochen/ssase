@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
  
 import org.ssase.model.Model;
+import org.ssase.model.ModelingType;
 import org.ssase.model.sam.SAMModel;
 import org.ssase.observation.listener.Listener;
 import org.ssase.observation.listener.ModelListener;
@@ -12,7 +13,6 @@ import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.util.Timer;
 import org.ssase.util.Tuple;
-import org.ssase.util.Util;
 
 
 @SuppressWarnings("rawtypes")
@@ -76,7 +76,7 @@ public class QualityOfService implements Objective, Comparable{
 	protected int samplingCounter = 0;
 	protected int addingCounter = 0;
 	protected Timer timer = new Timer();
-	
+	private static ModelingType selected;
 	
 	protected QualityOfService(){
 		
@@ -122,6 +122,19 @@ public class QualityOfService implements Objective, Comparable{
 		}
 	}
 
+	public static void setSelectedModelingType(String type) {
+        if(type == null) throw new RuntimeException("No proper ModelingType found!");
+		
+		type = type.trim();
+		
+		if("sam".equals(type)) {
+			selected = ModelingType.SAM;
+		} 
+		
+		
+		if(selected == null) throw new RuntimeException("Can not find modeling method for type " + type);	
+	}
+	
 	/**
 	 * Need to call this to init model after the QoS instance has been created.
 	 * 
@@ -130,7 +143,9 @@ public class QualityOfService implements Objective, Comparable{
 	 */
 	public void buildModel(Set<Primitive> possibleInputs, double[][] functionConfig,
 	        double[][] structureConfig){
-		model = new SAMModel(name, possibleInputs, this, functionConfig, structureConfig);
+		if(ModelingType.SAM == selected) {
+			model = new SAMModel(name, possibleInputs, this, functionConfig, structureConfig);
+		}
 	}
 	
 	/**
