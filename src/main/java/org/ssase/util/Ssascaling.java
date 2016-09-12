@@ -534,18 +534,21 @@ public class Ssascaling {
 				}
 				
 				s.print();
-				s.initializeModelForQoS();
 			}
 		
 			Executor.init(3);
 			
 			Receiver r = new Receiver();
 			
+			for (Service s : Repository.getAllServices() ) {
+				s.initializeModelForQoS();
+			}
 			
 			if(Region.selected != OptimizationType.INIT) {
 			  // new HistoryLoader().run();				   
 			}
-			loadFeatureModel();
+			new StepByStepHistoryLoader().run();	
+			//loadFeatureModel();
 			//r.receive();
 			
 	}

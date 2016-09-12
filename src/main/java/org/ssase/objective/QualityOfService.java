@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  
 import org.ssase.model.Model;
 import org.ssase.model.ModelingType;
+import org.ssase.model.iapm.IAPMModel;
 import org.ssase.model.sam.SAMModel;
 import org.ssase.observation.listener.Listener;
 import org.ssase.observation.listener.ModelListener;
@@ -129,6 +130,8 @@ public class QualityOfService implements Objective, Comparable{
 		
 		if("sam".equals(type)) {
 			selected = ModelingType.SAM;
+		} else if("iapm".equals(type)) {
+			selected = ModelingType.IAPM;
 		} 
 		
 		
@@ -145,6 +148,10 @@ public class QualityOfService implements Objective, Comparable{
 	        double[][] structureConfig){
 		if(ModelingType.SAM == selected) {
 			model = new SAMModel(name, possibleInputs, this, functionConfig, structureConfig);
+		} else if(ModelingType.IAPM == selected) {
+			model = new IAPMModel(name, possibleInputs, this);
+		} else {
+			throw new RuntimeException("No modeling type has been selected!");
 		}
 	}
 	
@@ -768,6 +775,10 @@ public class QualityOfService implements Objective, Comparable{
 	
 	public EnvironmentalPrimitive getEP () {
 		return ep;
+	}
+	
+	public double getValue(){
+		return value;
 	}
 	
 }
