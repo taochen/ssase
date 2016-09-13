@@ -25,6 +25,7 @@ import org.ssase.Service;
 import org.ssase.actuator.MaxThreadActuator;
 import org.ssase.actuator.linux.CPUCapActuator;
 import org.ssase.actuator.linux.MemoryActuator;
+import org.ssase.debt.AdaptationDebtBroker;
 import org.ssase.executor.Executor;
 import org.ssase.executor.VM;
 import org.ssase.network.Receiver;
@@ -268,7 +269,9 @@ public class Ssascaling {
 						Repository.getVM(vmName).setSharedSoftwareControlPrimitives(list);
 					}
 					
-					
+					if ("adaptation".equals(insideVmNodes.item(j).getNodeName())){
+						AdaptationDebtBroker.setAdaptationUnit(Double.parseDouble(insideVmNodes.item(j).getAttributes().getNamedItem("cost_unit").getNodeValue()));
+					}
 					
 					
 					

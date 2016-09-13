@@ -772,6 +772,22 @@ public class QualityOfService implements Objective, Comparable{
 
 	}
 
+	public double getExtentOfViolation(boolean isLatest) {
+		int i = isLatest? 1 : 2;
+		if (ep != null) {
+			// If make no sense if the required throughput even larger than the
+			// current workload.
+			if (isMin ? constraint < ep.getLatest() : constraint > ep
+					.getLatest()) {
+				return 0;
+			}
+
+		}
+		
+		return  (isMin? constraint - array[array.length - i] : array[array.length - i] - constraint);
+
+	}
+	
 	@Override
 	public boolean isBetter(double v1, double v2) {
 		return (isMin()) ? v1 <= v2  : v1 >= v2;

@@ -1,8 +1,13 @@
 package org.ssase.debt.elements;
 
+import java.util.List;
+
+import org.ssase.objective.QualityOfService;
+
 public class Principal implements DebtEelment{
 	
-	private double unit = 0.0;;
+	private double unit = 0.0;
+	
 	@Override
 	public void setMonetaryUnit(double unit) {
 		this.unit = unit;

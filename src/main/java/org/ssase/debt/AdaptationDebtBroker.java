@@ -1,16 +1,40 @@
 package org.ssase.debt;
 
+import java.util.List;
+
+import org.ssase.debt.classification.OnlineClassifier;
 import org.ssase.debt.elements.Interest;
 import org.ssase.debt.elements.Principal;
+import org.ssase.objective.QualityOfService;
+import org.ssase.primitive.Primitive;
 
 public class AdaptationDebtBroker {
 
-	
+	private List<QualityOfService> qos;
+	private List<Primitive> primitives;
 	private double noAdaptationUtility = Double.NaN;
 	// 0 = adapt, 1 = no adapt
 	private int latestJudgement = Integer.MIN_VALUE;
 	
+	// The post-adaptation unit for adaptation cost
+	private double postUnit = 0.0;
+	// The pre-adaptation unit for adaptation cost
+	private double preUnit = 0.0;
+	// The price for adaptation cost
+	private static double cost = 0.0;
 
+	public static void setAdaptationUnit(double cost){
+		AdaptationDebtBroker.cost = cost; 
+	}
+	
+	// 0=if adapt - 1=the index of time step in qos
+	//private int[][] historicalJudgement;
+	
+	private OnlineClassifier classifier;
+	
+	public AdaptationDebtBroker (){
+		classifier = new OnlineClassifier(qos, primitives);
+	}
 	
 	/**
 	 * Only trigger this when is has been decided to adapt.
@@ -18,16 +42,42 @@ public class AdaptationDebtBroker {
 	 * Before adaptation, if trigger
 	 */
 	public void doPriorDebtAnalysis(){
+		preUnit = getUnitForAdaptationCost();
 		noAdaptationUtility = new Interest().getMonetaryUtility();
+	}
+	
+	public void doPosteriorDebtAnalysis(){
+		
+		if(noAdaptationUtility == Double.NaN) return;
+		
+		postUnit = getUnitForAdaptationCost();
+		doPosteriorDebtAnalysis(postUnit - preUnit, cost);
+		
+		
+		int judge = getExpertDebtJudgement();
+		
+		classifier.trainOnInstance(judge, qos, primitives);
+//		if(historicalJudgement == null) {
+//			historicalJudgement = new int[1][1];
+//			historicalJudgement[0] = new int[]{judge, qos.get(0).getArray().length-1};
+//		} else {
+//			int[][] copyHistoricalJudgement = new int[historicalJudgement.length+1][1];
+//			
+//			System.arraycopy(historicalJudgement, 0, copyHistoricalJudgement, 0, historicalJudgement.length);
+//			copyHistoricalJudgement[copyHistoricalJudgement.length-1] = new int[]{judge, qos.get(0).getArray().length-1}; 
+//			
+//		}
+//		
+		//TODO training
 	}
 	
 	/**
 	 * 
 	 * Just after adaptation
 	 */
-	public void doPosteriorDebtAnalysis(double unit, double cost){
+	protected void doPosteriorDebtAnalysis(double unit, double cost){
 		
-		if(noAdaptationUtility == Double.NaN) return;
+		
 		
 		double adaptationUtility = new Interest().getMonetaryUtility();
 		Principal p = new Principal();
@@ -39,11 +89,20 @@ public class AdaptationDebtBroker {
 	}
 	
 	
-	public int getExpertDebtJudgement(){
+	protected int getExpertDebtJudgement(){
 		int r = latestJudgement;
 		// clean it immediately
 		latestJudgement = Integer.MIN_VALUE;
 		return r;
 	}
-		
+	
+	public boolean isTrigger(){
+		return 0 == classifier.predict(qos, primitives);
+	}
+	
+	public double getUnitForAdaptationCost(){
+		// TODO add recording of unit for measuring adaptation cost
+		return System.currentTimeMillis();
+	}
+		 
 }

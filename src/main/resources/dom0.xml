@@ -20,6 +20,8 @@
               price_per_unit="0.07"/>
            </hardwareControlPrimitive>
            
+           <adaptation cost_unit="0.3"/>
+           
            <service name="rubis_software">
            <softwareControlPrimitive>
            <!-- We disable all adaptations that triggered by low utilization  -->
@@ -112,9 +114,9 @@
            <!-- This constraint="-1" will forcly trigger adaptation at each sampling interval -->
              <!-- Unit is sec -->
              <!-- constraint="5"  -->
-            <item name="Response Time" constraint="-1" is_min="true" pre_to_change="0.7"/>
+            <item name="Response Time" constraint="-1" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"/>
              <!-- constraint="6"  -->
-            <item name="Energy" constraint="1000" is_min="true" pre_to_change="0.7"/>
+            <item name="Energy" constraint="1000" is_min="true" pre_to_change="0.7" sla_per_unit="0.8"/>
            </QoS>
            
            

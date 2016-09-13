@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.ControlBus;
 import org.ssase.Service;
+import org.ssase.debt.AdaptationDebtBroker;
 import org.ssase.executor.VM;
 import org.ssase.model.ModelingType;
 import org.ssase.objective.Cost;
@@ -34,6 +35,8 @@ public class Analyzer {
 	
 	// Used only for trigger by adaptaion debt
 	private static boolean isTrigger = false;
+	
+	private static AdaptationDebtBroker debtBroker = null;
 	
 	public static void setSelectedTriggerType(String type) {
 	     if(type == null) throw new RuntimeException("No proper TriggerType found!");
@@ -83,7 +86,7 @@ public class Analyzer {
 			if(!isTrigger) return new ArrayList<Objective>();
 			
 			List<Objective> list = detectSymptoms();
-			if(list.size() == 0) {
+			if(list != null && list.size() == 0) {
 				// Forcebly trigger adaptation, now we just random pick an objective.
 				list.add(Repository.getAllObjectives().iterator().next());
 			}
@@ -116,66 +119,90 @@ public class Analyzer {
 		}
 		
 		if(selected == TriggerType.Debt) {
-			for (final QualityOfService qos : Repository.getQoSSet()) {
-				isReachTheLeastSamples = qos.doUpdate();
+			
+			// The function inside should deal with the case
+			// where the previous one is not adaptation.
+			debtBroker.doPosteriorDebtAnalysis();
+			isTrigger = debtBroker.isTrigger();
+			
+			if(isTrigger) {
+				debtBroker.doPriorDebtAnalysis();
+				train();
+			} else {
+				for (final QualityOfService qos : Repository.getQoSSet()) {
+					isReachTheLeastSamples = qos.doUpdate();
+					
+				}
+				
 				updatedModel.set(Repository
-										.getQoSSet().size());
+						.getQoSSet().size());
+				
+				synchronized (updatedModel) {
+						updatedModel.notifyAll();
+					
+				}
+				
 			}
 			
-			// TODO add prediction on adaptation debt
-			isTrigger = true;
+			
+			
+			
 		} else {
+			train();
+			
+		}
 
-			for (final QualityOfService qos : Repository.getQoSSet()) {
+		
+	}
+	
+	private static void train(){
+		for (final QualityOfService qos : Repository.getQoSSet()) {
 
-				SSAScalingThreadPool.executeJob(new Runnable() {
+			SSAScalingThreadPool.executeJob(new Runnable() {
 
-					@Override
-					public void run() {
-						// System.out.print("***** doing training *********\n");
-						boolean result = false;
-						try {
+				@Override
+				public void run() {
+					// System.out.print("***** doing training *********\n");
+					boolean result = false;
+					try {
 
-							result = qos.doTraining();
+						result = qos.doTraining();
 
-						} catch (RuntimeException e) {
-							// Make sure the process can keep going and avoid
-							// deadlock.
-							e.printStackTrace();
-							synchronized (updatedModel) {
-								updatedModel.incrementAndGet();
-								// System.out.print("==========================  ===============================\n");
-								// System.out.print(updatedModel.get() +
-								// " processed\n");
-								// System.out.print("==========================  ===============================\n");
-								isReachTheLeastSamples = result;
-								if (updatedModel.get() == Repository
-										.getQoSSet().size()) {
-									updatedModel.notifyAll();
-								}
-							}
-						}
+					} catch (RuntimeException e) {
+						// Make sure the process can keep going and avoid
+						// deadlock.
+						e.printStackTrace();
 						synchronized (updatedModel) {
 							updatedModel.incrementAndGet();
 							// System.out.print("==========================  ===============================\n");
 							// System.out.print(updatedModel.get() +
 							// " processed\n");
 							// System.out.print("==========================  ===============================\n");
-
 							isReachTheLeastSamples = result;
-							if (updatedModel.get() == Repository.getQoSSet()
-									.size()) {
+							if (updatedModel.get() == Repository
+									.getQoSSet().size()) {
 								updatedModel.notifyAll();
 							}
 						}
-						// System.out.print("***** finish doing training *********\n");
 					}
+					synchronized (updatedModel) {
+						updatedModel.incrementAndGet();
+						// System.out.print("==========================  ===============================\n");
+						// System.out.print(updatedModel.get() +
+						// " processed\n");
+						// System.out.print("==========================  ===============================\n");
 
-				});
-			}
+						isReachTheLeastSamples = result;
+						if (updatedModel.get() == Repository.getQoSSet()
+								.size()) {
+							updatedModel.notifyAll();
+						}
+					}
+					// System.out.print("***** finish doing training *********\n");
+				}
+
+			});
 		}
-
-		
 	}
 	
 	private static void doAddValues(long samples){
