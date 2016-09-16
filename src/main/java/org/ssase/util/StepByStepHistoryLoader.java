@@ -90,6 +90,7 @@ public class StepByStepHistoryLoader {
 	
 	
 	private List<String> resultsList = new ArrayList<String>();
+	private Map<String, Double> nextMap = new HashMap<String, Double>();
 	
 	public static void main(String[] args) {
 		new StepByStepHistoryLoader().run();
@@ -143,12 +144,13 @@ public class StepByStepHistoryLoader {
 			
 			
 			
-			if(i >= QualityOfService.leastNumberOfSample) {
+			if(i > QualityOfService.leastNumberOfSample) {
 				System.out.print("QoS: " + qos.getValue() + "\n");
 				double[] xValue = new double[qos.getPrimitivesInput().size()];
 				int k = 0;
 				for (Primitive p : qos.getPrimitivesInput()) {
-					xValue[k] =  p.getValue() ;
+					xValue[k] =  nextMap.containsKey(p.getName())? nextMap.get(p.getName()) : 0;
+					//System.out.print(p.getName() + ":" + xValue[k] +"\n");
 					k++;
 				}
 			
@@ -165,7 +167,7 @@ public class StepByStepHistoryLoader {
 			
 			for (Service s : Repository.getAllServices() ) {
 				for (Primitive p : s.getPrimitives()) {
-					System.out.print(p.getName()+"\n");
+					//System.out.print(p.getName()+"\n");
 					p.addValue(i+1);
 				}
 			}
@@ -777,6 +779,7 @@ public class StepByStepHistoryLoader {
 
 	private  void prepareToAddValueForHardwareCP(String VM_ID, String name, double... values){
 		Repository.prepareToUpdateHardwareControlPrimitive(VM_ID, name, values);
+		nextMap.put(name, values[0]);
 	}
 	
 	private  void prepareToAddValueForQoS(String VM_ID, String service, String name, double... values) {
@@ -785,6 +788,7 @@ public class StepByStepHistoryLoader {
 	
 	private  void prepareToAddValueForPrimitive(String VM_ID, String service, String name, double... values){
 		Repository.prepareToAddValueForPrimitive(VM_ID+"-"+service, name, values);
+		nextMap.put(name, values[0]);
 	}
 
 }

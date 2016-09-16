@@ -506,13 +506,14 @@ public class QualityOfService implements Objective, Comparable{
 		}
 		
 		double[] x = new double[xValue.length];
-		for (int i = 0; i < x.length; i++) {
+		for (int i = 0; i < x.length; i++) {			
 			// get the latest EP here.
 			if (isLatestEP && model.get(i) instanceof EnvironmentalPrimitive) {
 			   x[i] = ((EnvironmentalPrimitive)model.get(i)).getLatest()/model.get(i).getMax();
 			} else {
 			   x[i] = xValue[i]/model.get(i).getMax();
 			}
+			//System.out.print(model.get(i).getName() + "=" + xValue[i] + ":" + (x[i]*model.get(i).getMax()) +"\n");
 		}
 		
 	

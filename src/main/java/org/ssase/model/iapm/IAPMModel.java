@@ -126,10 +126,10 @@ public class IAPMModel implements Model{
 				
 			}
 			System.out.print("Number of inputs: " + inputs.size() + "\n");
-			
-			for (Primitive p : inputs) {
-				System.out.print(p.getName() + "\n");
-			}
+   
+//			for (Primitive p : inputs) {
+//				System.out.print(p.getName() + "\n");
+//			}
 			
 			if ( inputs.size() == 0) {
 				return;
@@ -162,7 +162,7 @@ public class IAPMModel implements Model{
 				  }
 				
 		    	  attrs.add(new Attribute(output.getName(),i));
-				  
+		    	  //System.out.print(attrs.get(attrs.size() - 1).type()+"***********type!!!\n");
 				  dataRaw = new Instances("data_instances", attrs ,0);
 				  
 				// Notify the region control when primitives selection result change.
@@ -184,7 +184,7 @@ public class IAPMModel implements Model{
 				  }
 				  
 				  attrs.add(new Attribute(output.getName(),i));
-				  
+				 
 				  dataRaw = new Instances("data_instances", attrs ,0);
 		      }
 			
@@ -199,11 +199,11 @@ public class IAPMModel implements Model{
 	  }
 	  
 	  private void runClustering(){
-		  ds.add(new net.sf.javaml.core.DenseInstance(new double[]{output.getValue()}));
+		  ds.add(new net.sf.javaml.core.DenseInstance(new double[]{output.getValue()/output.getMax()}));
 		  Dataset[] clusters = null;
 		  if (ds.size() == 1) {
 			  Dataset newD = new DefaultDataset();
-			  newD.add(new net.sf.javaml.core.DenseInstance(new double[]{output.getValue()}));
+			  newD.add(new net.sf.javaml.core.DenseInstance(new double[]{output.getValue()/output.getMax()}));
 			  clusters =  new Dataset[]{newD};
 		  } else {
 		  
@@ -239,7 +239,7 @@ public class IAPMModel implements Model{
 	        	classLabel++;
 		  }
 		  
-		  int instancesNo = sampleCluster == null? 1 : sampleCluster.getInstancesNo();
+		  int instancesNo = sampleCluster == null? 1 : sampleCluster.getInstancesNo() + 1;
 		  int numClasses = sampleCluster == null? ds.size() : sampleCluster.getNewClassCount().length;
 		  
 		  sampleCluster= new SampleCluster(numClasses, map, instancesNo, newClassCount);
@@ -258,14 +258,15 @@ public class IAPMModel implements Model{
 		  
 		  
 		  for (int i = 0; i < inputs.size();i++) {
-		      trainInst.setValue(attrs.get(i), inputs.get(i).getValue()); 	
+		      trainInst.setValue(attrs.get(i), inputs.get(i).getValue()/inputs.get(i).getMax()); 	
 		  }
 		
 		  
-		  trainInst.setValue(attrs.get(attrs.size()-1), output.getValue());
+		  trainInst.setValue(attrs.get(attrs.size()-1), output.getValue()/output.getMax());
 		  
 		  dataRaw.add(trainInst);
-		  dataRaw.setClassIndex(0);
+		  trainInst.setDataset(dataRaw);
+		  dataRaw.setClassIndex(trainInst.numAttributes()-1);
 		  
 		  return trainInst;
 	  }
@@ -275,7 +276,9 @@ public class IAPMModel implements Model{
 		  int instancesNo =  sampleCluster.getInstancesNo();
 		  int numClasses = sampleCluster.getNumClasses();
 		  double[] newClassCount = sampleCluster.getNewClassCount(); 
-		  
+	         if (numSamples_Total == 6) {
+					System.out.print("");
+				}
 		  // TODO Auto-generated method stub
 //	    String path = "D:\\syw\\IJCAI16\\Data\\Artificial\\Static\\";
 //	    String fname = "Gaussian_1Min1Maj";
@@ -347,7 +350,7 @@ public class IAPMModel implements Model{
 	    	  // We assume that although the member of each class (and the number of class) can change,
 	    	  // every time we just use the most up to date clustering result. (i.e., updated arrays)
 	    	  
-	    	  this.updateClassPresentage(instancesNo, numClasses, newClassCount, classPercentage);
+	    	  classPercentage = updateClassPresentage(instancesNo, numClasses, newClassCount, classPercentage);
 	      }
 	     
 	      
@@ -456,14 +459,16 @@ public class IAPMModel implements Model{
 	    if(model.baseLearnerOption.getValueAsCLIString().equals("org.ssase.model.iapm.OnlineMultilayerPerceptron")){
 	      model.firtInst = fistInst;
 	    }
+	   // System.out.print(fistInst.a + "\n");
 	   // model.setModelContext(data.getHeader());
 	    model.prepareForUse();
+	   // model.resetLearningImpl();
 	    return model;
 	  }
 	  
 	  //Multi-class Oversampling Online Bagging using adaptive sampling rates
 	  private void MOOB_adaptive(Instance currentInstance, OzaBag model, int numSamplesTotal){
-	    Integer classLabel = new Integer((int)currentInstance.classValue());
+	    Integer classLabel = new Integer(value2class(currentInstance.classValue()));
 	    double lambda = 1.0;
 	    int cp_max = Utils.maxIndex(classPercentage[numSamplesTotal-1]);
 	    model.trainOnInstanceImpl(currentInstance, (double)lambda*cp_max/classPercentage[numSamplesTotal-1][classLabel]);
@@ -472,7 +477,7 @@ public class IAPMModel implements Model{
 	  
 	  //Multi-class Undersampling Online Bagging using adaptive sampling rates
 	  private void MUOB_adaptive(Instance currentInstance, OzaBag model, int numSamplesTotal){
-	    Integer classLabel = new Integer((int)currentInstance.classValue());//the class label index
+	    Integer classLabel = new Integer(value2class(currentInstance.classValue()));//the class label index
 	    double lambda = 1.0;
 	    int cp_min = Utils.minIndex(classPercentage[numSamplesTotal-1]);
 	    double rate = (double)classPercentage[numSamplesTotal-1][cp_min]/classPercentage[numSamplesTotal-1][classLabel];
@@ -526,6 +531,10 @@ public class IAPMModel implements Model{
 	    
 	  /**update percentage of classes at each time step with time decay*/
 	  private void updateClassPercentage(int realLabel, int numSamplesTotal, double sizedecayfactor){
+		  System.out.print("numSamplesTotal: " + numSamplesTotal + "\n");
+		  System.out.print("numClasses: " + numClasses + "\n");
+		  System.out.print("classPercentage: " + classPercentage.length + "\n");
+		  System.out.print("classPercentage: " + classPercentage[0].length + "\n");
 	    if(numSamplesTotal >1){
 		for(int t = 0; t < numClasses; t++){
 		  if(t==realLabel)
@@ -595,6 +604,22 @@ public class IAPMModel implements Model{
 	   * @param classPercentage
 	   * @return
 	   */
+	  private double[][] updateClassPresentage(int instancesNo, int numNewClasses,
+			  double[][] classPercentage){
+		  
+		 
+		  double[][] copyOfClassPercentage = new double[instancesNo][1];
+		  System.arraycopy(classPercentage, 0, copyOfClassPercentage, 0, classPercentage.length);
+		  copyOfClassPercentage[copyOfClassPercentage.length - 1][0] = numNewClasses;
+		  
+		  
+		  
+		  
+		 
+		  
+		  return copyOfClassPercentage;
+	  }
+	  
 	  private double[][] updateClassPresentage(int instancesNo, int numClasses, double[] newClassCount,
 			  double[][] classPercentage){
 		  
@@ -680,7 +705,12 @@ public class IAPMModel implements Model{
 			trainInst.setValue(attrs.get(i), xValue[i]); 
 		}
 		
-		return model.getVotesForInstance(trainInst)[0];
+		double[] p = model.getVotesForInstance(trainInst);
+		
+		for(double d : p) {
+		System.out.print("Result*********" + d +"\n");
+		}
+		return p[0]*100;
 	}
 
 	@Override

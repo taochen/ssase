@@ -70,10 +70,14 @@ public class OzaBag extends AbstractClassifier {
 
     @Override
     public void resetLearningImpl() {      
-        if(this.baseLearnerOption.getValueAsCLIString().equals("src.OnlineMultilayerPerceptron")){
+        if(this.baseLearnerOption.getValueAsCLIString().equals("org.ssase.model.iapm.OnlineMultilayerPerceptron")){
           this.ensemble = new OnlineMultilayerPerceptron[this.ensembleSizeOption.getValue()];
           for (int i = 0; i < this.ensemble.length; i++) {
             this.ensemble[i] = new OnlineMultilayerPerceptron();
+            //System.out.print("trigger********\n");
+            ((OnlineMultilayerPerceptron)this.ensemble[i]).setNominalToBinaryFilter(true);
+            ((OnlineMultilayerPerceptron)this.ensemble[i]).setNormalizeNumericClass(true);
+            ((OnlineMultilayerPerceptron)this.ensemble[i]).setNormalizeAttributes(true);
             ((OnlineMultilayerPerceptron)this.ensemble[i]).initMLP(firtInst);
           }
         }

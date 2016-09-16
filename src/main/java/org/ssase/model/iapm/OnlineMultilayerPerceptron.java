@@ -2599,7 +2599,7 @@ public class OnlineMultilayerPerceptron
   @Override
   public void trainOnInstanceImpl(Instance inst) {
 
-    //System.out.println(inst.toString());
+    //System.out.println(inst.toString() + "****\n");
     m_instances = this.getInstances(inst);
     //System.out.println(i.toString());
     int numInVal = 0;
