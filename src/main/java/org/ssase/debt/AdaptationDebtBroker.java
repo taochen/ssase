@@ -23,8 +23,18 @@ public class AdaptationDebtBroker {
 	// The price for adaptation cost
 	private static double cost = 0.0;
 
+	private static AdaptationDebtBroker instance;
+	
 	public static void setAdaptationUnit(double cost){
 		AdaptationDebtBroker.cost = cost; 
+	}
+	
+	public static AdaptationDebtBroker getInstance(List<QualityOfService> qos, List<Primitive> primitives){
+		if(instance == null) {
+			instance = new AdaptationDebtBroker(qos, primitives);
+		}
+		
+		return instance;
 	}
 	
 	// 0=if adapt - 1=the index of time step in qos
@@ -32,7 +42,9 @@ public class AdaptationDebtBroker {
 	
 	private OnlineClassifier classifier;
 	
-	public AdaptationDebtBroker (){
+	private AdaptationDebtBroker (List<QualityOfService> qos, List<Primitive> primitives){
+		this.qos = qos;
+		this.primitives = primitives;
 		classifier = new OnlineClassifier(qos, primitives);
 	}
 	
@@ -43,19 +55,21 @@ public class AdaptationDebtBroker {
 	 */
 	public void doPriorDebtAnalysis(){
 		preUnit = getUnitForAdaptationCost();
-		noAdaptationUtility = new Interest().getMonetaryUtility();
+		noAdaptationUtility = new Interest(qos).getMonetaryUtility();
 	}
 	
 	public void doPosteriorDebtAnalysis(){
 		
-		if(noAdaptationUtility == Double.NaN) return;
+		if(Double.isNaN(noAdaptationUtility)) {
+			return;
+		}
 		
 		postUnit = getUnitForAdaptationCost();
 		doPosteriorDebtAnalysis(postUnit - preUnit, cost);
 		
 		
 		int judge = getExpertDebtJudgement();
-		
+		System.out.print("Training with judge: " + judge + "\n");
 		classifier.trainOnInstance(judge, qos, primitives);
 //		if(historicalJudgement == null) {
 //			historicalJudgement = new int[1][1];
@@ -68,7 +82,6 @@ public class AdaptationDebtBroker {
 //			
 //		}
 //		
-		//TODO training
 	}
 	
 	/**
@@ -79,10 +92,13 @@ public class AdaptationDebtBroker {
 		
 		
 		
-		double adaptationUtility = new Interest().getMonetaryUtility();
+		double adaptationUtility = new Interest(qos).getMonetaryUtility();
 		Principal p = new Principal();
 		p.setMonetaryUnit(unit);
 		adaptationUtility = adaptationUtility - p.getMonetaryUtility(cost);
+		
+		System.out.print("adaptationUtility: " + adaptationUtility + " : noAdaptationUtility " + noAdaptationUtility + "\n");
+		
 		latestJudgement = adaptationUtility > noAdaptationUtility? 0 : 1;
 		
 		noAdaptationUtility = Double.NaN;

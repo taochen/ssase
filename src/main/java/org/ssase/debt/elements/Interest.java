@@ -8,6 +8,10 @@ public class Interest implements DebtEelment{
 
 	
 	private List<QualityOfService> qos;
+	
+	public Interest (List<QualityOfService> qos) {
+		this.qos = qos;
+	}
 
 	@Override
 	public void setMonetaryUnit(double unit) {

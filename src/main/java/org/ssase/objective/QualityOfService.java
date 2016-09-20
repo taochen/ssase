@@ -768,7 +768,9 @@ public class QualityOfService implements Objective, Comparable{
 
 		}
 		
-		return unit * (isMin? constraint - array[array.length - i] : array[array.length - i] - constraint);
+		double v = array[array.length - i] * max / 100;
+		
+		return unit * (isMin? constraint - v : v - constraint);
 
 	}
 
@@ -784,7 +786,15 @@ public class QualityOfService implements Objective, Comparable{
 
 		}
 		
-		return  (isMin? constraint - array[array.length - i] : array[array.length - i] - constraint);
+		/*
+		 * 	
+		double d = isMin? constraint - v : v - constraint;
+		return  d / constraint;
+		 * 
+		 * */
+		double v = array[array.length - i] * max / 100;
+		
+		return  (isMin? constraint - v : v - constraint);
 
 	}
 	

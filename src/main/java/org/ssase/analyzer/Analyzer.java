@@ -33,22 +33,39 @@ public class Analyzer {
 	
 	private static TriggerType selected = TriggerType.Requirement;
 	
-	// Used only for trigger by adaptaion debt
+	// True if every timestep is an adaptation, this will enforce training of each timestep.
+	private static boolean isEachStepIsAdaptation= true;
+	
+	// Used only for trigger by adaptation debt
 	private static boolean isTrigger = false;
 	
 	private static AdaptationDebtBroker debtBroker = null;
 	
 	public static void setSelectedTriggerType(String type) {
-	     if(type == null) throw new RuntimeException("No proper TriggerType found!");
+		if (type == null)
+			throw new RuntimeException("No proper TriggerType found!");
+
+		type = type.trim();
+
+		if ("debt".equals(type)) {
+			selected = TriggerType.Debt;
+		}
+
+		if(debtBroker == null) {
 			
-			type = type.trim();
+			List<QualityOfService> qos = new ArrayList<QualityOfService>();			
+			qos.addAll(Repository.getQoSSet());
+			List<Primitive> primitives = new ArrayList<Primitive>();	
+			for (Service s : Repository.getAllServices()) {
+				primitives.addAll(s.getPrimitives());
+			}
 			
-			if("debt".equals(type)) {
-				selected = TriggerType.Debt;
-			} 
-			
-			
-			if(selected == null) throw new RuntimeException("Can not find trigger type for type " + type);		
+			debtBroker = AdaptationDebtBroker.getInstance(qos, primitives);
+		}
+		
+		if (selected == null)
+			throw new RuntimeException("Can not find trigger type for type "
+					+ type);
 	}
 	
 	public static List<Objective> doAnalysis(long samples){
@@ -124,7 +141,8 @@ public class Analyzer {
 			// where the previous one is not adaptation.
 			debtBroker.doPosteriorDebtAnalysis();
 			isTrigger = debtBroker.isTrigger();
-			
+			System.out.print("If predicted to trigger adaptation at current timestap: " + isTrigger + ", isEachStepIsAdaptation=" + isEachStepIsAdaptation + "\n");
+			isTrigger = isEachStepIsAdaptation? true : isTrigger;
 			if(isTrigger) {
 				debtBroker.doPriorDebtAnalysis();
 				train();
