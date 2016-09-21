@@ -22,6 +22,7 @@ package org.ssase.model.iapm;
 import moa.classifiers.AbstractClassifier;
 import moa.classifiers.Classifier;
 import weka.core.Instance;
+import weka.core.Instances;
 
 import moa.core.DoubleVector;
 import moa.core.Measurement;
@@ -75,9 +76,9 @@ public class OzaBag extends AbstractClassifier {
           for (int i = 0; i < this.ensemble.length; i++) {
             this.ensemble[i] = new OnlineMultilayerPerceptron();
             //System.out.print("trigger********\n");
-            ((OnlineMultilayerPerceptron)this.ensemble[i]).setNominalToBinaryFilter(true);
-            ((OnlineMultilayerPerceptron)this.ensemble[i]).setNormalizeNumericClass(true);
-            ((OnlineMultilayerPerceptron)this.ensemble[i]).setNormalizeAttributes(true);
+            //((OnlineMultilayerPerceptron)this.ensemble[i]).setNominalToBinaryFilter(true);
+            //((OnlineMultilayerPerceptron)this.ensemble[i]).setNormalizeNumericClass(true);
+            //((OnlineMultilayerPerceptron)this.ensemble[i]).setNormalizeAttributes(true);
             ((OnlineMultilayerPerceptron)this.ensemble[i]).initMLP(firtInst);
           }
         }
@@ -102,11 +103,26 @@ public class OzaBag extends AbstractClassifier {
             }
         }
     }
+    
+    
+    public void trainOnInstanceImpl(Instances inst) {
+        for (int i = 0; i < this.ensemble.length; i++) {
+        	 try {
+        		 
+        		this.ensemble[i] = new OnlineMultilayerPerceptron();
+				((OnlineMultilayerPerceptron)this.ensemble[i]).buildClassifier(inst);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+    }
 
     /**added by me*/
     public void trainOnInstanceImpl(Instance inst, double lambda) {
       for (int i = 0; i < this.ensemble.length; i++) {
           int k = MiscUtils.poisson(lambda, this.classifierRandom);
+          k = 1;
           if (k > 0) {
               Instance weightedInst = (Instance) inst.copy();
               weightedInst.setWeight(inst.weight() * k);
@@ -114,17 +130,29 @@ public class OzaBag extends AbstractClassifier {
           }
       }
   }
+    
+    public double[] predict(Instance inst) { 
+        try {
+			return ((OnlineMultilayerPerceptron)this.ensemble[0]).distributionForInstance(inst);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+    }
 
     public double[] getVotesForInstance(Instance inst) {
-        DoubleVector combinedVote = new DoubleVector();
-        for (int i = 0; i < this.ensemble.length; i++) {
-            DoubleVector vote = new DoubleVector(this.ensemble[i].getVotesForInstance(inst));
-            if (vote.sumOfValues() > 0.0) {
-                vote.normalize();
-                combinedVote.addValues(vote);
-            }
-        }
-        return combinedVote.getArrayRef();
+//        DoubleVector combinedVote = new DoubleVector();
+//        for (int i = 0; i < this.ensemble.length; i++) {
+//            DoubleVector vote = new DoubleVector(this.ensemble[i].getVotesForInstance(inst));
+//            if (vote.sumOfValues() > 0.0) {
+//                vote.normalize();
+//                combinedVote.addValues(vote);
+//            }
+//        }
+//        return combinedVote.getArrayRef();
+    	return this.ensemble[0].getVotesForInstance(inst);
     }
 
     public boolean isRandomizable() {

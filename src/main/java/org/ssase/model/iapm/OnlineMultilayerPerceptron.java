@@ -32,6 +32,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -1480,6 +1481,33 @@ public class OnlineMultilayerPerceptron
     }
     return inst;
   }
+  
+  private Instances setPreNormalizedRegressionClassType(Instances inst) throws Exception {
+	    if (inst != null) {
+	      // x bounds
+	      double min=Double.POSITIVE_INFINITY;
+	      double max=Double.NEGATIVE_INFINITY;
+	   
+	      m_attributeRanges = new double[inst.numAttributes()];
+	      m_attributeBases = new double[inst.numAttributes()];
+	      for (int noa = 0; noa < inst.numAttributes(); noa++) {
+		min = 0;
+		max = 1;
+		
+		
+		m_attributeRanges[noa] = (max - min) / 2;
+		m_attributeBases[noa] = (max + min) / 2;
+	
+	      }
+	      if (inst.classAttribute().isNumeric()) {
+		m_numeric = true;
+	      }
+	      else {
+		m_numeric = false;
+	      }
+	    }
+	    return inst;
+	  }
 
   /**
    * A function used to stop the code that called buildclassifier
@@ -1547,7 +1575,7 @@ public class OnlineMultilayerPerceptron
     for (int noc = 0; noc < m_numClasses; noc++) {
       temp = m_outputs[noc].errorValue(false);
       ret += temp * temp;
-    }    
+    }    //System.out.print("error " + ret + "\n");
     return ret;
     
   }
@@ -1744,6 +1772,324 @@ public class OnlineMultilayerPerceptron
     return result;
   }*/
   
+  
+  public void buildClassifier1(Instances i) throws Exception {
+
+    // can classifier handle the data?
+    //getCapabilities().testWithFail(i);
+
+    // remove instances with missing class
+    i = new Instances(i);
+    i.deleteWithMissingClass();
+
+    m_ZeroR = new weka.classifiers.rules.ZeroR();
+    m_ZeroR.buildClassifier(i);
+    // only class? -> use ZeroR model
+    if (i.numAttributes() == 1) {
+      System.err
+        .println("Cannot build model (only class attribute present in data!), "
+          + "using ZeroR model instead!");
+      m_useDefaultModel = true;
+      return;
+    } else {
+      m_useDefaultModel = false;
+    }
+
+    m_epoch = 0;
+    m_error = 0;
+    m_instances = null;
+    m_currentInstance = null;
+    m_controlPanel = null;
+    m_nodePanel = null;
+
+    m_outputs = new NeuralEnd[0];
+    m_inputs = new NeuralEnd[0];
+    m_numAttributes = 0;
+    m_numClasses = 0;
+    m_neuralNodes = new NeuralConnection[0];
+
+    m_selected = new FastVector(4);
+    m_graphers = new FastVector(2);
+    m_nextId = 0;
+    m_stopIt = true;
+    m_stopped = true;
+    m_accepted = false;
+    m_instances = new Instances(i);
+    m_random = new Random(m_randomSeed);
+    m_instances.randomize(m_random);
+
+    if (m_useNomToBin) {
+      m_nominalToBinaryFilter = new NominalToBinary();
+      m_nominalToBinaryFilter.setInputFormat(m_instances);
+      m_instances = Filter.useFilter(m_instances, m_nominalToBinaryFilter);
+    }
+    m_numAttributes = m_instances.numAttributes() - 1;
+    m_numClasses = m_instances.numClasses();
+
+    setClassType(m_instances);
+
+    // this sets up the validation set.
+    Instances valSet = null;
+    // numinval is needed later
+    int numInVal = (int) (m_valSize / 100.0 * m_instances.numInstances());
+    if (m_valSize > 0) {
+      if (numInVal == 0) {
+        numInVal = 1;
+      }
+      valSet = new Instances(m_instances, 0, numInVal);
+    }
+    // /////////
+
+    setupInputs();
+
+    setupOutputs();
+    if (m_autoBuild) {
+      setupHiddenLayer();
+    }
+
+    // ///////////////////////////
+    // this sets up the gui for usage
+    if (m_gui) {
+      m_win = new JFrame();
+
+      m_win.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+          boolean k = m_stopIt;
+          m_stopIt = true;
+          int well = JOptionPane.showConfirmDialog(m_win, "Are You Sure...\n"
+            + "Click Yes To Accept" + " The Neural Network"
+            + "\n Click No To Return", "Accept Neural Network",
+            JOptionPane.YES_NO_OPTION);
+
+          if (well == 0) {
+            m_win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            m_accepted = true;
+            blocker(false);
+          } else {
+            m_win.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+          }
+          m_stopIt = k;
+        }
+      });
+
+      m_win.getContentPane().setLayout(new BorderLayout());
+      m_win.setTitle("Neural Network");
+      m_nodePanel = new NodePanel();
+      // without the following two lines, the
+      // NodePanel.paintComponents(Graphics)
+      // method will go berserk if the network doesn't fit completely: it will
+      // get called on a constant basis, using 100% of the CPU
+      // see the following forum thread:
+      // http://forum.java.sun.com/thread.jspa?threadID=580929&messageID=2945011
+      m_nodePanel.setPreferredSize(new Dimension(640, 480));
+      m_nodePanel.revalidate();
+
+      JScrollPane sp = new JScrollPane(m_nodePanel,
+        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      m_controlPanel = new ControlPanel();
+
+      m_win.getContentPane().add(sp, BorderLayout.CENTER);
+      m_win.getContentPane().add(m_controlPanel, BorderLayout.SOUTH);
+      m_win.setSize(640, 480);
+      m_win.setVisible(true);
+    }
+
+    // This sets up the initial state of the gui
+    if (m_gui) {
+      blocker(true);
+      m_controlPanel.m_changeEpochs.setEnabled(false);
+      m_controlPanel.m_changeLearning.setEnabled(false);
+      m_controlPanel.m_changeMomentum.setEnabled(false);
+    }
+
+    // For silly situations in which the network gets accepted before training
+    // commenses
+    if (m_numeric) {
+      setEndsToLinear();
+    }
+    if (m_accepted) {
+      m_win.dispose();
+      m_controlPanel = null;
+      m_nodePanel = null;
+      m_instances = new Instances(m_instances, 0);
+      m_currentInstance = null;
+      return;
+    }
+
+    // connections done.
+    double right = 0;
+    double driftOff = 0;
+    double lastRight = Double.POSITIVE_INFINITY;
+    double bestError = Double.POSITIVE_INFINITY;
+    double tempRate;
+    double totalWeight = 0;
+    double totalValWeight = 0;
+    double origRate = m_learningRate; // only used for when reset
+
+    // ensure that at least 1 instance is trained through.
+    if (numInVal == m_instances.numInstances()) {
+      numInVal--;
+    }
+    if (numInVal < 0) {
+      numInVal = 0;
+    }
+    for (int noa = numInVal; noa < m_instances.numInstances(); noa++) {
+      if (!m_instances.instance(noa).classIsMissing()) {
+        totalWeight += m_instances.instance(noa).weight();
+      }
+    }
+    if (m_valSize != 0) {
+      for (int noa = 0; noa < valSet.numInstances(); noa++) {
+        if (!valSet.instance(noa).classIsMissing()) {
+          totalValWeight += valSet.instance(noa).weight();
+        }
+      }
+    }
+    m_stopped = false;
+
+    for (int noa = 1; noa < m_numEpochs + 1; noa++) {
+      right = 0;
+      for (int nob = numInVal; nob < m_instances.numInstances(); nob++) {
+        m_currentInstance = m_instances.instance(nob);
+
+        if (!m_currentInstance.classIsMissing()) {
+
+          // this is where the network updating (and training occurs, for the
+          // training set
+          resetNetwork();
+          calculateOutputs();
+          tempRate = m_learningRate * m_currentInstance.weight();
+          if (m_decay) {
+            tempRate /= noa;
+          }
+
+          right += (calculateErrors() / m_instances.numClasses())
+            * m_currentInstance.weight();
+          updateNetworkWeights(tempRate, m_momentum);
+
+        }
+
+      }
+      right /= totalWeight;
+      if (Double.isInfinite(right) || Double.isNaN(right)) {
+        if (!m_reset) {
+          m_instances = null;
+          throw new Exception("Network cannot train. Try restarting with a"
+            + " smaller learning rate.");
+        } else {
+          // reset the network if possible
+          if (m_learningRate <= Utils.SMALL) {
+            throw new IllegalStateException("Learning rate got too small ("
+              + m_learningRate + " <= " + Utils.SMALL + ")!");
+          }
+          m_learningRate /= 2;
+          buildClassifier(i);
+          m_learningRate = origRate;
+          m_instances = new Instances(m_instances, 0);
+          m_currentInstance = null;
+          return;
+        }
+      }
+
+      // //////////////////////do validation testing if applicable
+      if (m_valSize != 0) {
+        right = 0;
+        for (int nob = 0; nob < valSet.numInstances(); nob++) {
+          m_currentInstance = valSet.instance(nob);
+          if (!m_currentInstance.classIsMissing()) {
+            // this is where the network updating occurs, for the validation set
+            resetNetwork();
+            calculateOutputs();
+            right += (calculateErrors() / valSet.numClasses())
+              * m_currentInstance.weight();
+            // note 'right' could be calculated here just using
+            // the calculate output values. This would be faster.
+            // be less modular
+          }
+
+        }
+
+        if (right < lastRight) {
+          if (right < bestError) {
+            bestError = right;
+            // save the network weights at this point
+            for (int noc = 0; noc < m_numClasses; noc++) {
+              m_outputs[noc].saveWeights();
+            }
+            driftOff = 0;
+          }
+        } else {
+          driftOff++;
+        }
+        lastRight = right;
+        if (driftOff > m_driftThreshold || noa + 1 >= m_numEpochs) {
+          for (int noc = 0; noc < m_numClasses; noc++) {
+            m_outputs[noc].restoreWeights();
+          }
+          m_accepted = true;
+        }
+        right /= totalValWeight;
+      }
+      m_epoch = noa;
+      m_error = right;
+      // shows what the neuralnet is upto if a gui exists.
+      updateDisplay();
+      // This junction controls what state the gui is in at the end of each
+      // epoch, Such as if it is paused, if it is resumable etc...
+      if (m_gui) {
+        while ((m_stopIt || (m_epoch >= m_numEpochs && m_valSize == 0))
+          && !m_accepted) {
+          m_stopIt = true;
+          m_stopped = true;
+          if (m_epoch >= m_numEpochs && m_valSize == 0) {
+
+            m_controlPanel.m_startStop.setEnabled(false);
+          } else {
+            m_controlPanel.m_startStop.setEnabled(true);
+          }
+          m_controlPanel.m_startStop.setText("Start");
+          m_controlPanel.m_startStop.setActionCommand("Start");
+          m_controlPanel.m_changeEpochs.setEnabled(true);
+          m_controlPanel.m_changeLearning.setEnabled(true);
+          m_controlPanel.m_changeMomentum.setEnabled(true);
+
+          blocker(true);
+          if (m_numeric) {
+            setEndsToLinear();
+          }
+        }
+        m_controlPanel.m_changeEpochs.setEnabled(false);
+        m_controlPanel.m_changeLearning.setEnabled(false);
+        m_controlPanel.m_changeMomentum.setEnabled(false);
+
+        m_stopped = false;
+        // if the network has been accepted stop the training loop
+        if (m_accepted) {
+          m_win.dispose();
+          m_controlPanel = null;
+          m_nodePanel = null;
+          m_instances = new Instances(m_instances, 0);
+          m_currentInstance = null;
+          return;
+        }
+      }
+      if (m_accepted) {
+        m_instances = new Instances(m_instances, 0);
+        m_currentInstance = null;
+        return;
+      }
+    }
+    if (m_gui) {
+      m_win.dispose();
+      m_controlPanel = null;
+      m_nodePanel = null;
+    }
+    m_instances = new Instances(m_instances, 0);
+    m_currentInstance = null;
+  }
+  
   /**
    * Call this function to build and train a neural network for the training
    * data provided.
@@ -1822,6 +2168,8 @@ public class OnlineMultilayerPerceptron
 	}
     }
     m_stopped = false;
+    
+  
 
     for (int noa = 1; noa < m_numEpochs + 1; noa++) {
       
@@ -1885,6 +2233,64 @@ public class OnlineMultilayerPerceptron
       m_nodePanel = null;
     }
     m_instances = new Instances(m_instances, 0);  
+  }
+  
+  
+  public double[] distributionForInstance1(Instance i) throws Exception {
+
+    // default model?
+    if (m_useDefaultModel) {
+      return m_ZeroR.distributionForInstance(i);
+    }
+
+    if (m_useNomToBin) {
+      m_nominalToBinaryFilter.input(i);
+      m_currentInstance = m_nominalToBinaryFilter.output();
+    } else {
+      m_currentInstance = i;
+    }
+
+    // Make a copy of the instance so that it isn't modified
+    m_currentInstance = (Instance) m_currentInstance.copy();
+
+    if (m_normalizeAttributes) {
+      for (int noa = 0; noa < m_instances.numAttributes(); noa++) {
+        if (noa != m_instances.classIndex()) {
+          if (m_attributeRanges[noa] != 0) {
+            m_currentInstance.setValue(noa,
+              (m_currentInstance.value(noa) - m_attributeBases[noa])
+                / m_attributeRanges[noa]);
+          } else {
+            m_currentInstance.setValue(noa, m_currentInstance.value(noa)
+              - m_attributeBases[noa]);
+          }
+        }
+      }
+    }
+    resetNetwork();
+
+    // since all the output values are needed.
+    // They are calculated manually here and the values collected.
+    double[] theArray = new double[m_numClasses];
+    for (int noa = 0; noa < m_numClasses; noa++) {
+      theArray[noa] = m_outputs[noa].outputValue(true);
+    }
+    if (m_instances.classAttribute().isNumeric()) {
+      return theArray;
+    }
+
+    // now normalize the array
+    double count = 0;
+    for (int noa = 0; noa < m_numClasses; noa++) {
+      count += theArray[noa];
+    }
+    if (count <= 0) {
+      return m_ZeroR.distributionForInstance(i);
+    }
+    for (int noa = 0; noa < m_numClasses; noa++) {
+      theArray[noa] /= count;
+    }
+    return theArray;
   }
 
   /**
@@ -2514,23 +2920,58 @@ public class OnlineMultilayerPerceptron
 
   @Override
   public double[] getVotesForInstance(Instance inst) {
-    // TODO Auto-generated method stub
-    m_currentInstance = inst;
-    resetNetwork();
-    double[] theArray = new double[m_numClasses];
-    for (int noa = 0; noa < m_numClasses; noa++) {
-      theArray[noa] = m_outputs[noa].outputValue(true);
-    }
-    
-    //now normalize the array
-    double count = 0;
-    for (int noa = 0; noa < m_numClasses; noa++) {
-      count += theArray[noa];
-    }
-    for (int noa = 0; noa < m_numClasses; noa++) {
-      theArray[noa] /= count;
-    }
-    return theArray;
+	  
+	
+	    
+	    m_currentInstance = inst;
+	    
+	    if (m_normalizeAttributes) {
+	      for (int noa = 0; noa < m_instances.numAttributes(); noa++) {
+		if (noa != m_instances.classIndex()) {
+		  if (m_attributeRanges[noa] != 0) {
+		    m_currentInstance.setValue(noa, (m_currentInstance.value(noa) - 
+						     m_attributeBases[noa]) / 
+					       m_attributeRanges[noa]);
+		  }
+		  else {
+		    m_currentInstance.setValue(noa, m_currentInstance.value(noa) -
+					       m_attributeBases[noa]);
+		  }
+		}
+	      }
+	    }
+	    resetNetwork();
+	    
+	    //since all the output values are needed.
+	    //They are calculated manually here and the values collected.
+	    double[] theArray = new double[m_numClasses];
+	    for (int noa = 0; noa < m_numClasses; noa++) {
+	      theArray[noa] = m_outputs[noa].outputValue(true);
+	    }
+	    
+	   
+	    if (m_instances.classAttribute().isNumeric()) {
+	      return theArray;
+	    }
+	    
+	    return theArray;
+//    // TODO Auto-generated method stub
+//    m_currentInstance = inst;
+//    resetNetwork();
+//    double[] theArray = new double[m_numClasses];
+//    for (int noa = 0; noa < m_numClasses; noa++) {
+//      theArray[noa] = m_outputs[noa].outputValue(true);
+//    }
+//    
+//    //now normalize the array
+//    double count = 0;
+//    for (int noa = 0; noa < m_numClasses; noa++) {
+//      count += theArray[noa];
+//    }
+//    for (int noa = 0; noa < m_numClasses; noa++) {
+//      theArray[noa] /= count;
+//    }
+//    return theArray;
   }
 
   @Override
@@ -2564,9 +3005,22 @@ public class OnlineMultilayerPerceptron
 
     m_numAttributes = m_instances.numAttributes() - 1;
     m_numClasses = m_instances.numClasses();
+    
+//    try {
+//    if (m_useNomToBin) {
+//      m_nominalToBinaryFilter = new NominalToBinary();
+//      m_nominalToBinaryFilter.setInputFormat(m_instances);
+//      m_instances = Filter.useFilter(m_instances,
+//				     m_nominalToBinaryFilter);
+//    }
+//    
+//  } catch (Exception e1) {
+//		// TODO Auto-generated catch block
+//		e1.printStackTrace();
+//	    }
   
     try {
-	setClassType(m_instances);
+    	setPreNormalizedRegressionClassType(m_instances);//setClassType(m_instances);
     } catch (Exception e1) {
 	// TODO Auto-generated catch block
 	e1.printStackTrace();
@@ -2601,6 +3055,7 @@ public class OnlineMultilayerPerceptron
 
     //System.out.println(inst.toString() + "****\n");
     m_instances = this.getInstances(inst);
+ 
     //System.out.println(i.toString());
     int numInVal = 0;
     double tempRate;
@@ -2614,7 +3069,7 @@ public class OnlineMultilayerPerceptron
 	}
     }
     
-
+    
     for (int noa = 1; noa < m_numEpochs + 1; noa++) {
       //right = 0;
       for (int nob = numInVal; nob < m_instances.numInstances(); nob++) {

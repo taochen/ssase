@@ -93,7 +93,7 @@ public class IAPMModel implements Model{
 	  private Instances dataRaw = null;
 	  
 	  private int run = 0;
-	  
+	  private String sampleMode = "";
 	  private ArrayList<Attribute> attrs = new ArrayList<Attribute>();
 	  
 	  public IAPMModel (String name, Set<Primitive> possibleInputs, QualityOfService output) {
@@ -162,9 +162,10 @@ public class IAPMModel implements Model{
 				  }
 				
 		    	  attrs.add(new Attribute(output.getName(),i));
-		    	  //System.out.print(attrs.get(attrs.size() - 1).type()+"***********type!!!\n");
+		    	  
+		    	  System.out.print(attrs.get(attrs.size() - 1).type()+"***********type!!!\n");
 				  dataRaw = new Instances("data_instances", attrs ,0);
-				  
+				  dataRaw.setClassIndex(dataRaw.numAttributes()-1);
 				// Notify the region control when primitives selection result change.
 				// At this level, the optimization algorithm would be also notified to
 				// abort the optimization.
@@ -207,7 +208,7 @@ public class IAPMModel implements Model{
 			  clusters =  new Dataset[]{newD};
 		  } else {
 		  
-		  Clusterer kmean = new IterativeMultiKMeans(2,2,1, 1,  new EuclideanDistance(),
+		  Clusterer kmean = new IterativeMultiKMeans(1,2, 1, 1,  new EuclideanDistance(),
 					new AICScore() );
 		  System.out.print("Start clustering\n");
 		  clusters = kmean.cluster(ds);
@@ -231,7 +232,7 @@ public class IAPMModel implements Model{
 				System.out.println("Cluster *****" + d.size()+"\n");
 	        	for (net.sf.javaml.core.Instance i : d){
 	        		map.put(i.get(0), classLabel);
-	        		System.out.println(i.get(0)+"\n");
+	        		//System.out.println(i.get(0)+"\n");
 	        	}
 	        	
 	        	newClassCount[classLabel] = d.size();
@@ -283,7 +284,7 @@ public class IAPMModel implements Model{
 //	    String path = "D:\\syw\\IJCAI16\\Data\\Artificial\\Static\\";
 //	    String fname = "Gaussian_1Min1Maj";
 //	    String fext = ".arff";
-	    String sampleMode = "MOOB";  
+	     sampleMode = "MOOB1";  
 	    //int prequentialstart = 0;//the time of start tracking the prequential performance metrics
 	    
 	   // boolean resetMetric = false;
@@ -396,7 +397,7 @@ public class IAPMModel implements Model{
 		else if(sampleMode.equals("MUOB"))
 		  MUOB_adaptive(trainInst, model, numSamples_Total);
 		else
-		  model.trainOnInstance(trainInst);
+		  model.trainOnInstanceImpl(dataRaw);//model.trainOnInstance(trainInst);
 	      
 		// update time decayed recall. Just for tracking the performance
 //		updateDecayRecall(realLabel, isCorrect, recalldecayfactor);	
@@ -454,7 +455,7 @@ public class IAPMModel implements Model{
 	    //model.baseLearnerOption.setValueViaCLIString("bayes.NaiveBayes");
 	    //model.baseLearnerOption.setValueViaCLIString("trees.HoeffdingTree");//default of OzaBag
 	    
-	    model.ensembleSizeOption.setValue(11);
+	    model.ensembleSizeOption.setValue(1);
 	    model.randomSeedOption.setValue(seed);//model.randomSeedOption.setValue((int)System.currentTimeMillis());
 	    if(model.baseLearnerOption.getValueAsCLIString().equals("org.ssase.model.iapm.OnlineMultilayerPerceptron")){
 	      model.firtInst = fistInst;
@@ -705,11 +706,13 @@ public class IAPMModel implements Model{
 			trainInst.setValue(attrs.get(i), xValue[i]); 
 		}
 		
-		double[] p = model.getVotesForInstance(trainInst);
+		double[] p = sampleMode == "MOOB"? model.getVotesForInstance(trainInst) : model.predict(trainInst);
 		
-		for(double d : p) {
-		System.out.print("Result*********" + d +"\n");
-		}
+		  System.out.print("size*********" + p.length +"\n");
+			for(double d : p) {
+			  System.out.print("vote*********" + d +"\n");
+			}
+		
 		return p[0]*100;
 	}
 
