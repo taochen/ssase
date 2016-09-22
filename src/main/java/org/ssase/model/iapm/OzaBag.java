@@ -21,6 +21,7 @@ package org.ssase.model.iapm;
 
 import moa.classifiers.AbstractClassifier;
 import moa.classifiers.Classifier;
+import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -69,6 +70,7 @@ public class OzaBag extends AbstractClassifier {
     
     protected Instance firtInst;//for initializing MLP base learners
 
+    protected MultilayerPerceptron mlp;
     @Override
     public void resetLearningImpl() {      
         if(this.baseLearnerOption.getValueAsCLIString().equals("org.ssase.model.iapm.OnlineMultilayerPerceptron")){
@@ -80,6 +82,7 @@ public class OzaBag extends AbstractClassifier {
             //((OnlineMultilayerPerceptron)this.ensemble[i]).setNormalizeNumericClass(true);
             //((OnlineMultilayerPerceptron)this.ensemble[i]).setNormalizeAttributes(true);
             ((OnlineMultilayerPerceptron)this.ensemble[i]).initMLP(firtInst);
+            ((OnlineMultilayerPerceptron)this.ensemble[i]).setTrainingTime(50000);
           }
         }
         else{
@@ -109,8 +112,12 @@ public class OzaBag extends AbstractClassifier {
         for (int i = 0; i < this.ensemble.length; i++) {
         	 try {
         		 
-        		this.ensemble[i] = new OnlineMultilayerPerceptron();
-				((OnlineMultilayerPerceptron)this.ensemble[i]).buildClassifier(inst);
+        		//this.ensemble[i] = new OnlineMultilayerPerceptron();
+				//((OnlineMultilayerPerceptron)this.ensemble[i]).buildClassifier(inst);
+        		 mlp = new MultilayerPerceptron();
+        		 mlp.setValidationSetSize(0);
+        		 mlp.setTrainingTime(50000);
+        		 mlp.buildClassifier(inst);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -133,7 +140,8 @@ public class OzaBag extends AbstractClassifier {
     
     public double[] predict(Instance inst) { 
         try {
-			return ((OnlineMultilayerPerceptron)this.ensemble[0]).distributionForInstance(inst);
+			//return ((OnlineMultilayerPerceptron)this.ensemble[0]).distributionForInstance(inst);
+        	return mlp.distributionForInstance(inst);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

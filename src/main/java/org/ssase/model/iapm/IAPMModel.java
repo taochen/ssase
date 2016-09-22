@@ -284,7 +284,7 @@ public class IAPMModel implements Model{
 //	    String path = "D:\\syw\\IJCAI16\\Data\\Artificial\\Static\\";
 //	    String fname = "Gaussian_1Min1Maj";
 //	    String fext = ".arff";
-	     sampleMode = "MOOB1";  
+	     sampleMode = "MOOB";  
 	    //int prequentialstart = 0;//the time of start tracking the prequential performance metrics
 	    
 	   // boolean resetMetric = false;
