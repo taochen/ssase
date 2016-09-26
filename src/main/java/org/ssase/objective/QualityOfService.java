@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.ssase.model.Model;
 import org.ssase.model.ModelingType;
 import org.ssase.model.iapm.IAPMModel;
+import org.ssase.model.onoff.OnOffModel;
 import org.ssase.model.sam.SAMModel;
 import org.ssase.observation.listener.Listener;
 import org.ssase.observation.listener.ModelListener;
@@ -132,7 +133,55 @@ public class QualityOfService implements Objective, Comparable{
 			selected = ModelingType.SAM;
 		} else if("iapm".equals(type)) {
 			selected = ModelingType.IAPM;
-		} 
+		} else if("onmlp".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = true;
+			OnOffModel.selected = OnOffModel.LearningType.MLP;
+		} else if("offmlp".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = false;
+			OnOffModel.selected = OnOffModel.LearningType.MLP;
+		} else if("onlr".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = true;
+			OnOffModel.selected = OnOffModel.LearningType.LR;
+		} else if("offlr".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = false;
+			OnOffModel.selected = OnOffModel.LearningType.LR;
+		} else if("onknn".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = true;
+			OnOffModel.selected = OnOffModel.LearningType.KNN;
+		} else if("offknn".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = false;
+			OnOffModel.selected = OnOffModel.LearningType.KNN;
+		} else if("onnb".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = true;
+			OnOffModel.selected = OnOffModel.LearningType.NB;
+		} else if("offnb".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = false;
+			OnOffModel.selected = OnOffModel.LearningType.NB;
+		} else if("ondt".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = true;
+			OnOffModel.selected = OnOffModel.LearningType.DT;
+		} else if("offdt".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = false;
+			OnOffModel.selected = OnOffModel.LearningType.DT;
+		} else if("onsvm".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = true;
+			OnOffModel.selected = OnOffModel.LearningType.SVM;
+		} else if("offsvm".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = false;
+			OnOffModel.selected = OnOffModel.LearningType.SVM;
+		}
 		
 		
 		if(selected == null) throw new RuntimeException("Can not find modeling method for type " + type);	
@@ -150,6 +199,8 @@ public class QualityOfService implements Objective, Comparable{
 			model = new SAMModel(name, possibleInputs, this, functionConfig, structureConfig);
 		} else if(ModelingType.IAPM == selected) {
 			model = new IAPMModel(name, possibleInputs, this);
+		} else if(ModelingType.ONOFF == selected) {
+			model = new OnOffModel(name, possibleInputs, this);
 		} else {
 			throw new RuntimeException("No modeling type has been selected!");
 		}
@@ -442,6 +493,7 @@ public class QualityOfService implements Objective, Comparable{
 		
 		this.mean = mean/(size*100);
 	}
+	
 
 	public synchronized void removeHistoreicalValues(int no) {
 		double[] newArray = new double[array.length - no];

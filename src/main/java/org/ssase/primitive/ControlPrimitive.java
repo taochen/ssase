@@ -242,6 +242,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		addingCounter++;
 		
 	}
+	
 
 	@Override
 	public synchronized void removeHistoreicalValues(int no) {

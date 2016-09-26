@@ -160,6 +160,7 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 		addingCounter++;
 		
 	}
+	
 
 	@Override
 	public synchronized void removeHistoreicalValues(int no) {
