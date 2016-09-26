@@ -16,7 +16,7 @@ Currently it encapsulates the following sub-frameworks/components, some of which
 
 This is a framework that enables self-adaptive feature selection and selection of learning algorithms to model the correlation of control features, environments, interference to Quality of Service (QoS) attributes (e.g., response time). More details can be found in the following publications:
 
- > * T. Chen and R. Bahsoon , Self-Adaptive and Online QoS Modeling for Cloud-Based Software Services. IEEE Transactions on Software Engineering, to appear.
+ > * T. Chen and R. Bahsoon , Self-Adaptive and Online QoS Modeling for Cloud-Based Software Services. IEEE Transactions on Software Engineering, 2016, doi:10.1109/TSE.2016.2608826.
 
  > * T. Chen, R. Bahsoon and X. Yao. Online QoS Modeling in the Cloud: A Hybrid and Adaptive Multi-Learners Approach. The 7th IEEE/ACM International Conference on Utility and Cloud Computing (UCC2014), London, UK. 2014.
 
@@ -60,6 +60,9 @@ Though FEMOSAA supports any EAs/MOEAs, currently, it exploits the recent MOEA/D 
 
 Source code directory:
    * [src/main/java/org/ssase/objective/optimization/femosaa/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/objective/optimization/femosaa)
+
+Experiment results:
+   * [experiments-data/femosaa/results/](https://github.com/taochen/ssase/tree/master/experiments-data/femosaa/results)
 
 ### MOACO-CD: Self-Adaptive and Interference-Aware Multi-Objective Ant Colony Optimization for Decision Making in Self-Adaptive Software 
 
