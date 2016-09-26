@@ -7,15 +7,18 @@ import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 import moa.classifiers.AbstractClassifier;
+import moa.classifiers.Classifier;
 import moa.classifiers.bayes.NaiveBayes;
 import moa.classifiers.bayes.NaiveBayesMultinomial;
 import moa.classifiers.functions.MajorityClass;
 import moa.classifiers.functions.SGD;
+import moa.classifiers.meta.OzaBag;
 import moa.classifiers.meta.WEKAClassifier;
 import moa.classifiers.trees.AdaHoeffdingOptionTree;
 import moa.classifiers.trees.DecisionStump;
 import moa.classifiers.trees.HoeffdingAdaptiveTree;
 import moa.classifiers.trees.HoeffdingTree;
+import moa.options.ClassOption;
 import weka.core.Attribute;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NumericToNominal;
@@ -72,9 +75,44 @@ public class OnlineClassifier {
 		//return new MajorityClass(); // this would probably the same as decision stump
 		//return new DecisionStump();
 		//return new SGD();
-		return initializeWEKAClassifier("mlp");
-		//return initializeWEKAClassifier("weka.classifiers.lazy.IBk");
-		//TODO add some ensembles.
+		//return initializeWEKAClassifier("mlp");
+		//return initializeWEKAClassifier("weka.classifiers.lazy.IBk");//knn
+		
+		//return initializeBagging("trees.HoeffdingTree","bayes.NaiveBayes");
+		return initializeBoosting(
+				"org.ssase.debt.classification.OnlineMultilayerPerceptron");
+	}
+	
+	public AbstractClassifier initializeBagging(String... clazz){
+		ExtendedOzaBag bag = new ExtendedOzaBag();
+		bag.ensembleSizeOption.setValue(clazz.length);
+		
+		for (int i = 0; i < clazz.length; i++) {
+			if (bag.learners == null) {
+				bag.learners = new ClassOption[clazz.length];
+			}
+			
+			bag.learners[i] = new ClassOption("baseLearner", 'l',
+		            "Classifier to train.", Classifier.class, clazz[i]); 
+		}
+		
+		return bag;
+	}
+	
+	public AbstractClassifier initializeBoosting(String... clazz) {
+		ExtendedOzaBoost boot = new ExtendedOzaBoost();
+		boot.ensembleSizeOption.setValue(clazz.length);
+		
+		for (int i = 0; i < clazz.length; i++) {
+			if (boot.learners == null) {
+				boot.learners = new ClassOption[clazz.length];
+			}
+			
+			boot.learners[i] = new ClassOption("baseLearner", 'l',
+		            "Classifier to train.", Classifier.class, clazz[i]); 
+		}
+		
+		return boot;
 	}
 	
 	
