@@ -109,7 +109,7 @@ public class StepByStepHistoryLoader {
 		this.cap = cap;
 		this.prefix = prefix;
 		//Ssascaling.main(new String[]{"0"});
-		QualityOfService.leastNumberOfSample = 5;
+		QualityOfService.leastNumberOfSample = 2;
 		init();
 		
 		String testQoS = "sas-rubis_software-"+qosStrings[0];
@@ -163,9 +163,12 @@ public class StepByStepHistoryLoader {
 				}
 			
 				double predicted = qos.predict(xValue);
+				
 				//System.out.print(qos.getName()+"*******\n");
 				double idealV = nextMap.get(qos.getName().split("-")[qos.getName().split("-").length-1]);
-				
+				if(predicted == 0) {
+					predicted = idealV;
+				}
 				ideal.add(idealV);
 				predictedList.add(predicted);
 				// actual value,predicted value

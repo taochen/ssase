@@ -49,6 +49,7 @@ System.out.print(data + "\n");
 		} catch (IOException e) {
 			System.err
 					.println("Couldn't get I/O for the connection to: hostname");
+			e.printStackTrace();
 			try {
 				if (smtpSocket != null) {
 					smtpSocket.close();

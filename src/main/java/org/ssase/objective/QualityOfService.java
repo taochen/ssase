@@ -158,14 +158,14 @@ public class QualityOfService implements Objective, Comparable{
 			selected = ModelingType.ONOFF;
 			OnOffModel.isOnline = false;
 			OnOffModel.selected = OnOffModel.LearningType.KNN;
-		} else if("onnb".equals(type)) {
+		} else if("onks".equals(type)) {
 			selected = ModelingType.ONOFF;
 			OnOffModel.isOnline = true;
-			OnOffModel.selected = OnOffModel.LearningType.NB;
-		} else if("offnb".equals(type)) {
+			OnOffModel.selected = OnOffModel.LearningType.KS;
+		} else if("offks".equals(type)) {
 			selected = ModelingType.ONOFF;
 			OnOffModel.isOnline = false;
-			OnOffModel.selected = OnOffModel.LearningType.NB;
+			OnOffModel.selected = OnOffModel.LearningType.KS;
 		} else if("ondt".equals(type)) {
 			selected = ModelingType.ONOFF;
 			OnOffModel.isOnline = true;
