@@ -497,7 +497,7 @@ public class Ssascaling {
 			}
 			
 		
-			
+			Receiver r = new Receiver();
 			
 			// Set direct primitives.
 			for (Service s : Repository.getAllServices() ) {
@@ -539,7 +539,7 @@ public class Ssascaling {
 		
 			Executor.init(3);
 			
-			Receiver r = new Receiver();
+			
 			
 			
 			if(Region.selected != OptimizationType.INIT) {

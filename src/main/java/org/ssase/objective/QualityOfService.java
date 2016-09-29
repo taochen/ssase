@@ -130,7 +130,7 @@ public class QualityOfService implements Objective, Comparable{
 		if("sam".equals(type)) {
 			selected = ModelingType.SAM;
 		} 
-		
+		System.out.print(selected+ "*****\n");
 		
 		if(selected == null) throw new RuntimeException("Can not find modeling method for type " + type);	
 	}
@@ -304,7 +304,7 @@ public class QualityOfService implements Objective, Comparable{
 	public void updateGlobalAndLocalErrorHeuristics(){
 		
 		// Do nothing for the first run.
-		if (model.getInputs().size() == 0 || !isValid() || model.getInputs().size() == 0) {
+		if (model == null || !isValid() || model.getInputs().size() == 0) {
 			return;
 		}
 		
@@ -559,7 +559,7 @@ public class QualityOfService implements Objective, Comparable{
 		}*/
 		
 		// Do nothing for the first run.
-		if (model.getInputs().size() == 0 || !isValid() || model.getInputs().size() == 0) {
+		if (model == null || !isValid() || model.getInputs().size() == 0) {
 			return;
 		}
 		
