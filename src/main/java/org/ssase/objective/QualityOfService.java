@@ -15,6 +15,7 @@ import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.util.Timer;
 import org.ssase.util.Tuple;
+import org.ssase.util.Util;
 
 
 @SuppressWarnings("rawtypes")
@@ -517,7 +518,7 @@ public class QualityOfService implements Objective, Comparable{
 	}
 	
 	public double getMax(){
-		return max;
+		return max == 0? 1 : max;
 	}
 
 
@@ -561,17 +562,19 @@ public class QualityOfService implements Objective, Comparable{
 		for (int i = 0; i < x.length; i++) {			
 			// get the latest EP here.
 			if (isLatestEP && model.get(i) instanceof EnvironmentalPrimitive) {
-			   x[i] = ((EnvironmentalPrimitive)model.get(i)).getLatest()/model.get(i).getMax();
+			   x[i] = Model.isNormalizeModelingData? ((EnvironmentalPrimitive)model.get(i)).getLatest()/model.get(i).getMax() : 
+				   Util.sigmoid((((EnvironmentalPrimitive)model.get(i)).getLatest()));
 			} else {
-			   x[i] = xValue[i]/model.get(i).getMax();
+			   x[i] = Model.isNormalizeModelingData? xValue[i]/model.get(i).getMax() : Util.sigmoid(xValue[i]);
 			}
+			break;
 			//System.out.print(model.get(i).getName() + "=" + xValue[i] + ":" + (x[i]*model.get(i).getMax()) +"\n");
 		}
 		
 	
-		reuslt = model.predict(x, true, a, b)*max/100;
+		reuslt = Model.isNormalizeModelingData? model.predict(x, true, a, b)*max/100 : Util.reverseSigmoid(model.predict(x, true, a, b)/100);
 		//reuslt = model.predict(x, 0)*max/100;
-		
+		//reuslt = Math.abs((model.predict(x, true, a, b)/100-10)*max);
 		synchronized(writeLock) {
 			writeLock.decrementAndGet();
 			if (writeLock.get() == 0) {

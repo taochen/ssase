@@ -28,6 +28,8 @@ public interface Model extends Serializable{
 	// Eliminate cases where the objective has zero value.
 	public static final boolean isEliminateZero = true;
 
+	// Use sigmoid or null if false
+	public static final boolean isNormalizeModelingData = true;
 	
 	public List<Primitive> getInputs();
 

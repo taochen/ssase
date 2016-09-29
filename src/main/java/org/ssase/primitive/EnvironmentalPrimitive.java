@@ -172,7 +172,7 @@ public class EnvironmentalPrimitive implements Primitive, Comparable {
 	}
 	
 	public double getMax(){
-		return max;
+		return max == 0? 1 : max;
 	}
 	
 	public int getGroup() {

@@ -258,7 +258,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 	}
 	
 	public double getMax(){
-		return max;
+		return max == 0? 1 : max;
 	}
 	
 

@@ -5,6 +5,7 @@ import org.apache.commons.math3.optimization.GoalType;
 import org.apache.commons.math3.optimization.PointValuePair;
 import org.apache.commons.math3.optimization.direct.NelderMeadSimplex;
 import org.apache.commons.math3.optimization.direct.SimplexOptimizer;
+import org.ssase.util.Util;
 
 public class NIPTester {
 
@@ -29,6 +30,8 @@ public class NIPTester {
 		optimizer.setSimplex(new NelderMeadSimplex(new double[] { 0.2, 0.2 }));
 		PointValuePair pair = optimizer.optimize(10000, function, GoalType.MINIMIZE, new double[] { 0, 0 });
 
+		System.out.print(Util.sigmoid(5.3133290144803808) + "\n");
+		System.out.print(Util.reverseSigmoid(0.9999514800308) + "\n");
 		// Now, let's tell the user about it:
 		double[] point = pair.getPoint();
 	}

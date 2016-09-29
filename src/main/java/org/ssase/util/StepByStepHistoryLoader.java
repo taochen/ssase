@@ -7,7 +7,9 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,14 +74,14 @@ public class StepByStepHistoryLoader {
 //		"edu.rice.rubis.servlets.ViewUserInfo"
 	};
 	
-	private  final String prefix = //"/home/tao/sas-init/";
+	private  String prefix = //"/home/tao/sas-init/";
 		"/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/fifa98/";
 	
 	public  int counterNo = 0;
 	
 	private  int readFileIndex = 0;
 	private int startIndex = 121;
-	private  int cap = 102;//88//340/*342*/;
+	private  int cap = 101 - (startIndex - 121);//88//340/*342*/;
 
 	private  boolean finished = false;
 	private  List<Interval> intervals;
@@ -90,16 +92,22 @@ public class StepByStepHistoryLoader {
 	
 	
 	private List<String> resultsList = new ArrayList<String>();
+	private List<Double> ideal = new ArrayList<Double>();
+	private List<Double> predictedList = new ArrayList<Double>();
+	private List<Double> mediam = new ArrayList<Double>();
 	private Map<String, Double> nextMap = new HashMap<String, Double>();
 	
 	public static void main(String[] args) {
-		new StepByStepHistoryLoader().run();
+		new StepByStepHistoryLoader().run("",0 ,0, 0);
 	}
 	
 	/**
 	 * @param args
 	 */
-	public void run() {
+	public void run(String prefix,  int startIndex, int cap, int preRun) {
+		this.startIndex = startIndex;
+		this.cap = cap;
+		this.prefix = prefix;
 		//Ssascaling.main(new String[]{"0"});
 		QualityOfService.leastNumberOfSample = 5;
 		init();
@@ -155,12 +163,16 @@ public class StepByStepHistoryLoader {
 				}
 			
 				double predicted = qos.predict(xValue);
+				//System.out.print(qos.getName()+"*******\n");
+				double idealV = nextMap.get(qos.getName().split("-")[qos.getName().split("-").length-1]);
 				
+				ideal.add(idealV);
+				predictedList.add(predicted);
 				// actual value,predicted value
-				String result = qos.getValue()+","+predicted + "\n";
+				String result = idealV+","+predicted + "\n";
 				resultsList.add(result);
 				logger.debug("Result: " + result);
-				
+				System.out.print("next: " +Math.abs((idealV-predicted)/(idealV+predicted)) + "\n");
 			}
 			
 	}
@@ -168,21 +180,21 @@ public class StepByStepHistoryLoader {
 			for (Service s : Repository.getAllServices() ) {
 				for (Primitive p : s.getPrimitives()) {
 					//System.out.print(p.getName()+"\n");
-					p.addValue(i+1);
+					p.addValue(i+preRun+1);
 				}
 			}
 			
 			for (VM v : Repository.getAllVMs()) {
 				for (Primitive p : v.getAllHardwarePrimitives()){
-					p.addValue(i+1);
+					p.addValue(i+preRun+1);
 				}
 				for (Primitive p : v.getAllSharedSoftwarePrimitives()){
-					p.addValue(i+1);
+					p.addValue(i+preRun+1);
 				}
 			}
 			
 			for (final QualityOfService qos : Repository.getQoSSet()) {
-				qos.doAddValue(i+1);
+				qos.doAddValue(i+preRun+1);
 			}
 			
 			ControlBus.getInstance().increaseCurrentSampleCount();
@@ -259,8 +271,30 @@ public class StepByStepHistoryLoader {
 		sensors = null;
 		ControlPrimitive.isPreLoad = false;
 		
+		double total = 0D;
+		BigDecimal bd = new BigDecimal(1);
+		for (int i = 0; i < ideal.size(); i++) {
+			total += Math.abs((ideal.get(i) - predictedList.get(i))/(1));
+			mediam.add(Math.abs((ideal.get(i) - predictedList.get(i))/(1)));
+			//bd = bd.multiply(new BigDecimal(Math.abs((ideal.get(i) - predictedList.get(i))/(ideal.get(i) + predictedList.get(i)))));
+			//System.out.print("next: " +  Math.abs((ideal.get(i) - predictedList.get(i))/(ideal.get(i) + predictedList.get(i))) + " \n");
+		}
+		
+		total /= ideal.size();
+		//gmtotal = Math.pow(gmtotal, (1.0/ideal.size()));
+		//bd.pow((int)(1.0/ideal.size()));
+		Collections.sort(mediam);
+		System.out.print("Average: " + total + " \n");
+		System.out.print("Me: " + mediam.get(mediam.size()/2) + " \n");
+		
+		for(double d : mediam){
+			//System.out.print("next: " +d + "\n");
+		}
+		
 		System.gc();
 	
+		
+		
 	}
 	
 	
@@ -784,11 +818,14 @@ public class StepByStepHistoryLoader {
 	
 	private  void prepareToAddValueForQoS(String VM_ID, String service, String name, double... values) {
 		Repository.prepareToAddValueForQoS(VM_ID+"-"+service, name, values);
+		nextMap.put(name, values[0]);
+		//System.out.print(name+"\n");
 	}
 	
 	private  void prepareToAddValueForPrimitive(String VM_ID, String service, String name, double... values){
 		Repository.prepareToAddValueForPrimitive(VM_ID+"-"+service, name, values);
 		nextMap.put(name, values[0]);
+		//System.out.print(name+"\n");
 	}
 
 }

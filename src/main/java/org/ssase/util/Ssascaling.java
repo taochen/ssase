@@ -547,7 +547,9 @@ public class Ssascaling {
 			if(Region.selected != OptimizationType.INIT) {
 			  // new HistoryLoader().run();				   
 			}
-			new StepByStepHistoryLoader().run();	
+			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/", 0, 123, 0);
+			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/fifa98/", 121, 101, 123);	
+			new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/fifa98/", 121, 101, 0);
 			//loadFeatureModel();
 			//r.receive();
 			

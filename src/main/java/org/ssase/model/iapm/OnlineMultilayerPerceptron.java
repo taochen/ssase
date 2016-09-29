@@ -1809,7 +1809,8 @@ public class OnlineMultilayerPerceptron extends AbstractClassifier implements
 	private void setEndsToLinear() {
 		for (int noa = 0; noa < m_neuralNodes.length; noa++) {
 			if ((m_neuralNodes[noa].getType() & NeuralConnection.OUTPUT) == NeuralConnection.OUTPUT) {
-				((NeuralNode) m_neuralNodes[noa]).setMethod(m_linearUnit);
+				((NeuralNode) m_neuralNodes[noa]).setMethod(m_sigmoidUnit);
+				//((NeuralNode) m_neuralNodes[noa]).setMethod(m_linearUnit);
 			} else {
 				((NeuralNode) m_neuralNodes[noa]).setMethod(m_sigmoidUnit);
 			}
@@ -3208,8 +3209,9 @@ public class OnlineMultilayerPerceptron extends AbstractClassifier implements
 					try {
 						right += (calculateErrors() / m_instances.numClasses())
 								* m_currentInstance.weight();
+						//calculateErrors();
 						temp_right = right;
-						// System.out.println(calculateErrors());
+						 //System.out.println(calculateErrors());
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -3226,8 +3228,12 @@ public class OnlineMultilayerPerceptron extends AbstractClassifier implements
 				}
 
 			}
+			//System.out.print("right****" + right+"\n");
 			right /= totalWeight;
+
+			//if (Double.isInfinite(right) || Double.isNaN(right)) {right = 0;}
 			if (Double.isInfinite(right) || Double.isNaN(right)) {
+				
 				if (!m_reset) {
 					m_instances = null;
 					try {

@@ -101,4 +101,18 @@ public class Util {
 
 	    return randomNum;
 	}
+	
+	public static double sigmoid(double x) {
+		//return (1.0 / (1.0 + Math.pow(Math.E, (-1.0 * x))));
+		return x;
+		//return  Hy.tanh(x);
+	}
+	
+	public static double reverseSigmoid(double y) {
+		//return y >= 1? 0d : Math.log(((1.0-y)/y));
+		return y;
+		//return Hy.atanh(y); 
+	}
+	
+	
 }

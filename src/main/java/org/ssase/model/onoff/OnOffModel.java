@@ -26,6 +26,7 @@ import org.ssase.objective.QualityOfService;
 import org.ssase.observation.event.ModelChangeEvent;
 import org.ssase.observation.listener.ModelListener;
 import org.ssase.primitive.Primitive;
+import org.ssase.util.Util;
 
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Attribute;
@@ -36,12 +37,20 @@ import weka.core.Utils;
 
 /**
  * 
- * If we should normalize data before use?
+ * If we should use the random workload? no
  * 
- * If we should use sigmoid function at the last layer of MLP?
+ * If we should normalize data before use? yes, should normalize
+ * 
+ * If we should use sigmoid function at the last layer of MLP? yes
+ * 
+ * MLP max normalization - online vs offline: A:2.6331763506783163   ,M:0.07663071570956125  vs A:  ,M: 
+ * LR max normalization - online vs offline: A:3.792341996211453,M:0.9448822040452136 vs A:10.836109649596294,M:8.436108609652894
+ * KNN max normalization - online vs offline: A:1.935300993035456  ,M:0.037836616161616175  vs A:1.8426338795217323 ,M:0.0132161041133071  
+ * K*
+ * SVM
  * 
  * @author tao
- *
+ * 
  */
 public class OnOffModel implements Model {
 	/**
@@ -63,7 +72,8 @@ public class OnOffModel implements Model {
 	protected QualityOfService output;
 
 	public static boolean isOnline = false;
-
+	public static boolean isRetrainForChangedMax = true;
+	public boolean isMaxChange = false;
 	private double[] xMax;
 	private double yMax;
 
@@ -96,7 +106,7 @@ public class OnOffModel implements Model {
 		// }
 		// }
 		//
-
+		isMaxChange = false;
 		// This set needs to be transfered into a sorted collection.
 		Set<Primitive> newInputs = primitiveLearner.select(output,
 				possibleInputs);
@@ -128,9 +138,18 @@ public class OnOffModel implements Model {
 			return;
 		}
 
+		if (yMax != output.getMax()) {
+			isMaxChange = true;
+		}
+
 		yMax = output.getMax();
-		xMax = new double[inputs.size()];
+		if(xMax == null) {
+			xMax = new double[inputs.size()];
+		}
 		for (int i = 0; i < inputs.size(); i++) {
+			if (xMax[i] != inputs.get(i).getMax()) {
+				isMaxChange = true;
+			}
 			xMax[i] = inputs.get(i).getMax();
 		}
 
@@ -139,7 +158,7 @@ public class OnOffModel implements Model {
 			// TODO might be use the recorded historical data together?
 			if (isOnline) {
 				onlineModel = null;
-
+				isMaxChange = true;
 				// Copy the new instances
 
 				attrs = new ArrayList<Attribute>();
@@ -184,7 +203,18 @@ public class OnOffModel implements Model {
 		}
 
 		try {
-			run(convertIntoWekaInstance());
+
+			if (isRetrainForChangedMax && isMaxChange && isOnline) {
+				onlineModel = null;
+				System.out.print("**************isMaxChange!!**************\n");
+				for (int i = 0; i < output.getArray().length; i++) {
+					run(convertIntoWekaInstance(i));
+				}
+
+			} else {
+				run(convertIntoWekaInstance());
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -196,12 +226,44 @@ public class OnOffModel implements Model {
 		final Instance trainInst = new DenseInstance(inputs.size() + 1);
 
 		for (int i = 0; i < inputs.size(); i++) {
-			trainInst.setValue(attrs.get(i), inputs.get(i).getValue()
-					/ inputs.get(i).getMax());
+			trainInst.setValue(
+					attrs.get(i),
+					Model.isNormalizeModelingData ? inputs.get(i).getValue()
+							/ inputs.get(i).getMax() : Util.sigmoid(inputs.get(
+							i).getValue()));
 		}
 
-		trainInst.setValue(attrs.get(attrs.size() - 1), output.getValue()
-				/ output.getMax());
+		trainInst.setValue(
+				attrs.get(attrs.size() - 1),
+				Model.isNormalizeModelingData ? output.getValue()
+						/ output.getMax() : Util.sigmoid(output.getValue()));
+
+		dataRaw.add(trainInst);
+		trainInst.setDataset(dataRaw);
+		dataRaw.setClassIndex(trainInst.numAttributes() - 1);
+
+		return trainInst;
+	}
+
+	private Instance convertIntoWekaInstance(int k) {
+
+		final Instance trainInst = new DenseInstance(inputs.size() + 1);
+
+		for (int i = 0; i < inputs.size(); i++) {
+			trainInst
+					.setValue(
+							attrs.get(i),
+							Model.isNormalizeModelingData ? inputs.get(i)
+									.getArray()[k] / 100 : Util.sigmoid(inputs
+									.get(i).getArray()[k]
+									* inputs.get(i).getMax() / 100));
+		}
+
+		trainInst.setValue(
+				attrs.get(attrs.size() - 1),
+				Model.isNormalizeModelingData ? output.getArray()[k] / 100
+						: Util.sigmoid(output.getArray()[k] * output.getMax()
+								/ 100));
 
 		dataRaw.add(trainInst);
 		trainInst.setDataset(dataRaw);
@@ -216,50 +278,54 @@ public class OnOffModel implements Model {
 		if (isOnline) {
 
 			if (selected == LearningType.MLP) {
-				if(onlineModel == null) {
+				if (onlineModel == null) {
 					onlineModel = new OnlineMultilayerPerceptron();
-					((OnlineMultilayerPerceptron) onlineModel).setValidationSetSize(0);
-					((OnlineMultilayerPerceptron) onlineModel).setTrainingTime(50000);
-					((OnlineMultilayerPerceptron) onlineModel).initMLP(trainInst);
+					((OnlineMultilayerPerceptron) onlineModel)
+							.setValidationSetSize(0);
+					((OnlineMultilayerPerceptron) onlineModel)
+							.setTrainingTime(5000);
+					((OnlineMultilayerPerceptron) onlineModel).setNormalizeNumericClass(false);
+					((OnlineMultilayerPerceptron) onlineModel).setNormalizeAttributes(false);
+					((OnlineMultilayerPerceptron) onlineModel)
+							.initMLP(trainInst);
 				}
-				
-				
+
 			} else if (selected == LearningType.LR) {
-				if(onlineModel == null) {
+				if (onlineModel == null) {
 					onlineModel = initializeWEKAClassifier("weka.classifiers.lazy.LWL");
-					onlineModel.prepareForUse();
+					// onlineModel.prepareForUse();
 				}
 			} else if (selected == LearningType.KNN) {
-				if(onlineModel == null) {
+				if (onlineModel == null) {
 					onlineModel = initializeWEKAClassifier("weka.classifiers.lazy.IBk");
-					onlineModel.prepareForUse();
+					// onlineModel.prepareForUse();
 				}
 			} else if (selected == LearningType.NB) {
-				if(onlineModel == null) {
+				if (onlineModel == null) {
 					onlineModel = new moa.classifiers.bayes.NaiveBayes();
 					onlineModel.prepareForUse();
 				}
 			} else if (selected == LearningType.DT) {
-				if(onlineModel == null) {
+				if (onlineModel == null) {
 					onlineModel = new moa.classifiers.trees.HoeffdingTree();
 					onlineModel.prepareForUse();
 				}
 			} else if (selected == LearningType.SVM) {
-				if(onlineModel == null) {
+				if (onlineModel == null) {
 					onlineModel = new moa.classifiers.functions.SGD();
 					onlineModel.prepareForUse();
 				}
 			}
-			
+
 			onlineModel.trainOnInstance(trainInst);
 		} else {
 
 			if (selected == LearningType.MLP) {
-				
+
 				offlineModel = new MultilayerPerceptron();
 				((MultilayerPerceptron) offlineModel).setValidationSetSize(0);
-				((MultilayerPerceptron) offlineModel).setTrainingTime(50000);
-				
+				((MultilayerPerceptron) offlineModel).setTrainingTime(5000);
+
 			} else if (selected == LearningType.LR) {
 				offlineModel = new weka.classifiers.lazy.LWL();
 			} else if (selected == LearningType.KNN) {
@@ -267,20 +333,20 @@ public class OnOffModel implements Model {
 			} else if (selected == LearningType.NB) {
 				offlineModel = new weka.classifiers.bayes.NaiveBayes();
 			} else if (selected == LearningType.DT) {
-				offlineModel = new weka.classifiers.trees.HoeffdingTree();
+				offlineModel = new weka.classifiers.lazy.KStar();//new ExtendedBagging();// new
+														// weka.classifiers.trees.M5P();
 			} else if (selected == LearningType.SVM) {
-				offlineModel = new weka.classifiers.functions.SGD();
+				offlineModel = new ExtendedSGD();
 			}
-			
-			
+
 			offlineModel.buildClassifier(dataRaw);
 		}
 
 	}
-	
 
-	private moa.classifiers.AbstractClassifier initializeWEKAClassifier(String name){
-		
+	private moa.classifiers.AbstractClassifier initializeWEKAClassifier(
+			String name) {
+
 		CustomWEKAClassifier weka = new CustomWEKAClassifier();
 		try {
 			weka.createWekaClassifier(name);
@@ -288,7 +354,7 @@ public class OnOffModel implements Model {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return weka;
 	}
 
@@ -329,17 +395,21 @@ public class OnOffModel implements Model {
 
 	@Override
 	public double predict(double[] xValue, int index) {
-		final Instance trainInst = new DenseInstance(xValue.length);
+		final Instance trainInst = new DenseInstance(xValue.length + 1);
 
 		for (int i = 0; i < xValue.length; i++) {
 			trainInst.setValue(attrs.get(i), xValue[i]);
 		}
-
+		// This should not do anything, just some learner need it for setting
+		// range.
+		trainInst.setValue(attrs.get(xValue.length), 0.0);
+		trainInst.setDataset(dataRaw);
 		double[] p = null;
 		try {
 			p = isOnline ? onlineModel.getVotesForInstance(trainInst)
 					: offlineModel.distributionForInstance(trainInst);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		System.out.print("size*********" + p.length + "\n");
