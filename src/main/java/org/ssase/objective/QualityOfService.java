@@ -166,14 +166,14 @@ public class QualityOfService implements Objective, Comparable{
 			selected = ModelingType.ONOFF;
 			OnOffModel.isOnline = false;
 			OnOffModel.selected = OnOffModel.LearningType.KS;
-		} else if("ondt".equals(type)) {
+		} else if("onbag".equals(type)) {
 			selected = ModelingType.ONOFF;
 			OnOffModel.isOnline = true;
-			OnOffModel.selected = OnOffModel.LearningType.DT;
-		} else if("offdt".equals(type)) {
+			OnOffModel.selected = OnOffModel.LearningType.BAGGING;
+		} else if("offbag".equals(type)) {
 			selected = ModelingType.ONOFF;
 			OnOffModel.isOnline = false;
-			OnOffModel.selected = OnOffModel.LearningType.DT;
+			OnOffModel.selected = OnOffModel.LearningType.BAGGING;
 		} else if("onsvm".equals(type)) {
 			selected = ModelingType.ONOFF;
 			OnOffModel.isOnline = true;
@@ -182,6 +182,14 @@ public class QualityOfService implements Objective, Comparable{
 			selected = ModelingType.ONOFF;
 			OnOffModel.isOnline = false;
 			OnOffModel.selected = OnOffModel.LearningType.SVM;
+		} else if("onboost".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = true;
+			OnOffModel.selected = OnOffModel.LearningType.BOOSTING;
+		} else if("offboost".equals(type)) {
+			selected = ModelingType.ONOFF;
+			OnOffModel.isOnline = false;
+			OnOffModel.selected = OnOffModel.LearningType.BOOSTING;
 		}
 		
 		
@@ -567,7 +575,7 @@ public class QualityOfService implements Objective, Comparable{
 			} else {
 			   x[i] = Model.isNormalizeModelingData? xValue[i]/model.get(i).getMax() : Util.sigmoid(xValue[i]);
 			}
-			break;
+			
 			//System.out.print(model.get(i).getName() + "=" + xValue[i] + ":" + (x[i]*model.get(i).getMax()) +"\n");
 		}
 		
