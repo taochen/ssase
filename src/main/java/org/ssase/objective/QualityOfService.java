@@ -773,6 +773,23 @@ public class QualityOfService implements Objective, Comparable{
 		return unit * (isMin? constraint - v : v - constraint);
 
 	}
+	
+	public double getMonetaryUtility(boolean isLatest, double v) {
+		int i = isLatest? 1 : 2;
+		if (ep != null) {
+			// If make no sense if the required throughput even larger than the
+			// current workload.
+			if (isMin ? constraint < ep.getLatest() : constraint > ep
+					.getLatest()) {
+				return 0;
+			}
+
+		}
+		
+		return unit * v;//(isMin? constraint - v : v - constraint);
+
+	}
+
 
 	public double getExtentOfViolation(boolean isLatest) {
 		int i = isLatest? 1 : 2;

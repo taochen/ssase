@@ -89,7 +89,8 @@ public class FEMOSAARegion extends Region {
 		return new MOEAD_SAS_main(){
 			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){			
 				//Region.correctDependencyAfterEvolution(pareto_front);
-				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
+				//return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
+				return pareto_front;
 			}
 			protected SolutionSet correctDependencyAfterEvolution(
 					SolutionSet pareto_front) {

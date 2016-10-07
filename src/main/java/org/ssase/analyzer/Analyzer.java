@@ -31,10 +31,10 @@ public class Analyzer {
 	
 	private static boolean isReachTheLeastSamples = false;
 	
-	private static TriggerType selected = TriggerType.Requirement;
+	public static TriggerType selected = TriggerType.Requirement;
 	
 	// True if every timestep is an adaptation, this will enforce training of each timestep.
-	private static boolean isEachStepIsAdaptation= true;
+	public static boolean isEachStepIsAdaptation= false;
 	
 	// Used only for trigger by adaptation debt
 	private static boolean isTrigger = false;
@@ -66,6 +66,10 @@ public class Analyzer {
 		if (selected == null)
 			throw new RuntimeException("Can not find trigger type for type "
 					+ type);
+	}
+	
+	public static AdaptationDebtBroker getAdaptationDebtBroker (){
+		return debtBroker;
 	}
 	
 	public static List<Objective> doAnalysis(long samples){

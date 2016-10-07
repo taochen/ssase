@@ -193,6 +193,8 @@ public class ControlBus {
 			lock.notifyAll();
 			System.out.print("***** MAPE finished " + samples + " *********\n");
 		}
+		
+		Analyzer.getAdaptationDebtBroker().doPriorDebtAnalysisForUnit();
 		System.out.print("Decision making takes " + (System.currentTimeMillis() - time) + " ms \n");
 		
 		System.gc();

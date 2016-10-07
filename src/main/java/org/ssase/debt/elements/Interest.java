@@ -27,6 +27,15 @@ public class Interest implements DebtEelment{
 		}
 		return result;
 	}
+	
+	
+	public double getMonetaryUtility(double[] vs) {
+		double result = 0.0;
+		for (int i = 0; i < vs.length;i++) {
+			result += qos.get(i).getMonetaryUtility(true, vs[i]);
+		}
+		return result;
+	}
 
 	@Override
 	public double getMonetaryUtility(double cost) {

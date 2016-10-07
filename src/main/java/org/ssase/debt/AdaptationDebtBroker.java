@@ -2,6 +2,7 @@ package org.ssase.debt;
 
 import java.util.List;
 
+import org.ssase.analyzer.Analyzer;
 import org.ssase.debt.classification.OnlineClassifier;
 import org.ssase.debt.elements.Interest;
 import org.ssase.debt.elements.Principal;
@@ -29,6 +30,8 @@ public class AdaptationDebtBroker {
 		AdaptationDebtBroker.cost = cost; 
 	}
 	
+
+	
 	public static AdaptationDebtBroker getInstance(List<QualityOfService> qos, List<Primitive> primitives){
 		if(instance == null) {
 			instance = new AdaptationDebtBroker(qos, primitives);
@@ -48,6 +51,28 @@ public class AdaptationDebtBroker {
 		classifier = new OnlineClassifier(qos, primitives);
 	}
 	
+	
+	public void preLoad(double unit, double[] preQoS, double[] prePrimitives, double[] currentQoS){
+		
+		unit = unit / 1000;
+		
+		System.out.print("postUnit - preUnit: " + unit+ "\n");
+		double noAdaptationUtility = new Interest(qos).getMonetaryUtility(preQoS);
+		
+		double adaptationUtility = new Interest(qos).getMonetaryUtility(currentQoS);
+		Principal p = new Principal();
+		p.setMonetaryUnit(unit);
+		adaptationUtility = adaptationUtility - p.getMonetaryUtility(cost);
+		
+		System.out.print("adaptationUtility: " + adaptationUtility + " : noAdaptationUtility " + noAdaptationUtility + "\n");
+		
+		int latestJudgement = adaptationUtility > noAdaptationUtility? 0 : 1;
+		
+		
+		System.out.print("Training with judge: " + latestJudgement + "\n");
+		classifier.trainOnInstance(latestJudgement, preQoS, prePrimitives);	
+		}
+	
 	/**
 	 * Only trigger this when is has been decided to adapt.
 	 * 
@@ -58,13 +83,17 @@ public class AdaptationDebtBroker {
 		noAdaptationUtility = new Interest(qos).getMonetaryUtility();
 	}
 	
+	public void doPriorDebtAnalysisForUnit(){
+		postUnit = getUnitForAdaptationCost();
+	}
+	
 	public void doPosteriorDebtAnalysis(){
 		
 		if(Double.isNaN(noAdaptationUtility)) {
 			return;
 		}
 		
-		postUnit = getUnitForAdaptationCost();
+		System.out.print("postUnit - preUnit: " + (postUnit - preUnit) + "\n");
 		doPosteriorDebtAnalysis(postUnit - preUnit, cost);
 		
 		
@@ -90,6 +119,8 @@ public class AdaptationDebtBroker {
 	 */
 	protected void doPosteriorDebtAnalysis(double unit, double cost){
 		
+		// change ms to s
+		unit = unit / 1000;
 		
 		
 		double adaptationUtility = new Interest(qos).getMonetaryUtility();
@@ -119,6 +150,14 @@ public class AdaptationDebtBroker {
 	public double getUnitForAdaptationCost(){
 		// TODO add recording of unit for measuring adaptation cost
 		return System.currentTimeMillis();
+	}
+	
+	public List<Primitive> getPrimitive(){
+		return primitives;
+	}
+	
+	public List<QualityOfService> getQoSs(){
+		return qos;
 	}
 		 
 }

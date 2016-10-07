@@ -33,7 +33,10 @@ public class OnlineClassifier {
 	private ArrayList<Attribute> attrs = new ArrayList<Attribute>();
 	private Instances dataRaw = null;
 	private boolean isTrained = false;
+	private boolean isFirst = true;
 	private boolean useWEKA = false;
+	
+	private boolean isNormalize = false;
 	// Nominal classes
 	private List<String> att = new ArrayList<String>();
 	public OnlineClassifier(List<QualityOfService> qos, List<Primitive> primitives){
@@ -59,7 +62,7 @@ public class OnlineClassifier {
 		  //NumericToNominal convert= new NumericToNominal();
 		  //Filter.useFilter(data, filter)
 		  dataRaw.setClassIndex(attrs.size()-1);
-		  System.out.print("Type "+attrs.get(attrs.size()-1).type() + "\n");
+		  //System.out.print("Type "+attrs.get(attrs.size()-1).type() + "\n");
 		  classifier = initializeClassifier();
 		  //classifier.resetLearningImpl();
 		  if(!useWEKA)  {
@@ -70,7 +73,7 @@ public class OnlineClassifier {
 	
 	
 	public AbstractClassifier initializeClassifier(){
-		//return new HoeffdingTree();
+		return new HoeffdingTree();
 		//return new NaiveBayes(); 
 		//return new MajorityClass(); // this would probably the same as decision stump
 		//return new DecisionStump();
@@ -79,8 +82,8 @@ public class OnlineClassifier {
 		//return initializeWEKAClassifier("weka.classifiers.lazy.IBk");//knn
 		
 		//return initializeBagging("trees.HoeffdingTree","bayes.NaiveBayes");
-		return initializeBoosting(
-				"org.ssase.debt.classification.OnlineMultilayerPerceptron");
+		//return initializeBoosting(
+			//	"org.ssase.debt.classification.OnlineMultilayerPerceptron");
 	}
 	
 	public AbstractClassifier initializeBagging(String... clazz){
@@ -123,7 +126,7 @@ public class OnlineClassifier {
 			useWEKA = false;
 			org.ssase.debt.classification.OnlineMultilayerPerceptron mlp = 
 				new org.ssase.debt.classification.OnlineMultilayerPerceptron();
-			mlp.setTrainingTime(50000);
+			mlp.setTrainingTime(5000);
 			return mlp;
 		}
 		
@@ -149,14 +152,46 @@ public class OnlineClassifier {
 		
 		  int i = 0;
 		  for (Primitive p : primitives) {
-			  trainInst.setValue(attrs.get(i), p.getArray()[p.getArray().length-2]/100);
+			  trainInst.setValue(attrs.get(i), isNormalize? p.getArray()[p.getArray().length-2]/100 : p.getArray()[p.getArray().length-2]*p.getMax()/100 );
 			  i++;
 			  //System.out.print("train " + p.getName() + ":"+ p.getArray()[p.getArray().length-2] + "\n");
 		  }
 		  
 		  // Extent of violation/improvement
 		  for (QualityOfService q : qos) {
-			  trainInst.setValue(attrs.get(i), q.getExtentOfViolation(false) / q.getConstraint());			
+			  trainInst.setValue(attrs.get(i), isNormalize? q.getExtentOfViolation(false) / q.getConstraint() : q.getExtentOfViolation(false) );			
+		      i++;
+		      //System.out.print("train " + q.getExtentOfViolation(false) + "\n");
+		  }
+		   
+		  trainInst.setValue(attrs.get(i), String.valueOf(judge));	
+		  
+		  dataRaw.add(trainInst);
+		  trainInst.setDataset(dataRaw);
+		 // System.out.print(trainInst.weight() + "\n");
+		  
+		  if(!isTrained && classifier instanceof org.ssase.debt.classification.OnlineMultilayerPerceptron) {
+			  ((org.ssase.debt.classification.OnlineMultilayerPerceptron)classifier).initMLP(trainInst);
+		  }
+		  
+		  classifier.trainOnInstance(trainInst);
+		  //System.out.print(classifier.toString() + "\n");
+		  isTrained = true;
+	}
+	
+	public void trainOnInstance(int judge, double[] qos, double[] primitives){
+		  final Instance trainInst = new DenseInstance(primitives.length + qos.length+ 1);
+		
+		  int i = 0;
+		  for (double d : primitives) {
+			  trainInst.setValue(attrs.get(i), d);
+			  i++;
+			  //System.out.print("train " + p.getName() + ":"+ p.getArray()[p.getArray().length-2] + "\n");
+		  }
+		  
+		  // Extent of violation/improvement
+		  for (double d : qos) {
+			  trainInst.setValue(attrs.get(i), d);			
 		      i++;
 		      //System.out.print("train " + q.getExtentOfViolation(false) + "\n");
 		  }
@@ -176,7 +211,13 @@ public class OnlineClassifier {
 		  isTrained = true;
 	}
 	
+	
 	public int predict(List<QualityOfService> qos, List<Primitive> primitives){
+		
+		if(isFirst) {
+			isFirst = false;
+			return 0;
+		}
 		
 		if(!isTrained) return 0;
 		
@@ -184,14 +225,14 @@ public class OnlineClassifier {
 			
 		  int i = 0;
 		  for (Primitive p : primitives) {
-			  trainInst.setValue(attrs.get(i), p.getValue() / p.getMax());
+			  trainInst.setValue(attrs.get(i), isNormalize? p.getValue() / p.getMax() :  p.getValue());
 			  i++;
 			  //System.out.print("predicted " +p.getName() + ":"+ p.getArray()[p.getArray().length-1] + "\n");
 		  }
 		  
 		  // Extent of violation/improvement
 		  for (QualityOfService q : qos) {
-			  trainInst.setValue(attrs.get(i), q.getExtentOfViolation(true) / q.getConstraint());			
+			  trainInst.setValue(attrs.get(i), isNormalize? q.getExtentOfViolation(true) / q.getConstraint() : q.getExtentOfViolation(true));			
 		      i++;
 		      //System.out.print("predicted " + q.getExtentOfViolation(true) + "\n");
 		  }
@@ -206,6 +247,11 @@ public class OnlineClassifier {
 		  
 		  if(votes.length == 1) {
 			  return (int)votes[0];
+		  }
+		  
+		  if(votes.length == 2 && votes[0] == 0 && votes[1] == 0) {
+			  System.out.print("Both vote result in 0, thus presume adaptaion needed \n");
+			  return 0;
 		  }
 		  
 		  for (int j = 0; j < votes.length;j++) {

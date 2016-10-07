@@ -25,6 +25,8 @@ import org.ssase.Service;
 import org.ssase.actuator.MaxThreadActuator;
 import org.ssase.actuator.linux.CPUCapActuator;
 import org.ssase.actuator.linux.MemoryActuator;
+import org.ssase.analyzer.Analyzer;
+import org.ssase.analyzer.TriggerType;
 import org.ssase.debt.AdaptationDebtBroker;
 import org.ssase.executor.Executor;
 import org.ssase.executor.VM;
@@ -512,7 +514,8 @@ public class Ssascaling {
 			}
 			
 		
-			
+
+			Receiver r = new Receiver();
 			
 			// Set direct primitives.
 			for (Service s : Repository.getAllServices() ) {
@@ -554,12 +557,16 @@ public class Ssascaling {
 		
 			Executor.init(3);
 			
-			Receiver r = new Receiver();
 			
 			
 			if(Region.selected != OptimizationType.INIT) {
-			  // new HistoryLoader().run();				   
+			   //new HistoryLoader().run();				   
 			}
+			
+			if(Analyzer.selected == TriggerType.Debt) {
+			   //new DebtLoader().run();
+			}
+			
 			//loadFeatureModel();
 			//r.receive();
 			

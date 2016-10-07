@@ -78,13 +78,13 @@ public class DAATester {
 		};
 		
 		private  final String prefix = //"/home/tao/sas-init/";
-			"/Users/tao/research/monitor/sas/";
-		
+			//"/Users/tao/research/projects/ssase-core/ssase/experiments-data/femosaa/results/femosaa/";
+			"/Users/tao/research/projects/ssase-core/ssase/experiments-data/debt/init/";
 		public  int counterNo = 0;
 		
 		private  int readFileIndex = 0;
-		private int startIndex = 0;
-		private  int cap = 122;//88//340/*342*/;
+		private int startIndex = 121;
+		private  int cap = 223;//88//340/*342*/;
 		private  boolean finished = false;
 		private  List<Interval> intervals;
 		private  Map<String, List<Sensor>> sensors;
@@ -140,6 +140,11 @@ public class DAATester {
 				
 				
 				List<Objective> objectivesToBeOptimized = Analyzer.doAnalysis(samples);
+				
+			
+				
+				Analyzer.getAdaptationDebtBroker().doPriorDebtAnalysisForUnit();
+				
 				samples++;
 				
 //				for (Service s : Repository.getAllServices() ) {
