@@ -18,9 +18,9 @@ public class DebtLoader {
 	// private int cap = 223;//88//340/*342*/;
 	// private boolean finished = false;
 
-	private final String prefix =  //"/home/tao/debt-init/";
+	private final String prefix =  "/home/tao/debt-init/";
 	//"/Users/tao/research/projects/ssase-core/ssase/experiments-data/femosaa/results/femosaa/";
-		"/Users/tao/research/projects/ssase-core/ssase/experiments-data/debt/init/";
+		//"/Users/tao/research/projects/ssase-core/ssase/experiments-data/debt/init/";
 	private Map<String, List<Double>> map = new HashMap<String, List<Double>>();
 
 	

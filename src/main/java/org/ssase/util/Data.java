@@ -13,12 +13,15 @@ public class Data {
 	
 	static String[] compare = new String[]{
 		"moead/sas/rubis_software/",
-		"moead-plain/sas/rubis_software/",
-		"nsgaii/sas/rubis_software/",
-		"gp/sas/rubis_software/",
-		"bb/sas/rubis_software/"
+//		"moead-plain/sas/rubis_software/",
+//		"nsgaii/sas/rubis_software/",
+//		"gp/sas/rubis_software/",
+//		"bb/sas/rubis_software/"
 		
-		//"debt-aware/0.01-rt-0.1-0.5-ec-5-0.5/sas/rubis_software/"
+		"debt-aware/0.06-rt-0.1-0.5-ec-5-0.5/sas/rubis_software/",
+		"debt-aware/rt-0.1-ec-5/sas/rubis_software/"
+		//"debt-aware/rt-0.05-ec-3/sas/rubis_software/"
+		
 	};
 	
 	static String[] compare1 = new String[]{

@@ -560,15 +560,15 @@ public class Ssascaling {
 			
 			
 			if(Region.selected != OptimizationType.INIT) {
-			   //new HistoryLoader().run();				   
+			   new HistoryLoader().run();				   
 			}
 			
 			if(Analyzer.selected == TriggerType.Debt) {
-			   //new DebtLoader().run();
+			   new DebtLoader().run();
 			}
 			
-			//loadFeatureModel();
-			//r.receive();
+			loadFeatureModel();
+			r.receive();
 			
 	}
 	
