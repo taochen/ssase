@@ -299,17 +299,27 @@ public class StepByStepHistoryLoader {
 		BigDecimal bd = new BigDecimal(1);
 	
 		double mean = 0D;
+		int count = 0;
 		for (int i = 0; i < ideal.size(); i++) {
+			
+			if(ideal.get(i) - predictedList.get(i) == 0) {
+				//System.out.print(predictedList.get(i) + " Equal!!!\n");
+			}
+			
+			System.out.print(Math.log(Math.abs(ideal.get(i) - predictedList.get(i)))+ "\n");
+			//System.out.print(Math.log(Math.abs(ideal.get(i) - predictedList.get(i)))+ "\n");
+			count = ideal.get(i) - predictedList.get(i) == 0? count : count + 1;
+			
 			double factor = 1;//ideal.get(i) + predictedList.get(i);
 			total = total + Math.abs((ideal.get(i) - predictedList.get(i))/(factor));
 			mean = mean + ideal.get(i);
-			gtotal = gtotal * Math.abs((ideal.get(i) - predictedList.get(i))/(factor));
+			gtotal = ideal.get(i) - predictedList.get(i) == 0? gtotal : gtotal * Math.abs((ideal.get(i) - predictedList.get(i))/(factor));
 			mediam.add(Math.abs((ideal.get(i) - predictedList.get(i))/(factor)));
 			//bd = bd.multiply(new BigDecimal(Math.abs((ideal.get(i) - predictedList.get(i))/(ideal.get(i) + predictedList.get(i)))));
 			//System.out.print("next: " +  Math.abs((ideal.get(i) - predictedList.get(i))/(ideal.get(i) + predictedList.get(i))) + " \n");
 		}
 		mean = mean/ideal.size();
-		gtotal = Math.pow(gtotal, 1.0/ideal.size());
+		gtotal = Math.pow(gtotal, 1.0/count);
 		total = total/ideal.size();
 		//gmtotal = Math.pow(gmtotal, (1.0/ideal.size()));
 		//bd.pow((int)(1.0/ideal.size()));
