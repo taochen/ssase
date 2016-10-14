@@ -116,7 +116,7 @@
              <!-- constraint="5"  -->
             <item name="Response Time" constraint="20" is_min="true" pre_to_change="0.7" sla_per_unit="3.5"/>
              <!-- constraint="6"  -->
-            <item name="Energy" constraint="18" is_min="true" pre_to_change="0.7" sla_per_unit="5.5"/>
+            <item name="Energy" constraint="21" is_min="true" pre_to_change="0.7" sla_per_unit="5.5"/>
            </QoS>
            
            
