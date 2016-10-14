@@ -505,6 +505,7 @@ public class OnOffModel implements Model {
 				offlineModel = new weka.classifiers.lazy.LWL();
 			} else if (selected == LearningType.KNN) {
 				offlineModel = new weka.classifiers.lazy.IBk();
+				 ((weka.classifiers.lazy.IBk)offlineModel).setKNN(5);
 			} else if (selected == LearningType.KS) {
 				offlineModel = new weka.classifiers.lazy.KStar();
 			} else if (selected == LearningType.BAGGING) {
