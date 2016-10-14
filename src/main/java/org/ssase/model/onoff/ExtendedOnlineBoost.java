@@ -37,7 +37,7 @@ public class ExtendedOnlineBoost extends moa.classifiers.AbstractClassifier {
 	/**
 	 * Shrinkage (Learning rate). Default = no shrinkage.
 	 */
-	protected double m_shrinkage = 1.0;
+	protected double m_shrinkage = 0.01;//1.0
 
 	/** The model for the mean */
 	protected ZeroR m_zeroR;
@@ -53,7 +53,7 @@ public class ExtendedOnlineBoost extends moa.classifiers.AbstractClassifier {
 
 	/** The improvement in squared error */
 	protected double m_Diff;
-
+	protected double sum = 0.0;
 	protected int m_NumIterations = 100;
 
 	public moa.classifiers.Classifier[] learners = null;
@@ -177,7 +177,7 @@ public class ExtendedOnlineBoost extends moa.classifiers.AbstractClassifier {
 		// remove instances with missing class
 
 		m_Data.deleteWithMissingClass();
-
+		
 		// Add the model for the mean first
 		m_zeroR = new ZeroR();
 		m_zeroR.buildClassifier(m_Data);
@@ -195,14 +195,14 @@ public class ExtendedOnlineBoost extends moa.classifiers.AbstractClassifier {
 
 		// Initialize list of classifiers and data
 		m_Classifiers = new ArrayList<moa.classifiers.Classifier>(
-				m_NumIterations);
+				learners.length);
 		for (int i = 0;i < learners.length;i++) {
 			m_Classifiers.add(learners[i]);
 		}
 		
 		
 		m_Data = residualReplace(m_Data, m_zeroR, false);
-
+		
 		// Calculate sum of squared errors
 		m_SSE = 0;
 		m_Diff = Double.MAX_VALUE;
@@ -223,13 +223,14 @@ public class ExtendedOnlineBoost extends moa.classifiers.AbstractClassifier {
 				) {
 			return false;
 		}
-
+		//System.out.print(m_Data.instance(m_Data.size() - 1).classValue()+"toAdd************\n");
+		//System.out.print(k+"\n");
 		m_Classifiers.get(k)
 				.trainOnInstance(m_Data.instance(m_Data.size() - 1));
-
+		//System.out.print(m_Data.instance(m_Data.size() - 1).classValue()+"toAdd************\n");
 		m_Data = residualReplace(m_Data,
 				m_Classifiers.get(k), true);
-		double sum = 0;
+		sum = 0;
 		for (int i = 0; i < m_Data.numInstances(); i++) {
 			sum += m_Data.instance(i).weight()
 					* m_Data.instance(i).classValue()
@@ -245,10 +246,7 @@ public class ExtendedOnlineBoost extends moa.classifiers.AbstractClassifier {
 	/**
 	 * Clean up.
 	 */
-	public void done() {
 
-		m_Data = null;
-	}
 
 	/**
 	 * Replace the class values of the instances from the current iteration with
@@ -324,9 +322,10 @@ public class ExtendedOnlineBoost extends moa.classifiers.AbstractClassifier {
 	    if (!m_SuitableData) {
 	      return new double[]{prediction};
 	    }
-	    
+	   
 	    for (moa.classifiers.Classifier classifier : m_Classifiers) {
 	      double toAdd = classifier.getVotesForInstance(inst)[0];
+	      //System.out.print(classifier+"toAdd************\n");
 	      if (Utils.isMissingValue(toAdd)) {
 	        throw new UnassignedClassException("AdditiveRegression: base learner predicted missing value.");
 	      }
@@ -347,11 +346,12 @@ public class ExtendedOnlineBoost extends moa.classifiers.AbstractClassifier {
 	@Override
 	public void trainOnInstanceImpl(Instance inst) {
 		m_Data = getInstances(inst);
-
+		//System.out.print(m_Data.instance(m_Data.size() - 1).classValue()+"toAdd************\n");
 		try {
 			if (m_Classifiers == null) {
+				//System.out.print(this.hashCode() +"toAdd************\n");
 				initializeClassifier(m_Data);
-
+				//System.out.print(m_Classifiers.hashCode() +"toAdd************\n");
 			}
 
 			for (int i = 0; i < m_NumIterations; i++) {
@@ -390,6 +390,7 @@ public class ExtendedOnlineBoost extends moa.classifiers.AbstractClassifier {
 		insts = new Instances("CurrentTrain", atts, 0);
 		insts.add(inst);
 		insts.setClassIndex(inst.numAttributes() - 1);
+		
 		return insts;
 	}
 }

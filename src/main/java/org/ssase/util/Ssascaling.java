@@ -579,12 +579,12 @@ public class Ssascaling {
 
 			 */
 			
-			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/fifa98/", 121, 101, 0);
+			new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/fifa98/", 121, 101, 0);
 			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/increase/", 121, 100, 0);
 			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/decrease/", 121, 100, 0);
 			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/bursty/", 121, 98, 0);
 		    //new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/periodic/", 121, 98, 0);
-			new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/stable/", 121, 95, 0);
+			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/stable/", 121, 95, 0);
 			//loadFeatureModel();
 			//r.receive();
 			

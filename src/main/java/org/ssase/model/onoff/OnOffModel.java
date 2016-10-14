@@ -383,7 +383,7 @@ public class OnOffModel implements Model {
 
 	private void run(Instance trainInst/* use only one instance per time step */)
 			throws Exception {
-
+		
 		double t = 0;
 		if (isOnline) {
 
@@ -440,13 +440,15 @@ public class OnOffModel implements Model {
 //							initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
 //							new moa.classifiers.functions.SGD(), mlp);
 					
+					
+					moa.classifiers.Classifier[] clazz = new moa.classifiers.Classifier[5];
+					
+					for(int i = 0; i < clazz.length;i++) {
+						clazz[i] = initializeWEKAClassifier("weka.classifiers.lazy.KStar");
+					}
+					
 					onlineModel = initializeOnlineEnsemble(
-							true,
-							initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
-							initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
-							initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
-							initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
-							initializeWEKAClassifier("weka.classifiers.lazy.KStar"));
+							true,clazz);
 					
 					onlineModel.prepareForUse();
 				}
@@ -465,15 +467,17 @@ public class OnOffModel implements Model {
 //						initializeWEKAClassifier("weka.classifiers.lazy.IBk"),
 //						initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
 //						new moa.classifiers.functions.SGD(), mlp);
-				
-				onlineModel = initializeOnlineEnsemble(
-				false,
-				initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
-				initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
-				initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
-				initializeWEKAClassifier("weka.classifiers.lazy.KStar"),
-				initializeWEKAClassifier("weka.classifiers.lazy.KStar"));
-				onlineModel.prepareForUse();
+				if (onlineModel == null) {
+					moa.classifiers.Classifier[] clazz = new moa.classifiers.Classifier[5];
+					
+					for(int i = 0; i < clazz.length;i++) {
+						clazz[i] = initializeWEKAClassifier("weka.classifiers.lazy.KStar");
+					}
+					
+					onlineModel = initializeOnlineEnsemble(
+							false,clazz);
+					onlineModel.prepareForUse();
+				}
 			} else if (selected == LearningType.SVM) {
 
 				if (onlineModel == null) {
@@ -484,6 +488,7 @@ public class OnOffModel implements Model {
 			t = System.nanoTime();
 			onlineModel.trainOnInstance(trainInst);
 			t = System.nanoTime() - t;
+			//System.out.print("************"+onlineModel.hashCode() +"************\n");
 		} else {
 			t = System.nanoTime();
 			if (selected == LearningType.MLP) {
