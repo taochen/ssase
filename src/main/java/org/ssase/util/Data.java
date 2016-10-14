@@ -18,9 +18,15 @@ public class Data {
 //		"gp/sas/rubis_software/",
 //		"bb/sas/rubis_software/"
 		
-		"debt-aware/0.06-rt-0.1-0.5-ec-5-0.5/sas/rubis_software/",
-		"debt-aware/rt-0.1-ec-5/sas/rubis_software/"
-		//"debt-aware/rt-0.05-ec-3/sas/rubis_software/"
+		//"debt-aware/0.06-rt-0.1-0.5-ec-5-0.5/sas/rubis_software/",
+		//"debt-aware/rt-0.1-ec-5/sas/rubis_software/"
+		
+		
+		//"debt-aware/0.07-rt-0.05-3.5-ec-3-5.5/sas/rubis_software/",
+		
+		
+		"debt-aware/0.09-rt-0.05-3.5-ec-3-5.5/sas/rubis_software/",
+		"debt-aware/rt-0.05-ec-3/sas/rubis_software/"
 		
 	};
 	
@@ -45,6 +51,9 @@ public class Data {
 	
 	static double Emax = 0;
 	static double Emin = 100000;
+	
+	
+	static Map<String, List<Double>> AdaMap = new HashMap<String, List<Double>> ();
 	
 	private static void test(){
 		
@@ -129,6 +138,19 @@ public class Data {
 			}
 		}
 		
+	    for (String n : compare) {
+			
+			try {
+				double t = 	readAdaptation(prefix+n);
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	    compareAdaptationStep(prefix+compare[1], prefix+compare[2]);
+	
+		
 //		for (String n : compare) {
 //			for (String o : obj) {
 //				try {
@@ -187,6 +209,68 @@ public class Data {
 		return total/no;
 	}
 	
+	
+	private static void compareAdaptationStep(String name1, String name2)  {
+		
+		List<Double> list1 = AdaMap.get(name1);
+		List<Double> list2 = AdaMap.get(name2);
+		
+		
+		List<Double> missingFrom1 = new ArrayList<Double>();
+		List<Double> missingFrom2 = new ArrayList<Double>();
+		
+		
+		for(Double d : list1) {
+			if(!list2.contains(d)) {
+				missingFrom2.add(d);
+			}
+		}
+		
+		for(Double d : list2) {
+			if(!list1.contains(d)) {
+				missingFrom1.add(d);
+			}
+		}
+		
+		System.out.print(missingFrom1.size()+" In " + name2 + " but not in " + name1 + "\n");
+		for(Double d : missingFrom1) {
+			System.out.print(d+"\n");
+		}
+		
+		System.out.print(missingFrom2.size()+" In " + name1 + " but not in " + name2 + "\n");
+		for(Double d : missingFrom2) {
+			System.out.print(d+"\n");
+		}
+		
+	}
+	
+	private static double readAdaptation(String name) throws Throwable {
+		BufferedReader reader = new BufferedReader(new FileReader(new File(name.replace("rubis_software/", "Executions.rtf"))));
+		String line = null;
+		double total = 0;
+		int i = 0;
+		int no = 0;
+		List<Double> list = new ArrayList<Double>();
+		
+		if(!AdaMap.containsKey(name)) {
+			AdaMap.put(name, list);
+		}
+		
+		while((line = reader.readLine()) != null) {
+			
+			if(line.startsWith("-----------")) {
+				list.add(Double.parseDouble(line.split("-----------")[1]));
+				//System.out.print("Adaptation Step: " + name +"="+Double.parseDouble(line.split("-----------")[1])+"\n");
+			}
+			
+		}
+		reader.close();
+		
+		
+		return total/no;
+	}
+	
+	
 	private static double readTime(String name) throws Throwable {
 		BufferedReader reader = new BufferedReader(new FileReader(new File(name.replace("rubis_software/", "Execution-Time.rtf"))));
 		String line = null;
@@ -207,6 +291,8 @@ public class Data {
 			
 		}
 		reader.close();
+		
+		System.out.print("Adaptation Time: " + name +"="+no+"\n");
 		return total/no;
 	}
 	
