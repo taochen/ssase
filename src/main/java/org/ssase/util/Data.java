@@ -18,15 +18,8 @@ public class Data {
 //		"gp/sas/rubis_software/",
 //		"bb/sas/rubis_software/"
 		
-		//"debt-aware/0.06-rt-0.1-0.5-ec-5-0.5/sas/rubis_software/",
-		//"debt-aware/rt-0.1-ec-5/sas/rubis_software/"
-		
-		
-		//"debt-aware/0.07-rt-0.05-3.5-ec-3-5.5/sas/rubis_software/",
-		
-		
-		"debt-aware/0.09-rt-0.05-3.5-ec-3-5.5/sas/rubis_software/",
-		"debt-aware/rt-0.05-ec-3/sas/rubis_software/"
+		//"debt-aware/0.09-rt-0.05-3.5-ec-3-5.5/sas/rubis_software/",
+		"debt-aware/rt-0.05-ec-5/sas/rubis_software/"
 		
 	};
 	
@@ -45,6 +38,9 @@ public class Data {
 	
 	static Map<String, Double> RTmap = new HashMap<String, Double> ();
 	static Map<String, Double> Emap = new HashMap<String, Double> ();
+	
+	static Map<String, List<Double>> Vmap = new HashMap<String, List<Double>> ();
+	
 	
 	static double RTmax = 0;
 	static double RTmin = 100000;
@@ -148,7 +144,7 @@ public class Data {
 			}
 		}
 		
-	    compareAdaptationStep(prefix+compare[1], prefix+compare[2]);
+	    compareAdaptationStep(prefix+compare[0], prefix+compare[1], compare[0], compare[1], obj[0]);
 	
 		
 //		for (String n : compare) {
@@ -210,7 +206,7 @@ public class Data {
 	}
 	
 	
-	private static void compareAdaptationStep(String name1, String name2)  {
+	private static void compareAdaptationStep(String name1, String name2, String a1, String a2, String obj)  {
 		
 		List<Double> list1 = AdaMap.get(name1);
 		List<Double> list2 = AdaMap.get(name2);
@@ -233,13 +229,35 @@ public class Data {
 		}
 		
 		System.out.print(missingFrom1.size()+" In " + name2 + " but not in " + name1 + "\n");
+		System.out.print(a1  + "\n");
 		for(Double d : missingFrom1) {
-			System.out.print(d+"\n");
+			
+			if((int)(d  - 122) < Vmap.get(a1+obj).size()) {
+				System.out.print(Vmap.get(a1+obj).get((int)(d  - 122))+"\n");
+			}
+		}
+		
+		System.out.print(a2  + "\n");
+		for(Double d : missingFrom1) {
+			if((int)(d  - 122) < Vmap.get(a2+obj).size()) {
+				System.out.print(Vmap.get(a2+obj).get((int)(d  - 122))+"\n");
+			}
 		}
 		
 		System.out.print(missingFrom2.size()+" In " + name1 + " but not in " + name2 + "\n");
+		System.out.print(a1  + "\n");
 		for(Double d : missingFrom2) {
-			System.out.print(d+"\n");
+			
+			if((int)(d  - 122) < Vmap.get(a1+obj).size()) {
+				System.out.print(Vmap.get(a1+obj).get((int)(d  - 122))+"\n");
+			}
+		}
+		
+		System.out.print(a2  + "\n");
+		for(Double d : missingFrom2) {
+			if((int)(d  - 122) < Vmap.get(a2+obj).size()) {
+				System.out.print(Vmap.get(a2+obj).get((int)(d  - 122))+"\n");
+			}
 		}
 		
 	}
@@ -377,6 +395,8 @@ public class Data {
 		
 		List<Double> list = new ArrayList<Double>();
 		
+		Vmap.put(approach+obj, new ArrayList<Double>());
+		
 		while((line = reader.readLine()) != null) {
 			if(Double.parseDouble(line) != 0 && i < startIndex) {
 				i++;
@@ -387,9 +407,11 @@ public class Data {
 
 					list.add(Double.parseDouble(line)*1000);		
 					bd = bd.multiply(new BigDecimal(Double.parseDouble(line))).multiply(new BigDecimal(1000));
+					Vmap.get(approach+obj).add(Double.parseDouble(line));
 				} else {
 					list.add(Double.parseDouble(line)*1);		
 					bd = bd.multiply(new BigDecimal(Double.parseDouble(line))).multiply(new BigDecimal(1));
+					Vmap.get(approach+obj).add(Double.parseDouble(line));
 				}
 				
 				total = total * (Double.parseDouble(line)) ;
@@ -400,6 +422,7 @@ public class Data {
 			
 		}
 		reader.close();
+	
 		//System.out.print("t"+total+"\n");
 		
 //		if(obj.equals("Response Time.rtf")) {

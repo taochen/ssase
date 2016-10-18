@@ -563,7 +563,7 @@ public class Ssascaling {
 			   new HistoryLoader().run();				   
 			}
 			
-			if(Analyzer.selected == TriggerType.Debt) {
+			if(Analyzer.selected == TriggerType.Debt || Analyzer.selected == TriggerType.DebtAll) {
 			   new DebtLoader().run();
 			}
 			

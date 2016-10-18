@@ -73,8 +73,8 @@ public class OnlineClassifier {
 	
 	
 	public AbstractClassifier initializeClassifier(){
-		//return new HoeffdingTree();
-		return new NaiveBayes(); 
+		return new HoeffdingTree();
+		//return new NaiveBayes(); 
 		//return new MajorityClass(); // this would probably the same as decision stump
 		//return new DecisionStump();
 		//return new SGD();

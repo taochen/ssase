@@ -3,6 +3,7 @@ package org.ssase.debt;
 import java.util.List;
 
 import org.ssase.analyzer.Analyzer;
+import org.ssase.analyzer.TriggerType;
 import org.ssase.debt.classification.OnlineClassifier;
 import org.ssase.debt.elements.Interest;
 import org.ssase.debt.elements.Principal;
@@ -89,12 +90,14 @@ public class AdaptationDebtBroker {
 	
 	public void doPosteriorDebtAnalysis(){
 		
-		if(Double.isNaN(noAdaptationUtility)) {
+		if(Double.isNaN(noAdaptationUtility) && Analyzer.selected == TriggerType.Debt) {
 			return;
 		}
 		
+		
+		
 		System.out.print("postUnit - preUnit: " + (postUnit - preUnit) + "\n");
-		doPosteriorDebtAnalysis(postUnit - preUnit, cost);
+		doPosteriorDebtAnalysis(Double.isNaN(noAdaptationUtility) && Analyzer.selected == TriggerType.DebtAll?  Double.NaN : postUnit - preUnit, cost);
 		
 		
 		int judge = getExpertDebtJudgement();
@@ -117,22 +120,29 @@ public class AdaptationDebtBroker {
 	 * 
 	 * Just after adaptation
 	 */
-	protected void doPosteriorDebtAnalysis(double unit, double cost){
-		
-		// change ms to s
-		unit = unit / 1000;
-		
-		
-		double adaptationUtility = new Interest(qos).getMonetaryUtility();
-		Principal p = new Principal();
-		p.setMonetaryUnit(unit);
-		adaptationUtility = adaptationUtility - p.getMonetaryUtility(cost);
-		
-		System.out.print("adaptationUtility: " + adaptationUtility + " : noAdaptationUtility " + noAdaptationUtility + "\n");
-		
-		latestJudgement = adaptationUtility > noAdaptationUtility? 0 : 1;
-		
-		noAdaptationUtility = Double.NaN;
+	protected void doPosteriorDebtAnalysis(double unit, double cost) {
+
+		if (Double.isNaN(unit)) {
+			double noAdaptationUtility = new Interest(qos).getMonetaryUtility();
+			System.out.print("adaptationUtility: " + 0
+					+ " : noAdaptationUtility " + noAdaptationUtility + "\n");
+			latestJudgement = noAdaptationUtility < 0 ? 0 : 1;
+		} else {
+			// change ms to s
+			unit = unit / 1000;
+
+			double adaptationUtility = new Interest(qos).getMonetaryUtility();
+			Principal p = new Principal();
+			p.setMonetaryUnit(unit);
+			adaptationUtility = adaptationUtility - p.getMonetaryUtility(cost);
+
+			System.out.print("adaptationUtility: " + adaptationUtility
+					+ " : noAdaptationUtility " + noAdaptationUtility + "\n");
+
+			latestJudgement = adaptationUtility > noAdaptationUtility ? 0 : 1;
+
+			noAdaptationUtility = Double.NaN;
+		}
 	}
 	
 	

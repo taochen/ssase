@@ -49,7 +49,10 @@ public class Analyzer {
 
 		if ("debt".equals(type)) {
 			selected = TriggerType.Debt;
+		} else 	if ("debtall".equals(type)) {
+			selected = TriggerType.DebtAll;
 		}
+
 
 		if(debtBroker == null) {
 			
@@ -101,7 +104,7 @@ public class Analyzer {
 		// Directly go for detection, the change of model would be detected by the listeners
 		// in RegionControl
 		
-		if(selected == TriggerType.Debt) {
+		if(selected == TriggerType.Debt || selected == TriggerType.DebtAll) {
 			
 			// Forcebly disenable adaptation
 			if(!isTrigger) return new ArrayList<Objective>();
@@ -167,8 +170,31 @@ public class Analyzer {
 			}
 			
 			
-			
-			
+		}if(selected == TriggerType.DebtAll) {	
+			// The function inside should deal with the case
+			// where the previous one is not adaptation.
+			debtBroker.doPosteriorDebtAnalysis();
+			isTrigger = debtBroker.isTrigger();
+			System.out.print("If predicted to trigger adaptation at current timestap: " + isTrigger + ", isEachStepIsAdaptation=" + isEachStepIsAdaptation + "\n");
+			isTrigger = isEachStepIsAdaptation? true : isTrigger;
+			if(isTrigger) {
+				debtBroker.doPriorDebtAnalysis();
+				train();
+			} else {
+				for (final QualityOfService qos : Repository.getQoSSet()) {
+					isReachTheLeastSamples = qos.doUpdate();
+					
+				}
+				
+				updatedModel.set(Repository
+						.getQoSSet().size());
+				
+				synchronized (updatedModel) {
+						updatedModel.notifyAll();
+					
+				}
+				
+			}
 		} else {
 			train();
 			
