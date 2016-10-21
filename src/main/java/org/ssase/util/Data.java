@@ -18,8 +18,11 @@ public class Data {
 //		"gp/sas/rubis_software/",
 //		"bb/sas/rubis_software/"
 		
-		//"debt-aware/0.09-rt-0.05-3.5-ec-3-5.5/sas/rubis_software/",
-		"debt-aware/rt-0.05-ec-5/sas/rubis_software/"
+		//"debt-aware/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+		//"debt-aware/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+		//"debt-aware/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+		"debt-aware/random-10/sas/rubis_software/",
+		//"debt-aware/rt-0.05-ec-5/sas/rubis_software/"
 		
 	};
 	
@@ -219,45 +222,192 @@ public class Data {
 		for(Double d : list1) {
 			if(!list2.contains(d)) {
 				missingFrom2.add(d);
+				//System.out.print("missingFrom2 " + d + "\n");
 			}
 		}
 		
 		for(Double d : list2) {
 			if(!list1.contains(d)) {
 				missingFrom1.add(d);
+				//System.out.print("missingFrom1 " + d + "\n");
 			}
 		}
+		
+		int f = 0;
 		
 		System.out.print(missingFrom1.size()+" In " + name2 + " but not in " + name1 + "\n");
 		System.out.print(a1  + "\n");
+//		for(Double d : missingFrom1) {
+//			
+//			if((int)(d  + f - 122) < Vmap.get(a1+obj).size()) {
+//				System.out.print(Vmap.get(a1+obj).get((int)(d + f - 122))+"\n");
+//			}
+//		}
+//		
+//		System.out.print(a2  + "\n");
+//		for(Double d : missingFrom1) {
+//			if((int)(d + f - 122) < Vmap.get(a2+obj).size()) {
+//				System.out.print(Vmap.get(a2+obj).get((int)(d + f  - 122))+"\n");
+//			}
+//		}
+		
+		Set<Double> filter = new HashSet<Double>();
+		
 		for(Double d : missingFrom1) {
-			
-			if((int)(d  - 122) < Vmap.get(a1+obj).size()) {
-				System.out.print(Vmap.get(a1+obj).get((int)(d  - 122))+"\n");
+			int l = -1;
+			for (int k = 0; k < AdaMap.get(name1).size();k++) {
+				//System.out.print("AdaMap.get(name1).get(k) " + AdaMap.get(name1).get(k) + " d " + d + "\n");	
+				if(AdaMap.get(name1).get(k) > d ) {
+				
+				
+				    l = (int) (AdaMap.get(name1).get(k) - d);
+					
+					
+					
+					break;
+				}
 			}
+			
+			if (l == -1 && missingFrom1.indexOf(d)+1 < missingFrom1.size()) {
+				l = (int) (missingFrom1.get(missingFrom1.indexOf(d)+1) - d);
+			}
+			
+			
+	    	if(missingFrom1.indexOf(d) == missingFrom1.size() - 1 && (d - 122) < Vmap.get(a1+obj).size()) {
+				l = (int) (Vmap.get(a1+obj).size() + 122 - d);
+			}
+			
+			for (int i = 0; i < l; i++) {
+				if(filter.contains(d + i)) {
+					continue;
+				}
+				System.out.print( Vmap.get(a1+obj).get((int)(d + i - 122))+"\n");
+				filter.add(d + i);
+			}
+			
 		}
 		
+		filter.clear();
+		
 		System.out.print(a2  + "\n");
-		for(Double d : missingFrom1) {
-			if((int)(d  - 122) < Vmap.get(a2+obj).size()) {
-				System.out.print(Vmap.get(a2+obj).get((int)(d  - 122))+"\n");
+	    for(Double d : missingFrom1) {
+	    	int l = -1;
+	    	for (int k = 0; k < AdaMap.get(name2).size();k++) {
+				//System.out.print("AdaMap.get(name1).get(k) " + AdaMap.get(name1).get(k) + " d " + d + "\n");	
+				if(AdaMap.get(name2).get(k) > d ) {
+				
+				
+				    l = (int) (AdaMap.get(name2).get(k) - d);
+					
+					
+					
+					break;
+				}
 			}
+	    	
+	    	if (l == -1 && missingFrom1.indexOf(d)+1 < missingFrom1.size()) {
+				l = (int) (missingFrom1.get(missingFrom1.indexOf(d)+1) - d);
+			}
+	    	
+	    	if(missingFrom1.indexOf(d) == missingFrom1.size() - 1 && (d - 122) < Vmap.get(a2+obj).size()) {
+				l = (int) (Vmap.get(a2+obj).size() + 122 - d);
+			}
+			
+			for (int i = 0; i < l; i++) {
+				if(filter.contains(d + i)) {
+					continue;
+				}
+				System.out.print(Vmap.get(a2+obj).get((int)(d + i - 122))+"\n");
+				filter.add(d + i);
+			}
+			
+			
 		}
 		
 		System.out.print(missingFrom2.size()+" In " + name1 + " but not in " + name2 + "\n");
-		System.out.print(a1  + "\n");
+		System.out.print(a1   + "\n");
+//		for(Double d : missingFrom2) {
+//			
+//			if((int)(d + f - 122) < Vmap.get(a1+obj).size()) {
+//				System.out.print(Vmap.get(a1+obj).get((int)(d+ f  - 122))+"\n");
+//			}
+//		}
+//		
+//		System.out.print(a2  + "\n");
+//		for(Double d : missingFrom2) {
+//			if((int)(d + f - 122) < Vmap.get(a2+obj).size()) {
+//				System.out.print(Vmap.get(a2+obj).get((int)(d + f - 122))+"\n");
+//			}
+//		}
+		
+		filter.clear();
 		for(Double d : missingFrom2) {
-			
-			if((int)(d  - 122) < Vmap.get(a1+obj).size()) {
-				System.out.print(Vmap.get(a1+obj).get((int)(d  - 122))+"\n");
+			int l = -1;
+			for (int k = 0; k < AdaMap.get(name1).size();k++) {
+				//System.out.print("AdaMap.get(name1).get(k) " + AdaMap.get(name1).get(k) + " d " + d + "\n");	
+				if(AdaMap.get(name1).get(k) > d ) {
+				
+				
+				    l = (int) (AdaMap.get(name1).get(k) - d);
+					
+					
+					
+					break;
+				}
 			}
+			
+			if (l == -1 && missingFrom2.indexOf(d)+1 < missingFrom2.size()) {
+				l = (int) (missingFrom2.get(missingFrom2.indexOf(d)+1) - d);
+			}
+			
+			if(missingFrom2.indexOf(d) == missingFrom2.size() - 1 && (d - 122) < Vmap.get(a1+obj).size()) {
+				l = (int) (Vmap.get(a1+obj).size() + 122 - d);
+			}
+			
+			for (int i = 0; i < l; i++) {
+				if(filter.contains(d + i)) {
+					continue;
+				}
+				System.out.print( Vmap.get(a1+obj).get((int)(d + i - 122))+"\n");
+				filter.add(d + i);
+			}
+			
 		}
 		
+		filter.clear();
 		System.out.print(a2  + "\n");
-		for(Double d : missingFrom2) {
-			if((int)(d  - 122) < Vmap.get(a2+obj).size()) {
-				System.out.print(Vmap.get(a2+obj).get((int)(d  - 122))+"\n");
+	    for(Double d : missingFrom2) {
+	    	int l = -1;
+	    	for (int k = 0; k < AdaMap.get(name2).size();k++) {
+				//System.out.print("AdaMap.get(name1).get(k) " + AdaMap.get(name1).get(k) + " d " + d + "\n");	
+				if(AdaMap.get(name2).get(k) > d ) {
+				
+				
+				    l = (int) (AdaMap.get(name2).get(k) - d);
+					
+				    //System.out.print(AdaMap.get(name2).get(k) + ":" + d +"start\n");
+					
+					break;
+				}
 			}
+	    	
+	    	if (l == -1 && missingFrom2.indexOf(d)+1 < missingFrom2.size()) {
+				l = (int) (missingFrom2.get(missingFrom2.indexOf(d)+1) - d);
+			} 
+	    	
+	    	if(missingFrom2.indexOf(d) == missingFrom2.size() - 1 && (d - 122) < Vmap.get(a2+obj).size()) {
+				l = (int) (Vmap.get(a2+obj).size() + 122 - d);
+			}
+	    
+			for (int i = 0; i < l; i++) {
+				if(filter.contains(d + i)) {
+					continue;
+				}
+				System.out.print( Vmap.get(a2+obj).get((int)(d + i - 122))+"\n");
+				filter.add(d + i);
+			}
+			
+			
 		}
 		
 	}
@@ -278,7 +428,7 @@ public class Data {
 			
 			if(line.startsWith("-----------")) {
 				list.add(Double.parseDouble(line.split("-----------")[1]));
-				//System.out.print("Adaptation Step: " + name +"="+Double.parseDouble(line.split("-----------")[1])+"\n");
+				System.out.print("Adaptation Step: " + name +"="+Double.parseDouble(line.split("-----------")[1])+"\n");
 			}
 			
 		}
