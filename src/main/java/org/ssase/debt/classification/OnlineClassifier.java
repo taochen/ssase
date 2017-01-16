@@ -78,8 +78,8 @@ public class OnlineClassifier {
 		//return new MajorityClass(); // this would probably the same as decision stump
 		//return new DecisionStump();
 		//return new SGD();
-		return initializeWEKAClassifier("weka.classifiers.lazy.IBk");//knn
-		//return initializeWEKAClassifier("mlp");
+		//return initializeWEKAClassifier("weka.classifiers.lazy.IBk");//knn
+		return initializeWEKAClassifier("mlp");
 		
 		
 		//return initializeBagging("trees.HoeffdingTree","bayes.NaiveBayes");

@@ -8,21 +8,130 @@ import java.util.*;
 
 public class Data {
 
+	
+	
 	static int startIndex = 0;
 	static String prefix = "/Users/tao/research/analysis/results/";
 	
 	static String[] compare = new String[]{
-		"moead/sas/rubis_software/",
+		
+// ###################### read write ######################	
+
+// ====================== moead-stm ====================== 
+//	
+//		"moead/sas/rubis_software/",
 //		"moead-plain/sas/rubis_software/",
+//		"moead-k/sas/rubis_software/",
+//		"moead-d/sas/rubis_software/",
+//		"moead-01/sas/rubis_software/",
+		
+// ====================== moead-stm ====================== 
+		
+// ====================== nsgaii ====================== 
+		
+//		"femosaa-nsgaii/sas/rubis_software/",
+//		"nsgaii/sas/rubis_software/",
+//		"nsgaii-k/sas/rubis_software/",
+//		"nsgaii-d/sas/rubis_software/",
+//		"nsgaii-01/sas/rubis_software/",
+		
+// ====================== nsgaii ====================== 
+		
+// ====================== ibea ====================== 
+		
+//		"femosaa-ibea/sas/rubis_software/",
+//		"ibea/sas/rubis_software/",
+//		"ibea-k/sas/rubis_software/",
+//		"ibea-d/sas/rubis_software/",
+//		"ibea-01/sas/rubis_software/",
+		
+// ====================== ibea ====================== 
+
+// ====================== to state-of-the-art ====================== 	
+
+//		"moead/sas/rubis_software/",
+//		"femosaa-nsgaii/sas/rubis_software/",
+//		"femosaa-ibea/sas/rubis_software/",
 //		"nsgaii/sas/rubis_software/",
 //		"gp/sas/rubis_software/",
 //		"bb/sas/rubis_software/"
 		
-		//"debt-aware/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-		//"debt-aware/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-		//"debt-aware/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-		"debt-aware/random-10/sas/rubis_software/",
-		//"debt-aware/rt-0.05-ec-5/sas/rubis_software/"
+
+// ====================== to state-of-the-art ====================== 		
+		
+// ###################### read write ######################	
+		
+		
+// ###################### read only ######################	
+		
+		
+// ====================== moead-stm ====================== 
+
+//		"read/fifa-read-12-w-r/moead/sas/rubis_software/",
+//		//"read/fifa-read-12-w-r/moead-k/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/moead-k/run1/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/moead-d/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/moead-nothing/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/moead-01/sas/rubis_software/",
+		
+// ====================== moead-stm ====================== 
+
+		
+// ====================== nsgaii ====================== 
+		
+//		"read/fifa-read-12-w-r/femosaa-nsgaii/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/nsgaii/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/nsgaii-k/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/nsgaii-d/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/nsgaii-01/sas/rubis_software/",
+		
+// ====================== nsgaii ====================== 
+		
+// ====================== ibea ====================== 
+		
+//		"read/fifa-read-12-w-r/femosaa-ibea/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/ibea/run1/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/ibea-k/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/ibea-d/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/ibea-01/sas/rubis_software/",
+		
+// ====================== ibea ====================== 
+		
+		
+// ====================== to state-of-the-art ======================
+		
+		"read/fifa-read-12-w-r/moead/sas/rubis_software/",	
+		
+		"read/fifa-read-12-w-r/femosaa-nsgaii/sas/rubis_software/",
+		"read/fifa-read-12-w-r/femosaa-ibea/sas/rubis_software/",
+		"read/fifa-read-12-w-r/nsgaii/sas/rubis_software/",
+		"read/fifa-read-12-w-r/gp/sas/rubis_software/",
+		"read/fifa-read-12-w-r/bb/sas/rubis_software/",
+		
+// ====================== to state-of-the-art ======================
+		
+// ###################### read only ######################
+	
+		
+
+		
+// ###################### DDA ######################
+		
+//		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+//		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+//		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+//		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
+//		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
+//		"debt-aware/femosaa/random-10/sas/rubis_software/",
+//		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/"
+//		
+//		"debt-aware/plato/htree/sas/rubis_software/",
+//		"debt-aware/plato/nb/sas/rubis_software/",
+//		"debt-aware/plato/svm/sas/rubis_software/",
+//		"debt-aware/plato/knn/sas/rubis_software/",
+//		"debt-aware/plato/mlp/sas/rubis_software/",
+//		"debt-aware/plato/random/sas/rubis_software/",
+//		"debt-aware/plato/rt-0.05-ec-5/sas/rubis_software/"
 		
 	};
 	
@@ -39,6 +148,20 @@ public class Data {
 		"Energy.rtf",
 	};
 	
+	static double[] requirements = new double[]{
+		0.05,
+		5,
+	};
+	
+	static double[] price = new double[]{
+		3.5,
+		0.5,
+	};
+	
+	static double adaptCost = 0.01;
+	
+	static Map<String, Map<Integer, Double>> debt = new HashMap<String, Map<Integer, Double>>();
+	
 	static Map<String, Double> RTmap = new HashMap<String, Double> ();
 	static Map<String, Double> Emap = new HashMap<String, Double> ();
 	
@@ -51,8 +174,117 @@ public class Data {
 	static double Emax = 0;
 	static double Emin = 100000;
 	
+	static Map<String, List<Double>> surface = new HashMap<String, List<Double>> ();
 	
 	static Map<String, List<Double>> AdaMap = new HashMap<String, List<Double>> ();
+	static Map<String, List<Double>> AdaTimeMap = new HashMap<String, List<Double>> ();
+	
+	
+	static double[] workload = new double[]{
+		38.54367256463304,
+		78.00051667097227,
+		49.998600039998834,
+		73.49827920774206,
+		106.00031666930559,
+		147.99772503631885,
+		125.99685007874801,
+		108.49643345096833,
+		154.99587094503167,
+		182.99772503145786,
+		224.9917087017167,
+		276.49363767197497,
+		512.9914501424976,
+		463.48455051498286,
+		384.500716672639,
+		85.99910417711787,
+		579.9855003624909,
+		436.9913126798919,
+		552.9871919699233,
+		140.9967750756232,
+		478.9851254685267,
+		488.9845546601577,
+		474.49209179846997,
+		214.9924044377333,
+		174.9995750035416,
+		1333.4632635317416,
+		813.9820920736712,
+		133.4969250724983,
+		149.9973167159713,
+		1336.4668924892853,
+		2214.418957169297,
+		741.989741820067,
+		428.4898377448898,
+		545.9863503412414,
+		590.9889293816972,
+		370.4877462393962,
+		265.99527925253307,
+		353.4923585044405,
+		399.4866837772074,
+		319.49201269968245,
+		224.9963958921865,
+		337.4918918638841,
+		324.4916627159319,
+		1981.9575759418535,
+		638.4862044754443,
+		300.9899670010999,
+		349.4958833877075,
+		289.4925835247173,
+		188.47460342398256,
+		250.4985000124999,
+		2164.945876353091,
+		1185.470363240919,
+		113.49716257093571,
+		136.49515434051457,
+		162.49624175555343,
+		169.49836251739563,
+		104.49660011124632,
+		115.99806669888838,
+		171.4959625967685,
+		145.49637925690743,
+		222.99450013624664,
+		301.4832009405721,
+		347.992021020794,
+		287.99280017999547,
+		271.99108362679584,
+		320.4989666752777,
+		475.9769594537648,
+		2694.9662629691243,
+		970.4793712884965,
+		1102.972425689358,
+		479.48801279967995,
+		319.4973375221873,
+		176.99928750593747,
+		538.9891627269741,
+		3100.9332931540634,
+		1770.455738606535,
+		161.99595010124744,
+		575.9856003599909,
+		653.4860419759652,
+		4306.923276402264,
+		2240.9082954321375,
+		154.4972792156588,
+		208.9965167247213,
+		201.49664172263795,
+		138.99073395106993,
+		127.993600319984,
+		184.99383353888203,
+		174.49540012291337,
+		125.99813752906202,
+		1892.4526886827832,
+		1858.4583134625814,
+		612.483850431655,
+		417.9914793475307,
+		444.988875278118,
+		653.9836504087398,
+		759.4846669890902,
+		543.4860295287058,
+		161.4957209483649,
+		221.49630839486002,
+		950.9789671467944,
+		600.980596464389,
+		33.4900936202264,
+			
+	};
 	
 	private static void test(){
 		
@@ -147,7 +379,7 @@ public class Data {
 			}
 		}
 		
-	    compareAdaptationStep(prefix+compare[0], prefix+compare[1], compare[0], compare[1], obj[0]);
+	    compareAdaptationStep(prefix+compare[0], prefix+compare[1], compare[0], compare[1], obj[1]);
 	
 		
 //		for (String n : compare) {
@@ -162,6 +394,68 @@ public class Data {
 //				}
 //			}
 //		}
+	    
+	    
+       for (String n : compare) {
+    	   int k = 0;
+			for(Double d : AdaMap.get(prefix+n)) {
+				int i = (int)(d - 122);
+				
+				//System.out.print(AdaMap.get(prefix+n).size() + " " + i + " " + debt.get(n).size() + "\n");
+				if(i == debt.get(n).size()) {
+					break;
+				}
+				
+				double original = debt.get(n).get(i);
+				original += (30/*mean training time*/ + AdaTimeMap.get(prefix+n).get(k)/1000) * adaptCost;
+				//4.0464566409062
+				debt.get(n).put(i, original);
+				
+				k++;
+			}
+		}
+       System.out.print("Debt\n\n");
+	    for (String app : debt.keySet()) {
+	    	System.out.print(app + "\n");
+	    	double total = 0.0;
+	    	for(Map.Entry<Integer, Double> e : debt.get(app).entrySet()) {
+	    		total += e.getValue();
+	    		System.out.print("(" +e.getKey() + "," + total + ")\n");
+	    		//System.out.print("(" + e.getKey() + "," + (Math.log10(e.getValue()+250)) + ")\n");
+	    	}
+	    }
+	    
+	    String sur = "read/fifa-read-12-w-r/femosaa-ibea/sas/rubis_software/";
+	    
+	    List<Double> l1 = surface.get(sur+"Response Time.rtf");
+	    List<Double> l2 = surface.get(sur+"Energy.rtf");
+	    for(int i = 0; i < l1.size();i++) {
+	    	//System.out.print(l2.get(i) + " " + i + " " + l1.get(i) + "\n");
+	    }
+	    
+	    
+	    File f = new File(prefix+sur);
+	    List<Double> list = new ArrayList<Double>();
+	    for(File fi : f.listFiles()){
+	    	if(fi.getName().startsWith("Workload-")) {
+	    		//System.out.print(fi.getName()+"\n");
+	    		try {
+					readWorkload(prefix+sur+fi.getName(),list);
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	}
+	    }
+	    
+	    for(int i = 0; i < l1.size();i++) {
+	    	//System.out.print(l2.get(i) + " " + (i >= workload.length? workload[workload.length-1] : workload[i]) + " " + l1.get(i) + "\n");
+	      	System.out.print(l2.get(i) + " " + (i >= list.size()? list.get(list.size()-1)*60 : (list.get(i)*60))   + " " + l1.get(i) + "\n");
+	 	   
+	    }
+	    for(int i = 0; i < l1.size();i++) {
+	    	//System.out.print((list.get(i)*60) + ",\n");
+	    }
 	}
 	
 	
@@ -208,6 +502,39 @@ public class Data {
 		return total/no;
 	}
 	
+	private static double readWorkload(String name,  List<Double> list) throws Throwable {
+		BufferedReader reader = new BufferedReader(new FileReader(new File(name)));
+		String line = null;
+		double total = 0;
+		int i = 0;
+		int no = 0;
+		
+		while((line = reader.readLine()) != null) {
+			if( i < 121) {
+				i++;
+				continue;
+			} 
+			
+				if(list.size() <= no) {
+					list.add(Double.parseDouble(line));
+				} else {
+					double n = list.get(no);
+					//System.out.print(no + "=" +n + " : " + (n + Double.parseDouble(line)) + "\n");
+					list.remove(no);
+					list.add(no, (n + Double.parseDouble(line)));
+				}
+			
+				i++;
+				no++;
+			
+			
+		}
+		reader.close();
+		
+		return total/no;
+	}
+	
+	
 	
 	private static void compareAdaptationStep(String name1, String name2, String a1, String a2, String obj)  {
 		
@@ -234,6 +561,9 @@ public class Data {
 		}
 		
 		int f = 0;
+		
+		double total = 1.0;
+		int count = 0;
 		
 		System.out.print(missingFrom1.size()+" In " + name2 + " but not in " + name1 + "\n");
 		System.out.print(a1  + "\n");
@@ -281,13 +611,20 @@ public class Data {
 				if(filter.contains(d + i)) {
 					continue;
 				}
-				System.out.print( Vmap.get(a1+obj).get((int)(d + i - 122))+"\n");
+				//System.out.print( Vmap.get(a1+obj).get((int)(d + i - 122))+"\n");
+				System.out.print(obj.equals("Response Time.rtf")? Math.log10(Vmap.get(a1+obj).get((int)(d + i - 122))*1000)+"\n" 
+						:  Math.log10(Vmap.get(a1+obj).get((int)(d + i - 122)))+"\n");
+				total *= Vmap.get(a1+obj).get((int)(d + i - 122));
+				count++;
 				filter.add(d + i);
 			}
 			
 		}
 		
+		System.out.print("Total " + Math.pow(total, 1.0/count) + " : " + count + "\n");
 		filter.clear();
+		total = 1.0;
+		count = 0;
 		
 		System.out.print(a2  + "\n");
 	    for(Double d : missingFrom1) {
@@ -317,13 +654,17 @@ public class Data {
 				if(filter.contains(d + i)) {
 					continue;
 				}
-				System.out.print(Vmap.get(a2+obj).get((int)(d + i - 122))+"\n");
+				//System.out.print(Vmap.get(a2+obj).get((int)(d + i - 122))+"\n");
+				System.out.print(obj.equals("Response Time.rtf")? Math.log10(Vmap.get(a2+obj).get((int)(d + i - 122))*1000) +"\n"
+						:  Math.log10(Vmap.get(a2+obj).get((int)(d + i - 122)))+"\n");
+				total *= Vmap.get(a2+obj).get((int)(d + i - 122));
+				count++;
 				filter.add(d + i);
 			}
 			
 			
 		}
-		
+	    System.out.print("Total " + Math.pow(total, 1.0/count) + " : " + count + "\n");
 		System.out.print(missingFrom2.size()+" In " + name1 + " but not in " + name2 + "\n");
 		System.out.print(a1   + "\n");
 //		for(Double d : missingFrom2) {
@@ -340,7 +681,11 @@ public class Data {
 //			}
 //		}
 		
+		
 		filter.clear();
+		total = 1.0;
+		count = 0;
+		
 		for(Double d : missingFrom2) {
 			int l = -1;
 			for (int k = 0; k < AdaMap.get(name1).size();k++) {
@@ -368,13 +713,21 @@ public class Data {
 				if(filter.contains(d + i)) {
 					continue;
 				}
-				System.out.print( Vmap.get(a1+obj).get((int)(d + i - 122))+"\n");
+				//System.out.print( Vmap.get(a1+obj).get((int)(d + i - 122))+"\n");
+				System.out.print(obj.equals("Response Time.rtf")? Math.log10(Vmap.get(a1+obj).get((int)(d + i - 122))*1000) +"\n"
+						:  Math.log10(Vmap.get(a1+obj).get((int)(d + i - 122)))+"\n");
+				total *= Vmap.get(a1+obj).get((int)(d + i - 122));
+				count++;
 				filter.add(d + i);
 			}
 			
 		}
 		
+		System.out.print("Total " + Math.pow(total, 1.0/count) + " : " + count + "\n");
 		filter.clear();
+		total = 1.0;
+		count = 0;
+		
 		System.out.print(a2  + "\n");
 	    for(Double d : missingFrom2) {
 	    	int l = -1;
@@ -403,12 +756,23 @@ public class Data {
 				if(filter.contains(d + i)) {
 					continue;
 				}
-				System.out.print( Vmap.get(a2+obj).get((int)(d + i - 122))+"\n");
+				
+				if (Vmap.get(a2+obj).size() <= (int)(d + i - 122)) {
+					continue;
+				}
+				
+				//System.out.print( Vmap.get(a2+obj).get((int)(d + i - 122))+"\n");
+				System.out.print(obj.equals("Response Time.rtf")? Math.log10(Vmap.get(a2+obj).get((int)(d + i - 122))*1000) +"\n"
+						:  Math.log10(Vmap.get(a2+obj).get((int)(d + i - 122)))+"\n");
+				total *= Vmap.get(a2+obj).get((int)(d + i - 122));
+				count++;
 				filter.add(d + i);
 			}
 			
 			
 		}
+	    
+	    System.out.print("Total " + Math.pow(total, 1.0/count) + " : " + count + "\n");
 		
 	}
 	
@@ -446,13 +810,19 @@ public class Data {
 		int i = 0;
 		int no = 0;
 		List<Double> list = new ArrayList<Double>();
+		
+		if(!AdaTimeMap.containsKey(name)) {
+			AdaTimeMap.put(name, list);
+		}
+		
 		while((line = reader.readLine()) != null) {
 			if(i < startIndex) {
 				i++;
 				continue;
 			} 
 			//if(Double.parseDouble(line) != 0) {
-				total += Double.parseDouble(line)  ;
+				total += Double.parseDouble(line);
+				list.add(Double.parseDouble(line));
 				i++;
 				no++;
 			//}
@@ -564,6 +934,19 @@ public class Data {
 					Vmap.get(approach+obj).add(Double.parseDouble(line));
 				}
 				
+				double d = (obj.equals("Response Time.rtf")? price[0] : price[1]) * (Double.parseDouble(line) - (obj.equals("Response Time.rtf")? requirements[0] : requirements[1]));
+				
+				if(!debt.containsKey(approach)) {
+					debt.put(approach, new LinkedHashMap<Integer, Double>());
+				}
+				
+				if(!debt.get(approach).containsKey(i)) {
+					debt.get(approach).put(i, d);
+				} else {
+					d = debt.get(approach).get(i) + d;
+					debt.get(approach).put(i, d);
+				}
+				
 				total = total * (Double.parseDouble(line)) ;
 				htotal = htotal + 1 / Double.parseDouble(line) ;
 				i++;
@@ -617,9 +1000,15 @@ public class Data {
 			//	", " + (Math.pow(total, 1.0/no)+1.96*gsd/Math.sqrt(list.size())) +"]\n");
 		//System.out.print("GVAR: " + approach +", "+obj+"="+(gsd*gsd)+"\n");
 		
-		if(obj.equals("Response Time.rtf")) 
+		if(obj.equals("Energy.rtf")) 
 		log(list.toArray(new Double[list.size()]));
 		htotal = no / htotal;
+		
+		
+		if(!surface.containsKey(approach+obj)) {
+			surface.put(approach+obj, list);
+		}
+		
 		
 		return Math.pow(total, 1.0/no);
 	}

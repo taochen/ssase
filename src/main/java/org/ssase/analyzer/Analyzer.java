@@ -33,6 +33,8 @@ public class Analyzer {
 	
 	public static TriggerType selected = TriggerType.Requirement;
 	
+	public static final long frequencyFactor = 10L;
+	
 	// True if every timestep is an adaptation, this will enforce training of each timestep.
 	public static boolean isEachStepIsAdaptation= false;
 	
@@ -51,6 +53,8 @@ public class Analyzer {
 			selected = TriggerType.Debt;
 		} else 	if ("debtall".equals(type)) {
 			selected = TriggerType.DebtAll;
+		} else 	if ("frequency".equals(type)) {
+			selected = TriggerType.Frequency;
 		}
 
 
@@ -104,7 +108,9 @@ public class Analyzer {
 		// Directly go for detection, the change of model would be detected by the listeners
 		// in RegionControl
 		
-		if(selected == TriggerType.Debt || selected == TriggerType.DebtAll) {
+		if(selected == TriggerType.Debt || 
+				selected == TriggerType.DebtAll ||
+				selected == TriggerType.Frequency) {
 			
 			// Forcebly disenable adaptation
 			if(!isTrigger) return new ArrayList<Objective>();
@@ -170,7 +176,7 @@ public class Analyzer {
 			}
 			
 			
-		}if(selected == TriggerType.DebtAll) {	
+		} else if(selected == TriggerType.DebtAll) {	
 			// The function inside should deal with the case
 			// where the previous one is not adaptation.
 			debtBroker.doPosteriorDebtAnalysis();
@@ -195,6 +201,33 @@ public class Analyzer {
 				}
 				
 			}
+		} else if(selected == TriggerType.Frequency) {
+			
+			if (samples != 0 && samples % frequencyFactor == 0) {
+				isTrigger = true;
+			} else {
+				isTrigger = false;
+			}
+			
+			
+			if(isTrigger) {
+				train();
+			} else {
+				for (final QualityOfService qos : Repository.getQoSSet()) {
+					isReachTheLeastSamples = qos.doUpdate();
+					
+				}
+				
+				updatedModel.set(Repository
+						.getQoSSet().size());
+				
+				synchronized (updatedModel) {
+						updatedModel.notifyAll();
+					
+				}
+				
+			}
+			
 		} else {
 			train();
 			

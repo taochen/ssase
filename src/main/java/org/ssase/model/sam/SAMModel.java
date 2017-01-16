@@ -597,6 +597,7 @@ public class SAMModel implements Model{
 		
 		//TODO add transfer for ARMAX
 		ModelFunction function = selectFunction (xValue, isSU, a, b);
+		//function = functions[0];
 		double[] x = xValue;
 		if (function instanceof ARMA) {
 			x = this.transferSlidingWindow(xValue, ModelFunction.ARMAX);

@@ -1,20 +1,15 @@
-package org.ssase.objective.optimization.femosaa;
+package org.ssase.objective.optimization.femosaa.ibea;
 
-import java.io.File;
-
-import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
-import jmetal.metaheuristics.moead.MOEAD_SAS_PLAIN_main;
-import jmetal.metaheuristics.moead.Utils;
-import jmetal.problems.SAS;
+import jmetal.metaheuristics.ibea.IBEA_SAS_main;
 import jmetal.problems.SASAlgorithmAdaptor;
 import jmetal.problems.SASSolution;
-import jmetal.util.PseudoRandom;
 
+import org.ssase.objective.optimization.femosaa.FEMOSAASolutionAdaptor;
 import org.ssase.region.Region;
 
-public class FEMOSAAwithNothingRegion extends FEMOSAARegion {
-	
+public class IBEARegion extends IBEAwithKAndDRegion{
+
 	protected void init(){
 		if(vars == null) {
 			vars = FEMOSAASolutionAdaptor.getInstance().convertInitialLimits(objectives.get(0));
@@ -24,10 +19,10 @@ public class FEMOSAAwithNothingRegion extends FEMOSAARegion {
 		}
 	}
 	
+	
 	protected SASAlgorithmAdaptor getAlgorithm(){
-		return new MOEAD_SAS_PLAIN_main(){
-			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){			
-				//Region.correctDependencyAfterEvolution(pareto_front);
+		return new IBEA_SAS_main(){
+			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){		
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
 			}
 			protected SolutionSet correctDependencyAfterEvolution(

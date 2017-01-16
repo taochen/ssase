@@ -1,4 +1,4 @@
-package org.ssase.objective.optimization.femosaa;
+package org.ssase.objective.optimization.femosaa.ibea;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,13 +13,15 @@ import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.core.Variable;
 import jmetal.encodings.variable.Int;
-import jmetal.metaheuristics.moead.MOEAD_SAS_PLAIN_main;
+import jmetal.metaheuristics.ibea.IBEA_SAS_main;
 import jmetal.problems.SASAlgorithmAdaptor;
 import jmetal.problems.SASSolution;
 import jmetal.problems.SASSolutionInstantiator;
 import jmetal.util.JMException;
 
 import org.ssase.objective.Objective;
+import org.ssase.objective.optimization.femosaa.FEMOSAASolution;
+import org.ssase.objective.optimization.femosaa.FEMOSAASolutionInstantiator;
 import org.ssase.objective.optimization.femosaa.variability.fm.FeatureModel;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.region.Region;
@@ -33,7 +35,7 @@ import org.ssase.util.Tuple;
  *
  */
 
-public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
+public class IBEAwithZeroAndOneRegion extends IBEARegion {
 
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
 		
@@ -105,7 +107,7 @@ public class FEMOSAAwithZeroAndOneRegion extends FEMOSAARegion {
 	}
 	
 	protected SASAlgorithmAdaptor getAlgorithm(){
-		return new MOEAD_SAS_PLAIN_main(){
+		return new IBEA_SAS_main(){
 			
 			
 			public Solution execute(SASSolutionInstantiator factory, int[][] vars,

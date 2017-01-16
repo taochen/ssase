@@ -1,45 +1,54 @@
-package org.ssase.objective.optimization.gp;
+package org.ssase.objective.optimization.femosaa.moead;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
-import jmetal.metaheuristics.gp.GP_SAS_main;
 import jmetal.metaheuristics.moead.MOEAD_SAS_main;
-import jmetal.metaheuristics.nsgaII.NSGA2_SAS_main;
 import jmetal.problems.SASAlgorithmAdaptor;
 import jmetal.problems.SASSolution;
+import jmetal.problems.test.DummySASSolution;
+import jmetal.problems.test.DummySASSolutionInstantiator;
+import jmetal.util.JMException;
 
+import org.ssase.objective.Objective;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionAdaptor;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionInstantiator;
+import org.ssase.objective.optimization.moaco.BasicAntColony;
 import org.ssase.primitive.ControlPrimitive;
+import org.ssase.primitive.EnvironmentalPrimitive;
+import org.ssase.primitive.Primitive;
 import org.ssase.region.Region;
+import org.ssase.util.Repository;
+import org.ssase.util.Tuple;
 
-public class GPRegion extends Region {
+public class MOEAD_STMwithKAndDRegion extends Region {
 
+	// The order is the same as Repository.getSortedControlPrimitives(obj)
 	protected int[][] vars = null;
 	
-	public GPRegion() {
+	public MOEAD_STMwithKAndDRegion() {
 		super();		
 	}
 
 	protected void init(){
 		if(vars == null) {
 			vars = FEMOSAASolutionAdaptor.getInstance().convertInitialLimits(objectives.get(0));
-			// This is needed for approach that do not consider categorical/numeric dependency
-			// in the optimization process.
-			SASSolution.clearAndStoreForValidationOnly();
 		}
+		
 	}
 	
 	
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
 		
 		init();
-		System.out.print("Algorithm entering *******\n");
+		
 		LinkedHashMap<ControlPrimitive, Double> result = null;
 		synchronized (lock) {
 			while (waitingUpdateCounter != 0) {
@@ -55,21 +64,19 @@ public class GPRegion extends Region {
 
 
 			FEMOSAASolutionInstantiator inst = new FEMOSAASolutionInstantiator(objectives);
-			System.out.print("Algorithm start *******\n");
+			
             SASAlgorithmAdaptor algorithm = getAlgorithm();
 			Solution solution = null;
 			try {
 				solution = algorithm.execute(inst, vars, objectives.size(), 0);		
-			} catch (Throwable e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			System.out.print("Algorithm end *******\n");
-			System.out.print("Convertion start *******\n");
+			
 			result = FEMOSAASolutionAdaptor.getInstance().convertSolution(solution/*Use the first one, as the list should all be knee points*/
 					,objectives.get(0));
-			System.out.print("Convertion end *******\n");
 			print(result);
 
 			isLocked = false;
@@ -81,9 +88,9 @@ public class GPRegion extends Region {
 	}
 	
 	protected SASAlgorithmAdaptor getAlgorithm(){
-		return new GP_SAS_main(){
-			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){
-		
+		return new MOEAD_SAS_main(){
+			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){			
+				//Region.correctDependencyAfterEvolution(pareto_front);
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
 				//return pareto_front;
 			}
@@ -94,7 +101,10 @@ public class GPRegion extends Region {
 			protected void printParetoFront(SolutionSet pareto_front) {
 				Region.printParetoFront(pareto_front, objectives);
 		    }
+			
+//			protected void logDependencyAfterEvolution(SolutionSet pareto_front_without_ranking){
+//				Region.logDependencyAfterEvolution(pareto_front_without_ranking);
+//			}
 		};
 	}
-
 }

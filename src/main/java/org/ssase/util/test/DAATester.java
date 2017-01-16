@@ -126,8 +126,29 @@ public class DAATester {
 //				simulateSendAndReceive("jeos");
 //				simulateSendAndReceive("kitty");
 //				simulateSendAndReceive("miku");
-			
 				
+				if(i < 2) {
+					for (Service s : Repository.getAllServices() ) {
+						for (Primitive p : s.getPrimitives()) {
+							p.addValue(samples);
+						}
+					}
+					
+					for (VM v : Repository.getAllVMs()) {
+						for (Primitive p : v.getAllHardwarePrimitives()){
+							p.addValue(samples);
+						}
+						for (Primitive p : v.getAllSharedSoftwarePrimitives()){
+							p.addValue(samples);
+						}
+					}
+					
+					for (final QualityOfService qos : Repository.getQoSSet()) {
+						qos.doAddValue(samples);
+					}
+					samples++;
+					continue;
+				}
 				
 				
 				if (finished) {

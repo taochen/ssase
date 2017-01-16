@@ -1,4 +1,4 @@
-package org.ssase.objective.optimization.nsgaii;
+package org.ssase.objective.optimization.femosaa.nsgaii;
 
 import java.util.ArrayList;
 import java.util.Iterator;

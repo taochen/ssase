@@ -1,4 +1,4 @@
-package org.ssase.objective.optimization.nsgaii;
+package org.ssase.objective.optimization.femosaa.nsgaii;
 
 import java.io.File;
 
@@ -27,6 +27,10 @@ public class NSGAIIwithKAndDRegion extends NSGAIIRegion {
 		return new NSGA2_SAS_main(){
 			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){		
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
+			}
+			protected SolutionSet correctDependencyAfterEvolution(
+					SolutionSet pareto_front) {
+				return Region.correctDependencyAfterEvolution(pareto_front);
 			}
 			@Override
 			protected Solution findSoleSolutionAfterEvolution(SolutionSet pareto_front) {

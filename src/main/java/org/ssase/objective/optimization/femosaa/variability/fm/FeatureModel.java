@@ -55,14 +55,18 @@ public class FeatureModel {
 	
 	
 	public Map<ControlPrimitive, Tuple<Integer, Integer>> getZeroAndOneTupleMap() {
-		if(Region.selected != OptimizationType.FEMOSAA01) {
+		if(Region.selected != OptimizationType.FEMOSAA01 &&
+				Region.selected != OptimizationType.NSGAII01 &&
+				Region.selected != OptimizationType.IBEA01) {
 			throw new RuntimeException("Only 0/1 representation needs this function");
 		}
 		return zeroAndOneTupleMap;
 	}
 
 	public List<Integer[]> getZeroAndOneOptionalValueList() {
-		if(Region.selected != OptimizationType.FEMOSAA01) {
+		if(Region.selected != OptimizationType.FEMOSAA01 &&
+				Region.selected != OptimizationType.NSGAII01 &&
+				Region.selected != OptimizationType.IBEA01) {
 			throw new RuntimeException("Only 0/1 representation needs this function");
 		}
 		return zeroAndOneOptionalValueList;
@@ -106,7 +110,9 @@ public class FeatureModel {
 				//model.checkClosedLoop();
 				
 				// Use 0/1 translation
-				if(Region.selected == OptimizationType.FEMOSAA01) {
+				if(Region.selected == OptimizationType.FEMOSAA01 ||
+						Region.selected == OptimizationType.NSGAII01 ||
+						Region.selected == OptimizationType.IBEA01) {
 					
 					model.zeroAndOneTupleMap = new HashMap<ControlPrimitive, Tuple<Integer, Integer>>();
 					model.zeroAndOneOptionalValueList = new ArrayList<Integer[]>();
