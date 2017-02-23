@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.ControlBus;
 import org.ssase.Service;
+import org.ssase.debt.AdaptationDebtBroker;
 import org.ssase.executor.VM;
+import org.ssase.model.ModelingType;
 import org.ssase.objective.Cost;
 import org.ssase.objective.Objective;
 import org.ssase.objective.QualityOfService;
@@ -29,6 +31,53 @@ public class Analyzer {
 	
 	private static boolean isReachTheLeastSamples = false;
 	
+	public static TriggerType selected = TriggerType.Requirement;
+	
+	public static final long frequencyFactor = 10L;
+	
+	// True if every timestep is an adaptation, this will enforce training of each timestep.
+	public static boolean isEachStepIsAdaptation= false;
+	
+	// Used only for trigger by adaptation debt
+	private static boolean isTrigger = false;
+	
+	private static AdaptationDebtBroker debtBroker = null;
+	
+	public static void setSelectedTriggerType(String type) {
+		if (type == null)
+			throw new RuntimeException("No proper TriggerType found!");
+
+		type = type.trim();
+
+		if ("debt".equals(type)) {
+			selected = TriggerType.Debt;
+		} else 	if ("debtall".equals(type)) {
+			selected = TriggerType.DebtAll;
+		} else 	if ("frequency".equals(type)) {
+			selected = TriggerType.Frequency;
+		}
+
+
+		if(debtBroker == null) {
+			
+			List<QualityOfService> qos = new ArrayList<QualityOfService>();			
+			qos.addAll(Repository.getQoSSet());
+			List<Primitive> primitives = new ArrayList<Primitive>();	
+			for (Service s : Repository.getAllServices()) {
+				primitives.addAll(s.getPrimitives());
+			}
+			
+			debtBroker = AdaptationDebtBroker.getInstance(qos, primitives);
+		}
+		
+		if (selected == null)
+			throw new RuntimeException("Can not find trigger type for type "
+					+ type);
+	}
+	
+	public static AdaptationDebtBroker getAdaptationDebtBroker (){
+		return debtBroker;
+	}
 	
 	public static List<Objective> doAnalysis(long samples){
 		
@@ -59,7 +108,24 @@ public class Analyzer {
 		// Directly go for detection, the change of model would be detected by the listeners
 		// in RegionControl
 		
-		return detectSymptoms();
+		if(selected == TriggerType.Debt || 
+				selected == TriggerType.DebtAll ||
+				selected == TriggerType.Frequency) {
+			
+			// Forcebly disenable adaptation
+			if(!isTrigger) return new ArrayList<Objective>();
+			
+			List<Objective> list = detectSymptoms();
+			if(list != null && list.size() == 0) {
+				// Forcebly trigger adaptation, now we just random pick an objective.
+				list.add(Repository.getAllObjectives().iterator().next());
+			}
+			
+			return list;
+		} else {
+			return detectSymptoms();
+		}
+		
 	}
 	
 	/**
@@ -82,53 +148,142 @@ public class Analyzer {
 			return;
 		}
 		
+		if(selected == TriggerType.Debt) {
+			
+			// The function inside should deal with the case
+			// where the previous one is not adaptation.
+			debtBroker.doPosteriorDebtAnalysis();
+			isTrigger = debtBroker.isTrigger();
+			System.out.print("If predicted to trigger adaptation at current timestap: " + isTrigger + ", isEachStepIsAdaptation=" + isEachStepIsAdaptation + "\n");
+			isTrigger = isEachStepIsAdaptation? true : isTrigger;
+			if(isTrigger) {
+				debtBroker.doPriorDebtAnalysis();
+				train();
+			} else {
+				for (final QualityOfService qos : Repository.getQoSSet()) {
+					isReachTheLeastSamples = qos.doUpdate();
+					
+				}
+				
+				updatedModel.set(Repository
+						.getQoSSet().size());
+				
+				synchronized (updatedModel) {
+						updatedModel.notifyAll();
+					
+				}
+				
+			}
+			
+			
+		} else if(selected == TriggerType.DebtAll) {	
+			// The function inside should deal with the case
+			// where the previous one is not adaptation.
+			debtBroker.doPosteriorDebtAnalysis();
+			isTrigger = debtBroker.isTrigger();
+			System.out.print("If predicted to trigger adaptation at current timestap: " + isTrigger + ", isEachStepIsAdaptation=" + isEachStepIsAdaptation + "\n");
+			isTrigger = isEachStepIsAdaptation? true : isTrigger;
+			if(isTrigger) {
+				debtBroker.doPriorDebtAnalysis();
+				train();
+			} else {
+				for (final QualityOfService qos : Repository.getQoSSet()) {
+					isReachTheLeastSamples = qos.doUpdate();
+					
+				}
+				
+				updatedModel.set(Repository
+						.getQoSSet().size());
+				
+				synchronized (updatedModel) {
+						updatedModel.notifyAll();
+					
+				}
+				
+			}
+		} else if(selected == TriggerType.Frequency) {
+			
+			if (samples != 0 && samples % frequencyFactor == 0) {
+				isTrigger = true;
+			} else {
+				isTrigger = false;
+			}
+			
+			
+			if(isTrigger) {
+				train();
+			} else {
+				for (final QualityOfService qos : Repository.getQoSSet()) {
+					isReachTheLeastSamples = qos.doUpdate();
+					
+				}
+				
+				updatedModel.set(Repository
+						.getQoSSet().size());
+				
+				synchronized (updatedModel) {
+						updatedModel.notifyAll();
+					
+				}
+				
+			}
+			
+		} else {
+			train();
+			
+		}
+
+		
+	}
+	
+	private static void train(){
 		for (final QualityOfService qos : Repository.getQoSSet()) {
-			
-			
+
 			SSAScalingThreadPool.executeJob(new Runnable() {
 
 				@Override
 				public void run() {
-					//System.out.print("***** doing training *********\n");
+					// System.out.print("***** doing training *********\n");
 					boolean result = false;
 					try {
-						
-						
-					   result = qos.doTraining();
-					   
-					   
+
+						result = qos.doTraining();
+
 					} catch (RuntimeException e) {
-						// Make sure the process can keep going and avoid deadlock.
+						// Make sure the process can keep going and avoid
+						// deadlock.
 						e.printStackTrace();
-						synchronized(updatedModel) {
+						synchronized (updatedModel) {
 							updatedModel.incrementAndGet();
-							//System.out.print("==========================  ===============================\n");
-							//System.out.print(updatedModel.get() + " processed\n");
-							//System.out.print("==========================  ===============================\n");
+							// System.out.print("==========================  ===============================\n");
+							// System.out.print(updatedModel.get() +
+							// " processed\n");
+							// System.out.print("==========================  ===============================\n");
 							isReachTheLeastSamples = result;
-							if (updatedModel.get() == Repository.getQoSSet().size()) {
+							if (updatedModel.get() == Repository
+									.getQoSSet().size()) {
 								updatedModel.notifyAll();
 							}
 						}
 					}
-					synchronized(updatedModel) {
+					synchronized (updatedModel) {
 						updatedModel.incrementAndGet();
-						//System.out.print("==========================  ===============================\n");
-						//System.out.print(updatedModel.get() + " processed\n");
-						//System.out.print("==========================  ===============================\n");
-					
+						// System.out.print("==========================  ===============================\n");
+						// System.out.print(updatedModel.get() +
+						// " processed\n");
+						// System.out.print("==========================  ===============================\n");
+
 						isReachTheLeastSamples = result;
-						if (updatedModel.get() == Repository.getQoSSet().size()) {
+						if (updatedModel.get() == Repository.getQoSSet()
+								.size()) {
 							updatedModel.notifyAll();
 						}
 					}
-					//System.out.print("***** finish doing training *********\n");
+					// System.out.print("***** finish doing training *********\n");
 				}
 
 			});
 		}
-
-		
 	}
 	
 	private static void doAddValues(long samples){
@@ -227,5 +382,6 @@ public class Analyzer {
 		 return result;
 		 
 	}
+	
 	
 }

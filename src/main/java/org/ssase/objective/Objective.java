@@ -45,5 +45,12 @@ public interface Objective extends Serializable{
 	
 	public double getCurrentPrediction();
 	
+	/**
+	 * If not latest, then it should be the second latest
+	 * @param isLatest
+	 * @return
+	 */
+	public double getMonetaryUtility(boolean isLatest);
+	
 	public double getMax();
 }

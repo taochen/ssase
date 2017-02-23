@@ -6,10 +6,16 @@ import org.ssase.objective.Objective;
 import org.ssase.objective.optimization.bb.BranchAndBoundRegion;
 import org.ssase.objective.optimization.bb.BranchAndBoundwithDRegion;
 import org.ssase.objective.optimization.femosaa.*;
+import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithDRegion;
+import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithKRegion;
+import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMRegion;
+import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithZeroAndOneRegion;
+import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithKAndDRegion;
+import org.ssase.objective.optimization.femosaa.nsgaii.*;
 import org.ssase.objective.optimization.gp.*;
 import org.ssase.objective.optimization.moaco.MOACORegion;
 import org.ssase.objective.optimization.moga.MOGARegion;
-import org.ssase.objective.optimization.nsgaii.*;
+import org.ssase.objective.optimization.femosaa.ibea.*;
 import org.ssase.objective.optimization.random.HillClimbingRegion;
 import org.ssase.objective.optimization.random.HillClimbingwithDRegion;
 import org.ssase.primitive.ControlPrimitive;
@@ -78,8 +84,24 @@ public abstract class Region {
 			selected = OptimizationType.FEMOSAA01;
 		} else if("nsgaii".equals(type)) {
 			selected = OptimizationType.NSGAII;
-		} else if("nsgaii-k-d".equals(type)) {
+		} else if("femosaa-nsgaii".equals(type)) {
 			selected = OptimizationType.NSGAIIkd;
+		} else if("nsgaii-k".equals(type)) {
+			selected = OptimizationType.NSGAIIk;
+		} else if("nsgaii-d".equals(type)) {
+			selected = OptimizationType.NSGAIId;
+		} else if("nsgaii-01".equals(type)) {
+			selected = OptimizationType.NSGAII01;
+		} else if("ibea".equals(type)) {
+			selected = OptimizationType.IBEA;
+		} else if("femosaa-ibea".equals(type)) {
+			selected = OptimizationType.IBEAkd;
+		} else if("ibea-k".equals(type)) {
+			selected = OptimizationType.IBEAk;
+		} else if("ibea-d".equals(type)) {
+			selected = OptimizationType.IBEAd;
+		} else if("ibea-01".equals(type)) {
+			selected = OptimizationType.IBEA01;
 		}  else if("gp".equals(type)) {
 			selected = OptimizationType.GP;
 		} else if("gp-k-d".equals(type)) {
@@ -111,19 +133,35 @@ public abstract class Region {
 		} else if(OptimizationType.MOGA.equals(type)) {
 			return new MOGARegion();
 		} else if(OptimizationType.FEMOSAA.equals(type)) {
-			return new FEMOSAARegion();
+			return new MOEAD_STMwithKAndDRegion();
 		}  else if(OptimizationType.FEMOSAAk.equals(type)) {
-			return new FEMOSAAwithKRegion();
+			return new MOEAD_STMwithKRegion();
 		}  else if(OptimizationType.FEMOSAAd.equals(type)) {
-			return new FEMOSAAwithDRegion();
+			return new MOEAD_STMwithDRegion();
 		}  else if(OptimizationType.FEMOSAAnothing.equals(type)) {
-			return new FEMOSAAwithNothingRegion();
+			return new MOEAD_STMRegion();
 		} else if(OptimizationType.FEMOSAA01.equals(type)) {
-			return new FEMOSAAwithZeroAndOneRegion();
+			return new MOEAD_STMwithZeroAndOneRegion();
 		} else if(OptimizationType.NSGAII.equals(type)) {
 			return new NSGAIIRegion();
 		} else if(OptimizationType.NSGAIIkd.equals(type)) {
 			return new NSGAIIwithKAndDRegion();
+		} else if(OptimizationType.NSGAIId.equals(type)) {
+			return new NSGAIIwithDRegion();
+		} else if(OptimizationType.NSGAIIk.equals(type)) {
+			return new NSGAIIwithKRegion();
+		} else if(OptimizationType.NSGAII01.equals(type)) {
+			return new NSGAIIwithZeroAndOneRegion();
+		} else if(OptimizationType.IBEA.equals(type)) {
+			return new IBEARegion();
+		} else if(OptimizationType.IBEAkd.equals(type)) {
+			return new IBEAwithKAndDRegion();
+		} else if(OptimizationType.IBEAd.equals(type)) {
+			return new IBEAwithDRegion();
+		} else if(OptimizationType.IBEAk.equals(type)) {
+			return new IBEAwithKRegion();
+		} else if(OptimizationType.IBEA01.equals(type)) {
+			return new IBEAwithZeroAndOneRegion();
 		} else if(OptimizationType.GP.equals(type)) {
 			return new GPRegion();
 		} else if(OptimizationType.GPkd.equals(type)) {

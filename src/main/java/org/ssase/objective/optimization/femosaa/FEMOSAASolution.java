@@ -100,7 +100,9 @@ public class FEMOSAASolution extends SASSolution {
 			 result[i] = objectives.get(i).predict(xValue);
 			//result[i] = objectives.get(i).predict(xValue) * 100 / objectives.get(i).getMax();
 			 
-			 if(logger.isDebugEnabled() && Region.selected != OptimizationType.FEMOSAA01) {
+			 if(logger.isDebugEnabled() && Region.selected != OptimizationType.FEMOSAA01
+					 && Region.selected != OptimizationType.NSGAII01
+					 && Region.selected != OptimizationType.IBEA01) {
 				 try {
 				 List<ControlPrimitive> list = Repository.getSortedControlPrimitives(objectives.get(i));
 				 String r = "";

@@ -39,7 +39,7 @@ public class GPRegion extends Region {
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
 		
 		init();
-		
+		System.out.print("Algorithm entering *******\n");
 		LinkedHashMap<ControlPrimitive, Double> result = null;
 		synchronized (lock) {
 			while (waitingUpdateCounter != 0) {
@@ -55,19 +55,21 @@ public class GPRegion extends Region {
 
 
 			FEMOSAASolutionInstantiator inst = new FEMOSAASolutionInstantiator(objectives);
-			
+			System.out.print("Algorithm start *******\n");
             SASAlgorithmAdaptor algorithm = getAlgorithm();
 			Solution solution = null;
 			try {
 				solution = algorithm.execute(inst, vars, objectives.size(), 0);		
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			
+			System.out.print("Algorithm end *******\n");
+			System.out.print("Convertion start *******\n");
 			result = FEMOSAASolutionAdaptor.getInstance().convertSolution(solution/*Use the first one, as the list should all be knee points*/
 					,objectives.get(0));
+			System.out.print("Convertion end *******\n");
 			print(result);
 
 			isLocked = false;
@@ -83,6 +85,7 @@ public class GPRegion extends Region {
 			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){
 		
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
+				//return pareto_front;
 			}
 			protected SolutionSet correctDependencyAfterEvolution(
 					SolutionSet pareto_front) {

@@ -139,4 +139,10 @@ public class ScalarizedObjective implements Objective {
 		return 0;
 	}
 
+	@Override
+	public double getMonetaryUtility(boolean isLatest) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

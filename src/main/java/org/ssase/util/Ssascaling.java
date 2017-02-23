@@ -25,6 +25,9 @@ import org.ssase.Service;
 import org.ssase.actuator.MaxThreadActuator;
 import org.ssase.actuator.linux.CPUCapActuator;
 import org.ssase.actuator.linux.MemoryActuator;
+import org.ssase.analyzer.Analyzer;
+import org.ssase.analyzer.TriggerType;
+import org.ssase.debt.AdaptationDebtBroker;
 import org.ssase.executor.Executor;
 import org.ssase.executor.VM;
 import org.ssase.network.Receiver;
@@ -268,7 +271,9 @@ public class Ssascaling {
 						Repository.getVM(vmName).setSharedSoftwareControlPrimitives(list);
 					}
 					
-					
+					if ("adaptation".equals(insideVmNodes.item(j).getNodeName())){
+						AdaptationDebtBroker.setAdaptationUnit(Double.parseDouble(insideVmNodes.item(j).getAttributes().getNamedItem("cost_unit").getNodeValue()));
+					}
 					
 					
 					
@@ -350,11 +355,23 @@ public class Ssascaling {
 	    							
 	    							
 	    							if (Node.ELEMENT_NODE == qoss.item(k).getNodeType()) {
-	    								
-	    								QualityOfService qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
-	    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
-	    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
-	    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()));
+	    								QualityOfService qos = null;
+	    								if(qoss.item(k).getAttributes().getNamedItem("sla_per_unit") != null) {
+	    									 qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
+		    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()),
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("sla_per_unit").getNodeValue()));
+		    								
+		    							
+	    								} else {
+	    									 qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
+		    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
+		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()));
+		    								
+		    	
+	    								}
 	    								
 	    								if (qoss.item(k).getAttributes().getNamedItem("ep") != null) {
 	    								    qos.setEP((EnvironmentalPrimitive)primitives.get(qoss.item(k).getAttributes().getNamedItem("ep").getNodeValue()));
@@ -541,10 +558,14 @@ public class Ssascaling {
 			
 			
 			
-			
 			if(Region.selected != OptimizationType.INIT) {
 			   new HistoryLoader().run();				   
 			}
+			
+			if(Analyzer.selected == TriggerType.Debt || Analyzer.selected == TriggerType.DebtAll) {
+			   new DebtLoader().run();
+			}
+			
 			loadFeatureModel();
 			r.receive();
 			

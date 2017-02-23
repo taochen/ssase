@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.Properties;
 
 import org.ssase.ControlBus;
+import org.ssase.analyzer.Analyzer;
 import org.ssase.monitor.Monitor;
 import org.ssase.objective.QualityOfService;
 import org.ssase.region.Region;
@@ -90,6 +91,7 @@ public class Receiver {
 			Timer.setThreshold(Integer.parseInt(configProp.getProperty("violation_threshold")));
 			Region.setSelectedOptimizationType(configProp.getProperty("optimization_type"));
 			QualityOfService.setSelectedModelingType(configProp.getProperty("modeling_type"));
+			Analyzer.setSelectedTriggerType(configProp.getProperty("trigger_type"));
 			//Monitor.setSampleInterval(Integer.parseInt(configProp.getProperty("sampling_interval")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

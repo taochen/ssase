@@ -1,4 +1,4 @@
-package org.ssase.objective.optimization.femosaa;
+package org.ssase.objective.optimization.femosaa.moead;
 
 import java.io.File;
 
@@ -14,7 +14,7 @@ import jmetal.util.PseudoRandom;
 
 import org.ssase.region.Region;
 
-public class FEMOSAAwithDRegion extends FEMOSAARegion {
+public class MOEAD_STMwithDRegion extends MOEAD_STMwithKAndDRegion {
 	protected SASAlgorithmAdaptor getAlgorithm(){
 		return new MOEAD_SAS_PLAIN_main(){
 			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){			

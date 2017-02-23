@@ -71,15 +71,16 @@ public class HistoryLoader {
 //		"edu.rice.rubis.servlets.ViewItem",
 //		"edu.rice.rubis.servlets.ViewUserInfo"
 	};
-	
+
 	private  final String prefix = "/home/tao/sas-init/";
+		//"/home/tao/sas-init/";
 		//"/Users/tao/research/monitor/sas/";
 	
 	public  int counterNo = 0;
 	
 	private  int readFileIndex = 0;
 	private int startIndex = 1;
-	private  int cap = 122;//88//340/*342*/;
+	private  int cap = 122;//122;//88//340/*342*/;
 	private  boolean finished = false;
 	private  List<Interval> intervals;
 	private  Map<String, List<Sensor>> sensors;
