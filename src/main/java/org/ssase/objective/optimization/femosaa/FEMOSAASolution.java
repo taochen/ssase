@@ -3,6 +3,7 @@ package org.ssase.objective.optimization.femosaa;
 import java.util.List;
 import java.util.Map;
 
+import org.femosaa.core.SASSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.objective.Objective;
@@ -16,7 +17,6 @@ import org.ssase.util.Repository;
 import jmetal.core.Problem;
 import jmetal.core.Solution;
 import jmetal.core.Variable;
-import jmetal.problems.SASSolution;
 import jmetal.util.JMException;
 
 public class FEMOSAASolution extends SASSolution {

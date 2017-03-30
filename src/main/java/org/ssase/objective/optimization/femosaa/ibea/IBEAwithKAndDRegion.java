@@ -13,13 +13,13 @@ import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.metaheuristics.ibea.IBEA_SAS_main;
 import jmetal.metaheuristics.nsgaII.Utils;
-import jmetal.problems.SAS;
-import jmetal.problems.SASAlgorithmAdaptor;
-import jmetal.problems.SASSolution;
 import jmetal.problems.test.DummySASSolution;
 import jmetal.problems.test.DummySASSolutionInstantiator;
 import jmetal.util.JMException;
 
+import org.femosaa.core.SAS;
+import org.femosaa.core.SASAlgorithmAdaptor;
+import org.femosaa.core.SASSolution;
 import org.ssase.objective.Objective;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionAdaptor;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionInstantiator;

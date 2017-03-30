@@ -6,9 +6,9 @@ import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.metaheuristics.ibea.IBEA_SAS_main;
 import jmetal.metaheuristics.nsgaII.Utils;
-import jmetal.problems.SAS;
-import jmetal.problems.SASAlgorithmAdaptor;
 
+import org.femosaa.core.SAS;
+import org.femosaa.core.SASAlgorithmAdaptor;
 import org.ssase.region.Region;
 
 public class IBEAwithKRegion extends IBEARegion{

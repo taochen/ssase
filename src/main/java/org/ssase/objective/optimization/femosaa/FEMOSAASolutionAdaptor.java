@@ -4,8 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import jmetal.core.Solution;
-import jmetal.problems.SASSolution;
 
+import org.femosaa.core.SASSolution;
 import org.ssase.objective.Objective;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.region.Region;

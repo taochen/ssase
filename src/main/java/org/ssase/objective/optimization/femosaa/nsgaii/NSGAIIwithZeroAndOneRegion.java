@@ -14,11 +14,11 @@ import jmetal.core.SolutionSet;
 import jmetal.core.Variable;
 import jmetal.encodings.variable.Int;
 import jmetal.metaheuristics.nsgaII.NSGA2_SAS_main;
-import jmetal.problems.SASAlgorithmAdaptor;
-import jmetal.problems.SASSolution;
-import jmetal.problems.SASSolutionInstantiator;
 import jmetal.util.JMException;
 
+import org.femosaa.core.SASAlgorithmAdaptor;
+import org.femosaa.core.SASSolution;
+import org.femosaa.core.SASSolutionInstantiator;
 import org.ssase.objective.Objective;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolution;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionInstantiator;

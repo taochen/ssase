@@ -15,10 +15,10 @@ import java.util.Random;
 
 import jmetal.core.Variable;
 import jmetal.encodings.variable.Int;
-import jmetal.problems.SASSolution;
 import jmetal.util.Configuration;
 import jmetal.util.JMException;
 
+import org.femosaa.core.SASSolution;
 import org.ssase.objective.Objective;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolution;
 import org.ssase.primitive.ControlPrimitive;

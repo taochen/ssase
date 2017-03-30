@@ -10,9 +10,9 @@ import jmetal.core.SolutionSet;
 import jmetal.metaheuristics.gp.GP_SAS_main;
 import jmetal.metaheuristics.moead.MOEAD_SAS_main;
 import jmetal.metaheuristics.nsgaII.NSGA2_SAS_main;
-import jmetal.problems.SASAlgorithmAdaptor;
-import jmetal.problems.SASSolution;
 
+import org.femosaa.core.SASAlgorithmAdaptor;
+import org.femosaa.core.SASSolution;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionAdaptor;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionInstantiator;
 import org.ssase.primitive.ControlPrimitive;
