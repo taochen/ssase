@@ -27,7 +27,7 @@ import org.ssase.actuator.linux.CPUCapActuator;
 import org.ssase.actuator.linux.MemoryActuator;
 import org.ssase.executor.Executor;
 import org.ssase.executor.VM;
-import org.ssase.network.Receiver;
+import org.ssase.network.Receiver; 
 import org.ssase.objective.Cost;
 import org.ssase.objective.Objective;
 import org.ssase.objective.QualityOfService;
@@ -64,6 +64,17 @@ public class Ssascaling {
 			activateSensors("192.168.0.101");
 			activateSensors("192.168.0.102");
 			activateSensors("192.168.0.103");
+		} else if ("3".equals(arg[0])) {
+			StepByStepHistoryLoader.QoSIndex = 0;
+			new PerformanceModelRun().automaticTest(new PerformanceModelRun.CallBack() {
+				
+				@Override
+				public void call() {
+					Repository.clear();
+					activate();
+				}
+			});
+			
 		} else {
 			testExecution();
 		}
@@ -498,7 +509,7 @@ public class Ssascaling {
 			
 		
 			
-			
+			Receiver r = new Receiver();
 			// Set direct primitives.
 			for (Service s : Repository.getAllServices() ) {
 				
@@ -534,57 +545,19 @@ public class Ssascaling {
 				}
 				
 				s.print();
+				s.initializeModelForQoS();
 			}
 		
 			Executor.init(3);
 			
-			Receiver r = new Receiver();
 			
-			for (Service s : Repository.getAllServices() ) {
-				s.initializeModelForQoS();
-			}
+			
 			
 			if(Region.selected != OptimizationType.INIT) {
 			  // new HistoryLoader().run();				   
 			}
-			
-//			for(int i = 0; i < 30;i++) {
-//				new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/", 0, 123, 123*i);
-//			}
-//			
-//			new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/", 0, 123, 0);
-//			new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/fifa98/", 121, 101, 123);	
-//			new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/increase/", 121, 100, 225);
-//			new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/decrease/", 121, 100, 326);
-//			new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/bursty/", 121, 98, 427);
-//			
-			/**
-			 * RSD
-			 * 
-			 * FIFA98: RT=4.094447774149877,E=1.011406448447148
-			 * INCREASE: RT=2.831463320796742,E=0.8551095980359653
-			 * DECREASE: RT=3.07366893323546,E=0.7971986198202453
-			 * BURSTY: RT=4.480916424684858,E=0.8865713117042662
-			 * STABLE: RT=3.05324894639166,E=1.0802385307246885
-			 * 
-			 * 
-			 * HDDM_A_Test, count the output distribution
-			 * 
-			 * FIFA98: 68.9851737743082 100.82381773209516
-			 * INCREASE: 61.73502572524143 98.05995709882109
-			 * DECREASE: 53.8925260246904 246.3027476316845
-			 * BURSTY: 74.87490746689261 120.85112323683163
-			 * PERIODIC: 29.66305067787733 128.95452703769917
-			 * STABLE: 41.39236062631122 101.15515304141906
 
-			 */
 			
-			new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/fifa98/", 121, 101, 0);
-			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/increase/", 121, 100, 0);
-			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/decrease/", 121, 100, 0);
-			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/bursty/", 121, 98, 0);
-		    //new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/periodic/", 121, 98, 0);
-			//new StepByStepHistoryLoader().run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/stable/", 121, 95, 0);
 			//loadFeatureModel();
 			//r.receive();
 			
@@ -617,4 +590,10 @@ public class Ssascaling {
 			Repository.setSortedControlPrimitives(obj, fm);
 		}
 	}
+	
+	//private static void runOnOffTest(){
+		
+		//run("/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/fifa98/", 121, 101, 0);
+		   
+	//}
 }

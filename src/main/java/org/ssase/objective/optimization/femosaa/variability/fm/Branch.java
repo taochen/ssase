@@ -6,10 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.femosaa.core.SASVarEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jmetal.problems.VarEntity;
+
 
 /**
  * This represent a Gene

@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import org.ssase.ControlBus;
 import org.ssase.Interval;
 import org.ssase.Service;
 import org.ssase.executor.VM;
+import org.ssase.model.onoff.OnOffModel;
 import org.ssase.monitor.Monitor;
 import org.ssase.objective.QualityOfService;
 import org.ssase.primitive.ControlPrimitive;
@@ -49,6 +51,7 @@ public class StepByStepHistoryLoader {
 	protected static final Logger logger = LoggerFactory
 	.getLogger(StepByStepHistoryLoader.class);
 	
+	private static final int runs = 10;
 	private String[] qosStrings = new String[] {
 		"Response Time",
 		"Energy"
@@ -81,8 +84,8 @@ public class StepByStepHistoryLoader {
 	};
 	
 	private  String prefix = //"/home/tao/sas-init/";
-		"/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/";
-	
+		//"/Users/tao/research/projects/ssase-core/ssase/experiments-data/imbalance/";
+		"/home/tao/workload-pattern-result/";
 	public  int counterNo = 0;
 	
 	private  int readFileIndex = 0;
@@ -96,7 +99,7 @@ public class StepByStepHistoryLoader {
 	private  AtomicInteger counter = new AtomicInteger(0);
 	private  boolean isGo = false;
 	
-	private int QoSIndex = 0;
+	public static int QoSIndex = 0;
 	
 	private double QoSValueRestriction = Double.MAX_VALUE;
 	
@@ -110,14 +113,19 @@ public class StepByStepHistoryLoader {
 	public static void main(String[] args) {
 		new StepByStepHistoryLoader().run("",0 ,0, 0);
 	}
+
+	
 	
 	/**
 	 * @param args
 	 */
-	public void run(String prefix,  int startIndex, int cap, int preRun) {
+	public String run(String prefix,  int startIndex, int cap, int preRun) {
+		
+		System.out.print("startIndex " + startIndex+"\n");
+		System.out.print("cap " + cap+"\n");
 		this.startIndex = startIndex;
 		this.cap = cap;
-		this.prefix = prefix;
+		//this.prefix = prefix;
 		//Ssascaling.main(new String[]{"0"});
 		QualityOfService.leastNumberOfSample = 2;
 		init();
@@ -127,7 +135,7 @@ public class StepByStepHistoryLoader {
 		if(!ControlBus.isTriggerQoSModeling) {
 			// To avoid waiting.
 			logger.debug("Notice that ControlBus.isTriggerQoSModeling has been set to false!");
-			return;
+			return null;
 		}
 		
 		QualityOfService targetQoS = null;	
@@ -140,13 +148,13 @@ public class StepByStepHistoryLoader {
 		
 			
 			System.out.print("The " + i + " run \n");
-			if(!checkQoS("sas")) {
+			if(!checkQoS(prefix, "sas")) {
 				readFileIndex++;
 				minus++;
 				System.out.print("Jump to next\n");
 				continue;
 			}
-			simulateSendAndReceive("sas");
+			simulateSendAndReceive(prefix, "sas");
 //			simulateSendAndReceive("jeos");
 //			simulateSendAndReceive("kitty");
 //			simulateSendAndReceive("miku");
@@ -190,7 +198,7 @@ public class StepByStepHistoryLoader {
 				ideal.add(idealV);
 				predictedList.add(predicted);
 				// actual value,predicted value
-				String result = idealV+","+predicted + "\n";
+				String result = "Ideal: " + idealV+", Predicted: "+predicted + "\n";
 				resultsList.add(result);
 				logger.debug("Result: " + result);
 				System.out.print("next: " +Math.abs((idealV-predicted)/(idealV+predicted)) + "\n");
@@ -298,6 +306,9 @@ public class StepByStepHistoryLoader {
 		double gtotal = 1D;
 		BigDecimal bd = new BigDecimal(1);
 	
+		
+		String data = "";
+		
 		double mean = 0D;
 		int count = 0;
 		for (int i = 0; i < ideal.size(); i++) {
@@ -306,8 +317,10 @@ public class StepByStepHistoryLoader {
 				//System.out.print(predictedList.get(i) + " Equal!!!\n");
 			}
 			
-			System.out.print(Math.log(Math.abs(ideal.get(i) - predictedList.get(i)))+ "\n");
 			//System.out.print(Math.log(Math.abs(ideal.get(i) - predictedList.get(i)))+ "\n");
+			//System.out.print(Math.log(Math.abs(ideal.get(i) - predictedList.get(i)))+ "\n");
+			System.out.print(Math.abs(ideal.get(i) - predictedList.get(i))+ "\n");
+			data = data + Math.abs(ideal.get(i) - predictedList.get(i))+ "\n";
 			count = ideal.get(i) - predictedList.get(i) == 0? count : count + 1;
 			
 			double factor = 1;//ideal.get(i) + predictedList.get(i);
@@ -327,41 +340,41 @@ public class StepByStepHistoryLoader {
 		System.out.print("Average: " + total + " \n");
 		System.out.print("G Average: " + gtotal + " \n");
 		System.out.print("Me: " + mediam.get(mediam.size()/2) + " \n");
-		
-		HDDM_A_Test adwin = new HDDM_A_Test();
-		//HDDM_W_Test adwin = new HDDM_W_Test();
-		adwin.resetLearning();
-		double std = 0D;
-		double cd = 0D;
-		for (int i = 0; i < ideal.size(); i++) {
-			std = std + Math.pow(ideal.get(i) - mean, 2);
-			double subCd = 0D;
-			for (int j = (i-1); j > 0; j--) {
-				subCd = subCd + Math.abs(ideal.get(i) - ideal.get(j));
-			}
-			
-			if(i != 0) {
-				subCd = subCd/i;
-				cd = cd + subCd;
-			}
-			adwin.input(Math.abs(ideal.get(i) - predictedList.get(i)));
-		}
-		std = std/ideal.size();
-		std = Math.pow(std, 0.5);
-		System.out.print("STD: " + std + " \n");
-		System.out.print("MEAN: " + mean + " \n");
-		System.out.print("RSD: " + (std/mean) + " \n");
-		//System.out.print("CD: " + (cd/ideal.size()) + " \n");
-		calculateDrift(targetQoS);
-		//double r = calculateRSD(targetQoS);
-		//System.out.print("Avg RSD: " + ((r + (std/mean))/(targetQoS.getPrimitivesInput().size() + 1)) + " \n");
-		for(double d : mediam){
-			//System.out.print("next: " +d + "\n");
-		}
+//		
+//		HDDM_A_Test adwin = new HDDM_A_Test();
+//		//HDDM_W_Test adwin = new HDDM_W_Test();
+//		adwin.resetLearning();
+//		double std = 0D;
+//		double cd = 0D;
+//		for (int i = 0; i < ideal.size(); i++) {
+//			std = std + Math.pow(ideal.get(i) - mean, 2);
+//			double subCd = 0D;
+//			for (int j = (i-1); j > 0; j--) {
+//				subCd = subCd + Math.abs(ideal.get(i) - ideal.get(j));
+//			}
+//			
+//			if(i != 0) {
+//				subCd = subCd/i;
+//				cd = cd + subCd;
+//			}
+//			adwin.input(Math.abs(ideal.get(i) - predictedList.get(i)));
+//		}
+//		std = std/ideal.size();
+//		std = Math.pow(std, 0.5);
+//		System.out.print("STD: " + std + " \n");
+//		System.out.print("MEAN: " + mean + " \n");
+//		System.out.print("RSD: " + (std/mean) + " \n");
+//		//System.out.print("CD: " + (cd/ideal.size()) + " \n");
+//		calculateDrift(targetQoS);
+//		//double r = calculateRSD(targetQoS);
+//		//System.out.print("Avg RSD: " + ((r + (std/mean))/(targetQoS.getPrimitivesInput().size() + 1)) + " \n");
+//		for(double d : mediam){
+//			//System.out.print("next: " +d + "\n");
+//		}
 		
 		System.gc();
 	
-		
+		return data;
 		
 	}
 	
@@ -460,9 +473,9 @@ public class StepByStepHistoryLoader {
 	
 	
 	
-	public  void simulateSendAndReceive(String VM_ID){
+	public  void simulateSendAndReceive(String prefix, String VM_ID){
 		
-		intervals.add(collectFromFiles(VM_ID));
+		intervals.add(collectFromFiles(prefix, VM_ID));
 		
 		if (finished) {
 			return;
@@ -521,7 +534,7 @@ public class StepByStepHistoryLoader {
 		
 	}
 	
-	private boolean checkQoS(String VM_ID) {
+	private boolean checkQoS(String prefix, String VM_ID) {
 
 		// System.out.print("Start collect\n");
 		// File root = new File(prefix +"adaptive/"+VM_ID+"/bak_3/");
@@ -563,8 +576,36 @@ public class StepByStepHistoryLoader {
 
 		return r;
 	}
+	
+	public int countRow(String path) {
 
-    private  Interval collectFromFiles (String VM_ID) {
+		// System.out.print("Start collect\n");
+		// File root = new File(prefix +"adaptive/"+VM_ID+"/bak_3/");
+		File f = new File(path);
+		int k = 0;
+
+		try {
+
+			String line = null;
+			// System.out.print("Read " + subFile.getAbsolutePath() + "\n");
+			BufferedReader reader = new BufferedReader(new FileReader(f));
+			
+			while ((line = reader.readLine()) != null) {				
+				k++;
+			}
+
+			reader.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return k - 121 - 1;
+	}
+
+
+    private  Interval collectFromFiles (String prefix, String VM_ID) {
 		
 		Interval interval = new Interval(System.currentTimeMillis());
 		//System.out.print("Start collect\n");

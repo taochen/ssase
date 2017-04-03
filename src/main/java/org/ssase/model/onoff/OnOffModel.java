@@ -81,7 +81,7 @@ public class OnOffModel implements Model {
 	 * @throws Exception
 	 */
 
-	public static LearningType selected = LearningType.MLP;
+	public static LearningType selected = LearningType.KNN;
 
 	private moa.classifiers.AbstractClassifier onlineModel = null;
 

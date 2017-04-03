@@ -2,8 +2,8 @@ package org.ssase.objective.optimization.gp;
 
 import jmetal.core.SolutionSet;
 import jmetal.metaheuristics.nsgaII.NSGA2_SAS_main;
-import jmetal.problems.SASAlgorithmAdaptor;
 
+import org.femosaa.core.SASAlgorithmAdaptor;
 import org.ssase.objective.optimization.femosaa.FEMOSAASolutionAdaptor;
 import org.ssase.region.Region;
 import jmetal.metaheuristics.gp.GP_SAS_main;

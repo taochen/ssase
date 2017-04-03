@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.femosaa.core.SASSolutionInstantiator;
 import org.ssase.objective.Objective;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.util.Repository;
@@ -11,7 +12,6 @@ import org.ssase.util.Repository;
 import jmetal.core.Problem;
 import jmetal.core.Solution;
 import jmetal.core.Variable;
-import jmetal.problems.SASSolutionInstantiator;
 
 public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 

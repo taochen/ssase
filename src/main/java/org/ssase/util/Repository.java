@@ -87,6 +87,7 @@ public class Repository {
 		qoss.clear();
 		cost.clear();
 		directPrimitives.clear();
+		fms.clear();
 	}
 	
 	public static void removeUnneededPrimitive(Set<Primitive> removals) {

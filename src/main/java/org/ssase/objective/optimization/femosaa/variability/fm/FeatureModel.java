@@ -14,9 +14,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import jmetal.problems.SASSolution;
-import jmetal.problems.VarEntity;
-
+import org.femosaa.core.SASSolution;
+import org.femosaa.core.SASVarEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.primitive.ControlPrimitive;
@@ -41,8 +40,8 @@ public class FeatureModel {
 	// Its order should be the same as List<ControlPrimitive> list.
 	private List<Branch> chromosome = new ArrayList<Branch>();
 	
-	// Key = dependent, Value = the list of different layers of main variable = the VarEntity at each layer 
-	//private Map<Branch, List<List<VarEntity>>> tempMap;
+	// Key = dependent, Value = the list of different layers of main variable = the SASVarEntity at each layer 
+	//private Map<Branch, List<List<SASVarEntity>>> tempMap;
 	
 
 	private Branch root = null;
@@ -539,7 +538,7 @@ public class FeatureModel {
 	
 		//----------------Analyze the dependency----------------
 		
-		Map<Integer, VarEntity[]> dependencyMap = SASSolution.getDependencyMap();
+		Map<Integer, SASVarEntity[]> dependencyMap = SASSolution.getDependencyMap();
 		
 		
 		for (Branch b : chromosome) {
@@ -549,13 +548,13 @@ public class FeatureModel {
 				 continue;
 			 }
 			 
-			 List<VarEntity[]> varList = new ArrayList<VarEntity[]>();
+			 List<SASVarEntity[]> varList = new ArrayList<SASVarEntity[]>();
 			 
 			 for (int i = 0; i < list.size();i++) {
-				 // Key = dependent, Value = the list of different layers of main variable = the VarEntity at each layer 
-				 Map<Branch, List<List<VarEntity>>> tempMap = new LinkedHashMap<Branch, List<List<VarEntity>>>();
+				 // Key = dependent, Value = the list of different layers of main variable = the SASVarEntity at each layer 
+				 Map<Branch, List<List<SASVarEntity>>> tempMap = new LinkedHashMap<Branch, List<List<SASVarEntity>>>();
 				 Map<Branch, Integer[][]> map = list.get(i);
-				 VarEntity[] ve = null;
+				 SASVarEntity[] ve = null;
 				 if(i == 0) {
 					 
 					 if(map.size() == 0) {
@@ -607,7 +606,7 @@ public class FeatureModel {
 				 tempMap.clear();
 			 }
 			 
-			 VarEntity[] finalOne = varList.get(0);
+			 SASVarEntity[] finalOne = varList.get(0);
 			 
 			 for (int i = 1; i < varList.size();i++) {
 				
@@ -637,7 +636,7 @@ public class FeatureModel {
 					 logger.debug(r);
 				 }
 				 
-				 insertMissingVarEntityFromBtoA(b, finalOne, layerIndexA, varList.get(i), layerIndexB);
+				 insertMissingSASVarEntityFromBtoA(b, finalOne, layerIndexA, varList.get(i), layerIndexB);
 			 }
 			// if(finalOne != null)
 			 dependencyMap.put(chromosome.indexOf(b), finalOne);
@@ -666,12 +665,12 @@ public class FeatureModel {
 		}
 		
 		logger.debug("-----------Dependency Chain-----------");
-		for (Map.Entry<Integer, VarEntity[]> entry : dependencyMap.entrySet()) {
+		for (Map.Entry<Integer, SASVarEntity[]> entry : dependencyMap.entrySet()) {
 			logger.debug(chromosome.get(entry.getKey()).getName() + ", index of " + entry.getKey());
 			
-			VarEntity[] array = entry.getValue();
+			SASVarEntity[] array = entry.getValue();
 			do{
-				VarEntity ve = array[0];
+				SASVarEntity ve = array[0];
 			    logger.debug("Main features: " + chromosome.get(ve.getVarIndex()).getName() + ", index of " + ve.getVarIndex());
 			    array = ve.getNext();
 			} while(array != null);
@@ -696,7 +695,7 @@ public class FeatureModel {
 		root = null;
 	}
 	
-	private void insertMissingVarEntityFromBtoA(Branch key, VarEntity[] veA, List<Integer> layerIndexA, VarEntity[] veB, List<Integer> layerIndexB){
+	private void insertMissingSASVarEntityFromBtoA(Branch key, SASVarEntity[] veA, List<Integer> layerIndexA, SASVarEntity[] veB, List<Integer> layerIndexB){
 		
 		List<Integer> toAdd = new ArrayList<Integer>();
 		
@@ -750,15 +749,15 @@ public class FeatureModel {
 		return valueVector;
 	}
 	
-	private void intersect(Branch key, VarEntity[] veA, VarEntity[] veB, Map<Branch, Integer> values, List<Integer> layerIndexB) {
+	private void intersect(Branch key, SASVarEntity[] veA, SASVarEntity[] veB, Map<Branch, Integer> values, List<Integer> layerIndexB) {
 		for (int i = 0; i < veA.length; i++) {
 			if(values.containsKey(chromosome.get(veA[i].getVarIndex()))) {
 				values.put(chromosome.get(veA[i].getVarIndex()), i);
 			}
 			
 			if(veA[i].getNext() ==null) {
-				VarEntity[] enArray = veB;
-				VarEntity en = null;
+				SASVarEntity[] enArray = veB;
+				SASVarEntity en = null;
 				for(int j = 0 ; j < layerIndexB.size(); j++) {
 					int index = values.get(chromosome.get(layerIndexB.get(j)));
 					en = enArray[index];
@@ -773,12 +772,12 @@ public class FeatureModel {
 		}
 	}
 	
-	private void insert(VarEntity[] ve, int indexToAdd) {
-		for (VarEntity e : ve) {
+	private void insert(SASVarEntity[] ve, int indexToAdd) {
+		for (SASVarEntity e : ve) {
 			if(e.getNext() ==null) {
-				VarEntity[] newVe = new VarEntity[chromosome.get(indexToAdd).getRange().length];
+				SASVarEntity[] newVe = new SASVarEntity[chromosome.get(indexToAdd).getRange().length];
 				for (int i = 0; i < newVe.length; i++) {
-					newVe[i] = new VarEntity(indexToAdd, e.getOptionalValues(), null);
+					newVe[i] = new SASVarEntity(indexToAdd, e.getOptionalValues(), null);
 				}
 				e.extend(newVe);
 			} else {
@@ -795,7 +794,7 @@ public class FeatureModel {
 		}
 	}
 	
-	private void printVariableTree(ControlPrimitive dependenct, VarEntity ve, String log){
+	private void printVariableTree(ControlPrimitive dependenct, SASVarEntity ve, String log){
 //		 if(!dependenct.getName().equals("cacheMode")) {
 //			 return;
 //		 }
@@ -842,14 +841,14 @@ public class FeatureModel {
 	 * @param values
 	 * @return
 	 */
-	private VarEntity[] setIntersectionEntity(Map<Branch, List<List<VarEntity>>> tempMap, Branch branch, Map.Entry<Branch, Integer[][]> entry,
+	private SASVarEntity[] setIntersectionEntity(Map<Branch, List<List<SASVarEntity>>> tempMap, Branch branch, Map.Entry<Branch, Integer[][]> entry,
 			List<Map.Entry<Branch, Integer[][]>> itr, Integer[] values, int layer) {
 		layer++;
-		VarEntity[] ve = new VarEntity[entry.getValue().length];
-		List<VarEntity> l = new ArrayList<VarEntity>();
+		SASVarEntity[] ve = new SASVarEntity[entry.getValue().length];
+		List<SASVarEntity> l = new ArrayList<SASVarEntity>();
 
 //		if (!tempMap.containsKey(branch)) {
-//			tempMap.put(branch, new ArrayList<List<VarEntity>>());
+//			tempMap.put(branch, new ArrayList<List<SASVarEntity>>());
 //				
 //		}
 //		
@@ -861,16 +860,16 @@ public class FeatureModel {
 			Map.Entry<Branch, Integer[][]> next = itr.get(layer);
 			for (int i = 0; i < entry.getValue().length; i++) {
 
-				VarEntity[] v = setIntersectionEntity(tempMap, branch, next, itr,
+				SASVarEntity[] v = setIntersectionEntity(tempMap, branch, next, itr,
 						getIntersection(values, entry.getValue()[i], branch, entry.getKey(), null), layer);
-				VarEntity temp = null;
+				SASVarEntity temp = null;
 				if (tempMap.containsKey(branch)
 						&& (temp = isSameRange(tempMap.get(branch).get(layer),
 								v)) != null) {
 					ve[i] = temp;
 				} else {
 
-					ve[i] = new VarEntity(chromosome.indexOf(entry.getKey()),
+					ve[i] = new SASVarEntity(chromosome.indexOf(entry.getKey()),
 							null, v);
 					l.add(ve[i]);
 				}
@@ -880,14 +879,14 @@ public class FeatureModel {
 			for (int i = 0; i < entry.getValue().length; i++) {
 
 				Integer[] v = getIntersection(values, entry.getValue()[i], branch, entry.getKey(), null);
-				VarEntity temp = null;
+				SASVarEntity temp = null;
 				if (tempMap.containsKey(branch)
 						&& (temp = isSameRange(tempMap.get(branch).get(layer),
 								v)) != null) {
 					ve[i] = temp;
 				} else {
 
-					ve[i] = new VarEntity(chromosome.indexOf(entry.getKey()),
+					ve[i] = new SASVarEntity(chromosome.indexOf(entry.getKey()),
 							v, null);
 					l.add(ve[i]);
 				}
@@ -906,14 +905,14 @@ public class FeatureModel {
 	}
 	
 	
-	private VarEntity[] setUnionEntity(Map<Branch, List<List<VarEntity>>> tempMap, Branch branch, Map.Entry<Branch, Integer[][]> entry,
+	private SASVarEntity[] setUnionEntity(Map<Branch, List<List<SASVarEntity>>> tempMap, Branch branch, Map.Entry<Branch, Integer[][]> entry,
 			List<Map.Entry<Branch, Integer[][]>> itr, Integer[] values, int layer) {
 		layer++;
-		VarEntity[] ve = new VarEntity[entry.getValue().length];
-		List<VarEntity> l = new ArrayList<VarEntity>();
+		SASVarEntity[] ve = new SASVarEntity[entry.getValue().length];
+		List<SASVarEntity> l = new ArrayList<SASVarEntity>();
 
 //		if (!tempMap.containsKey(branch)) {
-//			tempMap.put(branch, new ArrayList<List<VarEntity>>());
+//			tempMap.put(branch, new ArrayList<List<SASVarEntity>>());
 //				
 //		}
 //		
@@ -925,16 +924,16 @@ public class FeatureModel {
 			Map.Entry<Branch, Integer[][]> next = itr.get(layer);
 			for (int i = 0; i < entry.getValue().length; i++) {
 
-				VarEntity[] v = setUnionEntity(tempMap, branch, next, itr,
+				SASVarEntity[] v = setUnionEntity(tempMap, branch, next, itr,
 						getUnion(values, entry.getValue()[i]), layer);
-				VarEntity temp = null;
+				SASVarEntity temp = null;
 				if (tempMap.containsKey(branch)
 						&& (temp = isSameRange(tempMap.get(branch).get(layer),
 								v)) != null) {
 					ve[i] = temp;
 				} else {
 
-					ve[i] = new VarEntity(chromosome.indexOf(entry.getKey()),
+					ve[i] = new SASVarEntity(chromosome.indexOf(entry.getKey()),
 							null, v);
 					l.add(ve[i]);
 				}
@@ -944,14 +943,14 @@ public class FeatureModel {
 			for (int i = 0; i < entry.getValue().length; i++) {
 
 				Integer[] v = getUnion(values, entry.getValue()[i]);
-				VarEntity temp = null;
+				SASVarEntity temp = null;
 				if (tempMap.containsKey(branch)
 						&& (temp = isSameRange(tempMap.get(branch).get(layer),
 								v)) != null) {
 					ve[i] = temp;
 				} else {
 
-					ve[i] = new VarEntity(chromosome.indexOf(entry.getKey()),
+					ve[i] = new SASVarEntity(chromosome.indexOf(entry.getKey()),
 							v, null);
 					l.add(ve[i]);
 				}
@@ -970,7 +969,7 @@ public class FeatureModel {
 	}
 	
 	
-	private Integer[] getIntersection(Integer[] a, Integer[] b, Branch key, Branch added, VarEntity[] entities) {
+	private Integer[] getIntersection(Integer[] a, Integer[] b, Branch key, Branch added, SASVarEntity[] entities) {
 		
 		if(a == null) return b;
 		if(b == null) return a;
@@ -1056,8 +1055,8 @@ public class FeatureModel {
 	}
 	
 	
-	private VarEntity isSameRange(List<VarEntity> a, Integer[] b) {
-		for(VarEntity v : a) {
+	private SASVarEntity isSameRange(List<SASVarEntity> a, Integer[] b) {
+		for(SASVarEntity v : a) {
 			boolean r = isSameRange(v.getOptionalValues(), b);
 			if(r) return v;
 		}
@@ -1065,8 +1064,8 @@ public class FeatureModel {
 		return null;
 	}
 	
-	private VarEntity isSameRange(List<VarEntity> a, VarEntity[] b) {
-		for(VarEntity v : a) {
+	private SASVarEntity isSameRange(List<SASVarEntity> a, SASVarEntity[] b) {
+		for(SASVarEntity v : a) {
 			boolean r = isSameRange(v.getNext(), b);
 			if(r) return v;
 		}
@@ -1087,7 +1086,7 @@ public class FeatureModel {
 		return true;
 	}
 	
-	private boolean isSameRange(VarEntity[] a, VarEntity[] b) {
+	private boolean isSameRange(SASVarEntity[] a, SASVarEntity[] b) {
 		if(a.length != b.length) return false;
 		
 		for (int i = 0; i < a.length; i++) {

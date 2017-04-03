@@ -24,7 +24,6 @@ import org.ssase.network.Sender;
 import org.ssase.sensor.*;
 import org.ssase.sensor.control.ThreadSensor;
 import org.ssase.sensor.linux.CpuSensor;
-import org.ssase.test.modeling.Configurator;
 import org.ssase.util.Ssascaling;
 
 /**
@@ -463,15 +462,15 @@ public class TestSensorA {
 		List<String> services = new ArrayList<String>();
 		List<String> notModeledService = new ArrayList<String>();
 		List<String> qos = new ArrayList<String>();
-		for (String s : Configurator.notModeledServiceStrings) {
-			notModeledService.add(s);
-		}
-		for (String s : Configurator.serviceStrings) {
-			services.add(s);
-		}
-		for (String s : Configurator.qosStrings) {
-			qos.add(s);
-		}
+//		for (String s : Configurator.notModeledServiceStrings) {
+//			notModeledService.add(s);
+//		}
+//		for (String s : Configurator.serviceStrings) {
+//			services.add(s);
+//		}
+//		for (String s : Configurator.qosStrings) {
+//			qos.add(s);
+//		}
 		try {
 		for (File file : root.listFiles()) {
 			

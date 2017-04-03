@@ -1,5 +1,6 @@
 package org.ssase.region;
 
+import org.femosaa.core.SASSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.objective.Objective;
@@ -26,7 +27,6 @@ import java.util.Map;
 
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
-import jmetal.problems.SASSolution;
 import jmetal.util.JMException;
 
 

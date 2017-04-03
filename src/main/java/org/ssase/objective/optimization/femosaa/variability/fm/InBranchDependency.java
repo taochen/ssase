@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jmetal.problems.VarEntity;
-
+import org.femosaa.core.SASVarEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.util.Tuple;

@@ -11,12 +11,12 @@ import java.util.Random;
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.metaheuristics.moead.MOEAD_SAS_main;
-import jmetal.problems.SASAlgorithmAdaptor;
-import jmetal.problems.SASSolution;
 import jmetal.problems.test.DummySASSolution;
 import jmetal.problems.test.DummySASSolutionInstantiator;
 import jmetal.util.JMException;
 
+import org.femosaa.core.SASAlgorithmAdaptor;
+import org.femosaa.core.SASSolution;
 import org.ssase.objective.Objective;
 import org.ssase.objective.optimization.moaco.BasicAntColony;
 import org.ssase.primitive.ControlPrimitive;
