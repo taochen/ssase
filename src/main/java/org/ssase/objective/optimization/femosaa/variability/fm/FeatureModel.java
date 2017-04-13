@@ -684,11 +684,11 @@ public class FeatureModel {
 		
 			
 			
-			for(int i = 0; i < entry.getValue().length ; i++) {
-				printVariableTree(list.get(entry.getKey()), 
-						entry.getValue()[i],
-						chromosome.get(entry.getValue()[i].getVarIndex()).getName() + "-" + i + "(" + chromosome.get(entry.getValue()[i].getVarIndex()).getRange()[i] + ")");
-			}
+//			for(int i = 0; i < entry.getValue().length ; i++) {
+//				printVariableTree(list.get(entry.getKey()), 
+//						entry.getValue()[i],
+//						chromosome.get(entry.getValue()[i].getVarIndex()).getName() + "-" + i + "(" + chromosome.get(entry.getValue()[i].getVarIndex()).getRange()[i] + ")");
+//			}
 			
 			
 		}
@@ -914,6 +914,7 @@ public class FeatureModel {
 	
 	private SASVarEntity[] setUnionEntity(Map<Branch, List<List<SASVarEntity>>> tempMap, Branch branch, Map.Entry<Branch, Integer[][]> entry,
 			List<Map.Entry<Branch, Integer[][]>> itr, Integer[] values, int layer) {
+		//System.out.print(layer + "\n");
 		layer++;
 		SASVarEntity[] ve = new SASVarEntity[entry.getValue().length];
 		List<SASVarEntity> l = new ArrayList<SASVarEntity>();

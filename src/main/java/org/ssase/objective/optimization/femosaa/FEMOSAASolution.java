@@ -7,6 +7,7 @@ import org.femosaa.core.SASSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ssase.objective.Objective;
+import org.ssase.objective.QualityOfService;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
@@ -17,6 +18,7 @@ import org.ssase.util.Repository;
 import jmetal.core.Problem;
 import jmetal.core.Solution;
 import jmetal.core.Variable;
+import jmetal.encodings.variable.Int;
 import jmetal.util.JMException;
 
 public class FEMOSAASolution extends SASSolution {
@@ -65,6 +67,8 @@ public class FEMOSAASolution extends SASSolution {
 	 */
 	@Override
 	public double[] getObjectiveValuesFromIndexValue() {
+		
+		
 		double[] result = new double[objectives.size()];
 		logger.debug(" ");
 		for (int i = 0; i < objectives.size(); i++) {
@@ -85,6 +89,53 @@ public class FEMOSAASolution extends SASSolution {
 				}
 			}
 			
+			
+			boolean isValid = true;
+			if(QualityOfService.isDelegate()) {		
+				if(Region.selected == OptimizationType.FEMOSAA01 ||
+						Region.selected == OptimizationType.NSGAII01 ||
+						Region.selected == OptimizationType.IBEA01) {
+					
+
+					FEMOSAASolutionInstantiator solInt = new FEMOSAASolutionInstantiator(objectives);
+					
+					List<ControlPrimitive> list = Repository.getSortedControlPrimitives(objectives.get(0));
+					
+					FEMOSAASolution s = (FEMOSAASolution)solInt.getSolution(objectives.size());
+		               
+					Variable[] variables = new Variable[list.size()];
+					for (int l = 0; l < list.size(); l ++) {
+						variables[l] = new Int(0, list.get(l).getValueVector().length-1);		
+					}
+					
+				
+					
+				
+					s.setDecisionVariables(variables);
+					for(int k = 0; k < s.getDecisionVariables().length; k++) {
+						
+						for (int j = 0; j < Repository.getSortedControlPrimitives(objectives.get(0)).get(k).getValueVector().length; j++) {
+							if(Repository.getSortedControlPrimitives(objectives.get(0)).get(k).getValueVector()[j] == xValue[k]) {
+								try {
+									s.getDecisionVariables()[i].setValue(j);
+								} catch (JMException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								break;
+							}
+						}
+						
+						
+					}
+					
+					isValid = s.isSolutionValid();	
+					
+				} else {
+				   isValid = this.isSolutionValid();	
+				}
+			}
+			
 //			result[i] = org.ssase.util.test.FEMOSAATester.objectives.size() > 0?
 //					org.ssase.util.test.FEMOSAATester.objectives.get(i).predict(xValue) :
 //					objectives.get(i).predict(xValue);
@@ -97,7 +148,35 @@ public class FEMOSAASolution extends SASSolution {
 //			} else {
 //			      result[i] = objectives.get(i).predict(xValue);
 //			}
-			 result[i] = objectives.get(i).predict(xValue);
+			
+			
+			
+			if(QualityOfService.isDelegate()) {
+				try{
+				if(isValid) {
+					result[i] = objectives.get(i).predict(xValue);
+				} else {
+					// Assume minimizing
+					result[i] = Double.MAX_VALUE;
+				}
+				}catch(Throwable t) {
+					System.err.print("This solution is " + this.isSolutionValid() + "\n");
+					String o = "";
+					for(int k = 0; k < this.getDecisionVariables().length; k++) {
+						try {
+							o += this.getDecisionVariables()[k].getValue() + ", ";
+							
+						} catch (JMException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					System.err.print(o + "\n");
+				}
+				
+			} else {
+			   result[i] = objectives.get(i).predict(xValue);
+			}
 			//result[i] = objectives.get(i).predict(xValue) * 100 / objectives.get(i).getMax();
 			 
 			 if(logger.isDebugEnabled() && Region.selected != OptimizationType.FEMOSAA01

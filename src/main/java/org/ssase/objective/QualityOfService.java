@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
  
+import org.ssase.model.Delegate;
+import org.ssase.model.DelegateModel;
 import org.ssase.model.Model;
 import org.ssase.model.ModelingType;
 import org.ssase.model.sam.SAMModel;
@@ -133,6 +135,10 @@ public class QualityOfService implements Objective, Comparable{
 			this.array[i] = this.array[i]*100/max;
 		}
 	}
+	
+	public static boolean isDelegate() {
+		return selected == ModelingType.DELEGATE;
+	}
 
 	public static void setSelectedModelingType(String type) {
         if(type == null) throw new RuntimeException("No proper ModelingType found!");
@@ -141,6 +147,8 @@ public class QualityOfService implements Objective, Comparable{
 		
 		if("sam".equals(type)) {
 			selected = ModelingType.SAM;
+		} else if("delegate".equals(type)) {
+			selected = ModelingType.DELEGATE;
 		} 
 		System.out.print(selected+ "*****\n");
 		
@@ -157,6 +165,8 @@ public class QualityOfService implements Objective, Comparable{
 	        double[][] structureConfig){
 		if(ModelingType.SAM == selected) {
 			model = new SAMModel(name, possibleInputs, this, functionConfig, structureConfig);
+		} else if(ModelingType.DELEGATE == selected) {
+			model = new DelegateModel(name, possibleInputs, this);
 		}
 	}
 	
@@ -557,7 +567,7 @@ public class QualityOfService implements Objective, Comparable{
 			if (isLatestEP && model.get(i) instanceof EnvironmentalPrimitive) {
 			   x[i] = ((EnvironmentalPrimitive)model.get(i)).getLatest()/model.get(i).getMax();
 			} else {
-			   x[i] = xValue[i]/model.get(i).getMax();
+			   x[i] = ModelingType.DELEGATE == selected? xValue[i] : xValue[i]/model.get(i).getMax();
 			}
 		}
 		
@@ -881,4 +891,10 @@ public class QualityOfService implements Objective, Comparable{
 		return ep;
 	}
 	
+	public void setDelegate(Delegate delegate){
+		if(model instanceof DelegateModel) {
+			((DelegateModel)model).setDelegate(delegate);
+			max = 1;// This is to eliminate the effect of max, as there might not be needed to normalize.
+		}
+	}
 }

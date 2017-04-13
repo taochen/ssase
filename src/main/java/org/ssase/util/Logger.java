@@ -9,11 +9,13 @@ import java.util.Map;
 
 import org.ssase.Interval;
 import org.ssase.Interval.ValuePair;
+import org.ssase.objective.QualityOfService;
+import org.ssase.region.Region;
 
 public class Logger { 
 
-	public static final String prefix = "/home/tao/monitor/";
-		//"/Users/tao/research/monitor/sas/";
+	public static final String prefix = //"/home/tao/monitor/";
+		"/Users/tao/research/monitor/sas-soa/";
 	
 	private static long executionCount = 0;
 	 
@@ -89,11 +91,11 @@ public class Logger {
 	public static synchronized void logOptimizationTime(String VM_ID, String data){
 		
 		if(VM_ID == null) VM_ID = "sas";
-		
+		if(QualityOfService.isDelegate()) VM_ID = VM_ID + "/" + Region.selected;
 		File file = null;
 		if(!(file = new File(prefix
 				+ VM_ID + "/")).exists()){
-			file.mkdir();
+			file.mkdirs();
 		} 
 		
 		try {
@@ -113,11 +115,11 @@ public class Logger {
     public static synchronized void logDependencyEnforcement(String VM_ID, String data){
 		
 		if(VM_ID == null) VM_ID = "sas";
-		
+		if(QualityOfService.isDelegate()) VM_ID = VM_ID + "/" + Region.selected;
 		File file = null;
 		if(!(file = new File(prefix
 				+ VM_ID + "/")).exists()){
-			file.mkdir();
+			file.mkdirs();
 		} 
 		
 		try {

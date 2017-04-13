@@ -238,6 +238,8 @@ public class Ssascaling {
 						}
 						
 						Repository.setVM(vmName, new VM(vmName, list.toArray(new HardwareControlPrimitive[list.size()]) ));
+					} else {
+						Repository.setVM(vmName, new VM(vmName, (new HardwareControlPrimitive[0]) ));
 					}
 					
 					if ("softwareControlPrimitive".equals(insideVmNodes.item(j).getNodeName())){
@@ -554,21 +556,35 @@ public class Ssascaling {
 				s.initializeModelForQoS();
 			}
 		
-			Executor.init(3);
+			//Executor.init(3);
 			
 			
 			
 			if(Region.selected != OptimizationType.INIT) {
-			   new HistoryLoader().run();				   
+			   //new HistoryLoader().run();				   
 			}
 			
 			if(Analyzer.selected == TriggerType.Debt || Analyzer.selected == TriggerType.DebtAll) {
 			   new DebtLoader().run();
 			}
 			
-			loadFeatureModel();
-			r.receive();
+			//loadFeatureModel();
+			//r.receive();
 			
+	}
+	
+	public static void loadFeatureModel(List<ControlPrimitive> list){
+      
+		FeatureModel fm = new FeatureModel(list);
+		
+		List<FeatureModel> models = new ArrayList<FeatureModel>();
+		models.add(fm);
+		
+		FeatureModel.readFile(models);
+		
+		for(Objective obj : Repository.getAllObjectives()) {
+			Repository.setSortedControlPrimitives(obj, fm);
+		}
 	}
 	
 	private static void loadFeatureModel(){
