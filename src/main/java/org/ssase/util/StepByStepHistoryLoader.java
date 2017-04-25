@@ -99,7 +99,7 @@ public class StepByStepHistoryLoader {
 	private  AtomicInteger counter = new AtomicInteger(0);
 	private  boolean isGo = false;
 	
-	public static int QoSIndex = 0;
+	public static int QoSIndex = 1;
 	
 	private double QoSValueRestriction = Double.MAX_VALUE;
 	
