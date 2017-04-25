@@ -20,5 +20,5 @@ SASM2/
 weight/
 data/
 
-xperiments-data/on-off/wsdream/processed/rtdata/
-xperiments-data/on-off/wsdream/processed/tpdata/
+experiments-data/on-off/wsdream/processed/rtdata/
+experiments-data/on-off/wsdream/processed/tpdata/
