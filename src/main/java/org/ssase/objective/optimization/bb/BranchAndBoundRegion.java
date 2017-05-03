@@ -35,7 +35,7 @@ import org.ssase.util.Repository;
  */
 public class BranchAndBoundRegion extends Region {
 
-	protected static final long EXECUTION_TIME = 25000;
+	protected static final long EXECUTION_TIME = 40000;
 
 	@Override
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {

@@ -49,7 +49,7 @@ public class Data {
 
 // ====================== to state-of-the-art ====================== 	
 
-//		"moead/sas/rubis_software/",
+		"moead/sas/rubis_software/",
 //		"femosaa-nsgaii/sas/rubis_software/",
 //		"femosaa-ibea/sas/rubis_software/",
 //		"nsgaii/sas/rubis_software/",
@@ -100,13 +100,13 @@ public class Data {
 		
 // ====================== to state-of-the-art ======================
 		
-		"read/fifa-read-12-w-r/moead/sas/rubis_software/",	
-		
-		"read/fifa-read-12-w-r/femosaa-nsgaii/sas/rubis_software/",
-		"read/fifa-read-12-w-r/femosaa-ibea/sas/rubis_software/",
-		"read/fifa-read-12-w-r/nsgaii/sas/rubis_software/",
-		"read/fifa-read-12-w-r/gp/sas/rubis_software/",
-		"read/fifa-read-12-w-r/bb/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/moead/sas/rubis_software/",	
+//		
+//		"read/fifa-read-12-w-r/femosaa-nsgaii/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/femosaa-ibea/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/nsgaii/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/gp/sas/rubis_software/",
+//		"read/fifa-read-12-w-r/bb/sas/rubis_software/",
 		
 // ====================== to state-of-the-art ======================
 		
@@ -117,14 +117,14 @@ public class Data {
 		
 // ###################### DDA ######################
 		
-//		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-//		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-//		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-//		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
-//		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
-//		"debt-aware/femosaa/random-10/sas/rubis_software/",
-//		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/"
-//		
+		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
+		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
+		"debt-aware/femosaa/random-10/sas/rubis_software/",
+		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/"
+		
 //		"debt-aware/plato/htree/sas/rubis_software/",
 //		"debt-aware/plato/nb/sas/rubis_software/",
 //		"debt-aware/plato/svm/sas/rubis_software/",
@@ -398,6 +398,7 @@ public class Data {
 	    
        for (String n : compare) {
     	   int k = 0;
+    	   double adapCost = 0.0;
 			for(Double d : AdaMap.get(prefix+n)) {
 				int i = (int)(d - 122);
 				
@@ -410,20 +411,48 @@ public class Data {
 				original += (30/*mean training time*/ + AdaTimeMap.get(prefix+n).get(k)/1000) * adaptCost;
 				//4.0464566409062
 				debt.get(n).put(i, original);
-				
+				adapCost += (30/*mean training time*/ + AdaTimeMap.get(prefix+n).get(k)/1000) * adaptCost;
 				k++;
 			}
+			System.out.print(n + " adaptation cost: " + adapCost+"\n");
 		}
        System.out.print("Debt\n\n");
-	    for (String app : debt.keySet()) {
+       List<Double> allDebt = new ArrayList<Double>();
+       Map<String, List<Double>> tempMap = new HashMap<String, List<Double>>();
+	   for (String app : debt.keySet()) {
 	    	System.out.print(app + "\n");
+	    	tempMap.put(app, new ArrayList<Double>());
 	    	double total = 0.0;
 	    	for(Map.Entry<Integer, Double> e : debt.get(app).entrySet()) {
+	    		tempMap.get(app).add(e.getValue());
+	    		allDebt.add(e.getValue());
 	    		total += e.getValue();
 	    		System.out.print("(" +e.getKey() + "," + total + ")\n");
 	    		//System.out.print("(" + e.getKey() + "," + (Math.log10(e.getValue()+250)) + ")\n");
 	    	}
+	   }
+	    
+	   System.out.print("Debt CDF\n\n");
+	   Collections.sort(allDebt);
+	   System.out.print(allDebt.size()+"\n");
+	    
+	    for (String app : debt.keySet()) {
+	    	System.out.print(app + "\n");
+	    	
+	    	Collections.sort(tempMap.get(app));
+	    	for (int i = 0; i <  allDebt.size(); i++) {
+	    		double total = 0.0;
+	    		for(Double d  : tempMap.get(app)) {
+	    			total += (d <= allDebt.get(i))? (1.0/tempMap.get(app).size()) : 0;
+		    		
+		    		//System.out.print("(" + e.getKey() + "," + (Math.log10(e.getValue()+250)) + ")\n");
+		    	}
+	    		System.out.print("(" +allDebt.get(i) + "," + total + ")\n");
+	    	}
+	    	
+	    	
 	    }
+	    
 	    
 	    String sur = "read/fifa-read-12-w-r/femosaa-ibea/sas/rubis_software/";
 	    
