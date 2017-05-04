@@ -444,7 +444,7 @@ public class OnOffModel implements Model {
 					moa.classifiers.Classifier[] clazz = new moa.classifiers.Classifier[5];
 					
 					for(int i = 0; i < clazz.length;i++) {
-						clazz[i] = initializeWEKAClassifier("weka.classifiers.lazy.KStar");
+						clazz[i] = initializeWEKAClassifier("weka.classifiers.lazy.IBk");
 					}
 					
 					onlineModel = initializeOnlineEnsemble(
@@ -471,7 +471,7 @@ public class OnOffModel implements Model {
 					moa.classifiers.Classifier[] clazz = new moa.classifiers.Classifier[5];
 					
 					for(int i = 0; i < clazz.length;i++) {
-						clazz[i] = initializeWEKAClassifier("weka.classifiers.lazy.KStar");
+						clazz[i] = initializeWEKAClassifier("weka.classifiers.lazy.IBk");
 					}
 					
 					onlineModel = initializeOnlineEnsemble(
@@ -514,9 +514,9 @@ public class OnOffModel implements Model {
 			} else if (selected == LearningType.KS) {
 				offlineModel = new weka.classifiers.lazy.KStar();
 			} else if (selected == LearningType.BAGGING) {
-				offlineModel = new ExtendedOfflineBagging(new weka.classifiers.lazy.KStar(), 5);
+				offlineModel = new ExtendedOfflineBagging(new weka.classifiers.lazy.IBk(), 5);
 			} else if (selected == LearningType.BOOSTING) {
-				offlineModel = new ExtendedOfflineBoost(new weka.classifiers.lazy.KStar(), 5);				
+				offlineModel = new ExtendedOfflineBoost(new weka.classifiers.lazy.IBk(), 5);				
 			} else if (selected == LearningType.SVM) {
 				// offlineModel = new ExtendedSGD();
 				offlineModel = new weka.classifiers.functions.SMOreg();
