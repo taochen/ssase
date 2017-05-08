@@ -31,19 +31,19 @@ public class ModelingSimulator {
 	private Map<String, Double> nextMap = new HashMap<String, Double>();
 
 	public static int QoSIndex = 1;
-	private String[] qosStrings = new String[] {
+	private static String[] qosStrings = new String[] {
 		"Response Time",
 		"Energy"
 	};
 	
-	private  String prefix = "/Users/tao/research/projects/ssase-core/ssase/experiments-data/on-off/";
+	private static String prefix = "/Users/tao/research/projects/ssase-core/ssase/experiments-data/on-off/amazon-ec2/dataset";
 	
 	public static void main(String[] a) {
-		
+		automaticTest();
 	}
 	
 
-	public void automaticTest(CallBack call){
+	public static void automaticTest(){
 		
 		File f1 = new File(prefix);
 		// read-write-2
@@ -57,10 +57,14 @@ public class ModelingSimulator {
 				
 				for (int i = 0; i < 10; i++) {
 					
-					call.call();
+					//call.call();
 					String type = OnOffModel.selected.toString();//+"-KNN";
 				
 					ModelingSimulator s = new ModelingSimulator();
+					
+					if(f2.getName().equals(".DS_Store")) {
+						continue;
+					}
 					
 					String data = s.run(prefix+"/"+f2.getName()+"/");
 					String path = prefix+"/completed_results/"+f2.getName()+"/" + qosStrings[QoSIndex] + "/"
@@ -267,6 +271,8 @@ public class ModelingSimulator {
 	
 	private void readQoS(String f, List<QualityOfService> qoss, String start){
 		File file = new File(f);
+		System.out.print(f + "\n");
+		
 		for (File f1 : file.listFiles()) {
 			
 			
