@@ -412,6 +412,7 @@ public class Data {
 				//4.0464566409062
 				debt.get(n).put(i, original);
 				adapCost += (30/*mean training time*/ + AdaTimeMap.get(prefix+n).get(k)/1000) * adaptCost;
+				System.out.print(n + " adapting at: " + i+"\n");
 				k++;
 			}
 			System.out.print(n + " adaptation cost: " + adapCost+"\n");
@@ -419,39 +420,177 @@ public class Data {
        System.out.print("Debt\n\n");
        List<Double> allDebt = new ArrayList<Double>();
        Map<String, List<Double>> tempMap = new HashMap<String, List<Double>>();
+       
+       Map<String, Double> bestDebt = new HashMap<String,Double>();
+       Map<String,String> bestDebtIndex = new HashMap<String,String>();
+       
+       Map<String,List<Boolean>> classification = new HashMap<String,List<Boolean>>();
+       
 	   for (String app : debt.keySet()) {
 	    	System.out.print(app + "\n");
 	    	tempMap.put(app, new ArrayList<Double>());
 	    	double total = 0.0;
+	    	double f_total = 0.0;
+	    	int i = 0;
+	    	double preS = Double.MAX_VALUE;
+	    	classification.put(app, new ArrayList<Boolean>());
 	    	for(Map.Entry<Integer, Double> e : debt.get(app).entrySet()) {
 	    		tempMap.get(app).add(e.getValue());
 	    		allDebt.add(e.getValue());
-	    		total += e.getValue();
-	    		System.out.print("(" +e.getKey() + "," + total + ")\n");
+	    		total = e.getValue();
+	    		f_total += e.getValue(); 
+	    		List<Double> l = AdaMap.get(prefix+app);
+	    		boolean b = l.contains(e.getKey().doubleValue() + 122.0);
+	    		
+	    		boolean net = b? total < preS : 0 < total;
+	    		//System.out.print(e.getKey()+ " " +b + ",\n");
+	    		classification.get(app).add(b);
+	    		//System.out.print(e.getKey()+ " " +b + ",\n");
+	    		System.out.print(e.getKey()+" " +total + " : " + b + ",\n");
 	    		//System.out.print("(" + e.getKey() + "," + (Math.log10(e.getValue()+250)) + ")\n");
+	    		if(!bestDebt.containsKey(String.valueOf(e.getKey())) || total < bestDebt.get(String.valueOf(e.getKey())) ) {
+	    			bestDebt.put(String.valueOf(e.getKey()), total);
+	    			bestDebtIndex.put(String.valueOf(e.getKey()), app + ":" + String.valueOf(e.getKey()));
+	    		}
+	    		i++;
+	    		double c = 0;
+	    	
+	    		preS = b? total - ((30/*mean training time*/ + l.get(l.indexOf(e.getKey().doubleValue() + 122.0))/1000) * adaptCost) : total;
 	    	}
+	    	System.out.print("total " + f_total + "\n");
+	   }
+	   
+	   double best_debt = 0.0;
+	   for (String i : bestDebt.keySet()) {
+		   best_debt += bestDebt.get(i);
+	   }
+	   
+	   System.out.print("total best" + best_debt + "\n");
+	   System.out.print("Merged data\n");
+	   List<Double> mergedRT = new ArrayList<Double>();
+	   List<Double> mergedEC = new ArrayList<Double>();
+	   List<Boolean> mergedIsAdapt = new ArrayList<Boolean>();
+	   for(int i = 0; i < 102; i++) {
+		   String s = String.valueOf(i);
+		   List<Double> l = AdaMap.get(prefix+bestDebtIndex.get(s).split(":")[0]);
+		   
+		   boolean b = l.contains(Double.parseDouble(bestDebtIndex.get(s).split(":")[1]) + 122.0);
+		   mergedIsAdapt.add(b);
+		   mergedRT.add(surface.get(bestDebtIndex.get(s).split(":")[0] + "Response Time.rtf").get(Integer.parseInt(bestDebtIndex.get(s).split(":")[1])));
+		   mergedEC.add(surface.get(bestDebtIndex.get(s).split(":")[0] + "Energy.rtf").get(Integer.parseInt(bestDebtIndex.get(s).split(":")[1])));
+		   System.out.print(bestDebtIndex.get(s) + " = " + bestDebt.get(s) + " = " + b + "\n");
+	   }
+	   
+	   System.out.print("Merged RT\n");
+	   double mt = 0.0;
+	   for(int i = 0; i < mergedRT.size(); i++) {
+		   System.out.print(mergedRT.get(i) + "\n");
+		   mt += mergedRT.get(i);
 	   }
 	    
-	   System.out.print("Debt CDF\n\n");
-	   Collections.sort(allDebt);
-	   System.out.print(allDebt.size()+"\n");
-	    
-	    for (String app : debt.keySet()) {
-	    	System.out.print(app + "\n");
-	    	
-	    	Collections.sort(tempMap.get(app));
-	    	for (int i = 0; i <  allDebt.size(); i++) {
-	    		double total = 0.0;
-	    		for(Double d  : tempMap.get(app)) {
-	    			total += (d <= allDebt.get(i))? (1.0/tempMap.get(app).size()) : 0;
-		    		
-		    		//System.out.print("(" + e.getKey() + "," + (Math.log10(e.getValue()+250)) + ")\n");
-		    	}
-	    		System.out.print("(" +allDebt.get(i) + "," + total + ")\n");
-	    	}
-	    	
-	    	
-	    }
+	   System.out.print("total RT " + (mt/mergedRT.size()) + "\n");
+	   mt = 0.0;
+	   System.out.print("Merged EC\n");
+	   for(int i = 0; i < mergedEC.size(); i++) {
+		   System.out.print(mergedEC.get(i) + "\n");
+		   mt += mergedEC.get(i);
+	   }
+	   
+	   System.out.print("total EC " + (mt/mergedRT.size()) + "\n");
+	  
+		   
+	 for (String app : debt.keySet()) {
+		 System.out.print(app+"\n");
+		 double total = 0.0;
+		   for(int i = 0; i < mergedIsAdapt.size(); i++) {
+			   List<Double> l = AdaMap.get(prefix+app);
+	    	   boolean b = l.contains((double)i + 122.0);
+	    	   
+	    	   // under adapt
+			   if(!mergedIsAdapt.get(i) && b) {
+				  // System.out.print( (surface.get(app + "Response Time.rtf").get(i) - mergedRT.get(i))  + "\n");
+				  // System.out.print( surface.get(app + "Response Time.rtf").get(i)  + "\n");
+				   System.out.print(i + " : " + ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i))) + "\n");
+				   total += ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i))); 
+			   }
+			   
+			   // over adapt
+//			   if(!mergedIsAdapt.get(i) && b) {
+//				   System.out.print( surface.get(app + "Response Time.rtf").get(i) + "\n");
+//			   }
+		   }
+			 System.out.print("total "  + total + "\n");
+		   
+	   }
+	   
+	 
+	 System.out.print("Classification accuracy RT\n");
+	   
+	 for (String app : debt.keySet()) {
+		 System.out.print(app+"\n");
+		 double tp = 0.0;
+		 double tn = 0.0;
+		 double fp = 0.0;
+		 double fn = 0.0;
+		 for(int i = 0; i < mergedIsAdapt.size(); i++) {
+			 
+			 if(i >= classification.get(app).size()) {
+				 continue;
+			 }
+			 
+			 boolean classify = classification.get(app).get(i);
+			 boolean turth = mergedIsAdapt.get(i);
+			 
+			 if (classify == turth && turth && classify) {
+				 tp++;
+			 }
+			 
+			 if (classify == turth && !turth && !classify) {
+				 tn++;
+			 }
+			 
+			 
+			 if (!classify && turth) {
+				 fp++;
+			 }
+			 
+			 if (classify && !turth) {
+				 fn++;
+			 }
+			 
+		 }
+		 double precision = tp / (tp + fp);
+		 double recall = tp / (tp + fn);
+		 double ac = (tp+tn) / (tp + tn +fp + fn);
+		 double f_measure = 2*(precision*recall)/(precision+recall);
+		 System.out.print("precision: " + precision + "\n");
+		 System.out.print("recall: " + recall + "\n");
+		 System.out.print("ac: " + ac + "\n");
+		 System.out.print("f_measure: " + f_measure + "\n");
+		 
+	 }
+	
+	 
+//	   System.out.print("Debt CDF\n\n");
+//	   Collections.sort(allDebt);
+//	   System.out.print(allDebt.size()+"\n");
+//	    
+//	    for (String app : debt.keySet()) {
+//	    	System.out.print(app + "\n");
+//	    	
+//	    	Collections.sort(tempMap.get(app));
+//	    	for (int i = 0; i <  allDebt.size(); i++) {
+//	    		double total = 0.0;
+//	    		for(Double d  : tempMap.get(app)) {
+//	    			total += (d <= allDebt.get(i))? (1.0/tempMap.get(app).size()) : 0;
+//		    		
+//		    		//System.out.print("(" + e.getKey() + "," + (Math.log10(e.getValue()+250)) + ")\n");
+//		    	}
+//	    		System.out.print("(" +allDebt.get(i) + "," + total + ")\n");
+//	    	}
+//	    	
+//	    	
+//	    }
 	    
 	    
 	    String sur = "read/fifa-read-12-w-r/femosaa-ibea/sas/rubis_software/";
@@ -912,7 +1051,7 @@ public class Data {
 		}
 		
 		for (int i = 0; i < newValues.length; i++) {
-			System.out.print(newValues[i] + "\n");
+			System.out.print(values[i] + "\n");
 			//System.out.print("("+i+","+newValues[i] + ")\n");
 			d = d + newValues[i] + ",";
 			n = n + (i + 1) + ",";
@@ -945,7 +1084,7 @@ public class Data {
 		List<Double> list = new ArrayList<Double>();
 		
 		Vmap.put(approach+obj, new ArrayList<Double>());
-		
+		double mean_total = 0.0;
 		while((line = reader.readLine()) != null) {
 			if(Double.parseDouble(line) != 0 && i < startIndex) {
 				i++;
@@ -957,10 +1096,12 @@ public class Data {
 					list.add(Double.parseDouble(line)*1000);		
 					bd = bd.multiply(new BigDecimal(Double.parseDouble(line))).multiply(new BigDecimal(1000));
 					Vmap.get(approach+obj).add(Double.parseDouble(line));
+					mean_total += Double.parseDouble(line)*1000; 
 				} else {
 					list.add(Double.parseDouble(line)*1);		
 					bd = bd.multiply(new BigDecimal(Double.parseDouble(line))).multiply(new BigDecimal(1));
 					Vmap.get(approach+obj).add(Double.parseDouble(line));
+					mean_total += Double.parseDouble(line); 
 				}
 				
 				double d = (obj.equals("Response Time.rtf")? price[0] : price[1]) * (Double.parseDouble(line) - (obj.equals("Response Time.rtf")? requirements[0] : requirements[1]));
@@ -1020,16 +1161,26 @@ public class Data {
 		}
 		
 	
+		
+		
+		double mean_no = no;
+		
+		double mean = mean_total/mean_no;
+		double std = 0.0;
+			for (double l : list) {
+				std += Math.pow(l - mean, 2);
+			}
+			std = Math.pow(std, 0.5);
 			double gsd = readGSD(list.toArray(new Double[list.size()]),Math.pow(bd.doubleValue(), 1.0/no));
 			System.out.print("New Gmean: " + approach +", "+obj+"="+Math.pow(bd.doubleValue(), 1.0/no)+ ", G-SD="+gsd+"\n");
-		
+			System.out.print("Mean: " + approach +", "+obj+"="+(mean_total/mean_no)+ ", STD=" + std+ "\n");
 		
 		//System.out.print("GSD: " + approach +", "+obj+"="+gsd+"\n");
 		//System.out.print("CI: " + approach +", "+obj+"=["+(Math.pow(total, 1.0/no)-1.96*gsd/Math.sqrt(list.size())) + 
 			//	", " + (Math.pow(total, 1.0/no)+1.96*gsd/Math.sqrt(list.size())) +"]\n");
 		//System.out.print("GVAR: " + approach +", "+obj+"="+(gsd*gsd)+"\n");
 		
-		if(obj.equals("Energy.rtf")) 
+		if(obj.equals("Response Time.rtf")) 
 		log(list.toArray(new Double[list.size()]));
 		htotal = no / htotal;
 		
