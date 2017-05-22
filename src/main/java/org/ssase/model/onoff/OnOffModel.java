@@ -26,6 +26,7 @@ import org.ssase.model.selection.PrimitiveLearner;
 import org.ssase.objective.QualityOfService;
 import org.ssase.observation.event.ModelChangeEvent;
 import org.ssase.observation.listener.ModelListener;
+import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.util.Util;
 
@@ -81,6 +82,8 @@ public class OnOffModel implements Model {
 	 * @throws Exception
 	 */
 
+	public static String ensemble = "weka.classifiers.lazy.KStar";
+	public static Class ensembleClass = weka.classifiers.lazy.KStar.class;
 	public static LearningType selected = LearningType.KNN;
 
 	private moa.classifiers.AbstractClassifier onlineModel = null;
@@ -163,6 +166,7 @@ public class OnOffModel implements Model {
 			}
 
 		}
+		//System.out.print("Number of possible inputs: " + possibleInputs.size() + "\n");
 		System.out.print("Number of inputs: " + inputs.size() + "\n");
 
 		// for (Primitive p : inputs) {
@@ -277,7 +281,7 @@ public class OnOffModel implements Model {
 
 		try {
 
-			long t = System.currentTimeMillis();
+			long t = System.nanoTime();// System.currentTimeMillis();
 
 			System.out.print(dataRaw.size() + "before size**************\n");
 			if (dataRaw.size() == 0) {
@@ -287,12 +291,12 @@ public class OnOffModel implements Model {
 					changeRestart++;
 					System.out
 							.print("**************isMaxChange!!**************\n");
-					for (int i = 0; i < output.getArray().length; i++) {
+					for (int i = 0; i < output.getArray().length - 1; i++) {
 						run(convertIntoWekaInstance(i));
 					}
 				} else {
 					changeRestart++;
-					for (int i = 0; i < output.getArray().length - 1; i++) {
+					for (int i = 0; i < output.getArray().length - 2; i++) {
 						convertIntoWekaInstance(i);
 					}
 					run(convertIntoWekaInstance());
@@ -302,7 +306,7 @@ public class OnOffModel implements Model {
 				run(convertIntoWekaInstance());
 			}
 			System.out.print(dataRaw.size() + "after size**************\n");
-			t = System.currentTimeMillis() - t;
+			t = System.nanoTime() - t;
 
 			averageTime += t;
 
@@ -313,7 +317,7 @@ public class OnOffModel implements Model {
 			if (t != 0 && t > allWorstTime) {
 				allWorstTime = t;
 			}
-
+			org.ssase.dataset.ModelingSimulator.time += t + "\n";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -359,19 +363,29 @@ public class OnOffModel implements Model {
 		final Instance trainInst = new DenseInstance(inputs.size() + 1);
 
 		for (int i = 0; i < inputs.size(); i++) {
+			if(inputs.get(i) instanceof EnvironmentalPrimitive) {
+				trainInst
+				.setValue(
+						attrs.get(i),
+						Model.isNormalizeModelingData ? inputs.get(i)
+								.getArray()[k] / 100 : Util.sigmoid(inputs
+								.get(i).getArray()[k]
+								* inputs.get(i).getMax() / 100));
+			} else {
 			trainInst
 					.setValue(
 							attrs.get(i),
 							Model.isNormalizeModelingData ? inputs.get(i)
-									.getArray()[k] / 100 : Util.sigmoid(inputs
-									.get(i).getArray()[k]
+									.getArray()[k+1] / 100 : Util.sigmoid(inputs
+									.get(i).getArray()[k+1]
 									* inputs.get(i).getMax() / 100));
+			}
 		}
 
 		trainInst.setValue(
 				attrs.get(attrs.size() - 1),
 				Model.isNormalizeModelingData ? output.getArray()[k] / 100
-						: Util.sigmoid(output.getArray()[k] * output.getMax()
+						: Util.sigmoid(output.getArray()[k+1] * output.getMax()
 								/ 100));
 
 		dataRaw.add(trainInst);
@@ -384,7 +398,7 @@ public class OnOffModel implements Model {
 	private void run(Instance trainInst/* use only one instance per time step */)
 			throws Exception {
 		
-		double t = 0;
+		long t = 0;
 		if (isOnline) {
 
 			if (selected == LearningType.MLP) {
@@ -444,7 +458,7 @@ public class OnOffModel implements Model {
 					moa.classifiers.Classifier[] clazz = new moa.classifiers.Classifier[5];
 					
 					for(int i = 0; i < clazz.length;i++) {
-						clazz[i] = initializeWEKAClassifier("weka.classifiers.lazy.LWL");
+						clazz[i] = initializeWEKAClassifier(ensemble);
 					}
 					
 					onlineModel = initializeOnlineEnsemble(
@@ -471,7 +485,7 @@ public class OnOffModel implements Model {
 					moa.classifiers.Classifier[] clazz = new moa.classifiers.Classifier[5];
 					
 					for(int i = 0; i < clazz.length;i++) {
-						clazz[i] = initializeWEKAClassifier("weka.classifiers.lazy.LWL");
+						clazz[i] = initializeWEKAClassifier(ensemble);
 					}
 					
 					onlineModel = initializeOnlineEnsemble(
@@ -514,9 +528,9 @@ public class OnOffModel implements Model {
 			} else if (selected == LearningType.KS) {
 				offlineModel = new weka.classifiers.lazy.KStar();
 			} else if (selected == LearningType.BAGGING) {
-				offlineModel = new ExtendedOfflineBagging(new weka.classifiers.lazy.LWL(), 5);
+				offlineModel = new ExtendedOfflineBagging((weka.classifiers.AbstractClassifier)ensembleClass.newInstance(), 5);
 			} else if (selected == LearningType.BOOSTING) {
-				offlineModel = new ExtendedOfflineBoost(new weka.classifiers.lazy.LWL(), 5);				
+				offlineModel = new ExtendedOfflineBoost((weka.classifiers.AbstractClassifier)ensembleClass.newInstance(), 5);				
 			} else if (selected == LearningType.SVM) {
 				// offlineModel = new ExtendedSGD();
 				offlineModel = new weka.classifiers.functions.SMOreg();
@@ -537,7 +551,8 @@ public class OnOffModel implements Model {
 		if (t != 0 && t > worstTime) {
 			worstTime = t;
 		}
-
+		if(t != 0)
+		org.ssase.dataset.ModelingSimulator.nona_time += t + "\n";
 	}
 
 	public moa.classifiers.AbstractClassifier initializeOnlineEnsemble(

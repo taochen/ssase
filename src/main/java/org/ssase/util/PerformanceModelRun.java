@@ -9,7 +9,7 @@ import org.ssase.model.onoff.OnOffModel;
 public class PerformanceModelRun {
 
 	private static final int runs = 10;
-	public static int QoSIndex = 1;
+	public static int QoSIndex = 0;
 	private String[] qosStrings = new String[] {
 		"Response Time",
 		"Energy"
@@ -33,7 +33,7 @@ public class PerformanceModelRun {
 				for (int i = 0; i < runs; i++) {
 					
 					call.call();
-					String type = OnOffModel.selected.toString()+"-LR";
+					String type = OnOffModel.selected.toString()+"-KS";
 					StepByStepHistoryLoader loader = new StepByStepHistoryLoader();
 					
 					String data = loader.run(prefix+"/"+f2.getName()+"/"+f3.getName()+"/", 121, 

@@ -189,12 +189,12 @@ public class WSDreamPreProcessor {
 				
 				value = no == 0.0? 0 : value / no;
 				 //System.out.print(value + "\n");
-				if("rtdata".equals(path)) {
+				if("rtdata".equals(path)) { // assuming a total of 10 sequentially connected service, reliability
 					double tempFinal = 1 -  (Math.pow(1 - value, service_values[j][i]));
 					if(tempFinal != 0 && tempFinal < finalValue) {
 						finalValue = tempFinal;
 					}
-				} else if("tpdata".equals(path)) {
+				} else if("tpdata".equals(path)) {// assuming a total of 10 sequentially connected service, throughput
 					double tempFinal = value * service_values[j][i];
 					if(tempFinal != 0 && tempFinal < finalValue) {
 						finalValue = tempFinal;

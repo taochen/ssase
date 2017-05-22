@@ -25,6 +25,7 @@ import org.ssase.Service;
 import org.ssase.actuator.MaxThreadActuator;
 import org.ssase.actuator.linux.CPUCapActuator;
 import org.ssase.actuator.linux.MemoryActuator;
+import org.ssase.dataset.ModelingSimulator;
 import org.ssase.executor.Executor;
 import org.ssase.executor.VM;
 import org.ssase.network.Receiver; 
@@ -65,7 +66,7 @@ public class Ssascaling {
 			activateSensors("192.168.0.102");
 			activateSensors("192.168.0.103");
 		} else if ("3".equals(arg[0])) {
-			StepByStepHistoryLoader.QoSIndex = 1;
+			StepByStepHistoryLoader.QoSIndex = 0;
 			new PerformanceModelRun().automaticTest(new PerformanceModelRun.CallBack() {
 				
 				@Override
@@ -74,6 +75,9 @@ public class Ssascaling {
 					activate();
 				}
 			});
+			
+		} else if ("4".equals(arg[0])) {
+			ModelingSimulator.main(null);
 			
 		} else {
 			testExecution();
