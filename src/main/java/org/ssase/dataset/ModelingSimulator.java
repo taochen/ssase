@@ -30,13 +30,13 @@ public class ModelingSimulator {
 	private List<Double> mediam = new ArrayList<Double>();
 	private Map<String, Double> nextMap = new HashMap<String, Double>();
 
-	private static String[] model_types = new String[]{
+	public static String[] model_types = new String[]{
+		"offsvm",
 		"onlr",
 		"offlr",
 		"onks",
 		"offks",
 		"onsvm",
-		"offsvm",
 		"onknn",
 		"offknn",
 		"onmlp",
@@ -57,7 +57,7 @@ public class ModelingSimulator {
 		
 	};
 	
-	private static String[] sub_model_types = new String[]{
+	public static String[] sub_model_types = new String[]{
 		"",
 		"",
 		"",
@@ -84,9 +84,65 @@ public class ModelingSimulator {
 		
 	};
 	
+	public static String[] esem_types = new String[]{
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"weka.classifiers.lazy.LWL",
+		"weka.classifiers.lazy.LWL",
+		"weka.classifiers.lazy.LWL",
+		"weka.classifiers.lazy.LWL",
+		"weka.classifiers.lazy.IBk",
+		"weka.classifiers.lazy.IBk",
+		"weka.classifiers.lazy.IBk",
+		"weka.classifiers.lazy.IBk",
+		"weka.classifiers.lazy.KStar",
+		"weka.classifiers.lazy.KStar",
+		"weka.classifiers.lazy.KStar",
+		"weka.classifiers.lazy.KStar"
+		
+		
+	};
+	
+	public static Class[] esem_classes = new Class[]{
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		weka.classifiers.lazy.LWL.class,
+		weka.classifiers.lazy.LWL.class,
+		weka.classifiers.lazy.LWL.class,
+		weka.classifiers.lazy.LWL.class,
+		weka.classifiers.lazy.IBk.class,
+		weka.classifiers.lazy.IBk.class,
+		weka.classifiers.lazy.IBk.class,
+		weka.classifiers.lazy.IBk.class,
+		weka.classifiers.lazy.KStar.class,
+		weka.classifiers.lazy.KStar.class,
+		weka.classifiers.lazy.KStar.class,
+		weka.classifiers.lazy.KStar.class
+		
+		
+	};
+	
 	private static String modelType= "onlr";
 	private static String subModelType= "";
-	public static int QoSIndex = 2;
+	private static String esem_type= "";
+	private static Class esem_class= null;
+	public static int QoSIndex = 4;
 	private static String[] qosStrings = new String[] {
 		"Response Time",
 		"Energy",
@@ -97,27 +153,27 @@ public class ModelingSimulator {
 	
 	
 	private String[] qosName = new String[]{
-			"Execution"
+			//"Execution"
 			//"rtdata.rtf",
-			//"tpdata.rtf"
+			"tpdata.rtf"
 	};
 	
 	
 	private String[] cpName = new String[]{
-			"CPU",
-			"Memory"
-			//"Control"
+			//"CPU",
+			//"Memory"
+			"Control"
 	};
 	
 	
 	private String[] epName = new String[]{
-			"Time-parsed"
-			//"Workload"
+			//"Time-parsed"
+			"Workload"
 	};
 	
 	public static String time = "";
 	public static String nona_time = "";
-	private static String prefix = "/home/tao/on-off/amazon-ec2/dataset";
+	private static String prefix = "/home/tao/on-off/wsdream/processed/dataset2";
 	// "/home/tao/on-off/amazon-ec2/dataset";
 	//"/Users/tao/research/projects/ssase-core/ssase/experiments-data/on-off/amazon-ec2/dataset";
 	// "/Users/tao/research/projects/ssase-core/ssase/experiments-data/on-off/wsdream/processed/dataset1"
@@ -126,6 +182,9 @@ public class ModelingSimulator {
 		for (int i = 0; i < model_types.length; i++) {
 			modelType = model_types[i];
 			subModelType = sub_model_types[i];
+			esem_type = esem_types[i];
+			esem_class = esem_classes[i];
+			
 			automaticTest();
 		}
 		
@@ -145,14 +204,17 @@ public class ModelingSimulator {
 			}
 			// increase
 
-				
+			System.gc();
 				for (int i = 0; i < 10; i++) {
+					org.ssase.util.PerformanceModelRun.time="";
+					org.ssase.util.PerformanceModelRun.nona_time="";
 					time = "";
 					nona_time = "";
 					Repository.clear();
 					//call.call();
-					String type = OnOffModel.selected.toString() + subModelType;//+"-KNN";
-				
+					String type = OnOffModel.selected.toString() + (subModelType.equals("")? "" : "-" + subModelType);//+"-KNN";
+					OnOffModel.ensemble = esem_type;
+					OnOffModel.ensembleClass = esem_class;
 					ModelingSimulator s = new ModelingSimulator();
 					
 					if(f2.getName().equals(".DS_Store")) {

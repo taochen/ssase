@@ -89,7 +89,7 @@ public class Receiver {
 			port = Integer.parseInt(configProp.getProperty("port"));
 			Timer.setThreshold(Integer.parseInt(configProp.getProperty("violation_threshold")));
 			Region.setSelectedOptimizationType(configProp.getProperty("optimization_type"));
-			QualityOfService.setSelectedModelingType(configProp.getProperty("modeling_type"));
+			//QualityOfService.setSelectedModelingType(configProp.getProperty("modeling_type"));
 			//Monitor.setSampleInterval(Integer.parseInt(configProp.getProperty("sampling_interval")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

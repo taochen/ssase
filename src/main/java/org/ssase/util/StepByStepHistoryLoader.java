@@ -127,7 +127,7 @@ public class StepByStepHistoryLoader {
 		this.cap = cap;
 		//this.prefix = prefix;
 		//Ssascaling.main(new String[]{"0"});
-		QualityOfService.leastNumberOfSample = 2;
+		QualityOfService.leastNumberOfSample = 5;
 		init();
 		
 		String testQoS = "sas-rubis_software-"+qosStrings[QoSIndex];

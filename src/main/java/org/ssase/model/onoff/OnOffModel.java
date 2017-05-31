@@ -168,7 +168,9 @@ public class OnOffModel implements Model {
 		}
 		//System.out.print("Number of possible inputs: " + possibleInputs.size() + "\n");
 		System.out.print("Number of inputs: " + inputs.size() + "\n");
-
+		if(onlineModel != null || offlineModel != null) {
+		  System.out.print("Learner: " + (onlineModel == null? offlineModel.getClass() : onlineModel.getClass()) + "\n");
+		}
 		// for (Primitive p : inputs) {
 		// System.out.print(p.getName() + "\n");
 		// }
@@ -318,6 +320,7 @@ public class OnOffModel implements Model {
 				allWorstTime = t;
 			}
 			org.ssase.dataset.ModelingSimulator.time += t + "\n";
+			org.ssase.util.PerformanceModelRun.time += t + "\n";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -384,7 +387,7 @@ public class OnOffModel implements Model {
 
 		trainInst.setValue(
 				attrs.get(attrs.size() - 1),
-				Model.isNormalizeModelingData ? output.getArray()[k] / 100
+				Model.isNormalizeModelingData ? output.getArray()[k+1] / 100
 						: Util.sigmoid(output.getArray()[k+1] * output.getMax()
 								/ 100));
 
@@ -551,8 +554,10 @@ public class OnOffModel implements Model {
 		if (t != 0 && t > worstTime) {
 			worstTime = t;
 		}
-		if(t != 0)
+		if(t != 0) {
 		org.ssase.dataset.ModelingSimulator.nona_time += t + "\n";
+		org.ssase.util.PerformanceModelRun.nona_time += t + "\n";
+		}
 	}
 
 	public moa.classifiers.AbstractClassifier initializeOnlineEnsemble(
