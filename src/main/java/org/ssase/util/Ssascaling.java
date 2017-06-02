@@ -66,7 +66,7 @@ public class Ssascaling {
 			activateSensors("192.168.0.102");
 			activateSensors("192.168.0.103");
 		} else if ("3".equals(arg[0])) {
-			StepByStepHistoryLoader.QoSIndex = 0;
+			StepByStepHistoryLoader.QoSIndex = 1;
 			new PerformanceModelRun().automaticTest(new PerformanceModelRun.CallBack() {
 				
 				@Override

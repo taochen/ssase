@@ -10,7 +10,7 @@ import org.ssase.objective.QualityOfService;
 public class PerformanceModelRun {
 
 	private static final int runs = 10;
-	public static int QoSIndex = 0;
+	public static int QoSIndex = 1;
 	private String[] qosStrings = new String[] {
 		"Response Time",
 		"Energy"
