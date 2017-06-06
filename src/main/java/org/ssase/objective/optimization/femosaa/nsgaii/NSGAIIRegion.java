@@ -63,8 +63,8 @@ public class NSGAIIRegion extends Region {
 				e.printStackTrace();
 			}
 
-			org.femosaa.seed.Seeder.clearSeed();
-			org.femosaa.seed.Seeder.addSeed(solution);
+			//org.femosaa.seed.Seeder.addSeed(solution);
+			org.femosaa.seed.Seeder.priorSolution(solution);
 			
 			result = FEMOSAASolutionAdaptor.getInstance().convertSolution(solution/*Use the first one, as the list should all be knee points*/
 					,objectives.get(0));
