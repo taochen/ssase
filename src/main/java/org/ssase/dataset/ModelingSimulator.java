@@ -22,6 +22,19 @@ import org.ssase.util.Repository;
 import org.ssase.util.StepByStepHistoryLoader;
 import org.ssase.util.PerformanceModelRun.CallBack;
 
+/**
+ * 
+ * Best time for training: 0.0010 ms 
+Worst time for training: 0.801 ms 
+allBestTime 12000ms
+allWorstTime 43890000ms
+AverageTime 615909ms
+
+ * 
+ * @author tao
+ *
+ */
+
 public class ModelingSimulator {
 	
 	private List<String> resultsList = new ArrayList<String>();
@@ -31,16 +44,12 @@ public class ModelingSimulator {
 	private Map<String, Double> nextMap = new HashMap<String, Double>();
 
 	public static String[] model_types = new String[]{
-		"offsvm",
+		
 		"onlr",
 		"offlr",
-		"onks",
-		"offks",
+		"ontree",
+		"offtree",
 		"onsvm",
-		"onknn",
-		"offknn",
-		"onmlp",
-		"offmlp",
 		"onbag",
 		"offbag",
 		"onboost",
@@ -49,10 +58,6 @@ public class ModelingSimulator {
 		"offbag",
 		"onboost",
 		"offboost",
-		"onbag",
-		"offbag",
-		"onboost",
-		"offboost"
 		
 		
 	};
@@ -63,23 +68,14 @@ public class ModelingSimulator {
 		"",
 		"",
 		"",
-		"",
-		"",
-		"",
-		"",
-		"",
 		"LR",
 		"LR",
 		"LR",
 		"LR",
-		"KNN",
-		"KNN",
-		"KNN",
-		"KNN",
-		"KS",
-		"KS",
-		"KS",
-		"KS"
+		"TREE",
+		"TREE",
+		"TREE",
+		"TREE"
 		
 		
 	};
@@ -90,23 +86,14 @@ public class ModelingSimulator {
 		"",
 		"",
 		"",
-		"",
-		"",
-		"",
-		"",
-		"",
-		"weka.classifiers.lazy.LWL",
-		"weka.classifiers.lazy.LWL",
-		"weka.classifiers.lazy.LWL",
-		"weka.classifiers.lazy.LWL",
-		"weka.classifiers.lazy.IBk",
-		"weka.classifiers.lazy.IBk",
-		"weka.classifiers.lazy.IBk",
-		"weka.classifiers.lazy.IBk",
-		"weka.classifiers.lazy.KStar",
-		"weka.classifiers.lazy.KStar",
-		"weka.classifiers.lazy.KStar",
-		"weka.classifiers.lazy.KStar"
+		"moa.classifiers.functions.SGD",
+		"weka.classifiers.functions.LinearRegression",
+		"moa.classifiers.functions.SGD",
+		"weka.classifiers.functions.LinearRegression",
+		"org.ssase.model.onoff.FIMTDD",
+		"weka.classifiers.trees.M5P",
+		"org.ssase.model.onoff.FIMTDD",
+		"weka.classifiers.trees.M5P"
 		
 		
 	};
@@ -117,23 +104,14 @@ public class ModelingSimulator {
 		null,
 		null,
 		null,
-		null,
-		null,
-		null,
-		null,
-		null,
-		weka.classifiers.lazy.LWL.class,
-		weka.classifiers.lazy.LWL.class,
-		weka.classifiers.lazy.LWL.class,
-		weka.classifiers.lazy.LWL.class,
-		weka.classifiers.lazy.IBk.class,
-		weka.classifiers.lazy.IBk.class,
-		weka.classifiers.lazy.IBk.class,
-		weka.classifiers.lazy.IBk.class,
-		weka.classifiers.lazy.KStar.class,
-		weka.classifiers.lazy.KStar.class,
-		weka.classifiers.lazy.KStar.class,
-		weka.classifiers.lazy.KStar.class
+		moa.classifiers.functions.SGD.class,
+		weka.classifiers.functions.LinearRegression.class,
+		moa.classifiers.functions.SGD.class,
+		weka.classifiers.functions.LinearRegression.class,
+		org.ssase.model.onoff.FIMTDD.class,
+		weka.classifiers.trees.M5P.class,
+		org.ssase.model.onoff.FIMTDD.class,
+		weka.classifiers.trees.M5P.class
 		
 		
 	};
@@ -142,7 +120,7 @@ public class ModelingSimulator {
 	private static String subModelType= "";
 	private static String esem_type= "";
 	private static Class esem_class= null;
-	public static int QoSIndex = 4;
+	public static int QoSIndex = 2;
 	private static String[] qosStrings = new String[] {
 		"Response Time",
 		"Energy",
@@ -153,42 +131,46 @@ public class ModelingSimulator {
 	
 	
 	private String[] qosName = new String[]{
-			//"Execution"
+			"Execution"
 			//"rtdata.rtf",
-			"tpdata.rtf"
+			//"tpdata.rtf"
 	};
 	
 	
 	private String[] cpName = new String[]{
-			//"CPU",
-			//"Memory"
-			"Control"
+			"CPU",
+			"Memory"
+			//"Control"
 	};
 	
 	
 	private String[] epName = new String[]{
-			//"Time-parsed"
-			"Workload"
+			"Time-parsed"
+			//"Workload"
 	};
 	
 	public static String time = "";
 	public static String nona_time = "";
-	private static String prefix = "/home/tao/on-off/wsdream/processed/dataset2";
+	private static String prefix = "/Users/tao/research/experiments-data/on-off/amazon-ec2/dataset";
 	// "/home/tao/on-off/amazon-ec2/dataset";
 	//"/Users/tao/research/projects/ssase-core/ssase/experiments-data/on-off/amazon-ec2/dataset";
 	// "/Users/tao/research/projects/ssase-core/ssase/experiments-data/on-off/wsdream/processed/dataset1"
 	public static void main(String[] a) {
 		
-		for (int i = 0; i < model_types.length; i++) {
-			modelType = model_types[i];
-			subModelType = sub_model_types[i];
-			esem_type = esem_types[i];
-			esem_class = esem_classes[i];
-			
-			automaticTest();
-		}
-		
-		
+//		for (int i = 0; i < model_types.length; i++) {
+//			modelType = model_types[i];
+//			subModelType = sub_model_types[i];
+//		    OnOffModel.sub_model_types = sub_model_types[i];
+//			esem_type = esem_types[i];
+//			esem_class = esem_classes[i];
+//			
+//			automaticTest();
+//		}
+		modelType = "offbag";
+		OnOffModel.sub_model_types = "LR";
+		esem_type = "weka.classifiers.functions.LinearRegression.class";
+		esem_class = weka.classifiers.functions.LinearRegression.class;
+		automaticTest();
 	}
 	
 	
@@ -205,7 +187,7 @@ public class ModelingSimulator {
 			// increase
 
 			System.gc();
-				for (int i = 0; i < 10; i++) {
+				for (int i = 0; i < 1; i++) {
 					org.ssase.util.PerformanceModelRun.time="";
 					org.ssase.util.PerformanceModelRun.nona_time="";
 					time = "";
@@ -234,46 +216,69 @@ public class ModelingSimulator {
 					
 					File file = new File(prefix+"/completed_results/"+f2.getName()+"/"
 							+ qosStrings[QoSIndex] + "/" + (OnOffModel.isOnline? "on" : "off") + type + "/");
+//					if(!file.exists()) {
+//						file.mkdirs();
+//					}
+//					
+//					try {
+//						BufferedWriter bw = new BufferedWriter(new FileWriter(path, true));
+//
+//						
+//						//System.out.print(data.toString() + "\n");
+//						bw.write(data);
+//						bw.close();
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//					
+//					try {
+//						BufferedWriter bw = new BufferedWriter(new FileWriter(timePath, true));
+//
+//						
+//						//System.out.print(data.toString() + "\n");
+//						bw.write(time);
+//						bw.close();
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//					
+//					try {
+//						BufferedWriter bw = new BufferedWriter(new FileWriter(nanoTimePath, true));
+//
+//						
+//						//System.out.print(data.toString() + "\n");
+//						bw.write(nona_time);
+//						bw.close();
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+					
+					
+					file = new File(prefix+"/completed_results_new/"+f2.getName()+"/" + qosStrings[QoSIndex] + "/"
+							+ (OnOffModel.isOnline? "on" : "off") + type+ "");
+					
 					if(!file.exists()) {
-						file.mkdirs();
-					}
+					file.mkdirs();
+				}
 					
 					try {
-						BufferedWriter bw = new BufferedWriter(new FileWriter(path, true));
+					BufferedWriter bw = new BufferedWriter(new FileWriter(prefix+"/completed_results_new/"+f2.getName()+"/" + qosStrings[QoSIndex] + "/"
+							+ (OnOffModel.isOnline? "on" : "off") + type+ "/run"+i+"_time.rtf", true));
 
-						
-						//System.out.print(data.toString() + "\n");
-						bw.write(data);
-						bw.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 					
-					try {
-						BufferedWriter bw = new BufferedWriter(new FileWriter(timePath, true));
-
-						
-						//System.out.print(data.toString() + "\n");
-						bw.write(time);
-						bw.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					
-					try {
-						BufferedWriter bw = new BufferedWriter(new FileWriter(nanoTimePath, true));
-
-						
-						//System.out.print(data.toString() + "\n");
-						bw.write(nona_time);
-						bw.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					//System.out.print(data.toString() + "\n");
+					bw.write(time);
+					bw.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				}
 				
-				
 			
+				
+			if(!org.ssase.util.PerformanceModelRun.time.equals("")) {
+				break;
+			}
 			
 		}
 	}

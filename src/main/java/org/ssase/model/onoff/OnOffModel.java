@@ -30,6 +30,7 @@ import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.util.Util;
 
+import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.meta.AdditiveRegression;
 import weka.classifiers.meta.Bagging;
@@ -83,9 +84,10 @@ public class OnOffModel implements Model {
 	 */
 
 	public static String ensemble = "weka.classifiers.lazy.KStar";
-	public static Class ensembleClass = weka.classifiers.lazy.KStar.class;
+	public static Class ensembleClass = null;
 	public static LearningType selected = LearningType.KNN;
 
+	public static String sub_model_types = "";
 	private moa.classifiers.AbstractClassifier onlineModel = null;
 
 	private weka.classifiers.AbstractClassifier offlineModel = null;
@@ -169,7 +171,7 @@ public class OnOffModel implements Model {
 		//System.out.print("Number of possible inputs: " + possibleInputs.size() + "\n");
 		System.out.print("Number of inputs: " + inputs.size() + "\n");
 		if(onlineModel != null || offlineModel != null) {
-		  System.out.print("Learner: " + (onlineModel == null? offlineModel.getClass() : onlineModel.getClass()) + "\n");
+		  System.out.print("Learner: " + (onlineModel == null? offlineModel.getClass() : onlineModel.getClass()) + " ensembleClass " + ensembleClass + "\n");
 		}
 		// for (Primitive p : inputs) {
 		// System.out.print(p.getName() + "\n");
@@ -428,8 +430,15 @@ public class OnOffModel implements Model {
 
 			} else if (selected == LearningType.LR) {
 				if (onlineModel == null) {
-					onlineModel = initializeWEKAClassifier("weka.classifiers.lazy.LWL");
+					//onlineModel = initializeWEKAClassifier("weka.classifiers.lazy.LWL");
 					// onlineModel.prepareForUse();
+					moa.classifiers.functions.SGD sgd = new moa.classifiers.functions.SGD();
+					
+					onlineModel = sgd;
+					onlineModel.prepareForUse();
+					sgd.setLossFunction(2); //linear regression
+					sgd.setLambda(1);
+					sgd.setLearningRate(0.1);
 				}
 			} else if (selected == LearningType.KNN) {
 				if (onlineModel == null) {
@@ -461,13 +470,26 @@ public class OnOffModel implements Model {
 					moa.classifiers.Classifier[] clazz = new moa.classifiers.Classifier[5];
 					
 					for(int i = 0; i < clazz.length;i++) {
-						clazz[i] = initializeWEKAClassifier(ensemble);
+						clazz[i] = (moa.classifiers.Classifier)ensembleClass.newInstance(); //initializeWEKAClassifier(ensemble);
 					}
 					
 					onlineModel = initializeOnlineEnsemble(
 							true,clazz);
 					
 					onlineModel.prepareForUse();
+					
+					if (sub_model_types.equals("LR") && clazz[0] instanceof moa.classifiers.functions.SGD) {
+						for(int i = 0; i < clazz.length;i++) {
+							((moa.classifiers.functions.SGD)clazz[i]).setLossFunction(2); //linear regression
+							((moa.classifiers.functions.SGD)clazz[i]).setLambda(1);
+							((moa.classifiers.functions.SGD)clazz[i]).setLearningRate(0.1);
+						}
+					} else if (clazz[0] instanceof moa.classifiers.functions.SGD) {
+						for(int i = 0; i < clazz.length;i++) {
+							((moa.classifiers.functions.SGD)clazz[i]).setLambda(0.0001);
+							((moa.classifiers.functions.SGD)clazz[i]).setLearningRate(0.002);
+						}
+					}
 				}
 			} else if (selected == LearningType.BOOSTING) {
 //				OnlineMultilayerPerceptron mlp = new OnlineMultilayerPerceptron();
@@ -488,17 +510,38 @@ public class OnOffModel implements Model {
 					moa.classifiers.Classifier[] clazz = new moa.classifiers.Classifier[5];
 					
 					for(int i = 0; i < clazz.length;i++) {
-						clazz[i] = initializeWEKAClassifier(ensemble);
+						clazz[i] = (moa.classifiers.Classifier)ensembleClass.newInstance();//initializeWEKAClassifier(ensemble);
 					}
 					
 					onlineModel = initializeOnlineEnsemble(
 							false,clazz);
 					onlineModel.prepareForUse();
+					
+					if (sub_model_types.equals("LR") && clazz[0] instanceof moa.classifiers.functions.SGD) {
+						for(int i = 0; i < clazz.length;i++) {
+							((moa.classifiers.functions.SGD)clazz[i]).setLossFunction(2); //linear regression
+							((moa.classifiers.functions.SGD)clazz[i]).setLambda(1);
+							((moa.classifiers.functions.SGD)clazz[i]).setLearningRate(0.1);
+						}
+					} else if (clazz[0] instanceof moa.classifiers.functions.SGD) {
+						for(int i = 0; i < clazz.length;i++) {
+							((moa.classifiers.functions.SGD)clazz[i]).setLambda(0.0001);
+							((moa.classifiers.functions.SGD)clazz[i]).setLearningRate(0.002);
+						}
+					}
 				}
 			} else if (selected == LearningType.SVM) {
 
 				if (onlineModel == null) {
 					onlineModel = new moa.classifiers.functions.SGD();
+					onlineModel.prepareForUse();
+					((moa.classifiers.functions.SGD)onlineModel).setLambda(0.0001);
+					((moa.classifiers.functions.SGD)onlineModel).setLearningRate(0.002);
+				}
+			} else if (selected == LearningType.TREE) {
+
+				if (onlineModel == null) {
+					onlineModel = new FIMTDD();
 					onlineModel.prepareForUse();
 				}
 			}
@@ -524,7 +567,7 @@ public class OnOffModel implements Model {
 				((OfflineMultilayerPerceptron) offlineModel).setMomentum(.6);
 
 			} else if (selected == LearningType.LR) {
-				offlineModel = new weka.classifiers.lazy.LWL();
+				offlineModel = new LinearRegression();//new weka.classifiers.lazy.LWL();
 			} else if (selected == LearningType.KNN) {
 				offlineModel = new weka.classifiers.lazy.IBk();
 				 ((weka.classifiers.lazy.IBk)offlineModel).setKNN(5);
@@ -540,6 +583,10 @@ public class OnOffModel implements Model {
 				((weka.classifiers.functions.SMOreg) offlineModel)
 						.setFilterType(new SelectedTag(2,
 								weka.classifiers.functions.SMOreg.TAGS_FILTER));
+			} else if (selected == LearningType.TREE) {
+				// offlineModel = new ExtendedSGD();
+				offlineModel = new weka.classifiers.trees.M5P();
+				//((weka.classifiers.trees.M5P)offlineModel).setBuildRegressionTree(true);
 			}
 
 			offlineModel.buildClassifier(dataRaw);
@@ -699,6 +746,6 @@ public class OnOffModel implements Model {
 	}
 
 	public enum LearningType {
-		MLP, LR, KNN, KS, BAGGING, BOOSTING, SVM
+		MLP, LR, KNN, KS, BAGGING, BOOSTING, SVM, TREE
 	}
 }

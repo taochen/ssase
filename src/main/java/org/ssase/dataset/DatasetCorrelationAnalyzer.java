@@ -13,6 +13,11 @@ import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 public class DatasetCorrelationAnalyzer {
 
 	public static void main(String[] args) {
+		long n = 65270;
+		System.out.print("N "+ (n * (n+1))+"\n" );
+	}
+
+	public static void main1(String[] args) {
 		List[] r1 =new DatasetCorrelationAnalyzer()
 				.readAccuracy("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",
 						"/Users/tao/research/experiments-data/on-off/femosaa",

@@ -10,7 +10,7 @@ import org.ssase.objective.QualityOfService;
 public class PerformanceModelRun {
 
 	private static final int runs = 10;
-	public static int QoSIndex = 1;
+	public static int QoSIndex = 0;
 	private String[] qosStrings = new String[] {
 		"Response Time",
 		"Energy"
@@ -30,6 +30,7 @@ public class PerformanceModelRun {
 		for (int i = 0; i <  org.ssase.dataset.ModelingSimulator.model_types.length; i++) {
 			modelType = org.ssase.dataset.ModelingSimulator.model_types[i];
 			subModelType = org.ssase.dataset.ModelingSimulator.sub_model_types[i];
+			OnOffModel.sub_model_types = org.ssase.dataset.ModelingSimulator.sub_model_types[i];
 			esem_type = org.ssase.dataset.ModelingSimulator.esem_types[i];
 			esem_class = org.ssase.dataset.ModelingSimulator.esem_classes[i];
 			innerAutomaticTest(call);
