@@ -49,7 +49,7 @@ public class Data {
 
 // ====================== to state-of-the-art ====================== 	
 
-		"moead/sas/rubis_software/",
+//		"moead/sas/rubis_software/",
 //		"femosaa-nsgaii/sas/rubis_software/",
 //		"femosaa-ibea/sas/rubis_software/",
 //		"nsgaii/sas/rubis_software/",
@@ -113,17 +113,50 @@ public class Data {
 // ###################### read only ######################
 	
 		
-
+// ###################### SOA ######################
+		
+//		"soa/FEMOSAA/",
+//		"soa/FEMOSAAd/",
+//		"soa/FEMOSAAk/",
+//		"soa/FEMOSAA01/",
+//		"soa/FEMOSAAnothing/",
+		
+//		"soa/NSGAIIkd/",
+//		"soa/NSGAIId/",
+//		"soa/NSGAIIk/",
+//		"soa/NSGAII/",
+//		"soa/NSGAII01/",
+		
+//		"soa/IBEAkd/",
+//		"soa/IBEAd/",
+//		"soa/IBEAk/",
+//		"soa/IBEA/",
+//		"soa/IBEA01/",
+		
+		"soa/FEMOSAA/",		
+		"soa/FEMOSAAnothing/",
+		"soa/FEMOSAA01/",
+		"soa/NSGAIIkd/",
+		"soa/NSGAII/",
+		"soa/NSGAII01/",
+		"soa/IBEAkd/",
+		"soa/IBEA/",
+		"soa/IBEA01/",
+		"soa/GP/",
+		"soa/BB/"
+		
+// ###################### SOA ######################
+		
 		
 // ###################### DDA ######################
 		
-		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
-		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
-		"debt-aware/femosaa/random-10/sas/rubis_software/",
-		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/"
+//		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+//		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+//		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+//		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
+//		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
+//		"debt-aware/femosaa/random-10/sas/rubis_software/",
+//		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/"
 		
 //		"debt-aware/plato/htree/sas/rubis_software/",
 //		"debt-aware/plato/nb/sas/rubis_software/",
@@ -144,8 +177,10 @@ public class Data {
 	};
 	
 	static String[] obj = new String[]{
-		"Response Time.rtf",
-		"Energy.rtf",
+//		"Response Time.rtf",
+//		"Energy.rtf",
+		"Throughput.rtf",
+		"Cost.rtf",
 	};
 	
 	static double[] requirements = new double[]{
@@ -175,7 +210,7 @@ public class Data {
 	static double Emin = 100000;
 	
 	static Map<String, List<Double>> surface = new HashMap<String, List<Double>> ();
-	
+	static Map<String, double[]> log_values = new HashMap<String, double[]> ();
 	static Map<String, List<Double>> AdaMap = new HashMap<String, List<Double>> ();
 	static Map<String, List<Double>> AdaTimeMap = new HashMap<String, List<Double>> ();
 	
@@ -368,6 +403,23 @@ public class Data {
 				e.printStackTrace();
 			}
 		}
+		
+		
+		staTest("soa/FEMOSAA/", "soa/NSGAII/");
+		staTest("soa/NSGAIIkd/", "soa/NSGAII/");
+		staTest("soa/IBEAkd/", "soa/NSGAII/");
+	
+		staTest("soa/FEMOSAA/", "soa/GP/");
+		staTest("soa/NSGAIIkd/", "soa/GP/");
+		staTest("soa/IBEAkd/", "soa/GP/");
+		
+		staTest("soa/FEMOSAA/", "soa/BB/");
+		staTest("soa/NSGAIIkd/", "soa/BB/");
+		staTest("soa/IBEAkd/", "soa/BB/");
+		
+		if(1 == 1) return;
+		
+		// ***************** Below is for DLDA *****************
 		
 	    for (String n : compare) {
 			
@@ -626,6 +678,17 @@ public class Data {
 	    }
 	}
 	
+	private static void staTest(String a, String b){
+		
+		WilcoxonSignedRankTest test = new WilcoxonSignedRankTest();
+		System.out.print("-------------"+a + " to " + b +"-------------\n");
+		double p = test.wilcoxonSignedRankTest(log_values.get(a), log_values.get(b), false);
+		double es = test.getEffectSize(log_values.get(a), log_values.get(b));
+		
+		
+		System.out.print("p value " + p +"\n");
+		System.out.print("effect size " + es +"\n");
+	}
 	
 	private static double read(String name, String obj) throws Throwable {
 		BufferedReader reader = new BufferedReader(new FileReader(new File(name)));
@@ -972,7 +1035,7 @@ public class Data {
 	
 	
 	private static double readTime(String name) throws Throwable {
-		BufferedReader reader = new BufferedReader(new FileReader(new File(name.replace("rubis_software/", "Execution-Time.rtf"))));
+		BufferedReader reader = new BufferedReader(new FileReader(new File(obj[0].equals("Response Time.rtf")?name.replace("rubis_software/", "Execution-time.rtf") : name + "/Execution-time.rtf")));
 		String line = null;
 		double total = 0;
 		int i = 0;
@@ -1003,7 +1066,7 @@ public class Data {
 	}
 	
 	private static double readDependency(String name) throws Throwable {
-		BufferedReader reader = new BufferedReader(new FileReader(new File(name.replace("rubis_software/", "Dependency.rtf"))));
+		BufferedReader reader = new BufferedReader(new FileReader(new File(obj[0].equals("Response Time.rtf")?name.replace("rubis_software/", "Dependency.rtf") : name + "/Dependency.rtf")));
 		String line = null;
 		double total = 0;
 		int i = 0;
@@ -1041,7 +1104,7 @@ public class Data {
 	}
 	
 	
-	private static void log(Double[] values) {
+	private static Double[] log(Double[] values) {
 		double gsd = 0.0;
 		String d = "";
 		String n = "";
@@ -1051,8 +1114,8 @@ public class Data {
 		}
 		
 		for (int i = 0; i < newValues.length; i++) {
-			System.out.print(values[i] + "\n");
-			//System.out.print("("+i+","+newValues[i] + ")\n");
+			//System.out.print(values[i] + "\n");
+			System.out.print("("+i+","+newValues[i] + ")\n");
 			d = d + newValues[i] + ",";
 			n = n + (i + 1) + ",";
 			gsd += newValues[i];
@@ -1069,6 +1132,7 @@ public class Data {
 		System.out.print("Var "+var/newValues.length + "\n");
 		System.out.print(d + "\n");
 		System.out.print(n + "\n");
+		return newValues;
 	}
 	
 	
@@ -1135,17 +1199,19 @@ public class Data {
 //			
 //		}
 		
-		if(obj.equals("Response Time.rtf")) {
+		if(obj.equals("Response Time.rtf") || obj.equals("Throughput.rtf") ) {
 			
-			if(Math.pow(total, 1.0/no) > RTmax) {
-				RTmax = Math.pow(total, 1.0/no);
+			double t = obj.equals("Throughput.rtf")? 1/total : total;
+			
+			if(Math.pow(t, 1.0/no) > RTmax) {
+				RTmax = Math.pow(t, 1.0/no);
 			}
 			
-            if(Math.pow(total, 1.0/no) < RTmin) {
-				RTmin = Math.pow(total, 1.0/no);
+            if(Math.pow(t, 1.0/no) < RTmin) {
+				RTmin = Math.pow(t, 1.0/no);
 			}
             
-            RTmap.put(approach, Math.pow(total, 1.0/no));
+            RTmap.put(approach, Math.pow(t, 1.0/no));
 			
 		} else {
 			
@@ -1180,8 +1246,17 @@ public class Data {
 			//	", " + (Math.pow(total, 1.0/no)+1.96*gsd/Math.sqrt(list.size())) +"]\n");
 		//System.out.print("GVAR: " + approach +", "+obj+"="+(gsd*gsd)+"\n");
 		
-		if(obj.equals("Response Time.rtf")) 
-		log(list.toArray(new Double[list.size()]));
+		if(obj.equals("Throughput.rtf")) {
+			//System.out.print(approach  + "*******\n");
+			Double[] v = log(list.toArray(new Double[list.size()]));
+			double[] l = new double[v.length];
+			
+			for (int k = 0 ; k < v.length;k++) {
+				l[k] = v[k];
+			}
+			log_values.put(approach, l);
+		}
+		
 		htotal = no / htotal;
 		
 		
