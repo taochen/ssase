@@ -24,12 +24,12 @@ import com.davidsoergel.dsutils.file.FileUtils;
 
 public class DatasetAnalyzer {
 
-	private static final String c1 = "onBAGGING-LR";
-	private static final String c2 = "offBAGGING-LR";
-	private static final String file = "_data.rtf"; //_data.rtf
+	private static final String c1 = "onBOOSTING-TREE";
+	private static final String c2 = "offBOOSTING-TREE";
+	private static final String file = "_time.rtf"; //_data.rtf
 	private static Map<String, List<Double>> global = new HashMap<String, List<Double>>();
 	private static Map<String, List<Double>> detail_global = new HashMap<String, List<Double>>();
-	private static boolean print_trace = true;
+	private static boolean print_trace = false;
 	
 	public static void main1(String[] args) {
 		new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",  "Response Time", "Energy", true);
@@ -47,9 +47,9 @@ public class DatasetAnalyzer {
 	}
 	
 	public static void main(String[] args) {
-		new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",  "Response Time", "Energy", true);
+		//new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",  "Response Time", "Energy", true);
 		//new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/wsdream/processed/completed_results",  "rtdata.rtf", "tpdata.rtf", false);
-		//new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",  "Execution.txt", "-", false);
+		new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",  "Execution.txt", "-", false);
 		//new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/amazon-ec2/dataset/completed_results_new",  "Execution.txt", "-", false);
 		
 		//printCDF("/Users/tao/research/experiments-data/on-off/femosaa/completed_results", detail_global, "All", new String[]{c1,c2});
@@ -87,16 +87,21 @@ public class DatasetAnalyzer {
 			}
 //			System.out.print("Doing " + f2.getName() + "\n");
 //			
-			if(!f2.getName().equals("read-write-7")) {
-				continue;
-			}
+//			if(!f2.getName().equals("read-write-7")) {
+//				continue;
+//			}
+//			
 			
+//			if(!f2.getName().equals("data1")) {
+//			continue;
+//		}
+			//System.out.print("qos name " + f2.getName() + "\n");
 			for (File f3 : f2.listFiles()) {
 				
-				if(!f3.getName().equals("decrease")) {
-					continue;
-				}
-				
+//				if(!f3.getName().equals("decrease")) {
+//					continue;
+//				}
+				//System.out.print("qos name " + f3.getName() + "\n");
 				for (File f4 : f3.listFiles()) {
 					//System.out.print("qos name " + f3.getName() + "\n");
 					
@@ -188,7 +193,9 @@ public class DatasetAnalyzer {
 		
 		
 		//statisticTest(less_map1, keys);
-		statisticTest(map1, keys);
+		//statisticTest(map1, keys);
+		
+		getBoxPlot(less_map1, keys);
 		
 		//printCDF(path, less_map1,v1);
 		System.out.print("----------" + v2 + "--------------\n");
@@ -237,7 +244,8 @@ public class DatasetAnalyzer {
 			}
 			
 			//statisticTest(less_map2, keys);
-			statisticTest(map2, keys);
+			//statisticTest(map2, keys);
+			getBoxPlot(less_map2, keys);
 		}
 		
 		//printCDF(path,less_map2,v2);
@@ -326,6 +334,72 @@ public class DatasetAnalyzer {
 			
 		}
 		
+	}
+	
+	private void getBoxPlot(Map<String, List<Double>> map1, String[] keys){
+		
+		
+		List<Double> list1 = map1.get(keys[0]);
+		List<Double> list2 = map1.get(keys[1]);
+		
+		Collections.sort(list1);
+		Collections.sort(list2);
+		
+		System.out.print("list1 " + list1.size()+"\n");
+		System.out.print("list2 " + list2.size()+"\n");
+		/**
+		 *  median=1,
+      upper quartile=1.2,
+      lower quartile=0.4,
+      upper whisker=1.5,
+      lower whisker=0.2,
+		 * 
+		 */
+		
+		double max=0.0, min=0.0, uq=0.0, lq=0.0, median=0.0;
+		
+		System.out.print("----------" + keys[0] + "----------\n");
+		
+		max = list1.get(list1.size()-1);
+		min = list1.get(0);
+		median = getMediam(list1);
+		if (list1.size() % 2 == 0) {
+			uq = getMediam(list1.subList(list1.size()/2+1, list1.size()-1));
+			lq = getMediam(list1.subList(0, list1.size()/2-2));
+		} else {
+			uq = getMediam(list1.subList(list1.size()/2+1, list1.size()-1));
+			lq = getMediam(list1.subList(0, list1.size()/2-1));
+		}
+		System.out.print("median="+median+",\n");
+		System.out.print("upper quartile="+uq+",\n");
+		System.out.print("lower quartile="+lq+",\n");
+		System.out.print("upper whisker="+max+",\n");
+		System.out.print("lower whisker="+min+",\n");
+		
+		System.out.print("----------" + keys[1] + "----------\n");
+		
+		max = list2.get(list2.size()-1);
+		min = list2.get(0);
+		median = getMediam(list2);
+		if (list2.size() % 2 == 0) {
+			uq = getMediam(list2.subList(list2.size()/2+1, list2.size()-1));
+			lq = getMediam(list2.subList(0, list2.size()/2-2));
+		} else {
+			uq = getMediam(list2.subList(list2.size()/2+1, list2.size()-1));
+			lq = getMediam(list2.subList(0, list2.size()/2-1));
+		}
+		System.out.print("median="+median+",\n");
+		System.out.print("upper quartile="+uq+",\n");
+		System.out.print("lower quartile="+lq+",\n");
+		System.out.print("upper whisker="+max+",\n");
+		System.out.print("lower whisker="+min+",\n");
+	}
+	
+	private double getMediam(List<Double> list) {
+		if (list.size() % 2 == 0)
+		    return ((double)list.get(list.size()/2) + (double)list.get(list.size()/2-1))/2.0;
+		else
+			return (double) list.get(list.size()/2);
 	}
 	
 	private void statisticTest(Map<String, List<Double>> map1, String[] keys){
@@ -457,8 +531,8 @@ public class DatasetAnalyzer {
 			//System.out.print("*********Doing " + f5.getName() + "\n");
 			for (File f6 : f5.listFiles()) {
 				
-				if(!f6.getName().endsWith("_data.rtf") /**f6.getName().endsWith("_nano_time.rtf") ||
-						f6.getName().endsWith("_data.rtf")**/ ) {
+				if(/**!f6.getName().endsWith("_data.rtf")**/ f6.getName().endsWith("_nano_time.rtf") ||
+						f6.getName().endsWith("_data.rtf") ) {
 					continue;
 				}
 				
@@ -562,7 +636,7 @@ public class DatasetAnalyzer {
 			
 			//for (File f6 : f5.listFiles()) {
 				
-				if( /**!f5.getName().endsWith("_data.rtf")**/ f5.getName().endsWith("_nano_time.rtf") ||
+				if( /**!f5.getName().endsWith("_data.rtf")**/f5.getName().endsWith("_nano_time.rtf") ||
 						f5.getName().endsWith("_data.rtf") ) {
 					continue;
 				}
@@ -606,7 +680,7 @@ public class DatasetAnalyzer {
 		
 		}
 		
-		if(print_trace && list.size() < 890) {
+		if(print_trace && list.size() < 10) {
 			return;
 		}
 		

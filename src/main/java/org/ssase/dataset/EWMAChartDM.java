@@ -14,7 +14,7 @@ public class EWMAChartDM {
 //    public FloatOption lambdaOption = new FloatOption("lambda", 'l',
 //            "Lambda parameter of the EWMA Chart Method", 0.2, 0.0, Float.MAX_VALUE);
 
-    private int min_sample = 5;
+    private int min_sample = 1;
     private double m_n;
 
     private double m_sum;
@@ -33,6 +33,15 @@ public class EWMAChartDM {
     protected double estimation;
     protected double delay;
     
+    
+    private double sum;
+
+    private double x_mean;
+
+    private double alpha;
+
+    private double delta;
+    
     public EWMAChartDM() {
         resetLearning();
     }
@@ -49,10 +58,46 @@ public class EWMAChartDM {
         m_s = 0.0;
         z_t = 0.0;
         lambda = 0.2;// this.lambdaOption.getValue();
+        
+      
+        x_mean = 0.0;
+        sum = 0.0;
+        delta = 0.005;
+        alpha = 1 - 0.0001;
+        lambda = 0.02;
     }
 
+    
+    //PageHinkleyDM
+    public void input(double x) {
+    	// It monitors the error rate
+        if (this.isChangeDetected == true || this.isInitialized == false) {
+            resetLearning();
+            this.isInitialized = true;
+        }
+
+        x_mean = x_mean + (x - x_mean) / (double) m_n;
+        sum = this.alpha * sum + (x - x_mean - this.delta);
+
+        m_n++;
+
+        // System.out.print(prediction + " " + m_n + " " + (m_p+m_s) + " ");
+        this.estimation = x_mean;
+        this.isChangeDetected = false;
+        this.isWarningZone = false;
+        this.delay = 0;
+
+        if (m_n < 1) {
+            return;
+        }
+
+        if (sum > this.lambda) {
+            this.isChangeDetected = true;
+        } 
+    }
+    
  
-    public void input(double prediction) {
+    public void input1(double prediction) {
         // prediction must be 1 or 0
         // It monitors the error rate
          if (this.isChangeDetected == true || this.isInitialized == false) {
