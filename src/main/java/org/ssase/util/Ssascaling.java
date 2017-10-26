@@ -239,7 +239,7 @@ public class Ssascaling {
 						
 						Repository.setVM(vmName, new VM(vmName, list.toArray(new HardwareControlPrimitive[list.size()]) ));
 					} else {
-						Repository.setVM(vmName, new VM(vmName, (new HardwareControlPrimitive[0]) ));
+						//Repository.setVM(vmName, new VM(vmName, (new HardwareControlPrimitive[0]) ));
 					}
 					
 					if ("softwareControlPrimitive".equals(insideVmNodes.item(j).getNodeName())){
@@ -556,20 +556,20 @@ public class Ssascaling {
 				s.initializeModelForQoS();
 			}
 		
-			//Executor.init(3);
+			Executor.init(3);
 			
 			
 			
 			if(Region.selected != OptimizationType.INIT) {
-			   //new HistoryLoader().run();				   
+			   new HistoryLoader().run();				   
 			}
 			
 			if(Analyzer.selected == TriggerType.Debt || Analyzer.selected == TriggerType.DebtAll) {
 			   new DebtLoader().run();
 			}
 			
-			//loadFeatureModel();
-			//r.receive();
+			loadFeatureModel();
+			r.receive();
 			
 	}
 	

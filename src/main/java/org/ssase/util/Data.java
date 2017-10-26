@@ -133,38 +133,115 @@ public class Data {
 //		"soa/IBEA/",
 //		"soa/IBEA01/",
 		
-		"soa/FEMOSAA/",		
-		"soa/FEMOSAAnothing/",
-		"soa/FEMOSAA01/",
-		"soa/NSGAIIkd/",
-		"soa/NSGAII/",
-		"soa/NSGAII01/",
-		"soa/IBEAkd/",
-		"soa/IBEA/",
-		"soa/IBEA01/",
-		"soa/GP/",
-		"soa/BB/"
+//		"soa/FEMOSAA/",		
+//		"soa/FEMOSAAnothing/",
+//		"soa/FEMOSAA01/",
+//		"soa/NSGAIIkd/",
+//		"soa/NSGAII/",
+//		"soa/NSGAII01/",
+//		"soa/IBEAkd/",
+//		"soa/IBEA/",
+//		"soa/IBEA01/",
+//		"soa/GP/",
+//		"soa/BB/"
 		
 // ###################### SOA ######################
 		
 		
-// ###################### DDA ######################
+// ###################### DLDA ######################
 		
+//		"moead/sas/rubis_software/",
 //		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
 //		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
 //		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
 //		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
 //		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
 //		"debt-aware/femosaa/random-10/sas/rubis_software/",
-//		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/"
+//		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/",
+//		"debt-aware/femosaa/pred/sas/rubis_software/"
 		
+//		"gp/sas/rubis_software/",
 //		"debt-aware/plato/htree/sas/rubis_software/",
 //		"debt-aware/plato/nb/sas/rubis_software/",
 //		"debt-aware/plato/svm/sas/rubis_software/",
 //		"debt-aware/plato/knn/sas/rubis_software/",
 //		"debt-aware/plato/mlp/sas/rubis_software/",
 //		"debt-aware/plato/random/sas/rubis_software/",
-//		"debt-aware/plato/rt-0.05-ec-5/sas/rubis_software/"
+//		"debt-aware/plato/rt-0.05-ec-5/sas/rubis_software/",
+//		"debt-aware/plato/pred/sas/rubis_software/"
+	
+		
+// -------------------- sensitivity analysis -------------------------
+		
+
+		
+//		"debt-aware/femosaa/sensitivity/nb/r-2.5-e-0.01/sas/rubis_software/",//129.83
+//		"debt-aware/femosaa/sensitivity/nb/r-3-e-0.1/sas/rubis_software/",// actually e-0.1 22.26
+//		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/nb/r-4-e-1/sas/rubis_software/",//53.65
+//		"debt-aware/femosaa/sensitivity/nb/r-4.5-e-1.5/sas/rubis_software/",//-286.17
+		
+//		"debt-aware/femosaa/sensitivity/ht/r-2.5-e-0.01/sas/rubis_software/",//152.03
+//		"debt-aware/femosaa/sensitivity/ht/r-3-ec-0.1/sas/rubis_software/",// -0.73
+//		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/ht/r-4-e-1/sas/rubis_software/",//-133.56
+//		"debt-aware/femosaa/sensitivity/ht/r-4.5-e-1.5/sas/rubis_software/",//887.03
+		
+//		"debt-aware/femosaa/sensitivity/sgd/r-2.5-e-0.01/sas/rubis_software/",//293.62
+//		"debt-aware/femosaa/sensitivity/sgd/r-3-e-0.1/sas/rubis_software/",// -4.34
+//		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/sgd/r-4-e-1/sas/rubis_software/",//-196.36
+//		"debt-aware/femosaa/sensitivity/sgd/r-4.5-e-1.5/sas/rubis_software/",//-210.60
+	
+//		"debt-aware/femosaa/sensitivity/knn/r-2.5-e-0.01/sas/rubis_software/",//61.26
+//		"debt-aware/femosaa/sensitivity/knn/r-3-e-0.1/sas/rubis_software/",// 845.91
+//		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/knn/r-4-e-1/sas/rubis_software/",//215.56
+//		"debt-aware/femosaa/sensitivity/knn/r-4.5-e-1.5/sas/rubis_software/",//-305.48
+		
+//		"debt-aware/femosaa/sensitivity/mlp/r-2.5-e-0.01/sas/rubis_software/",//16.91
+//		"debt-aware/femosaa/sensitivity/mlp/r-3-e-0.1/sas/rubis_software/",// 87.22
+//		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/mlp/r-4-e-1/sas/rubis_software/",//-184.58
+//		"debt-aware/femosaa/sensitivity/mlp/r-4.5-e-1.5/sas/rubis_software/",//191.48
+		
+		
+//		"debt-aware/femosaa/sensitivity/nb/0.001-u/sas/rubis_software/",//97.48
+//		"debt-aware/femosaa/sensitivity/nb/0.005-u/sas/rubis_software/",//-90.70
+//		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/nb/0.1-u/sas/rubis_software/",//282.85
+//		"debt-aware/femosaa/sensitivity/nb/1-u/sas/rubis_software/",//-43.69 
+		
+//		"debt-aware/femosaa/sensitivity/ht/u-0.001/sas/rubis_software/",//45.06
+//		"debt-aware/femosaa/sensitivity/ht/u-0.005/sas/rubis_software/",// 602.87
+//		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/ht/u-0.1/sas/rubis_software/",//24.86
+//		"debt-aware/femosaa/sensitivity/ht/u-1/sas/rubis_software/",//3.17
+		
+//		"debt-aware/femosaa/sensitivity/sgd/u-0.001/sas/rubis_software/",//-120.06
+//		"debt-aware/femosaa/sensitivity/sgd/u-0.005/sas/rubis_software/",// 628.33
+//		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/sgd/u-0.1/sas/rubis_software/",//169.05
+//		"debt-aware/femosaa/sensitivity/sgd/u-1/sas/rubis_software/",//101.41
+		
+//		"debt-aware/femosaa/sensitivity/knn/u-0.001/sas/rubis_software/",//616.59
+//		"debt-aware/femosaa/sensitivity/knn/u-0.005/sas/rubis_software/",// 189.31
+//		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/knn/u-0.1/sas/rubis_software/",//220.60
+//		"debt-aware/femosaa/sensitivity/knn/u-1/sas/rubis_software/",//129.72
+		
+//		"debt-aware/femosaa/sensitivity/mlp/u-0.001/sas/rubis_software/",//429.90
+//		"debt-aware/femosaa/sensitivity/mlp/u-0.005/sas/rubis_software/",// 524.77
+		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/sensitivity/mlp/u-0.1/sas/rubis_software/",//-101.17
+		"debt-aware/femosaa/sensitivity/mlp/u-1/sas/rubis_software/",//733.06
+		
+//		"moead/sas/rubis_software/",
+//		"debt-aware/femosaa/random-10/sas/rubis_software/",
+//		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/",
+//		"debt-aware/femosaa/pred/sas/rubis_software/"
+		
+// ###################### DLDA ######################
 		
 	};
 	
@@ -177,10 +254,10 @@ public class Data {
 	};
 	
 	static String[] obj = new String[]{
-//		"Response Time.rtf",
-//		"Energy.rtf",
-		"Throughput.rtf",
-		"Cost.rtf",
+		"Response Time.rtf",
+		"Energy.rtf",
+//		"Throughput.rtf",
+//		"Cost.rtf",
 	};
 	
 	static double[] requirements = new double[]{
@@ -189,11 +266,11 @@ public class Data {
 	};
 	
 	static double[] price = new double[]{
-		3.5,
-		0.5,
+		3.5,//3.5,
+		0.5//0.5,
 	};
 	
-	static double adaptCost = 0.01;
+	static double adaptCost = 1;
 	
 	static Map<String, Map<Integer, Double>> debt = new HashMap<String, Map<Integer, Double>>();
 	
@@ -405,19 +482,19 @@ public class Data {
 		}
 		
 		
-		staTest("soa/FEMOSAA/", "soa/NSGAII/");
-		staTest("soa/NSGAIIkd/", "soa/NSGAII/");
-		staTest("soa/IBEAkd/", "soa/NSGAII/");
-	
-		staTest("soa/FEMOSAA/", "soa/GP/");
-		staTest("soa/NSGAIIkd/", "soa/GP/");
-		staTest("soa/IBEAkd/", "soa/GP/");
+//		staTest("soa/FEMOSAA/", "soa/NSGAII/");
+//		staTest("soa/NSGAIIkd/", "soa/NSGAII/");
+//		staTest("soa/IBEAkd/", "soa/NSGAII/");
+//	
+//		staTest("soa/FEMOSAA/", "soa/GP/");
+//		staTest("soa/NSGAIIkd/", "soa/GP/");
+//		staTest("soa/IBEAkd/", "soa/GP/");
+//		
+//		staTest("soa/FEMOSAA/", "soa/BB/");
+//		staTest("soa/NSGAIIkd/", "soa/BB/");
+//		staTest("soa/IBEAkd/", "soa/BB/");
 		
-		staTest("soa/FEMOSAA/", "soa/BB/");
-		staTest("soa/NSGAIIkd/", "soa/BB/");
-		staTest("soa/IBEAkd/", "soa/BB/");
-		
-		if(1 == 1) return;
+		//if(1 == 1) return;
 		
 		// ***************** Below is for DLDA *****************
 		
@@ -455,7 +532,7 @@ public class Data {
 				int i = (int)(d - 122);
 				
 				//System.out.print(AdaMap.get(prefix+n).size() + " " + i + " " + debt.get(n).size() + "\n");
-				if(i == debt.get(n).size()) {
+				if(i == debt.get(n).size() || !debt.get(n).containsKey(i)) {
 					break;
 				}
 				
@@ -496,7 +573,7 @@ public class Data {
 	    		
 	    		boolean net = b? total < preS : 0 < total;
 	    		//System.out.print(e.getKey()+ " " +b + ",\n");
-	    		classification.get(app).add(b);
+	    		classification.get(app).add(b); // *** change to net for labeling
 	    		//System.out.print(e.getKey()+ " " +b + ",\n");
 	    		System.out.print(e.getKey()+" " +total + " : " + b + ",\n");
 	    		//System.out.print("(" + e.getKey() + "," + (Math.log10(e.getValue()+250)) + ")\n");
@@ -554,24 +631,31 @@ public class Data {
 	 for (String app : debt.keySet()) {
 		 System.out.print(app+"\n");
 		 double total = 0.0;
+		 double under = 0.0;
+		 double over = 0.0;
 		   for(int i = 0; i < mergedIsAdapt.size(); i++) {
 			   List<Double> l = AdaMap.get(prefix+app);
 	    	   boolean b = l.contains((double)i + 122.0);
 	    	   
 	    	   // under adapt
-			   if(!mergedIsAdapt.get(i) && b) {
-				  // System.out.print( (surface.get(app + "Response Time.rtf").get(i) - mergedRT.get(i))  + "\n");
-				  // System.out.print( surface.get(app + "Response Time.rtf").get(i)  + "\n");
-				   System.out.print(i + " : " + ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i))) + "\n");
-				   total += ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i))); 
+			   if(mergedIsAdapt.get(i) && !b) {
+//				  // System.out.print( (surface.get(app + "Response Time.rtf").get(i) - mergedRT.get(i))  + "\n");
+//				  // System.out.print( surface.get(app + "Response Time.rtf").get(i)  + "\n");
+//				   System.out.print(i + " : " + ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i))) + "\n");
+//				   total += ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i))); 
+				   under += ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i)));
 			   }
 			   
 			   // over adapt
-//			   if(!mergedIsAdapt.get(i) && b) {
-//				   System.out.print( surface.get(app + "Response Time.rtf").get(i) + "\n");
-//			   }
+			   if(!mergedIsAdapt.get(i) && b) {
+				   //System.out.print( surface.get(app + "Response Time.rtf").get(i) + "\n");
+			       System.out.print(i + " : " + ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i))) + "\n");
+			       total += ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i))); 
+			       over += ( debt.get(app).get(i) - bestDebt.get(String.valueOf(i))); 
+			   }
 		   }
 			 System.out.print("total "  + total + "\n");
+			 System.out.print("over % "  + (over/(over+under)) + "\n");
 		   
 	   }
 	   
@@ -621,7 +705,20 @@ public class Data {
 		 System.out.print("f_measure: " + f_measure + "\n");
 		 
 	 }
-	
+
+		
+	 
+//	    staTest("debt-aware/plato/pred/sas/rubis_software/", "debt-aware/plato/htree/sas/rubis_software/");
+//		staTest("debt-aware/plato/pred/sas/rubis_software/", "debt-aware/plato/nb/sas/rubis_software/");
+//		staTest("debt-aware/plato/pred/sas/rubis_software/", "debt-aware/plato/svm/sas/rubis_software/");
+//		staTest("debt-aware/plato/pred/sas/rubis_software/", "debt-aware/plato/knn/sas/rubis_software/");
+//		staTest("debt-aware/plato/pred/sas/rubis_software/", "debt-aware/plato/mlp/sas/rubis_software/");
+//		staTest("debt-aware/plato/pred/sas/rubis_software/", "debt-aware/plato/random/sas/rubis_software/");
+//		staTest("debt-aware/plato/pred/sas/rubis_software/", "debt-aware/plato/rt-0.05-ec-5/sas/rubis_software/");
+//		staTest("debt-aware/plato/pred/sas/rubis_software/", "gp/sas/rubis_software/");
+	 
+	 
+	 
 	 
 //	   System.out.print("Debt CDF\n\n");
 //	   Collections.sort(allDebt);
@@ -678,7 +775,24 @@ public class Data {
 	    }
 	}
 	
+
+	
 	private static void staTest(String a, String b){
+		
+		if(log_values.get(a).length != log_values.get(b).length) {
+			//int n = 0;
+			if(log_values.get(a).length > log_values.get(b).length) {
+				 //n = log_values.get(a).length - log_values.get(b).length;
+				 double[] temp = new double[log_values.get(b).length];
+				 System.arraycopy(log_values.get(a), 0, temp, 0, log_values.get(b).length);
+				 log_values.put(a, temp);
+			} else {
+				// n = log_values.get(b).length - log_values.get(a).length;
+				 double[] temp = new double[log_values.get(a).length];
+				 System.arraycopy(log_values.get(b), 0, temp, 0, log_values.get(a).length);
+				 log_values.put(b, temp);
+			}
+		}
 		
 		WilcoxonSignedRankTest test = new WilcoxonSignedRankTest();
 		System.out.print("-------------"+a + " to " + b +"-------------\n");
@@ -841,6 +955,9 @@ public class Data {
 			for (int i = 0; i < l; i++) {
 				if(filter.contains(d + i)) {
 					continue;
+				}
+				if(Vmap.get(a1+obj).size() >= (d + i - 122)) {
+					break;
 				}
 				//System.out.print( Vmap.get(a1+obj).get((int)(d + i - 122))+"\n");
 				System.out.print(obj.equals("Response Time.rtf")? Math.log10(Vmap.get(a1+obj).get((int)(d + i - 122))*1000)+"\n" 
@@ -1246,13 +1363,15 @@ public class Data {
 			//	", " + (Math.pow(total, 1.0/no)+1.96*gsd/Math.sqrt(list.size())) +"]\n");
 		//System.out.print("GVAR: " + approach +", "+obj+"="+(gsd*gsd)+"\n");
 		
-		if(obj.equals("Throughput.rtf")) {
+		if(obj.equals("Energy.rtf")) {
 			//System.out.print(approach  + "*******\n");
 			Double[] v = log(list.toArray(new Double[list.size()]));
+			//Double[] v = list.toArray(new Double[list.size()]);
 			double[] l = new double[v.length];
 			
 			for (int k = 0 ; k < v.length;k++) {
 				l[k] = v[k];
+				//System.out.print(l[k]+"\n");
 			}
 			log_values.put(approach, l);
 		}

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.ssase.ControlBus;
 import org.ssase.Service;
 import org.ssase.debt.AdaptationDebtBroker;
+import org.ssase.debt.TwoPhaseTrigger;
 import org.ssase.executor.VM;
 import org.ssase.model.ModelingType;
 import org.ssase.objective.Cost;
@@ -42,6 +43,12 @@ public class Analyzer {
 	private static boolean isTrigger = false;
 	
 	private static AdaptationDebtBroker debtBroker = null;
+	private static TwoPhaseTrigger twoPhaseTrigger = null;
+	
+	public static boolean isDebtAware(){
+		return selected == TriggerType.DebtAll || selected == TriggerType.Debt;
+	}
+	
 	
 	public static void setSelectedTriggerType(String type) {
 		if (type == null)
@@ -55,10 +62,12 @@ public class Analyzer {
 			selected = TriggerType.DebtAll;
 		} else 	if ("frequency".equals(type)) {
 			selected = TriggerType.Frequency;
+		} else 	if ("prediction".equals(type)) {
+			selected = TriggerType.Prediction;
 		}
 
 
-		if(debtBroker == null) {
+		if(debtBroker == null && (selected == TriggerType.DebtAll || selected == TriggerType.Debt)) {
 			
 			List<QualityOfService> qos = new ArrayList<QualityOfService>();			
 			qos.addAll(Repository.getQoSSet());
@@ -68,6 +77,12 @@ public class Analyzer {
 			}
 			
 			debtBroker = AdaptationDebtBroker.getInstance(qos, primitives);
+		}
+		
+		if(twoPhaseTrigger == null && selected == TriggerType.Prediction) {
+			List<QualityOfService> qos = new ArrayList<QualityOfService>();			
+			qos.addAll(Repository.getQoSSet());
+			twoPhaseTrigger = TwoPhaseTrigger.getInstance(qos);
 		}
 		
 		if (selected == null)
@@ -110,7 +125,8 @@ public class Analyzer {
 		
 		if(selected == TriggerType.Debt || 
 				selected == TriggerType.DebtAll ||
-				selected == TriggerType.Frequency) {
+				selected == TriggerType.Frequency ||
+				selected == TriggerType.Prediction) {
 			
 			// Forcebly disenable adaptation
 			if(!isTrigger) return new ArrayList<Objective>();
@@ -228,6 +244,29 @@ public class Analyzer {
 				
 			}
 			
+		} else if(selected == TriggerType.Prediction) {
+			twoPhaseTrigger.doTraining();
+			twoPhaseTrigger.preTraining();
+			isTrigger = twoPhaseTrigger.isTrigger();
+			System.out.print("If predicted to trigger adaptation at current timestap: " + isTrigger + ", isEachStepIsAdaptation=" + isEachStepIsAdaptation + "\n");
+			isTrigger = isEachStepIsAdaptation? true : isTrigger;
+			if(isTrigger) {
+				train();
+			} else {
+				for (final QualityOfService qos : Repository.getQoSSet()) {
+					isReachTheLeastSamples = qos.doUpdate();
+					
+				}
+				
+				updatedModel.set(Repository
+						.getQoSSet().size());
+				
+				synchronized (updatedModel) {
+						updatedModel.notifyAll();
+					
+				}
+				
+			}
 		} else {
 			train();
 			

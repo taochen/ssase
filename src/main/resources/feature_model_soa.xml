@@ -1,0 +1,160 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+
+ <!--  <feature name="AS1" type="categorical" optional="false" >
+	<or>
+    <feature name="CS11" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    <feature name="CS12" type="numeric" range="1 10" gap="1" switchoff="true">
+  <cross-dependency type="required" operator="greater_or_equal" main="CS11" />
+		</feature>
+    <feature name="CS13" type="numeric" range="1 10" gap="1" switchoff="true">
+      <cross-dependency type="required" operator="less_or_equal" main="CS11" />
+		</feature>
+         
+    <feature name="CS14" type="numeric" range="1 10" gap="1" switchoff="true">
+     <cross-dependency type="excluded" main="CS11" />
+    </feature>
+    <feature name="CS15" type="numeric" range="1 10" gap="1" switchoff="true">
+    <cross-dependency type="excluded" main="CS14" />
+    </feature>
+    </or>
+</feature>
+
+
+<feature name="AS2" type="categorical" optional="false" >
+	<or>
+    <feature name="CS21" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    <feature name="CS22" type="numeric" range="1 10" gap="1" switchoff="true">
+    
+    <cross-dependency type="required" main="CS13" />
+    </feature>
+    <feature name="CS23" type="numeric" range="1 10" gap="1" switchoff="true">
+      <cross-dependency type="excluded" main="CS22" />
+    </feature>
+    <feature name="CS24" type="numeric" range="1 10" gap="1" switchoff="true">
+       <cross-dependency type="required" main="CS22" />
+    </feature>
+    </or>
+</feature>
+
+<feature name="AS3" type="categorical" optional="false" >
+	<or>
+    <feature name="CS31" type="numeric" range="1 10" gap="1" switchoff="true">
+		</feature>
+    <feature name="CS32" type="numeric" range="1 10" gap="1" switchoff="true">
+     <cross-dependency type="required" operator="greater_or_equal" main="CS31" />
+		</feature>
+    <feature name="CS33" type="numeric" range="1 10" gap="1" switchoff="true">
+    <cross-dependency type="required" operator="less_or_equal" main="CS32" />
+		</feature>
+    <feature name="CS34" type="numeric" range="1 10" gap="1" switchoff="true">
+      <cross-dependency type="excluded" main="CS31" />
+    </feature>
+    </or>
+</feature>
+
+
+<feature name="AS4" type="categorical" optional="false" >
+	<or>
+    <feature name="CS41" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    <feature name="CS42" type="numeric" range="1 10" gap="1" switchoff="true">
+     	<cross-dependency type="excluded" main="CS41" />
+		</feature>
+    </or>
+</feature>
+
+
+<feature name="AS5" type="categorical" optional="false" >
+	<or>
+    <feature name="CS51" type="numeric" range="1 10" gap="1" switchoff="true">
+		</feature>
+    <feature name="CS52" type="numeric" range="1 10" gap="1" switchoff="true">
+		 <cross-dependency type="required" operator="less_or_equal" main="CS51" />
+		</feature>
+    <feature name="CS53" type="numeric" range="1 10" gap="1" switchoff="true">
+      <cross-dependency type="required" operator="greater_or_equal" main="CS52" />
+		</feature>	
+    </or>
+</feature> -->
+
+ <feature name="AS1" type="categorical" optional="false" >
+	<or>
+    <feature name="CS11" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    <feature name="CS12" type="numeric" range="1 10" gap="1" switchoff="true">
+         <cross-dependency type="excluded" main="CS11" />
+    </feature>
+    <feature name="CS13" type="numeric" range="1 10" gap="1" switchoff="true"/>
+         
+    <feature name="CS14" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    <feature name="CS15" type="numeric" range="1 10" gap="1" switchoff="true">
+        <cross-dependency type="excluded" main="CS11" />
+    </feature>
+    </or>
+</feature>
+
+
+<feature name="AS2" type="categorical" optional="false" >
+	<or>
+    <feature name="CS21" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    <feature name="CS22" type="numeric" range="1 10" gap="1" switchoff="true">
+    
+    <cross-dependency type="required" main="CS13" />
+    </feature>
+    <feature name="CS23" type="numeric" range="1 10" gap="1" switchoff="true">
+    	<cross-dependency type="required" operator="greater_or_equal" main="CS14" />
+		</feature>
+    <feature name="CS24" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    </or>
+</feature>
+
+<feature name="AS3" type="categorical" optional="false" >
+	<or>
+    <feature name="CS31" type="numeric" range="1 10" gap="1" switchoff="true">
+     	<cross-dependency type="required" operator="greater_or_equal" main="CS21" />
+		</feature>
+    <feature name="CS32" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    <feature name="CS33" type="numeric" range="1 10" gap="1" switchoff="true">
+        
+    </feature>
+    <feature name="CS34" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    </or>
+</feature>
+
+
+<feature name="AS4" type="categorical" optional="false" >
+	<or>
+    <feature name="CS41" type="numeric" range="1 10" gap="1" switchoff="true"/>
+    <feature name="CS42" type="numeric" range="1 10" gap="1" switchoff="true">
+     	<cross-dependency type="required" operator="greater_or_equal" main="CS41" />
+		</feature>
+    </or>
+</feature>
+
+
+<feature name="AS5" type="categorical" optional="false" >
+	<or>
+    <feature name="CS51" type="numeric" range="1 10" gap="1" switchoff="true">
+    <cross-dependency type="required" operator="greater_or_equal" main="CS42" />
+		</feature>
+    <feature name="CS52" type="numeric" range="1 10" gap="1" switchoff="true">
+     	<cross-dependency type="required" operator="greater_or_equal" main="CS42" />
+		</feature>
+    <feature name="CS53" type="numeric" range="1 10" gap="1" switchoff="true"/>
+     	
+    </or>
+</feature>
+
+	
+</model>
+</ssase>
+
