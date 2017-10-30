@@ -15,7 +15,7 @@ Currently it encapsulates the following sub-frameworks/components, some of which
 
 This is a framework that enables self-adaptive feature selection and selection of learning algorithms to model the correlation of control features, environments, interference to Quality of Service (QoS) attributes (e.g., response time). More details can be found in the following publications:
 
- > * T. Chen and R. Bahsoon , Self-Adaptive and Online QoS Modeling for Cloud-Based Software Services. IEEE Transactions on Software Engineering, 2016, doi:10.1109/TSE.2016.2608826.
+ > * T. Chen and R. Bahsoon. Self-Adaptive and Online QoS Modeling for Cloud-Based Software Services, IEEE Transactions on Software Engineering, vol. 43, no. 5, 2017.
 
  > * T. Chen, R. Bahsoon and X. Yao. Online QoS Modeling in the Cloud: A Hybrid and Adaptive Multi-Learners Approach. The 7th IEEE/ACM International Conference on Utility and Cloud Computing (UCC2014), London, UK. 2014.
 
@@ -31,7 +31,6 @@ Source code directory:
 ## 2. RCA for architecting SAS
 ---------------
 
-- - - -
 
 ### RCA : Region Controlled Architecture
 
@@ -49,7 +48,6 @@ Source code directory:
 ## 3. DLDA for determining when to adapt the SAS
 ---------------
 
-- - - -
 
 ### DLDA: Debt Learning Driven Adaptation 
 
@@ -68,7 +66,6 @@ Experiment results:
 ## 4. FEMOSAA and MOACO-CD for decision making and optimization in SAS
 ---------------
 
-- - - -
 
 ### FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software at Runtime 
 
@@ -86,7 +83,7 @@ Experiment results:
 
 This is a component that exploits multi-objective ant colony algorithm to optimise adaptation decisions for self-adaptive software system at runtime. It particularly considers QoS interference caused by multi-tenants and virtualized environment, e.g. cloud computing. The approach leverage nash dominance, a popular economic principle, to find well-compromised/knee trade-off decisions. More details can be found in the following publications:
 
-  > * T. Chen and R. Bahsoon , Self-Adaptive Trade-off Decision Making for Autoscaling Cloud-Based Services. IEEE Transactions on Services Computing, 2015, doi:10.1109/TSC.2015.2499770.
+  > * T. Chen and R. Bahsoon. Self-Adaptive Trade-off Decision Making for Autoscaling Cloud-Based Services, IEEE Transactions on Services Computing, vol. 10, no. 4, 2017.
 
 Source code directory:
    * [src/main/java/org/ssase/objective/optimization/moaco/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/objective/optimization/moaco)
@@ -121,7 +118,7 @@ We are also in the process to add more exampled scenarios for using SSASE framew
 
 - - - -
 
-SSASE, including SAM, RCA, FEMOSAA and MOACO, can be setup and run via the following steps:
+SSASE, including SAM, RCA, DLDA, FEMOSAA and MOACO, can be setup and run via the following steps:
 
 1. Download/fork/clone the repository to your local codebase.
 2. Implement the sensors for the QoS attributes, control features and environmental factors in your domain of self-adaptive software by extending the [Sensor.java](https://github.com/taochen/ssase/blob/master/src/main/java/org/ssase/sensor/Sensor.java) interface. We have already provided implementation for the most commonly considered dimension in [src/main/java/org/ssase/sensor](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/sensor).
