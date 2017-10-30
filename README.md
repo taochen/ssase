@@ -10,7 +10,6 @@ Currently it encapsulates the following sub-frameworks/components, some of which
 ## 1. SAM for QoS/performance modeling in SAS
 ---------------
 
-- - - -
 
 ### SAM: Self-Adaptive Modeling
 
