@@ -7,12 +7,12 @@ Currently it encapsulates the following sub-frameworks/components, some of which
 
 - - - -
 
-1. SAM for QoS/performance modeling in SAS
+## 1. SAM for QoS/performance modeling in SAS
 ---------------
 
 - - - -
 
-###SAM: Self-Adaptive Modeling###
+### SAM: Self-Adaptive Modeling
 
 This is a framework that enables self-adaptive feature selection and selection of learning algorithms to model the correlation of control features, environments, interference to Quality of Service (QoS) attributes (e.g., response time). More details can be found in the following publications:
 
@@ -29,12 +29,12 @@ Source code directory:
 
 - - - -
 
-2. RCA for architecting SAS
+## 2. RCA for architecting SAS
 ---------------
 
 - - - -
 
-###RCA : Region Controlled Architecture###
+### RCA : Region Controlled Architecture
 
 This is a symbiotic component that intelligently partitions the architecture of self-adaptive software with respect to objective-dependency, which is determined by the inputs of QoS model.  More details can be found in the following publications:
 
@@ -47,12 +47,31 @@ Source code directory:
 
 - - - -
 
-3. FEMOSAA and MOACO-CD for decision making and optimization in SAS
+## 3. DLDA for determining when to adapt the SAS
 ---------------
 
 - - - -
 
-###FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software at Runtime 
+### DLDA: Debt Learning Driven Adaptation 
+
+Debt Learning Driven Adaptation (DLDA) is an automated framework that determines when and whether to adapt the SAS at runtime. DLDA leverages the temporal adaptation debt, a temporal notion derived from the technical debt metaphor in so ware engineering, to quantify the time-varying real money that the SAS carries in relation to its performance. We designed a temporal net debt driven labeling to label and correlate whether it is economically healthier to adapt the SAS (or not) in a circumstance, a er which an online learning classifier learns the correlation through the labeled samples, and then predicts whether to adapt under the unforeseen circumstances.
+
+To ensure flexibility, we designed DLDA as an independent framework that is compatible with different online learning classifiers (e.g., MLP, SVM) and planners (e.g., FEMOSAA, PLATO and FUSION) for adaptation, in which DLDA also learns the effectiveness of a planner on net debt under different circumstances.  us, the planning serves as a black box and DLDA can easily work with different planners.
+
+Source code directory:
+   * [src/main/java/org/ssase/debt/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/debt)
+
+Experiment results:
+   * [experiments-data/dlda/](https://github.com/taochen/ssase/tree/master/experiments-data/dlda)
+
+- - - -
+
+## 4. FEMOSAA and MOACO-CD for decision making and optimization in SAS
+---------------
+
+- - - -
+
+### FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software at Runtime 
 
 This is a novel framework that automatically synergizes the feature model and Multi-Objective Evolutionary Algorithm (MOEA) to optimize SAS’s conflicting QoS objectives at runtime. At design time, FEMOSAA automatically transposes the design of SAS, which is expressed as a feature model, to the chromosome representation and the reproduction operators (mutation and crossover) in MOEA. At runtime, the feature model serves as the domain knowledge to guide the search, providing a larger chance to find better solutions. FEMOSAA contains a new method to search for the knee solutions, which can achieve balanced trade-off. It does not cater for QoS interference, however. This work is currently being submitted for publication.
 
