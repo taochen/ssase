@@ -11,8 +11,8 @@ public class Data {
 	
 	
 	static int startIndex = 0;
-	static String prefix = "/Users/tao/research/analysis/results/";
-	
+	static String prefix = //"/Users/tao/research/analysis/results/";
+		"/Users/tao/research/experiments-data/femosaa/";
 	static String[] compare = new String[]{
 		
 // ###################### read write ######################	
@@ -114,6 +114,8 @@ public class Data {
 	
 		
 // ###################### SOA ######################
+
+		
 		
 //		"soa/FEMOSAA/",
 //		"soa/FEMOSAAd/",
@@ -133,17 +135,17 @@ public class Data {
 //		"soa/IBEA/",
 //		"soa/IBEA01/",
 		
-//		"soa/FEMOSAA/",		
+		"soa/FEMOSAA/",		
 //		"soa/FEMOSAAnothing/",
 //		"soa/FEMOSAA01/",
-//		"soa/NSGAIIkd/",
-//		"soa/NSGAII/",
+		"soa/NSGAIIkd/",
+		"soa/NSGAII/",
 //		"soa/NSGAII01/",
-//		"soa/IBEAkd/",
+		"soa/IBEAkd/",
 //		"soa/IBEA/",
 //		"soa/IBEA01/",
-//		"soa/GP/",
-//		"soa/BB/"
+		"soa/GP/",
+		"soa/BB/"
 		
 // ###################### SOA ######################
 		
@@ -232,9 +234,9 @@ public class Data {
 		
 //		"debt-aware/femosaa/sensitivity/mlp/u-0.001/sas/rubis_software/",//429.90
 //		"debt-aware/femosaa/sensitivity/mlp/u-0.005/sas/rubis_software/",// 524.77
-		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",//8.31
+//		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",//8.31
 //		"debt-aware/femosaa/sensitivity/mlp/u-0.1/sas/rubis_software/",//-101.17
-		"debt-aware/femosaa/sensitivity/mlp/u-1/sas/rubis_software/",//733.06
+//		"debt-aware/femosaa/sensitivity/mlp/u-1/sas/rubis_software/",//733.06
 		
 //		"moead/sas/rubis_software/",
 //		"debt-aware/femosaa/random-10/sas/rubis_software/",
@@ -254,10 +256,10 @@ public class Data {
 	};
 	
 	static String[] obj = new String[]{
-		"Response Time.rtf",
-		"Energy.rtf",
-//		"Throughput.rtf",
-//		"Cost.rtf",
+//		"Response Time.rtf",
+//		"Energy.rtf",
+		"Throughput.rtf",
+		"Cost.rtf",
 	};
 	
 	static double[] requirements = new double[]{
@@ -291,6 +293,7 @@ public class Data {
 	static Map<String, List<Double>> AdaMap = new HashMap<String, List<Double>> ();
 	static Map<String, List<Double>> AdaTimeMap = new HashMap<String, List<Double>> ();
 	
+	static Map<String, double[]> log_values_add = new HashMap<String, double[]> ();
 	
 	static double[] workload = new double[]{
 		38.54367256463304,
@@ -481,19 +484,45 @@ public class Data {
 			}
 		}
 		
-		
-//		staTest("soa/FEMOSAA/", "soa/NSGAII/");
-//		staTest("soa/NSGAIIkd/", "soa/NSGAII/");
-//		staTest("soa/IBEAkd/", "soa/NSGAII/");
-//	
-//		staTest("soa/FEMOSAA/", "soa/GP/");
-//		staTest("soa/NSGAIIkd/", "soa/GP/");
-//		staTest("soa/IBEAkd/", "soa/GP/");
+//		staTest("sas/FEMOSAA/", "sas/FEMOSAAd/");
+//		staTest("sas/FEMOSAA/", "sas/FEMOSAAk/");
+//		staTest("sas/FEMOSAA/", "sas/FEMOSAAnothing/");
+//		staTest("sas/FEMOSAA/", "sas/FEMOSAA01/");
 //		
-//		staTest("soa/FEMOSAA/", "soa/BB/");
-//		staTest("soa/NSGAIIkd/", "soa/BB/");
-//		staTest("soa/IBEAkd/", "soa/BB/");
+//		staTest("sas/FEMOSAAnothing/", "sas/FEMOSAAd/");
+//		staTest("sas/FEMOSAAnothing/", "sas/FEMOSAAk/");
+//		staTest("sas/FEMOSAAnothing/", "sas/FEMOSAA01/");
 		
+//		staTest("sas/NSGAIIkd/", "sas/NSGAIId/");
+//		staTest("sas/NSGAIIkd/", "sas/NSGAIIk/");
+//		staTest("sas/NSGAIIkd/", "sas/NSGAII/");
+//		staTest("sas/NSGAIIkd/", "sas/NSGAII01/");
+//		
+//		staTest("sas/NSGAII/", "sas/NSGAIId/");
+//		staTest("sas/NSGAII/", "sas/NSGAIIk/");
+//		staTest("sas/NSGAII/", "sas/NSGAII01/");
+		
+//		staTest("sas/IBEAkd/", "sas/IBEAd/");
+//		staTest("sas/IBEAkd/", "sas/IBEAk/");
+//		staTest("sas/IBEAkd/", "sas/IBEA/");
+//		staTest("sas/IBEAkd/", "sas/IBEA01/");
+//		
+//		staTest("sas/IBEA/", "sas/IBEAd/");
+//		staTest("sas/IBEA/", "sas/IBEAk/");
+//		staTest("sas/IBEA/", "sas/IBEA01/");
+		
+//		staTest("sas/FEMOSAA/", "sas/NSGAII/");
+//		staTest("sas/NSGAIIkd/", "sas/NSGAII/");
+//		staTest("sas/IBEAkd/", "sas/NSGAII/");
+//	
+//		staTest("sas/FEMOSAA/", "sas/GP/");
+//		staTest("sas/NSGAIIkd/", "sas/GP/");
+//		staTest("sas/IBEAkd/", "sas/GP/");
+//		
+//		staTest("sas/FEMOSAA/", "sas/BB/");
+//		staTest("sas/NSGAIIkd/", "sas/BB/");
+//		staTest("sas/IBEAkd/", "sas/BB/");
+//		print3DForSOA();
 		//if(1 == 1) return;
 		
 		// ***************** Below is for DLDA *****************
@@ -776,6 +805,28 @@ public class Data {
 	}
 	
 
+	private static void print3DForSOA(){
+		String data = "";
+		try {
+		
+		BufferedReader reader = new BufferedReader(new FileReader(new File("/Users/tao/research/potential-publications" +
+				"/FEMOSAA/paper/TOSEM/soa/soa-nsgaii.txt")));
+		String line = "";
+		
+		int i = 0;
+		while((line = reader.readLine()) != null) {
+			data += log_values_add.get("sas/NSGAIIkd/")[i] + " " 
+			                                         + line.split(" ")[1] + " "  
+			                                                           + log_values.get("sas/NSGAIIkd/")[i] + "\n";
+			i++;
+		}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.print(data);
+	}
 	
 	private static void staTest(String a, String b){
 		
@@ -798,10 +849,19 @@ public class Data {
 		System.out.print("-------------"+a + " to " + b +"-------------\n");
 		double p = test.wilcoxonSignedRankTest(log_values.get(a), log_values.get(b), false);
 		double es = test.getEffectSize(log_values.get(a), log_values.get(b));
+		String e = "";
+		if (es < 0.1) {
+			e = "trivial";
+		} else if (0.1 < es && es < 0.24) {
+			e = "small";
+		} else if (0.24 < es && es < 0.37)  {
+			e = "medium";
+		} else {
+			e = "large";
+		}
 		
-		
-		System.out.print("p value " + p +"\n");
-		System.out.print("effect size " + es +"\n");
+		System.out.print("p value: " + p +"\n");
+		System.out.print("effect size: " + es + "-" + e +"\n");
 	}
 	
 	private static double read(String name, String obj) throws Throwable {
@@ -1232,13 +1292,13 @@ public class Data {
 		
 		for (int i = 0; i < newValues.length; i++) {
 			//System.out.print(values[i] + "\n");
-			System.out.print("("+i+","+newValues[i] + ")\n");
+			//System.out.print("("+i+","+newValues[i] + ")\n");
 			d = d + newValues[i] + ",";
 			n = n + (i + 1) + ",";
 			gsd += newValues[i];
 		}
 		
-		System.out.print("Mean " + gsd/newValues.length + "\n");
+		//System.out.print("Mean " + gsd/newValues.length + "\n");
 		
 		double mean = gsd/newValues.length;
 		double var = 0.0;
@@ -1246,9 +1306,9 @@ public class Data {
 			var += Math.pow((newValues[i] - mean), 2);
 		}
 		
-		System.out.print("Var "+var/newValues.length + "\n");
-		System.out.print(d + "\n");
-		System.out.print(n + "\n");
+		//System.out.print("Var "+var/newValues.length + "\n");
+		//System.out.print(d + "\n");
+		//System.out.print(n + "\n");
 		return newValues;
 	}
 	
@@ -1363,7 +1423,7 @@ public class Data {
 			//	", " + (Math.pow(total, 1.0/no)+1.96*gsd/Math.sqrt(list.size())) +"]\n");
 		//System.out.print("GVAR: " + approach +", "+obj+"="+(gsd*gsd)+"\n");
 		
-		if(obj.equals("Energy.rtf")) {
+		if(obj.equals("Throughput.rtf")) {
 			//System.out.print(approach  + "*******\n");
 			Double[] v = log(list.toArray(new Double[list.size()]));
 			//Double[] v = list.toArray(new Double[list.size()]);
@@ -1375,6 +1435,32 @@ public class Data {
 			}
 			log_values.put(approach, l);
 		}
+		
+//		if(obj.equals("Throughput.rtf")) {
+//			//System.out.print(approach  + "*******\n");
+//			Double[] v = list.toArray(new Double[list.size()]);
+//			//Double[] v = list.toArray(new Double[list.size()]);
+//			double[] l = new double[v.length];
+//			
+//			for (int k = 0 ; k < v.length;k++) {
+//				l[k] = 1/v[k];
+//				//System.out.print(l[k]+"\n");
+//			}
+//			log_values.put(approach, l);
+//		}
+//		
+//		if(obj.equals("Cost.rtf")) {
+//			//System.out.print(approach  + "*******\n");
+//			Double[] v = list.toArray(new Double[list.size()]);
+//			//Double[] v = list.toArray(new Double[list.size()]);
+//			double[] l = new double[v.length];
+//			
+//			for (int k = 0 ; k < v.length;k++) {
+//				l[k] = v[k];
+//				//System.out.print(l[k]+"\n");
+//			}
+//			log_values_add.put(approach, l);
+//		}
 		
 		htotal = no / htotal;
 		
