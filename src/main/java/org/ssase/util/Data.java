@@ -12,7 +12,8 @@ public class Data {
 	
 	static int startIndex = 0;
 	static String prefix = //"/Users/tao/research/analysis/results/";
-		"/Users/tao/research/experiments-data/femosaa/";
+		//"/Users/tao/research/experiments-data/femosaa/";
+		"/Users/tao/research/monitor/sas-soa/final/";
 	static String[] compare = new String[]{
 		
 // ###################### read write ######################	
@@ -116,6 +117,17 @@ public class Data {
 // ###################### SOA ######################
 
 		
+		"sas/FEMOSAA/",		
+//		"sas/FEMOSAAnothing/",
+//		"sas/FEMOSAA01/",
+		"sas/NSGAIIkd/",
+		"sas/NSGAII/",
+		"sas/NSGAII01/",
+		"sas/IBEAkd/",
+//		"sas/IBEA/",
+//		"sas/IBEA01/",
+		"sas/GP/",
+		"sas/BB/"	
 		
 //		"soa/FEMOSAA/",
 //		"soa/FEMOSAAd/",
@@ -135,17 +147,17 @@ public class Data {
 //		"soa/IBEA/",
 //		"soa/IBEA01/",
 		
-		"soa/FEMOSAA/",		
+//		"soa/FEMOSAA/",		
 //		"soa/FEMOSAAnothing/",
 //		"soa/FEMOSAA01/",
-		"soa/NSGAIIkd/",
-		"soa/NSGAII/",
+//		"soa/NSGAIIkd/",
+//		"soa/NSGAII/",
 //		"soa/NSGAII01/",
-		"soa/IBEAkd/",
+//		"soa/IBEAkd/",
 //		"soa/IBEA/",
 //		"soa/IBEA01/",
-		"soa/GP/",
-		"soa/BB/"
+//		"soa/GP/",
+//		"soa/BB/"
 		
 // ###################### SOA ######################
 		
@@ -511,18 +523,18 @@ public class Data {
 //		staTest("sas/IBEA/", "sas/IBEAk/");
 //		staTest("sas/IBEA/", "sas/IBEA01/");
 		
-//		staTest("sas/FEMOSAA/", "sas/NSGAII/");
-//		staTest("sas/NSGAIIkd/", "sas/NSGAII/");
-//		staTest("sas/IBEAkd/", "sas/NSGAII/");
-//	
-//		staTest("sas/FEMOSAA/", "sas/GP/");
-//		staTest("sas/NSGAIIkd/", "sas/GP/");
-//		staTest("sas/IBEAkd/", "sas/GP/");
-//		
-//		staTest("sas/FEMOSAA/", "sas/BB/");
-//		staTest("sas/NSGAIIkd/", "sas/BB/");
-//		staTest("sas/IBEAkd/", "sas/BB/");
-//		print3DForSOA();
+		staTest("sas/FEMOSAA/", "sas/NSGAII/");
+		staTest("sas/NSGAIIkd/", "sas/NSGAII/");
+		staTest("sas/IBEAkd/", "sas/NSGAII/");
+	
+		staTest("sas/FEMOSAA/", "sas/GP/");
+		staTest("sas/NSGAIIkd/", "sas/GP/");
+		staTest("sas/IBEAkd/", "sas/GP/");
+		
+		staTest("sas/FEMOSAA/", "sas/BB/");
+		staTest("sas/NSGAIIkd/", "sas/BB/");
+		staTest("sas/IBEAkd/", "sas/BB/");
+		print3DForSOA();
 		//if(1 == 1) return;
 		
 		// ***************** Below is for DLDA *****************
@@ -810,14 +822,14 @@ public class Data {
 		try {
 		
 		BufferedReader reader = new BufferedReader(new FileReader(new File("/Users/tao/research/potential-publications" +
-				"/FEMOSAA/paper/TOSEM/soa/soa-nsgaii.txt")));
+				"/FEMOSAA/paper/TOSEM/soa/soa-nsgaii-plain.txt")));
 		String line = "";
 		
 		int i = 0;
 		while((line = reader.readLine()) != null) {
-			data += log_values_add.get("sas/NSGAIIkd/")[i] + " " 
+			data += log_values_add.get("sas/NSGAII/")[i] + " " 
 			                                         + line.split(" ")[1] + " "  
-			                                                           + log_values.get("sas/NSGAIIkd/")[i] + "\n";
+			                                                           + log_values.get("sas/NSGAII/")[i] + "\n";
 			i++;
 		}
 		
