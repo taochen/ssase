@@ -117,17 +117,17 @@ public class Data {
 // ###################### SOA ######################
 
 		
-		"sas/FEMOSAA/",		
+//		"sas/FEMOSAA/",		
 //		"sas/FEMOSAAnothing/",
-//		"sas/FEMOSAA01/",
-		"sas/NSGAIIkd/",
-		"sas/NSGAII/",
+		"sas/FEMOSAA01/",
+//		"sas/NSGAIIkd/",
+//		"sas/NSGAII/",
 		"sas/NSGAII01/",
-		"sas/IBEAkd/",
+//		"sas/IBEAkd/",
 //		"sas/IBEA/",
-//		"sas/IBEA01/",
-		"sas/GP/",
-		"sas/BB/"	
+		"sas/IBEA01/",
+//		"sas/GP/",
+//		"sas/BB/"	
 		
 //		"soa/FEMOSAA/",
 //		"soa/FEMOSAAd/",
@@ -517,23 +517,23 @@ public class Data {
 //		staTest("sas/IBEAkd/", "sas/IBEAd/");
 //		staTest("sas/IBEAkd/", "sas/IBEAk/");
 //		staTest("sas/IBEAkd/", "sas/IBEA/");
-//		staTest("sas/IBEAkd/", "sas/IBEA01/");
+		staTest("sas/IBEAkd/", "sas/IBEA01/");
 //		
 //		staTest("sas/IBEA/", "sas/IBEAd/");
 //		staTest("sas/IBEA/", "sas/IBEAk/");
-//		staTest("sas/IBEA/", "sas/IBEA01/");
+		staTest("sas/IBEA/", "sas/IBEA01/");
 		
-		staTest("sas/FEMOSAA/", "sas/NSGAII/");
-		staTest("sas/NSGAIIkd/", "sas/NSGAII/");
-		staTest("sas/IBEAkd/", "sas/NSGAII/");
-	
-		staTest("sas/FEMOSAA/", "sas/GP/");
-		staTest("sas/NSGAIIkd/", "sas/GP/");
-		staTest("sas/IBEAkd/", "sas/GP/");
-		
-		staTest("sas/FEMOSAA/", "sas/BB/");
-		staTest("sas/NSGAIIkd/", "sas/BB/");
-		staTest("sas/IBEAkd/", "sas/BB/");
+//		staTest("sas/FEMOSAA/", "sas/NSGAII/");
+//		staTest("sas/NSGAIIkd/", "sas/NSGAII/");
+//		staTest("sas/IBEAkd/", "sas/NSGAII/");
+//	
+//		staTest("sas/FEMOSAA/", "sas/GP/");
+//		staTest("sas/NSGAIIkd/", "sas/GP/");
+//		staTest("sas/IBEAkd/", "sas/GP/");
+//		
+//		staTest("sas/FEMOSAA/", "sas/BB/");
+//		staTest("sas/NSGAIIkd/", "sas/BB/");
+//		staTest("sas/IBEAkd/", "sas/BB/");
 		print3DForSOA();
 		//if(1 == 1) return;
 		
@@ -822,14 +822,14 @@ public class Data {
 		try {
 		
 		BufferedReader reader = new BufferedReader(new FileReader(new File("/Users/tao/research/potential-publications" +
-				"/FEMOSAA/paper/TOSEM/soa/soa-nsgaii-plain.txt")));
+				"/FEMOSAA/paper/TOSEM/soa/soa-ibea-01.txt")));
 		String line = "";
 		
 		int i = 0;
 		while((line = reader.readLine()) != null) {
-			data += log_values_add.get("sas/NSGAII/")[i] + " " 
+			data += log_values_add.get("sas/IBEA01/")[i] + " " 
 			                                         + line.split(" ")[1] + " "  
-			                                                           + log_values.get("sas/NSGAII/")[i] + "\n";
+			                                                           + log_values.get("sas/IBEA01/")[i] + "\n";
 			i++;
 		}
 		
@@ -1473,7 +1473,7 @@ public class Data {
 //			}
 //			log_values_add.put(approach, l);
 //		}
-		
+//		
 		htotal = no / htotal;
 		
 		

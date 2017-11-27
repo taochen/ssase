@@ -117,7 +117,7 @@ public class FEMOSAASolution extends SASSolution {
 						for (int j = 0; j < Repository.getSortedControlPrimitives(objectives.get(0)).get(k).getValueVector().length; j++) {
 							if(Repository.getSortedControlPrimitives(objectives.get(0)).get(k).getValueVector()[j] == xValue[k]) {
 								try {
-									s.getDecisionVariables()[i].setValue(j);
+									s.getDecisionVariables()[k].setValue(j);
 								} catch (JMException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -128,7 +128,7 @@ public class FEMOSAASolution extends SASSolution {
 						
 						
 					}
-					
+					//System.out.print("Insiding manual check validiy\n");
 					isValid = s.isSolutionValid();	
 					
 				} else {
@@ -160,7 +160,7 @@ public class FEMOSAASolution extends SASSolution {
 					result[i] = Double.MAX_VALUE;
 				}
 				}catch(Throwable t) {
-					System.err.print("This solution is " + this.isSolutionValid() + "\n");
+					System.err.print("This solution is " + isValid + "\n");
 					String o = "";
 					for(int k = 0; k < this.getDecisionVariables().length; k++) {
 						try {
@@ -172,6 +172,7 @@ public class FEMOSAASolution extends SASSolution {
 						}
 					}
 					System.err.print(o + "\n");
+					t.printStackTrace();
 				}
 				
 			} else {
