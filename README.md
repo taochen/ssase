@@ -1,4 +1,4 @@
-SSASE (including SAM, RCA, FEMOSAA and MOACO)
+SSASE (including SAM, RCA, DLDA, FEMOSAA and MOACO)
 ==========
 
 This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering techniques to tackle modelings, architecting and decision making problems for self-adaptive software systems (SAS), especially at their runtime.
