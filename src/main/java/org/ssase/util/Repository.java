@@ -227,11 +227,46 @@ public class Repository {
 		initUniformWeight();
 	}
 	
+	/**
+	 * This is only for 2 objectives problem.
+	 */
 	public static void initUniformWeight() {
 		//Always 2 objectives
 		String dataFileName;
 		dataFileName = "W2D_" + MOEAD_SAS_main.popsize + ".dat";
 		lambda_   = new double[MOEAD_SAS_main.popsize][2];
+		try {
+			// Open the file
+			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/tao/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/tao/weight" + "/"
+					+ dataFileName);
+			InputStreamReader isr = new InputStreamReader(fis);
+			BufferedReader br = new BufferedReader(isr);
+
+			int i = 0;
+			int j = 0;
+			String aux = br.readLine();
+			while (aux != null) {
+				StringTokenizer st = new StringTokenizer(aux);
+				j = 0;
+				while (st.hasMoreTokens()) {
+					double value = (new Double(st.nextToken())).doubleValue();
+					lambda_[i][j] = value;
+					j++;
+				}
+				aux = br.readLine();
+				i++;
+			}
+			br.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	} // initUniformWeight
+	
+	public static void initUniformWeight(String fileName, int no) {
+		//Always 2 objectives
+		String dataFileName;
+		dataFileName = fileName;
+		lambda_   = new double[no][3];
 		try {
 			// Open the file
 			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/tao/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/tao/weight" + "/"

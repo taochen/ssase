@@ -11,9 +11,9 @@ public class Data {
 	
 	
 	static int startIndex = 0;
-	static String prefix = //"/Users/tao/research/analysis/results/";
+	static String prefix = "/Users/tao/research/analysis/results/";
 		//"/Users/tao/research/experiments-data/femosaa/";
-		"/Users/tao/research/monitor/sas-soa/final/";
+		//"/Users/tao/research/monitor/sas-soa/final/";
 	static String[] compare = new String[]{
 		
 // ###################### read write ######################	
@@ -119,13 +119,13 @@ public class Data {
 		
 //		"sas/FEMOSAA/",		
 //		"sas/FEMOSAAnothing/",
-		"sas/FEMOSAA01/",
+//		"sas/FEMOSAA01/",
 //		"sas/NSGAIIkd/",
 //		"sas/NSGAII/",
-		"sas/NSGAII01/",
+//		"sas/NSGAII01/",
 //		"sas/IBEAkd/",
 //		"sas/IBEA/",
-		"sas/IBEA01/",
+//		"sas/IBEA01/",
 //		"sas/GP/",
 //		"sas/BB/"	
 		
@@ -164,15 +164,15 @@ public class Data {
 		
 // ###################### DLDA ######################
 		
-//		"moead/sas/rubis_software/",
-//		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-//		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-//		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
-//		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
-//		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
-//		"debt-aware/femosaa/random-10/sas/rubis_software/",
-//		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/",
-//		"debt-aware/femosaa/pred/sas/rubis_software/"
+		"moead/sas/rubis_software/",
+		"debt-aware/femosaa/htree-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+		"debt-aware/femosaa/nb-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+		"debt-aware/femosaa/svm-0.01-rt-0.05-3.5-ec-5-0.5/sas/rubis_software/",
+		"debt-aware/femosaa/knn-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
+		"debt-aware/femosaa/mlp-0.01-rt-0.05-3.5-ec-5-0.5/all/sas/rubis_software/",
+		"debt-aware/femosaa/random-10/sas/rubis_software/",
+		"debt-aware/femosaa/rt-0.05-ec-5/sas/rubis_software/",
+		"debt-aware/femosaa/pred/sas/rubis_software/"
 		
 //		"gp/sas/rubis_software/",
 //		"debt-aware/plato/htree/sas/rubis_software/",
@@ -268,10 +268,10 @@ public class Data {
 	};
 	
 	static String[] obj = new String[]{
-//		"Response Time.rtf",
-//		"Energy.rtf",
-		"Throughput.rtf",
-		"Cost.rtf",
+		"Response Time.rtf",
+		"Energy.rtf",
+//		"Throughput.rtf",
+//		"Cost.rtf",
 	};
 	
 	static double[] requirements = new double[]{
@@ -302,6 +302,7 @@ public class Data {
 	
 	static Map<String, List<Double>> surface = new HashMap<String, List<Double>> ();
 	static Map<String, double[]> log_values = new HashMap<String, double[]> ();
+	static Map<String, Double[]> values = new HashMap<String, Double[]> ();
 	static Map<String, List<Double>> AdaMap = new HashMap<String, List<Double>> ();
 	static Map<String, List<Double>> AdaTimeMap = new HashMap<String, List<Double>> ();
 	
@@ -496,6 +497,8 @@ public class Data {
 			}
 		}
 		
+		printComplianceAndMaxViolation();
+		
 //		staTest("sas/FEMOSAA/", "sas/FEMOSAAd/");
 //		staTest("sas/FEMOSAA/", "sas/FEMOSAAk/");
 //		staTest("sas/FEMOSAA/", "sas/FEMOSAAnothing/");
@@ -517,11 +520,11 @@ public class Data {
 //		staTest("sas/IBEAkd/", "sas/IBEAd/");
 //		staTest("sas/IBEAkd/", "sas/IBEAk/");
 //		staTest("sas/IBEAkd/", "sas/IBEA/");
-		staTest("sas/IBEAkd/", "sas/IBEA01/");
+//		staTest("sas/IBEAkd/", "sas/IBEA01/");
 //		
 //		staTest("sas/IBEA/", "sas/IBEAd/");
 //		staTest("sas/IBEA/", "sas/IBEAk/");
-		staTest("sas/IBEA/", "sas/IBEA01/");
+//		staTest("sas/IBEA/", "sas/IBEA01/");
 		
 //		staTest("sas/FEMOSAA/", "sas/NSGAII/");
 //		staTest("sas/NSGAIIkd/", "sas/NSGAII/");
@@ -534,8 +537,13 @@ public class Data {
 //		staTest("sas/FEMOSAA/", "sas/BB/");
 //		staTest("sas/NSGAIIkd/", "sas/BB/");
 //		staTest("sas/IBEAkd/", "sas/BB/");
-		print3DForSOA();
-		//if(1 == 1) return;
+
+		
+		
+//		print3DForSOA();
+		
+		
+		if(1 == 1) return;
 		
 		// ***************** Below is for DLDA *****************
 		
@@ -816,6 +824,22 @@ public class Data {
 	    }
 	}
 	
+	private static void printComplianceAndMaxViolation(){
+		double threshold = 5;
+		for (Map.Entry<String, Double[]> e : values.entrySet()) {
+			double c = 0.0;
+			double m = Double.MIN_VALUE;
+			//System.out.print(e.getKey() + "\n");
+			for (double d : e.getValue()) {
+				c += d < threshold? 0.0 : d - threshold;
+				m = m < d? d : m;
+			}
+			
+			c = c / e.getValue().length;
+			
+			System.out.print(e.getKey() + ", Compliance: " + c + ", Overshoot: " + m + "\n");
+		}
+	}
 
 	private static void print3DForSOA(){
 		String data = "";
@@ -1435,7 +1459,7 @@ public class Data {
 			//	", " + (Math.pow(total, 1.0/no)+1.96*gsd/Math.sqrt(list.size())) +"]\n");
 		//System.out.print("GVAR: " + approach +", "+obj+"="+(gsd*gsd)+"\n");
 		
-		if(obj.equals("Throughput.rtf")) {
+		if(obj.equals("Energy.rtf")) {
 			//System.out.print(approach  + "*******\n");
 			Double[] v = log(list.toArray(new Double[list.size()]));
 			//Double[] v = list.toArray(new Double[list.size()]);
@@ -1446,6 +1470,7 @@ public class Data {
 				//System.out.print(l[k]+"\n");
 			}
 			log_values.put(approach, l);
+			values.put(approach, list.toArray(new Double[list.size()]));
 		}
 		
 //		if(obj.equals("Throughput.rtf")) {
