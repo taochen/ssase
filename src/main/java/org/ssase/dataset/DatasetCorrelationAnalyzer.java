@@ -54,8 +54,36 @@ CV pearsons: 0.32358279638428933
  */
 public class DatasetCorrelationAnalyzer {
 
+	/**
+	 * 
+	 * rubis online
+	 * Drift spearmans: 0.9278260869565216
+Drift pearsons: 0.9520708899219287
+CV spearmans: -0.2782815615152101
+CV pearsons: 0.17413074245372098
+	 * 
+	 * rubis offline
+	 * Drift spearmans: 0.9881422924901186
+Drift pearsons: 0.9698435381043956
+CV spearmans: -0.11698501511351211
+CV pearsons: 0.23438936225997342
+
+asos online
+Drift spearmans: 0.6783216783216783
+Drift pearsons: 0.771350521766401
+CV spearmans: 0.2121212121212123
+CV pearsons: 0.06749444692318847
+
+asos offline
+Drift spearmans: 0.923076923076923
+Drift pearsons: 0.8805615556338793
+CV spearmans: -0.5636363636363637
+CV pearsons: -0.47728106713656065
+	 */
 	private static List<Double> drift;
 	private static List<Double> data_size;
+	
+	private static String omitted = "";
 	
 	public static void main1(String[] args) {
 		long n = 65270;
@@ -66,69 +94,69 @@ public class DatasetCorrelationAnalyzer {
 		
 		boolean isOn = false;
 		
-		List[] r1 =			new DatasetCorrelationAnalyzer()
-		.readAccuracy("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",
-		"/Users/tao/research/experiments-data/on-off/femosaa/correlation",
-		"sas/rubis_software", isOn, true, "");
+//		List[] r1 =			new DatasetCorrelationAnalyzer()
+//		.readAccuracy("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",
+//		"/Users/tao/research/experiments-data/on-off/femosaa/correlation",
+//		"sas/rubis_software", isOn, true, "");
 ////		
 ////	
 		List[] r2 =new DatasetCorrelationAnalyzer()
 		.readAccuracy("/Users/tao/research/experiments-data/on-off/wsdream/processed/completed_results",
 				"/Users/tao/research/experiments-data/on-off/wsdream/processed/correlation",
 				"", isOn, false, "");
+////		
+////		
+//		List[] r3 =new DatasetCorrelationAnalyzer()
+//		.readAccuracy("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",
+//				"/Users/tao/research/experiments-data/on-off/amazon-ec2/dataset/correlation",
+//				"", isOn, false, "");
 //		
 //		
-		List[] r3 =new DatasetCorrelationAnalyzer()
-		.readAccuracy("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",
-				"/Users/tao/research/experiments-data/on-off/amazon-ec2/dataset/correlation",
-				"", isOn, false, "");
-		
-		
+////		
+//		List[] r11 =			new DatasetCorrelationAnalyzer()
+//				.readTime("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",
+//						"/Users/tao/research/experiments-data/on-off/femosaa/correlation",
+//						"sas/rubis_software", isOn, true, "");
+////		
+////	
+//		List[] r22 =new DatasetCorrelationAnalyzer()
+//		.readTime("/Users/tao/research/experiments-data/on-off/wsdream/processed/completed_results",
+//				"/Users/tao/research/experiments-data/on-off/wsdream/processed/correlation",
+//				"", isOn, false, "");
 //		
-		List[] r11 =			new DatasetCorrelationAnalyzer()
-				.readTime("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",
-						"/Users/tao/research/experiments-data/on-off/femosaa/correlation",
-						"sas/rubis_software", isOn, true, "");
 //		
-//	
-		List[] r22 =new DatasetCorrelationAnalyzer()
-		.readTime("/Users/tao/research/experiments-data/on-off/wsdream/processed/completed_results",
-				"/Users/tao/research/experiments-data/on-off/wsdream/processed/correlation",
-				"", isOn, false, "");
-		
-		
-		List[] r33 =new DatasetCorrelationAnalyzer()
-		.readTime("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",
-				"/Users/tao/research/experiments-data/on-off/amazon-ec2/dataset/correlation",
-				"", isOn, false, "");
+//		List[] r33 =new DatasetCorrelationAnalyzer()
+//		.readTime("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",
+//				"/Users/tao/research/experiments-data/on-off/amazon-ec2/dataset/correlation",
+//				"", isOn, false, "");
 //		
 		
 		// new
 		// DatasetCorrelationAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",
 		// "Execution.txt", "-", false);
 		
-		List[] r = new List[r1.length];
+		List[] r = new List[r2.length];
 		
 		for (int i = 0; i < r.length;i++) {
 			List list = new ArrayList();
-			list.addAll(r1[i]);
+//			list.addAll(r1[i]);
 			list.addAll(r2[i]);
-			list.addAll(r3[i]);
+//			list.addAll(r3[i]);
 			r[i] = list;
 		}
 //		
-       List[] rr = new List[r11.length];
-		
-		for (int i = 0; i < rr.length;i++) {
-			List list = new ArrayList();
-			list.addAll(r11[i]);
-			list.addAll(r22[i]);
-			list.addAll(r33[i]);
-			rr[i] = list;
-		}
+//       List[] rr = new List[r11.length];
+//		
+//		for (int i = 0; i < rr.length;i++) {
+//			List list = new ArrayList();
+//			list.addAll(r11[i]);
+//			list.addAll(r22[i]);
+//			list.addAll(r33[i]);
+//			rr[i] = list;
+//		}
 
 		new DatasetCorrelationAnalyzer().print(r, isOn);
-		new DatasetCorrelationAnalyzer().printTime(rr, isOn);
+//		new DatasetCorrelationAnalyzer().printTime(rr, isOn);
 	}
 
 	public void print(List[] r, boolean isOn) {
@@ -278,13 +306,19 @@ public class DatasetCorrelationAnalyzer {
 		
 		
 		System.out.print("--------drift---------\n");
+		double d = 0.0;
 		for (int i = 0; i < drift_cases.length; i++) {
 			System.out.print("("+d_drift[i]+","+drift_cases[i]+")\n");
+			d += d_drift[i];
 		}
+		System.out.print("Overall drifit: " + (d/d_drift.length) + "\n");
+		d = 0.0;
 		System.out.print("--------rsd---------\n");
 		for (int i = 0; i < rsd_cases.length; i++) {
 			System.out.print("("+d_traces[i]+","+rsd_cases[i]+")\n");
+			d += d_traces[i];
 		}
+		System.out.print("Overall RSD: " + (d/d_traces.length) + "\n");
 	}
 	
 	
@@ -565,7 +599,7 @@ public class DatasetCorrelationAnalyzer {
 		for (File subF : f.listFiles()) {
 			List<Double> list = new ArrayList<Double>();
 			
-			if(".DS_Store".equals(subF.getName())) {
+			if(".DS_Store".equals(subF.getName()) || (omitted+".rtf").equals(subF.getName())) {
 				continue;
 			}
 			
@@ -633,6 +667,11 @@ public class DatasetCorrelationAnalyzer {
 	private void read(String path, boolean isOn, File f4, File f3,
 			List<Double> traces, List<Double> cases, List<Double> cases_detail,
 			List<Integer> cases_index, String learner) {
+		
+		if(f4.getName().equals(omitted)) {
+			return;
+		}
+		
 		for (File f5 : f4.listFiles()) {
 			
 			
@@ -744,6 +783,11 @@ public class DatasetCorrelationAnalyzer {
 				return;
 			
 		}
+		
+		if(f3.getName().equals(omitted)) {
+			return;
+		}
+		
 		
 		if (isOn) {
 

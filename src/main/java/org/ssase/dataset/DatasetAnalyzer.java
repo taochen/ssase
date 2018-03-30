@@ -24,9 +24,9 @@ import com.davidsoergel.dsutils.file.FileUtils;
 
 public class DatasetAnalyzer {
 
-	private static final String c1 = "onBOOSTING-TREE";
-	private static final String c2 = "offBOOSTING-TREE";
-	private static final String file = "_time.rtf"; //_data.rtf
+	private static final String c1 = "onBAGGING-TREE";
+	private static final String c2 = "offBAGGING-TREE";
+	private static final String file = "_data.rtf"; //_data.rtf, _data.rtf
 	private static Map<String, List<Double>> global = new HashMap<String, List<Double>>();
 	private static Map<String, List<Double>> detail_global = new HashMap<String, List<Double>>();
 	private static boolean print_trace = false;
@@ -36,7 +36,7 @@ public class DatasetAnalyzer {
 		new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/wsdream/processed/completed_results",  "rtdata.rtf", "tpdata.rtf", false);
 		new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",  "Execution.txt", "-", false);
 	
-		printCDF("/Users/tao/research/experiments-data/on-off/femosaa/completed_results", global, "All", new String[]{c1,c2});
+		//printCDF("/Users/tao/research/experiments-data/on-off/femosaa/completed_results", global, "All", new String[]{c1,c2});
 		//printCDF("/Users/tao/research/experiments-data/on-off/femosaa/completed_results", global, "All", new String[]{"onTREE","offTREE"});
 		//printCDF("/Users/tao/research/experiments-data/on-off/femosaa/completed_results", global, "All", new String[]{"onSVM","offSVM"});
 		//printCDF("/Users/tao/research/experiments-data/on-off/femosaa/completed_results", global, "All", new String[]{"onMLP","offMLP"});
@@ -47,9 +47,9 @@ public class DatasetAnalyzer {
 	}
 	
 	public static void main(String[] args) {
-		//new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",  "Response Time", "Energy", true);
+		new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/femosaa/completed_results",  "Response Time", "Energy", true);
 		//new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/wsdream/processed/completed_results",  "rtdata.rtf", "tpdata.rtf", false);
-		new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",  "Execution.txt", "-", false);
+		//new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/amazon-ec2/completed_results",  "Execution.txt", "-", false);
 		//new DatasetAnalyzer().readFEMOSAA("/Users/tao/research/experiments-data/on-off/amazon-ec2/dataset/completed_results_new",  "Execution.txt", "-", false);
 		
 		//printCDF("/Users/tao/research/experiments-data/on-off/femosaa/completed_results", detail_global, "All", new String[]{c1,c2});
@@ -531,8 +531,7 @@ public class DatasetAnalyzer {
 			//System.out.print("*********Doing " + f5.getName() + "\n");
 			for (File f6 : f5.listFiles()) {
 				
-				if(/**!f6.getName().endsWith("_data.rtf")**/ f6.getName().endsWith("_nano_time.rtf") ||
-						f6.getName().endsWith("_data.rtf") ) {
+				if(!f6.getName().endsWith("_data.rtf") ) {
 					continue;
 				}
 				
@@ -636,8 +635,7 @@ public class DatasetAnalyzer {
 			
 			//for (File f6 : f5.listFiles()) {
 				
-				if( /**!f5.getName().endsWith("_data.rtf")**/f5.getName().endsWith("_nano_time.rtf") ||
-						f5.getName().endsWith("_data.rtf") ) {
+				if( !f5.getName().endsWith("_data.rtf")) {
 					continue;
 				}
 				//System.out.print("*********Doing " + f5.getName() + "\n");
