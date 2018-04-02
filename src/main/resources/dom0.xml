@@ -8,20 +8,20 @@
            
            <service name="rubis_software">
            <softwareControlPrimitive>
-   <!--        
+   <!--          --> 
           <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="96" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="110" price_per_unit="0.5" switchoff="false" />
           <item name="AS3" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="106" price_per_unit="0.5" switchoff="false" />
           <item name="AS4" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="88" price_per_unit="0.5" switchoff="false" />
           <item name="AS5" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="110" price_per_unit="0.5" switchoff="false" />
  
-   
+     <!--  
           <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="119" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="98" price_per_unit="0.5" switchoff="false" />
           <item name="AS3" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="99" price_per_unit="0.5" switchoff="false" />
           <item name="AS4" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="100" price_per_unit="0.5" switchoff="false" />
           <item name="AS5" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="108" price_per_unit="0.5" switchoff="false" />
-                     
+                  
           <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="110" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="115" price_per_unit="0.5" switchoff="false" />
           <item name="AS3" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="101" price_per_unit="0.5" switchoff="false" />
@@ -29,7 +29,8 @@
           <item name="AS5" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="123" price_per_unit="0.5" switchoff="false" />
           
          
-    
+                
+        
           <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="96" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="110" price_per_unit="0.5" switchoff="false" />
           <item name="AS3" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="106" price_per_unit="0.5" switchoff="false" />
@@ -41,8 +42,7 @@
           <item name="AS9" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="100" price_per_unit="0.5" switchoff="false" />
           <item name="AS10" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="108" price_per_unit="0.5" switchoff="false" />
            
-         
-         
+   
            
           <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="110" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="115" price_per_unit="0.5" switchoff="false" />
@@ -56,7 +56,7 @@
           <item name="AS10" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="122" price_per_unit="0.5" switchoff="false" />
             
                  
-          
+         
          
           <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="122" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="118" price_per_unit="0.5" switchoff="false" />
@@ -69,7 +69,7 @@
           <item name="AS9" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="119" price_per_unit="0.5" switchoff="false" />
           <item name="AS10" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="122" price_per_unit="0.5" switchoff="false" />
               
-              
+            
                   
           <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="96" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="110" price_per_unit="0.5" switchoff="false" />
@@ -103,8 +103,8 @@
           <item name="AS13" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="102" price_per_unit="0.5" switchoff="false" />
           <item name="AS14" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="119" price_per_unit="0.5" switchoff="false" />
           <item name="AS15" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="122" price_per_unit="0.5" switchoff="false" />
-                   --> 
-    
+                  
+   
           
           <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="108" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="110" price_per_unit="0.5" switchoff="false" />
@@ -123,7 +123,7 @@
           <item name="AS15" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="86" price_per_unit="0.5" switchoff="false" />
          
      
-              <!--       -->           
+                  -->           
            </softwareControlPrimitive>
 
 
