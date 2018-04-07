@@ -1,4 +1,4 @@
-SSASE (including SAM, RCA, DLDA, FEMOSAA, MOACO and Seeding)
+SSASE (including [SAM](https://github.com/taochen/ssase#sam-self-adaptive-modeling), [RCA](https://github.com/taochen/ssase#rca--region-controlled-architecture), [DLDA](https://github.com/taochen/ssase#dlda-debt-learning-driven-adaptation), [FEMOSAA](https://github.com/taochen/ssase#femosaa-feature-guided-and-knee-driven-multi-objective-optimization-for-self-adaptive-software-at-runtime), [MOACO](https://github.com/taochen/ssase#moaco-cd-self-adaptive-and-interference-aware-multi-objective-ant-colony-optimization-for-decision-making-in-self-adaptive-software) and [Seeding](https://github.com/taochen/ssase#seeding-seeding-the-search-based-multi-objective-sas))
 ==========
 
 This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering (mainly nature-inspired algorithms such as evolutionary algorithms) and machine learning to tackle modelings, architecting and decision making problems for self-adaptive software systems (SAS), especially at their runtime.
@@ -146,7 +146,7 @@ We are also in the process to add more exampled scenarios for using SSASE framew
 
 - - - -
 
-SSASE, including SAM, RCA, DLDA, FEMOSAA and MOACO, can be setup and run via the following steps:
+SSASE, including SAM, RCA, DLDA, FEMOSAA, MOACO and Seeding, can be setup and run via the following steps:
 
 1. Download/fork/clone the repository to your local codebase.
 2. Implement the sensors for the QoS attributes, control features and environmental factors in your domain of self-adaptive software by extending the [Sensor.java](https://github.com/taochen/ssase/blob/master/src/main/java/org/ssase/sensor/Sensor.java) interface. We have already provided implementation for the most commonly considered dimension in [src/main/java/org/ssase/sensor](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/sensor).
