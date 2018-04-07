@@ -53,13 +53,15 @@ Source code directory:
 
 Debt Learning Driven Adaptation (DLDA) is an automated framework that determines when and whether to adapt the SAS at runtime. DLDA leverages the temporal adaptation debt, a temporal notion derived from the technical debt metaphor in so ware engineering, to quantify the time-varying real money that the SAS carries in relation to its performance. We designed a temporal net debt driven labeling to label and correlate whether it is economically healthier to adapt the SAS (or not) in a circumstance, a er which an online learning classifier learns the correlation through the labeled samples, and then predicts whether to adapt under the unforeseen circumstances.
 
-To ensure flexibility, we designed DLDA as an independent framework that is compatible with different online learning classifiers (e.g., MLP, SVM) and planners (e.g., FEMOSAA, PLATO and FUSION) for adaptation, in which DLDA also learns the effectiveness of a planner on net debt under different circumstances.  us, the planning serves as a black box and DLDA can easily work with different planners.
+To ensure flexibility, we designed DLDA as an independent framework that is compatible with different online learning classifiers (e.g., MLP, SVM) and planners (e.g., FEMOSAA, PLATO and FUSION) for adaptation, in which DLDA also learns the effectiveness of a planner on net debt under different circumstances.  us, the planning serves as a black box and DLDA can easily work with different planners. More details can be found in the following publications:
+
+ > * T. Chen, R. Bahsoon, S. Wang, and X. Yao. 2018. To Adapt or Not to Adapt? Technical Debt and Learning Driven Self-Adaptation for Managing Runtime Performance. In ICPE ’18: ACM/SPEC International Conference on Performance Engineering, April 9–13, 2018, Berlin, Germany. ACM, New York, NY, USA, 8 pages. https://doi.org/10.1145/3184407.3184413
 
 Source code directory:
    * [src/main/java/org/ssase/debt/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/debt)
 
 Experiment results:
-   * [experiments-data/dlda/](https://github.com/taochen/ssase/tree/master/experiments-data/dlda)
+   * [experiments-data/dlda/icpe2018/](https://github.com/taochen/ssase/tree/master/experiments-data/dlda/icpe2018)
 
 - - - -
 
@@ -69,15 +71,17 @@ Experiment results:
 
 ### FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software at Runtime 
 
-This is a novel framework that automatically synergizes the feature model and Multi-Objective Evolutionary Algorithm (MOEA) to optimize SAS’s conflicting QoS objectives at runtime. At design time, FEMOSAA automatically transposes the design of SAS, which is expressed as a feature model, to the chromosome representation and the reproduction operators (mutation and crossover) in MOEA. At runtime, the feature model serves as the domain knowledge to guide the search, providing a larger chance to find better solutions. FEMOSAA contains a new method to search for the knee solutions, which can achieve balanced trade-off. It does not cater for QoS interference, however. This work is currently being submitted for publication.
+This is a novel framework that automatically synergizes the feature model and Multi-Objective Evolutionary Algorithm (MOEA) to optimize SAS’s conflicting QoS objectives at runtime. At design time, FEMOSAA automatically transposes the design of SAS, which is expressed as a feature model, to the chromosome representation and the reproduction operators (mutation and crossover) in MOEA. At runtime, the feature model serves as the domain knowledge to guide the search, providing a larger chance to find better solutions. FEMOSAA contains a new method to search for the knee solutions, which can achieve balanced trade-off. It does not cater for QoS interference, however. 
 
-FEMOSAA supports any MOEAs, currently, it is implemented and integrated with MOEA/D-STM, NSGA-II and IBEA. Other MOEAs can be easily work with FEMOSAA. The source code of studied MOEAs, our feature dependency aware mutation/crossover operators and knee selection method can be found at [here](https://github.com/JerryI00/Software-Adaptive-System). (Note that to build and use FEMOSAA, users are advised to download and build the source code of MOEAs with dependency aware operators and knee selection first.)
+FEMOSAA supports any MOEAs, currently, it is implemented and integrated with MOEA/D-STM, NSGA-II and IBEA. Other MOEAs can be easily work with FEMOSAA. The source code of studied MOEAs, our feature dependency aware mutation/crossover operators and knee selection method can be found at [here](https://github.com/JerryI00/Software-Adaptive-System). (Note that to build and use FEMOSAA, users are advised to download and build the source code of MOEAs with dependency aware operators and knee selection first.) More details can be found in the following publications:
+
+ > * T. Chen, K. Li, R. Bahsoon, and X. Yao. 2018. FEMOSAA: Feature Guided and Knee Driven Multi-Objective Optimization for Self-Adaptive Software. ACM Transactions on Software Engineering and Methodology (2018). in press.
 
 Source code directory:
    * [src/main/java/org/ssase/objective/optimization/femosaa/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/objective/optimization/femosaa)
 
 Experiment results:
-   * [experiments-data/femosaa/results/](https://github.com/taochen/ssase/tree/master/experiments-data/femosaa/results)
+   * [experiments-data/femosaa/tosem2018/](https://github.com/taochen/ssase/tree/master/experiments-data/femosaa/tosem2018)
 
 ### MOACO-CD: Self-Adaptive and Interference-Aware Multi-Objective Ant Colony Optimization for Decision Making in Self-Adaptive Software 
 
@@ -90,9 +94,33 @@ Source code directory:
 
 - - - -
 
+## 5. Seeding for Search-based Multi-Objectively Optimising SAS
+---------------
+
+
+### Seeding: Seeding the Search-based Multi-Objective SAS
+
+We propose different ways of injecting knowledge of the problem into MOEAs, which are referred as seeding strategies, aiming to strengthen the search-based optimization for SAS. Those strategies were designed to prepare a set of high quality seeds as part of the initial population for a MOEA to start working with.
+
+This thread of research is still in its preliminary stage. More details can be found in the following publications:
+
+ > * T. Chen, M. Li, and X. Yao. 2018. On the Effects of Seeding Strategies: A Case for Search-based Multi-Objective Service Composition. In GECCO ’18: Genetic and Evolutionary Computation Conference, July 15–19, 2018, Kyoto, Japan. ACM, New York, NY, USA, 8 pages. https://doi.org/10.1145/ 3205455.3205513
+
+Source code directory:
+   * [adaptable-software/soa/](https://github.com/taochen/ssase/tree/master/adaptable-software/soa)
+   * [MOEA](https://github.com/JerryI00/Software-Adaptive-System)
+
+Experiment results:
+   * [experiments-data/seeding/gecco2018/](https://github.com/taochen/ssase/tree/master/experiments-data/seeding/gecco2018)
+
+
+- - - -
+
 For all experiments in the published papers, we have used the following benchmarks and workload trace:
 
  * RUBiS - we have extended the original RUBiS by installing various sensors, source code can be found at [adaptable-software/rubis/](https://github.com/taochen/ssase/tree/master/adaptable-software/rubis)
+
+ * SOA - we have extended the service-oriented systems to a more dynamic manner by changing the quality levels of concrete services at every tilmestep, source code can be found at [adaptable-software/soa/](https://github.com/taochen/ssase/tree/master/adaptable-software/soa). It exploits the concrete services extracted from both the synthetic data and the real-world WS-DREAM dataset.
 
 
  * FIFA98 workload trace - we have extracted and compressed the trace to meet our demand, the files and parsing scripts can be found at http://ita.ee.lbl.gov/html/contrib/WorldCup.html and [fifa98/](https://github.com/taochen/ssase/tree/master/fifa98) respectively.
