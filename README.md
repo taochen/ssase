@@ -1,7 +1,7 @@
-SSASE (including SAM, RCA, DLDA, FEMOSAA and MOACO)
+SSASE (including SAM, RCA, DLDA, FEMOSAA, MOACO and Seeding)
 ==========
 
-This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering techniques to tackle modelings, architecting and decision making problems for self-adaptive software systems (SAS), especially at their runtime.
+This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering (mainly nature-inspired algorithms such as evolutionary algorithms) and machine learning to tackle modelings, architecting and decision making problems for self-adaptive software systems (SAS), especially at their runtime.
 
 Currently it encapsulates the following sub-frameworks/components, some of which are alternative:
 
@@ -104,7 +104,7 @@ We propose different ways of injecting knowledge of the problem into MOEAs, whic
 
 This thread of research is still in its preliminary stage. More details can be found in the following publications:
 
- > * T. Chen, M. Li, and X. Yao. 2018. On the Effects of Seeding Strategies: A Case for Search-based Multi-Objective Service Composition. In GECCO ’18: Genetic and Evolutionary Computation Conference, July 15–19, 2018, Kyoto, Japan. ACM, New York, NY, USA, 8 pages. https://doi.org/10.1145/ 3205455.3205513
+ > * T. Chen, M. Li, and X. Yao. 2018. On the Effects of Seeding Strategies: A Case for Search-based Multi-Objective Service Composition. In GECCO ’18: Genetic and Evolutionary Computation Conference, July 15–19, 2018, Kyoto, Japan. ACM, New York, NY, USA, 8 pages. https://doi.org/10.1145/3205455.3205513
 
 Source code directory:
    * [adaptable-software/soa/](https://github.com/taochen/ssase/tree/master/adaptable-software/soa)
