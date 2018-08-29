@@ -1,0 +1,40 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <feature name="HAVE_CRYPTO" type="categorical" optional="true"/>
+ <feature name="HAVE_HASH" type="categorical" optional="true"/>
+ <feature name="HAVE_REPLICATION" type="categorical" optional="true"/>
+ <feature name="HAVE_VERIFY" type="categorical" optional="true"/>
+ <feature name="HAVE_SEQUENCE" type="categorical" optional="true"/>
+ <feature name="HAVE_STATISTICS" type="categorical" optional="true"/>
+ <feature name="DIAGNOSTIC" type="categorical" optional="true"/>
+ <feature name="PAGESIZE" type="categorical" optional="false">
+  <alt>
+ <feature name="PS1K" type="categorical" />
+ <feature name="PS4K" type="categorical" />
+ <feature name="PS8K" type="categorical" />
+ <feature name="PS16K" type="categorical" />
+ <feature name="PS32K" type="categorical" />
+ </alt>
+ </feature>
+ <feature name="CACHESIZE" type="categorical" optional="false">
+  <alt>
+ <feature name="CS32MB" type="categorical" />
+ <feature name="CS16MB" type="categorical" />
+ <feature name="CS64MB" type="categorical" />
+ <feature name="CS512MB" type="categorical" />
+ </alt>
+ </feature>
+	
+</model>
+</ssase>
+

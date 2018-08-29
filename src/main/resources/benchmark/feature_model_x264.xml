@@ -1,0 +1,33 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> <cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		order is cross-dependency - features - alt - or -->
+	<model>
+
+		<feature name="no_8x8dct" type="categorical" optional="true" />
+		<feature name="no_cabac" type="categorical" optional="true" />
+		<feature name="no_deblock" type="categorical" optional="true" />
+		<feature name="no_fast_pskip" type="categorical" optional="true" />
+		<feature name="no_mbtree" type="categorical" optional="true" />
+		<feature name="no_mixed_refs" type="categorical" optional="true" />
+		<feature name="no_weightb" type="categorical" optional="true" />
+		<feature name="rc_lookahead" type="categorical" optional="false">
+			<alt>
+				<feature name="rc_lookahead_20" type="categorical" />
+				<feature name="rc_lookahead_40" type="categorical" />
+				<feature name="rc_lookahead_60" type="categorical" />
+			</alt>
+		</feature>
+		<feature name="ref" type="categorical" optional="false">
+			<alt>
+				<feature name="ref_1" type="categorical" />
+				<feature name="ref_5" type="categorical" />
+				<feature name="ref_9" type="categorical" />
+			</alt>
+		</feature>
+
+	</model>
+</ssase>
+

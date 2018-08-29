@@ -31,6 +31,17 @@ public class FEMOSAASolution extends SASSolution {
 	// Key = objective, Value = the index of variable in FEMOSAASolution, this order
 	// is consistent with the CP in QoS object.
 	protected Map<Objective, Integer[]> modelMap;
+	
+	// To allow copy of the same fuzzy objective.
+	protected int fuzzyID = 0;
+
+	public int getFuzzyID() {
+		return fuzzyID;
+	}
+
+	public void setFuzzyID(int fuzzyID) {
+		this.fuzzyID = fuzzyID;
+	}
 
 	public FEMOSAASolution(Problem problem) throws ClassNotFoundException {
 		super(problem);
@@ -239,5 +250,17 @@ public class FEMOSAASolution extends SASSolution {
 	public void init(List<Objective> objectives, Map<Objective, Integer[]> modelMap) {
 		this.objectives = objectives;
 		this.modelMap = modelMap;
+	}
+
+	@Override
+	public void updateNormalizationBounds(double[] f) {
+		for (int i = 0; i < f.length; i++) {
+			org.ssase.requirement.RequirementProposition rp = Repository.getRequirementProposition(objectives.get(i).getName());
+			if(rp == null) {
+				continue;
+			}
+			rp.updateNormalizationBounds(f[i]);
+		}
+		
 	}
 }

@@ -30,6 +30,7 @@ import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.HardwareControlPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.region.OptimizationType;
+import org.ssase.requirement.RequirementProposition;
 
 /**
  * Only the collections here and the ones in Service class need to be maintained.
@@ -80,6 +81,10 @@ public class Repository {
 	// This can be configure the same time as possible primitives for services.
 	// objectives include both cost and QoS.
 	private static Map<Objective, Set<Primitive>> directPrimitives = new ConcurrentHashMap<Objective, Set<Primitive>>();
+	
+	
+	// This is the mapping between the name of an objective and a requirement proposition
+	private static Map<String, RequirementProposition> fuzzyReq = new ConcurrentHashMap<String, RequirementProposition>();
 	
 	public static void clear(){
 		services.clear();
@@ -192,6 +197,14 @@ public class Repository {
 	
 	public static Set<Primitive> getDirectPrimitives (Objective obj) {
 		return directPrimitives.get(obj);
+	}
+	
+	public static void setRequirementProposition(String name, RequirementProposition r) {
+		fuzzyReq.put(name, r);
+	}
+	
+	public static RequirementProposition getRequirementProposition(String name) {
+		return fuzzyReq.get(name);
 	}
 	
 	public static int countDirectForAnObjective (Objective obj) {

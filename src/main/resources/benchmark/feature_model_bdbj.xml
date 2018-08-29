@@ -1,0 +1,50 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+ <feature name="IO" type="categorical" optional="false">
+  <alt>
+ <feature name="OldIO" type="categorical" />
+ <feature name="NewIO" type="categorical" />
+ </alt>
+ </feature>
+ <feature name="NIOBase" type="categorical" optional="true"/>
+ <feature name="NIOType" type="categorical" optional="true">
+  <alt>
+ <feature name="ChunkedNIO" type="categorical" />
+ <feature name="SingleWriteNIO" type="categorical" />
+ </alt>
+ </feature>
+ <feature name="DirectNIO" type="categorical" optional="true"/>
+ <feature name="LogSize" type="categorical" optional="false">
+  <alt>
+ <feature name="S100MiB" type="categorical" />
+ <feature name="S1MiB" type="categorical" />
+</alt>
+</feature>
+ <feature name="INCompressor" type="categorical" optional="true"/>
+
+ <feature name="Verifier" type="categorical" optional="true"/>
+ <feature name="ITracing" type="categorical" optional="true"/>
+ <feature name="Tracing" type="categorical" optional="true"/>
+ <feature name="TracingLevel" type="categorical" optional="true">
+  <alt>
+ <feature name="Severe" type="categorical" />
+ <feature name="Finest" type="categorical" />
+ </alt>
+  </feature>
+ <feature name="Statistics" type="categorical" optional="true"/>
+ 
+
+	
+</model>
+</ssase>
+

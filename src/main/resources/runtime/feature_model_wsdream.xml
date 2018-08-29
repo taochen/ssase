@@ -10,32 +10,27 @@
 		order is cross-dependency - features - alt - or
 		-->
 <model>
-    <!--
+  <!-- -->
  <feature name="AS1" type="numeric" range="1 96" gap="1" switchoff="false"/>
  <feature name="AS2" type="numeric" range="1 110" gap="1" switchoff="false"/>
  <feature name="AS3" type="numeric" range="1 106" gap="1" switchoff="false"/>
  <feature name="AS4" type="numeric" range="1 88" gap="1" switchoff="false"/>
  <feature name="AS5" type="numeric" range="1 110" gap="1" switchoff="false"/>
- 
-  
-  
-   
-    
+
+     <!--
  <feature name="AS1" type="numeric" range="1 119" gap="1" switchoff="false"/>
  <feature name="AS2" type="numeric" range="1 98" gap="1" switchoff="false"/>
  <feature name="AS3" type="numeric" range="1 99" gap="1" switchoff="false"/>
  <feature name="AS4" type="numeric" range="1 100" gap="1" switchoff="false"/>
  <feature name="AS5" type="numeric" range="1 108" gap="1" switchoff="false"/>
  
-
- 
- 
-
   <feature name="AS1" type="numeric" range="1 110" gap="1" switchoff="false"/>
  <feature name="AS2" type="numeric" range="1 115" gap="1" switchoff="false"/>
  <feature name="AS3" type="numeric" range="1 101" gap="1" switchoff="false"/>
  <feature name="AS4" type="numeric" range="1 115" gap="1" switchoff="false"/>
  <feature name="AS5" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ 
+
    
   <feature name="AS1" type="numeric" range="1 96" gap="1" switchoff="false"/>
  <feature name="AS2" type="numeric" range="1 110" gap="1" switchoff="false"/>
@@ -48,8 +43,9 @@
  <feature name="AS9" type="numeric" range="1 100" gap="1" switchoff="false"/>
  <feature name="AS10" type="numeric" range="1 108" gap="1" switchoff="false"/>
 
+  
 
-   
+    
   <feature name="AS1" type="numeric" range="1 110" gap="1" switchoff="false"/>
  <feature name="AS2" type="numeric" range="1 115" gap="1" switchoff="false"/>
  <feature name="AS3" type="numeric" range="1 101" gap="1" switchoff="false"/>
@@ -60,7 +56,7 @@
  <feature name="AS8" type="numeric" range="1 102" gap="1" switchoff="false"/>
  <feature name="AS9" type="numeric" range="1 86" gap="1" switchoff="false"/>
  <feature name="AS10" type="numeric" range="1 122" gap="1" switchoff="false"/>
-   
+    
 
  
   <feature name="AS1" type="numeric" range="1 122" gap="1" switchoff="false"/>
@@ -74,8 +70,6 @@
  <feature name="AS9" type="numeric" range="1 119" gap="1" switchoff="false"/>
  <feature name="AS10" type="numeric" range="1 122" gap="1" switchoff="false"/>
 
- 
-  
 
 
  
@@ -94,8 +88,8 @@
  <feature name="AS13" type="numeric" range="1 101" gap="1" switchoff="false"/>
  <feature name="AS14" type="numeric" range="1 115" gap="1" switchoff="false"/>
   <feature name="AS15" type="numeric" range="1 123" gap="1" switchoff="false"/>
- 
- 
+
+     
      <feature name="AS1" type="numeric" range="1 113" gap="1" switchoff="false"/>
  <feature name="AS2" type="numeric" range="1 123" gap="1" switchoff="false"/>
  <feature name="AS3" type="numeric" range="1 102" gap="1" switchoff="false"/>
@@ -111,8 +105,10 @@
  <feature name="AS13" type="numeric" range="1 102" gap="1" switchoff="false"/>
  <feature name="AS14" type="numeric" range="1 119" gap="1" switchoff="false"/>
   <feature name="AS15" type="numeric" range="1 122" gap="1" switchoff="false"/>
-   -->
   
+  
+ 
+
        <feature name="AS1" type="numeric" range="1 108" gap="1" switchoff="false"/>
  <feature name="AS2" type="numeric" range="1 110" gap="1" switchoff="false"/>
  <feature name="AS3" type="numeric" range="1 106" gap="1" switchoff="false"/>
@@ -128,7 +124,7 @@
  <feature name="AS13" type="numeric" range="1 116" gap="1" switchoff="false"/>
  <feature name="AS14" type="numeric" range="1 122" gap="1" switchoff="false"/>
   <feature name="AS15" type="numeric" range="1 86" gap="1" switchoff="false"/>
-   <!-- -->
+   -->
 
 	
 </model>

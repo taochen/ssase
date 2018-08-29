@@ -1,0 +1,42 @@
+<ssase>
+
+<vm id="sas">
+
+           
+           
+           <adaptation cost_unit="0.01" /> <!-- next 0.05 seems to be good, retry? -->
+           
+           <service name="rubis_software">
+           <softwareControlPrimitive>
+<item name="no_8x8dct" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
+<item name="no_cabac" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
+<item name="no_deblock" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
+<item name="no_fast_pskip" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
+<item name="no_mbtree" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
+<item name="no_mixed_refs" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
+<item name="no_weightb" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
+<item name="rc_lookahead" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="3" price_per_unit="0.5" switchoff="false" />
+<item name="ref" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="3" price_per_unit="0.5" switchoff="false" />
+      
+           </softwareControlPrimitive>
+
+
+         
+           <QoS>
+           <!-- This constraint="-1" will forcly trigger adaptation at each sampling interval -->
+             <!-- Unit is sec -->
+             <!-- constraint="5"  -->
+            <item name="Throughput" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="3.5"  />
+             <!-- constraint="6"  -->
+            <item name="Cost" constraint="5000" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  />
+             <item name="Latency" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  />
+          
+           </QoS>
+           
+           
+        </service>
+</vm>
+
+
+</ssase>
+

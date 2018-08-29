@@ -1,0 +1,71 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <feature name="OperatingSystemCharacteristics" type="categorical" optional="true"/>
+ <feature name="SQLITE_SECURE_DELETE" type="categorical" optional="true"/>
+ <feature name="ChooseSQLITE_TEMP_STORE" type="categorical" optional="true">
+ <alt>
+ <feature name="SQLITE_TEMP_STOREzero" type="categorical" />
+ <feature name="SQLITE_TEMP_STOREone" type="categorical" />
+ <feature name="SQLITE_TEMP_STOREtwo" type="categorical" />
+ <feature name="SQLITE_TEMP_STOREthree" type="categorical" />
+ </alt>
+ </feature>
+ <feature name="EnableFeatures" type="categorical" optional="true"/>
+ <feature name="SQLITE_ENABLE_ATOMIC_WRITE" type="categorical" optional="true"/>
+ <feature name="SQLITE_ENABLE_STAT2" type="categorical" optional="true"/>
+ <feature name="DisableFeatures" type="categorical" optional="true"/>
+ <feature name="SQLITE_DISABLE_LFS" type="categorical" optional="true"/>
+ <feature name="SQLITE_DISABLE_DIRSYNC" type="categorical" optional="true"/>
+ <feature name="OmitFeatures" type="categorical" optional="true"/>
+ <feature name="SQLITE_OMIT_AUTOMATIC_INDEX" type="categorical" optional="true"/>
+ <feature name="SQLITE_OMIT_BETWEEN_OPTIMIZATION" type="categorical" optional="true"/>
+ <feature name="SQLITE_OMIT_BTREECOUNT" type="categorical" optional="true"/>
+ <feature name="SQLITE_OMIT_LIKE_OPTIMIZATION" type="categorical" optional="true"/>
+ <feature name="SQLITE_OMIT_LOOKASIDE" type="categorical" optional="true"/>
+ <feature name="SQLITE_OMIT_OR_OPTIMIZATION" type="categorical" optional="true"/>
+ <feature name="SQLITE_OMIT_QUICKBALANCE" type="categorical" optional="true"/>
+ <feature name="SQLITE_OMIT_SHARED_CACHE" type="categorical" optional="true"/>
+ <feature name="SQLITE_OMIT_XFER_OPT" type="categorical" optional="true"/>
+ <feature name="Options" type="categorical" optional="true"/>
+ <feature name="SetAutoVacuum" type="categorical" optional="true">
+  <alt>
+ <feature name="AutoVacuumOff" type="categorical" />
+ <feature name="AutoVacuumOn" type="categorical" />
+ </alt>
+ </feature>
+ <feature name="SetCacheSize" type="categorical" optional="true">
+  <alt>
+ <feature name="StandardCacheSize" type="categorical" />
+ <feature name="LowerCacheSize" type="categorical" />
+ <feature name="HigherCacheSize" type="categorical" />
+ </alt>
+ </feature>
+ <feature name="LockingMode" type="categorical" optional="true">
+  <alt>
+ <feature name="ExclusiveLock" type="categorical" />
+ <feature name="NormalLockingMode" type="categorical" />
+ </alt>
+ </feature>
+ <feature name="PageSize" type="categorical" optional="true">
+  <alt>
+ <feature name="StandardPageSize" type="categorical" />
+ <feature name="LowerPageSize" type="categorical" />
+ <feature name="HigherPageSize" type="categorical" />
+ <feature name="HighestPageSize" type="categorical" />
+</alt>
+</feature>
+
+	
+</model>
+</ssase>
+

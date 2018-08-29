@@ -11,6 +11,7 @@ import org.ssase.util.Repository;
 
 import jmetal.core.Problem;
 import jmetal.core.Solution;
+import jmetal.core.SolutionSet;
 import jmetal.core.Variable;
 
 public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
@@ -98,6 +99,28 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 	@Override
 	public double[][] getLambda() {
 		return Repository.lambda_;
+	}
+
+	@Override
+	public SolutionSet fuzzilize(SolutionSet set) {
+		SolutionSet newSet = new SolutionSet();
+		for (int i = 0; i < set.size(); i++) {
+			Solution newS = getSolution(set.get(i));
+			((FEMOSAASolution)newS).setFuzzyID(i);
+			newSet.add(newS);
+		}
+		for (int i = 0; i < objectives.size(); i++) {		
+			for (int j = 0; j < newSet.size(); j++) {
+				Repository.getRequirementProposition(objectives.get(i).getName()).fuzzilize(newSet.get(j), i);
+			}
+		}
+		return newSet;
+	}
+
+	@Override
+	public Solution defuzzilize(int i, SolutionSet newPopulation,
+			SolutionSet oldPopulation) {
+		return oldPopulation.get(((FEMOSAASolution)newPopulation.get(i)).getFuzzyID());
 	}
 
 

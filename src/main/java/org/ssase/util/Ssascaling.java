@@ -43,6 +43,8 @@ import org.ssase.primitive.SoftwareControlPrimitive;
 import org.ssase.primitive.Type;
 import org.ssase.region.OptimizationType;
 import org.ssase.region.Region;
+import org.ssase.requirement.RequirementPrimitive;
+import org.ssase.requirement.RequirementProposition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -358,22 +360,27 @@ public class Ssascaling {
 	    							
 	    							if (Node.ELEMENT_NODE == qoss.item(k).getNodeType()) {
 	    								QualityOfService qos = null;
-	    								if(qoss.item(k).getAttributes().getNamedItem("sla_per_unit") != null) {
-	    									 qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
-		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
-		    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
-		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()),
-		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("sla_per_unit").getNodeValue()));
-		    								
-		    							
-	    								} else {
-	    									 qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
-		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
-		    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
-		    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()));
-		    								
-		    	
-	    								}
+	    								
+	    				
+	    									if(qoss.item(k).getAttributes().getNamedItem("sla_per_unit") != null) {
+		    									 qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
+			    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
+			    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
+			    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()),
+			    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("sla_per_unit").getNodeValue()));
+			    								
+			    							
+		    								} else {
+		    									 qos = new QualityOfService(vmName+"-"+serviceName+"-"+qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), 
+			    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("constraint").getNodeValue()), 
+			    										"true".equals(qoss.item(k).getAttributes().getNamedItem("is_min").getNodeValue()),
+			    										Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("pre_to_change").getNodeValue()));
+			    								
+			    	
+		    								}
+	    								
+	    								
+	    			
 	    								
 	    								if (qoss.item(k).getAttributes().getNamedItem("ep") != null) {
 	    								    qos.setEP((EnvironmentalPrimitive)primitives.get(qoss.item(k).getAttributes().getNamedItem("ep").getNodeValue()));
@@ -381,6 +388,46 @@ public class Ssascaling {
 	    								
 	    								objectives.put(qoss.item(k).getAttributes().getNamedItem("name").getNodeValue(), qos);
 	    								Repository.setQoS(qos);
+	    								
+	    								
+	    								if(qoss.item(k).getAttributes().getNamedItem("fuzzy_requirement") != null) {
+	    									String req = qoss.item(k).getAttributes().getNamedItem("fuzzy_requirement").getNodeValue();
+	    									double d = -1;
+	    									if(qoss.item(k).getAttributes().getNamedItem("threshold").getNodeValue() != null) {
+	    										 d = Double.parseDouble(qoss.item(k).getAttributes().getNamedItem("threshold").getNodeValue());  									
+	    									}
+	    									
+	    									if("p1".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    												new RequirementProposition(RequirementPrimitive.AS_GOOD_AS_POSSIBLE));
+	    									} else if("p2".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    												new RequirementProposition(d, RequirementPrimitive.BETTER_THAN_d));
+	    									} else if("p3".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    												new RequirementProposition(d, RequirementPrimitive.AS_GOOD_AS_POSSIBLE_TO_d));
+	    									} else if("p4".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    												new RequirementProposition(d, RequirementPrimitive.AS_CLOSE_AS_POSSIBLE_TO_d));
+	    									} else if("p5".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    												new RequirementProposition(d, RequirementPrimitive.AS_FAR_AS_POSSIBLE_FROM_d));
+	    									} else if("p6".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    												new RequirementProposition(d, RequirementPrimitive.AS_GOOD_AS_POSSIBLE, 
+	    														RequirementPrimitive.BETTER_THAN_d));
+	    									} else if("p7".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    												new RequirementProposition(d, RequirementPrimitive.AS_GOOD_AS_POSSIBLE, 
+	    														RequirementPrimitive.AS_GOOD_AS_POSSIBLE_TO_d));
+	    									}
+	    									
+	    								}
+	    									
+	    								
+	    								
+	    								
+	    								
 	    							 }
 	    						}
 	    						

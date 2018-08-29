@@ -21,6 +21,8 @@ import org.ssase.util.Tuple;
 /**
  * Note that primitive selection can contain 0, but QoS function training may be better
  * to eliminate 0 values.
+ * 
+ * This can refer to all non functional quality attributes, including cost, even though there is a class named Cost.
  */
 public class QualityOfService implements Objective, Comparable{
 
@@ -554,7 +556,7 @@ public class QualityOfService implements Objective, Comparable{
 		return predict(xValue, false);
 	}
 	
-	private double predict(double[] xValue, boolean isLatestEP) {
+	protected double predict(double[] xValue, boolean isLatestEP) {
 		
 		double reuslt = 0.0;
 		synchronized(writeLock) {
