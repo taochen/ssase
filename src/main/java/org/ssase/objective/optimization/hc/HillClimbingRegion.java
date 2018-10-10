@@ -1,4 +1,4 @@
-package org.ssase.objective.optimization.random;
+package org.ssase.objective.optimization.hc;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,6 +27,11 @@ import org.ssase.primitive.Primitive;
 import org.ssase.region.Region;
 import org.ssase.util.Repository;
 
+/**
+ * This is an old, discarded hill climbing
+ * @author tao
+ *
+ */
 public class HillClimbingRegion extends Region {
 
 	public HillClimbingRegion () {

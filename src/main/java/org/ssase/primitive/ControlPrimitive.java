@@ -98,6 +98,11 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 		valueVector = new double[]{maxProvision};
 		this.isFixedZero = isFixedZero;
 		
+		// We do not need to declare switch off if 0 has been used as the min
+		if(h == 0.0 && isFixedZero) {
+			throw new RuntimeException("We do not need to declare switch off if 0 has been used as the min");
+		}
+		
 		if(!Executor.isEnableLowerBoundUpdate /*This is triggered in every sampling interval
 		so if it is not enable, then we need to initilize the range here*/) {
 			updateValueVector(h, valueVector[valueVector.length - 1]);
@@ -480,6 +485,7 @@ public abstract class ControlPrimitive implements Primitive, Comparable{
 				
 				valueVector[i] = value;
 			}
+			
 		} else {
 			
 			valueVector = new double[length]; 

@@ -546,7 +546,7 @@ public class FeatureModel {
 		//----------------Analyze the dependency----------------
 		
 		Map<Integer, SASVarEntity[]> dependencyMap = SASSolution.getDependencyMap();
-		
+		dependencyMap.clear();
 		
 		for (Branch b : chromosome) {
 			 List<Map<Branch, Integer[][]>> list = b.getMainBranchesOfThisBranch();

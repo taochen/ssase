@@ -176,7 +176,7 @@ public class KruskalWallisTest {
 			return false;
 		}
 		
-		// can be used with bonferroni correction (k(k-1)/2) to modify the alpha
+		// can be used with bonferroni correction a / (k(k-1)/2) to modify the alpha
 		System.out.print("H/C value " + H / C + "\n");
 		System.out.print("test value " + (1.0 - dist.cumulativeProbability(H / C)) + "\n");
 		return 1.0 - dist.cumulativeProbability(H / C) < alpha;

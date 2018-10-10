@@ -10,6 +10,7 @@ public class RP7Function implements FuzzyFunction {
 	}
 	@Override
 	public double fuzzilize(double original, double d) {
+		
 		if (original == 0) {
 			return 1;
 		} else if (original == 1) {
@@ -24,6 +25,7 @@ public class RP7Function implements FuzzyFunction {
 					return 0.5 + (0.25 * v);
 				} else {
 					double v = func.calculate((6 * (original - d) / (1 - d)) - 3);
+					
 					return 0.25 * v;
 				}
 				

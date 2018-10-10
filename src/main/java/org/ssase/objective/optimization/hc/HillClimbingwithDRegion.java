@@ -1,4 +1,4 @@
-package org.ssase.objective.optimization.random;
+package org.ssase.objective.optimization.hc;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -6,6 +6,12 @@ import java.util.List;
 
 import org.ssase.primitive.ControlPrimitive;
 
+
+/**
+ * This is an old, discarded hill climbing
+ * @author tao
+ *
+ */
 public class HillClimbingwithDRegion extends HillClimbingRegion{
 	
 	protected double[] getValueVector(ControlPrimitive cp, int k, List<ControlPrimitive> list, LinkedHashMap<ControlPrimitive, Double> current){

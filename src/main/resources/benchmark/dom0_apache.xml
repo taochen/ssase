@@ -9,21 +9,21 @@
            <service name="rubis_software">
            <softwareControlPrimitive>
 
-          <item name="HostnameLookups" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
-          <item name="KeepAlive" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
-          <item name="EnableSendfile" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
-          <item name="FollowSymLinks" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
-          <item name="AccessLog" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
-          <item name="ExtendedStatus" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
-          <item name="InMemory" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
-          <item name="Handle" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5" switchoff="true" />
+          <item name="HostnameLookups" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+          <item name="KeepAlive" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+          <item name="EnableSendfile" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+          <item name="FollowSymLinks" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+          <item name="AccessLog" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+          <item name="ExtendedStatus" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+          <item name="InMemory" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+          <item name="Handle" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
          
            </softwareControlPrimitive>
 
 
          
            <QoS>
-             <item name="Response Time" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  fuzzy_requirement="p1" threshold="12"/>
+             <item name="Response Time" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  fuzzy_requirement="p1" threshold="1000"/>
           
            </QoS>
            

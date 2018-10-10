@@ -7,5 +7,7 @@ public enum OptimizationType {
 	NSGAII, NSGAIIkd, NSGAIId, NSGAIIk, NSGAII01,
 	IBEA, IBEAkd, IBEAd, IBEAk, IBEA01,
 	GP, GPkd,
-	BB, BBd
+	BB, BBd,
+	HC,
+	RS
 }

@@ -14,11 +14,13 @@ import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithZeroAndOneReg
 import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithKAndDRegion;
 import org.ssase.objective.optimization.femosaa.nsgaii.*;
 import org.ssase.objective.optimization.gp.*;
+import org.ssase.objective.optimization.hc.HCRegion;
+import org.ssase.objective.optimization.hc.HillClimbingRegion;
+import org.ssase.objective.optimization.hc.HillClimbingwithDRegion;
 import org.ssase.objective.optimization.moaco.MOACORegion;
 import org.ssase.objective.optimization.moga.MOGARegion;
+import org.ssase.objective.optimization.rs.RSRegion;
 import org.ssase.objective.optimization.femosaa.ibea.*;
-import org.ssase.objective.optimization.random.HillClimbingRegion;
-import org.ssase.objective.optimization.random.HillClimbingwithDRegion;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.EnvironmentalPrimitive;
 import org.ssase.primitive.Primitive;
@@ -112,7 +114,12 @@ public abstract class Region {
 			selected = OptimizationType.BB;
 		} else if("bb-d".equals(type)) {
 			selected = OptimizationType.BBd;
+		} else if("hc".equals(type)) {
+			selected = OptimizationType.HC;
+		} else if("rs".equals(type)) {
+			selected = OptimizationType.RS;
 		}
+		
 		
 		
 		if(selected == null) throw new RuntimeException("Can not find region for type " + type);
@@ -172,6 +179,10 @@ public abstract class Region {
 			return new BranchAndBoundRegion();
 		} else if(OptimizationType.BBd.equals(type)) {
 			return new BranchAndBoundwithDRegion();
+		} else if(OptimizationType.HC.equals(type)) {
+			return new HCRegion();
+		} else if(OptimizationType.RS.equals(type)) {
+			return new RSRegion();
 		}
 		
 		throw new RuntimeException("Can not find region for type " + type);

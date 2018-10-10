@@ -44,8 +44,14 @@ public class RequirementProposition  {
 	 */
 	public void fuzzilize(Solution s, int index) {
 		
-		double v = 0 - function.fuzzilize(normalize(s.getObjective(index)),
+		if(s.getObjective(index) == Double.MAX_VALUE/100) {
+			//s.setObjective(index, -1); //for p5 only
+			return;
+		}
+		
+		double v = 0.0 - function.fuzzilize(normalize(s.getObjective(index)),
 				normalize(d));
+		//System.out.print("max: " + max + " = min: " + min + "= normalized: " + normalize(s.getObjective(index)) + " = original: " + s.getObjective(index) + " = fuzzie: " + v +"\n");
 		s.setObjective(index, v);
 		
 	}
@@ -63,6 +69,11 @@ public class RequirementProposition  {
 	}
 
 	public void updateNormalizationBounds(double v) {
+		
+		if(v == Double.MAX_VALUE/100) {
+			return;
+		}
+		
 		if (v > this.max) {
 			this.max = v;
 		}
@@ -74,8 +85,19 @@ public class RequirementProposition  {
 
 	}
 
-	private double normalize(double value) {
-		return (value - min) / (max - min);
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private double normalize(double value) {	
+		
+		// means all values are the same
+		if(max == min) {
+			return value / max;
+		}
+		
+		return ((value - min) / (max - min));
 	}
 
 	// Mapping proposition to the actual fuzzy function.
@@ -130,17 +152,17 @@ public class RequirementProposition  {
 
 				if (RequirementPrimitive.AS_GOOD_AS_POSSIBLE
 						.equals(primitives[0])
-						|| RequirementPrimitive.BETTER_THAN_d
+						&& RequirementPrimitive.BETTER_THAN_d
 								.equals(primitives[1])) {
-
+					
 					function = new RP6Function(
 							(MathFunction) clazz.newInstance());
 
 				} else if (RequirementPrimitive.AS_GOOD_AS_POSSIBLE
 						.equals(primitives[0])
-						|| RequirementPrimitive.AS_GOOD_AS_POSSIBLE_TO_d
+						&& RequirementPrimitive.AS_GOOD_AS_POSSIBLE_TO_d
 								.equals(primitives[1])) {
-
+					
 					function = new RP7Function(
 							(MathFunction) clazz.newInstance());
 

@@ -615,7 +615,7 @@ public class Ssascaling {
 			   //new DebtLoader().run();
 			}
 			
-			loadFeatureModel();
+			//loadFeatureModel();
 			//r.receive();
 			
 	}
