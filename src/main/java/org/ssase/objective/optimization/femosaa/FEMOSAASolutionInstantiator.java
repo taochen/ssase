@@ -122,6 +122,16 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 			SolutionSet oldPopulation) {
 		return oldPopulation.get(((FEMOSAASolution)newPopulation.get(i)).getFuzzyID());
 	}
+	
+	public Solution defuzzilize(Solution s,
+			SolutionSet oldPopulation) {
+		return oldPopulation.get(((FEMOSAASolution)s).getFuzzyID());
+	}
+	
+	public void defuzzilizeAndRemove(Solution s,
+			SolutionSet oldPopulation) {
+		oldPopulation.remove(((FEMOSAASolution)s).getFuzzyID());
+	}
 
 
 }
