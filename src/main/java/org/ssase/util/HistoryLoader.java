@@ -72,9 +72,10 @@ public class HistoryLoader {
 //		"edu.rice.rubis.servlets.ViewUserInfo"
 	};
 
-	private  final String prefix = "/home/tao/sas-init/";
+	private  final String prefix = //"/home/tao/sas-init/";
 		//"/home/tao/sas-init/";
-		//"/Users/tao/research/monitor/sas/";
+		"/Users/tao/research/monitor/sas/";
+	//"/Users/tao/research/experiments-data/fuzzy-requirement/sim/";
 	
 	public  int counterNo = 0;
 	

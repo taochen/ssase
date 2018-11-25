@@ -212,6 +212,7 @@ public class Ssascaling {
 					
 					
 					if ("hardwareControlPrimitive".equals(insideVmNodes.item(j).getNodeName())){
+						
 						NodeList hardwareCPs = insideVmNodes.item(j).getChildNodes();
 						List<HardwareControlPrimitive> list = new ArrayList<HardwareControlPrimitive>();
 						for (int k = 0; k < hardwareCPs.getLength(); k++) {
@@ -241,7 +242,12 @@ public class Ssascaling {
 						
 						Repository.setVM(vmName, new VM(vmName, list.toArray(new HardwareControlPrimitive[list.size()]) ));
 					} else {
-						Repository.setVM(vmName, new VM(vmName, (new HardwareControlPrimitive[0]) ));
+						// This is used for case where there is no hardware primitives, but we still want to have VM.
+						// If there is hardware primitive, then VM should have been set through them, no need to add dummy VM.
+						// Since this is a map, only one VM with a VM ID can exist, so no redundancy.
+						if(Repository.getVM(vmName) == null) {
+						   Repository.setVM(vmName, new VM(vmName, (new HardwareControlPrimitive[0]) ));
+						}
 					}
 					
 					if ("softwareControlPrimitive".equals(insideVmNodes.item(j).getNodeName())){
@@ -603,20 +609,20 @@ public class Ssascaling {
 				s.initializeModelForQoS();
 			}
 		
-			Executor.init(3);
+			//Executor.init(3);
 			
 			
 			
 			if(Region.selected != OptimizationType.INIT) {
-			   new HistoryLoader().run();				   
+			   //new HistoryLoader().run();				   
 			}
 			
 			if(Analyzer.selected == TriggerType.Debt || Analyzer.selected == TriggerType.DebtAll) {
 			   //new DebtLoader().run();
 			}
 			
-			loadFeatureModel();
-			r.receive();
+			//loadFeatureModel();
+			//r.receive();
 			
 	}
 	

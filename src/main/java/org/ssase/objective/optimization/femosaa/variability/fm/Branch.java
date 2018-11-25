@@ -1216,6 +1216,7 @@ public class Branch {
 			
 			
 			for(int i = 0; i < given.length; i++) {
+				//System.out.print(given[i] + ":" + range[i]+"\n");
 				if(given[i] != range[i]) {
 					return false;
 				}

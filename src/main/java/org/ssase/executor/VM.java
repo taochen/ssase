@@ -26,6 +26,7 @@ public class VM {
 			map.put(p.getType(), p);
 			list.add(p);
 		}
+		//System.out.print(VM_ID+"\n");
 	}
 
 	public HardwareControlPrimitive getHardwareControlPrimitive(String name) {

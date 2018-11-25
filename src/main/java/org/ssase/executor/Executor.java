@@ -96,6 +96,7 @@ public class Executor {
 		
 		int index = 0;
 		for (VM v : Repository.getAllVMs()) {
+			
 			index++;
 			cores.add(new CPUCore(index, new VM[]{v}));		
 			remainingMemory -= v.getMaxMemory();

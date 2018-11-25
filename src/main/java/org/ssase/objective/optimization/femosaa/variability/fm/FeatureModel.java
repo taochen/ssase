@@ -493,7 +493,7 @@ public class FeatureModel {
 			for (Branch b : model.chromosome) {
 				if(b.getName().equals(p.getName())) {
 					isHas = true;
-					if (!b.isRangeCorrect(p.getValueVector())) {
+					if (!b.isRangeCorrect(p.getValueVector())) {	
 						throw new RuntimeException("The range of "  + p.getName() + " is not consistent with the setup in dom0.xml");
 					}
 					list.add(b);
