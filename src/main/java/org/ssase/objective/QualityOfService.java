@@ -576,6 +576,7 @@ public class QualityOfService implements Objective, Comparable{
 	
 		reuslt = model.predict(x, true, a, b)*max/100;
 		//reuslt = model.predict(x, 0)*max/100;
+		// The following is only used for simulation, e.g., in FROAS
 		/*if(name.equals("sas-rubis_software-Energy")) {
 			reuslt = model.predict(x, 1)*max/100;
 		} else {

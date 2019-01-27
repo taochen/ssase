@@ -57,6 +57,18 @@ public class RequirementProposition  {
 	}
 	
 	
+	/**
+	 * This is for tesing only
+	 * @param value
+	 * @return
+	 */
+	public double fuzzilize(double value) {
+		//System.out.print(normalize(value) + ":" + normalize(d) + "\n");
+		//System.out.print(max + ":" + min + "\n");
+		return function.fuzzilize(normalize(value),
+				normalize(d));
+	}
+	
 
 	public String toString() {
 

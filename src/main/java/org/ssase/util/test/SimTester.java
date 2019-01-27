@@ -72,7 +72,38 @@ public class SimTester {
 	};
 	
 	public static void main(String[] a){
-		 new SimTester().run();
+		//new SimTester().run();
+		readSingleRunFile();
+	}
+	
+	private static void readSingleRunFile() {
+		HashSet<String> set = new HashSet<String> ();
+		
+		//File file = new File("/Users/tao/research/monitor/ws-soa/sas/sas/p1/IBEA/SolutionSet.rtf");
+		
+		File file = new File("/Users/tao/research/monitor/ws-soa/sas/sas/p5/IBEA/E-30/SolutionSet.rtf");
+		
+		try {
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line = null;
+		while((line = reader.readLine()) != null) {
+			
+			if(line.startsWith("-----")) {
+				continue;
+			}
+			double r =  Double.parseDouble(line.split(",")[0])*1000.0;
+			
+			String d = "(" + line.split(",")[1] + "," + String.valueOf(r) +")";
+			
+			set.add(d);
+		}
+		}catch (Exception e) {
+			
+		}
+		
+		for (String s : set) {
+			System.out.print(s + "\n");
+		}
 	}
 	
 	public void run(){
@@ -159,10 +190,11 @@ public class SimTester {
 	
 	
 		
-		for (int i = 0; i < 100/*343*/; i ++) {
+		for (int i = 0; i < 100/*100 343*/; i ++) {
 			
+			//if(i != 98) {
 			simulateSendAndReceive("sas");
-
+			
 //			if(i < 2) {
 //				for (Service s : Repository.getAllServices() ) {
 //					for (Primitive p : s.getPrimitives()) {
@@ -206,14 +238,33 @@ public class SimTester {
 			
 			ControlBus.getInstance().increaseCurrentSampleCount();
 			Monitor.outputCurrentSample();
-			
+			//readFileIndex++;
+			//continue;
+			//}
 		
 			double dmin = 20;
-			double dmax = 30;
+			double dmax = 30;//30;
+			for (int k = 0; k < 10;k++) {
 			
+			NSGAII("p1","",-1.0);
+			NSGAII("p2","E-30",dmax);
+			NSGAII("p3","E-30",dmax);
+			NSGAII("p4","E-30",dmax);
+			NSGAII("p5","E-30",dmax);
+			NSGAII("p6","E-30",dmax);
+			NSGAII("p7","E-30",dmax);
+			
+			IBEA("p1","",-1.0);
+			IBEA("p2","E-30",dmax);
+			IBEA("p3","E-30",dmax);
+			IBEA("p4","E-30",dmax);
+			IBEA("p5","E-30",dmax);
+			IBEA("p6","E-30",dmax);
+			IBEA("p7","E-30",dmax);
+			}
 			
 //			System.out.print("=============== NSGAIIwithKAndDRegion ===============\n");
-			NSGAII("p1","",-1.0);
+/*			NSGAII("p1","",-1.0);
 			NSGAII("p2","E-10",dmin);
 			NSGAII("p2","E-20",dmax);
 			NSGAII("p3","E-10",dmin);
@@ -242,10 +293,11 @@ public class SimTester {
 			IBEA("p7","E-20",dmax);
 			
 
+*/		
 			
-			
-			
+			//****************
 			readFileIndex++;
+			//****************
 		}
 
 	}
@@ -259,10 +311,17 @@ public class SimTester {
 				fitFuzzyReq(p, qos, d);
 			}		
 		}
+		String o = Logger.prefix;
+		Logger.prefix = o + "sas/"+p+"/NSGAII/"+e + "/";
+		File f = null;
+		if(!(f = new File(Logger.prefix )).exists()){
+			f.mkdirs();
+		} 
 		
 		NSGAIIwithKAndDRegion moea = new NSGAIIwithKAndDRegion();
 		moea.addObjectives(Repository.getAllObjectives());		
 		double[] r = getFitness(moea.optimize());
+		Logger.prefix = o;
 		logData("sas/"+p+"/NSGAII/"+e, "Response Time", String.valueOf(r[0]));
 		logData("sas/"+p+"/NSGAII/"+e, "Energy", String.valueOf(r[1]));
 	}
@@ -277,9 +336,17 @@ public class SimTester {
 			}		
 		}
 		
+		String o = Logger.prefix;
+		Logger.prefix = o + "sas/"+p+"/IBEA/"+e + "/";
+		File f = null;
+		if(!(f = new File(Logger.prefix )).exists()){
+			f.mkdirs();
+		} 
+		
 		IBEAwithKAndDRegion moea = new IBEAwithKAndDRegion();
 		moea.addObjectives(Repository.getAllObjectives());		
 		double[] r = getFitness(moea.optimize());
+		Logger.prefix = o;
 		logData("sas/"+p+"/IBEA/"+e, "Response Time", String.valueOf(r[0]));
 		logData("sas/"+p+"/IBEA/"+e, "Energy", String.valueOf(r[1]));
 	}

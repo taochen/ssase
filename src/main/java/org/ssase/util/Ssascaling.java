@@ -614,14 +614,14 @@ public class Ssascaling {
 			
 			
 			if(Region.selected != OptimizationType.INIT) {
-			   //new HistoryLoader().run();				   
+			   new HistoryLoader().run();				   
 			}
 			
 			if(Analyzer.selected == TriggerType.Debt || Analyzer.selected == TriggerType.DebtAll) {
 			   //new DebtLoader().run();
 			}
 			
-			//loadFeatureModel();
+			loadFeatureModel();
 			//r.receive();
 			
 	}

@@ -10,41 +10,72 @@
 		order is cross-dependency - features - alt - or
 		-->
 <model>
- <feature name="IO" type="categorical" optional="false">
-  <alt>
- <feature name="OldIO" type="categorical" />
- <feature name="NewIO" type="categorical" />
- </alt>
- </feature>
- <feature name="NIOBase" type="categorical" optional="true"/>
- <feature name="NIOType" type="categorical" optional="true">
-  <alt>
- <feature name="ChunkedNIO" type="categorical" />
- <feature name="SingleWriteNIO" type="categorical" />
- </alt>
- </feature>
- <feature name="DirectNIO" type="categorical" optional="true"/>
- <feature name="LogSize" type="categorical" optional="false">
-  <alt>
- <feature name="S100MiB" type="categorical" />
- <feature name="S1MiB" type="categorical" />
-</alt>
-</feature>
- <feature name="INCompressor" type="categorical" optional="true"/>
+	<feature name="Compression" type="categorical" optional="true" />
 
- <feature name="Verifier" type="categorical" optional="true"/>
- <feature name="ITracing" type="categorical" optional="true"/>
- <feature name="Tracing" type="categorical" optional="true"/>
- <feature name="TracingLevel" type="categorical" optional="true">
-  <alt>
- <feature name="Severe" type="categorical" />
- <feature name="Finest" type="categorical" />
- </alt>
-  </feature>
- <feature name="Statistics" type="categorical" optional="true"/>
  
+	<feature name="cache" type="categorical" optional="true">
+		<feature name="cacheMode" type="categorical">
+			<alt>
+				<feature name="gzip" type="categorical">
+					<cross-dependency type="excluded" main="Compression" />
+				</feature>
+				<feature name="ungzip" type="categorical" >
+					<cross-dependency type="required" operator="range" main="maxBytesLocalHeap"
+						main_range="0 13631488-26214400" main_gap="1048576" />
+					<cross-dependency type="required" operator="range" main="maxBytesLocalDisk"
+						main_range="0 13631488-26214400" main_gap="1048576" />
+				</feature>
+			</alt>
+		</feature>
 
-	
+		<feature name="cache_config" type="categorical">
+		<!--<cross-dependency type="required" main="cacheMode" />  -->	
+			<or>
+				<feature name="maxBytesLocalHeap" type="numeric" range="5242880 26214400"
+					gap="1048576" switchoff="true">
+<!-- 					<cross-dependency type="required" operator="range" main="gzip" -->
+<!-- 						dependent_range="0 5242880-13107200" dependent_gap="1048576" /> -->
+
+
+				</feature>
+				<feature name="maxBytesLocalDisk" type="numeric" range="5242880 26214400"
+					gap="1048576" switchoff="true">
+
+				</feature>
+
+			</or>
+		</feature>
+	</feature>
+
+
+	<feature name="thread_pool" type="categorical">
+		<feature name="maxThread" type="numeric" range="10 300" gap="1">
+			<cross-dependency type="required" operator="greater_or_equal" main="minSpareThreads" />
+		</feature>
+		<feature name="minSpareThreads" type="numeric" range="10 300"
+			gap="1" />
+	</feature>
+
+
+	<feature name="connection_pool" type="categorical">
+		<feature name="Connection" type="numeric" range="10 300" gap="1">
+			<cross-dependency type="required" operator="less_or_equal" main="maxThread" />
+		</feature>
+	</feature>
+
+
+	<feature name="database" type="categorical">
+		<feature name="query_cache_size" type="numeric" range="10485760 104857600"
+			gap="1048576">
+			<!-- <cross-dependency type="required" operator="less" main="Memory"
+				translate="divide 1048576" /> -->
+		</feature>
+	</feature>
+
+	<feature name="hardware" type="categorical">
+		<feature name="CPU" type="numeric" range="100 300" gap="5" />
+		<feature name="Memory" type="numeric" range="500 2000" gap="10" />
+	</feature>
 </model>
 </ssase>
 
