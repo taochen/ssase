@@ -227,6 +227,7 @@ public class WilcoxonSignedRankTest {
 		//System.out.print("Wplus "+ Wplus+"\n" );
 		//System.out.print("Wminus "+ Wminus+"\n" );
 		//System.out.print("no "+ no+"\n" );
+
 		return Math.abs(Wplus - Wminus)/no;
 	}
 
@@ -303,7 +304,7 @@ public class WilcoxonSignedRankTest {
 //		System.out.print("ret "+ ret+"\n" );
 //		return (1 + (x < 0 ? -ret : ret));
 //		
-		
+		System.out.print("Z/sqrt N = " + Math.abs(z)/Math.sqrt(n) + "\n");
 		return 2 * standardNormal.cumulativeProbability(z);
 	}
 
