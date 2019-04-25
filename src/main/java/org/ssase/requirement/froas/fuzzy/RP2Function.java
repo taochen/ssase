@@ -1,4 +1,4 @@
-package org.ssase.requirement.fuzzy;
+package org.ssase.requirement.froas.fuzzy;
 
 public class RP2Function implements FuzzyFunction {
 

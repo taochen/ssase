@@ -1,4 +1,4 @@
-package org.ssase.requirement;
+package org.ssase.requirement.froas;
 
 public enum RequirementPrimitive {
 	AS_GOOD_AS_POSSIBLE,

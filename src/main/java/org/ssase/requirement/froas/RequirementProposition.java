@@ -1,7 +1,8 @@
-package org.ssase.requirement;
+package org.ssase.requirement.froas;
 
 import jmetal.core.Solution;
-import org.ssase.requirement.fuzzy.*;
+
+import org.ssase.requirement.froas.fuzzy.*;
 
 /**
  * 

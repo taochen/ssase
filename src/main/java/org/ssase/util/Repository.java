@@ -30,7 +30,7 @@ import org.ssase.primitive.ControlPrimitive;
 import org.ssase.primitive.HardwareControlPrimitive;
 import org.ssase.primitive.Primitive;
 import org.ssase.region.OptimizationType;
-import org.ssase.requirement.RequirementProposition;
+import org.ssase.requirement.froas.RequirementProposition;
 
 /**
  * Only the collections here and the ones in Service class need to be maintained.

@@ -255,7 +255,7 @@ public class FEMOSAASolution extends SASSolution {
 	@Override
 	public void updateNormalizationBounds(double[] f) {
 		for (int i = 0; i < f.length; i++) {
-			org.ssase.requirement.RequirementProposition rp = Repository.getRequirementProposition(objectives.get(i).getName());
+			org.ssase.requirement.froas.RequirementProposition rp = Repository.getRequirementProposition(objectives.get(i).getName());
 			if(rp == null) {
 				continue;
 			}

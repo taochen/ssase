@@ -1,4 +1,4 @@
-package org.ssase.requirement.fuzzy;
+package org.ssase.requirement.froas.fuzzy;
 
 import org.apache.commons.math3.special.Erf;
 
