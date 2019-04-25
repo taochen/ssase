@@ -1,4 +1,4 @@
-SSASE (including [SAM](https://github.com/taochen/ssase#sam-self-adaptive-modeling), [RCA](https://github.com/taochen/ssase#rca--region-controlled-architecture), [DLDA](https://github.com/taochen/ssase#dlda-debt-learning-driven-adaptation), [FEMOSAA](https://github.com/taochen/ssase#femosaa-feature-guided-and-knee-driven-multi-objective-optimization-for-self-adaptive-software-at-runtime), [MOACO](https://github.com/taochen/ssase#moaco-cd-self-adaptive-and-interference-aware-multi-objective-ant-colony-optimization-for-decision-making-in-self-adaptive-software) and [Seeding](https://github.com/taochen/ssase#seeding-seeding-the-search-based-multi-objective-sas))
+SSASE (including [SAM](https://github.com/taochen/ssase#sam-self-adaptive-modeling), [RCA](https://github.com/taochen/ssase#rca--region-controlled-architecture), [DLDA](https://github.com/taochen/ssase#dlda-debt-learning-driven-adaptation), [FEMOSAA](https://github.com/taochen/ssase#femosaa-feature-guided-and-knee-driven-multi-objective-optimization-for-self-adaptive-software-at-runtime), [MOACO](https://github.com/taochen/ssase#moaco-cd-self-adaptive-and-interference-aware-multi-objective-ant-colony-optimization-for-decision-making-in-self-adaptive-software),  [Seeding](https://github.com/taochen/ssase#seeding-seeding-the-search-based-multi-objective-sas) and [FROAS](https://github.com/taochen/ssase#FROAS))
 ==========
 
 This is the main repository for Search-based Self-Adaptive Software Engine (SSASE), an adaptation engine framework that exploits the advances of search-based software engineering (mainly nature-inspired algorithms such as evolutionary algorithms) and machine learning to tackle modelings, architecting and decision making problems for self-adaptive software systems (SAS), especially at their runtime.
@@ -118,7 +118,7 @@ Experiment results:
 ---------------
 
 
-### FROAS: Steering Search-Based Optimization for Adaptable Software with Imprecise Requirements
+### FROAS
 
 We propose FROAS, a framework that allows software engineers to reason about the imprecise requirement propositions and their possible relaxations to optimize adaptable software using search algorithm. In FROAS, the imprecise information of a formally relaxable requirement proposition(s) can be automatically transposed into a specialized fuzzy fitness function that steers the search algorithm for strictly satisfying the requirements. By leveraging these fuzzy fitness functions, we provide general framework of definitions and rigorous analysis to theoretically prove that the requirement propositions can be strongly or weakly relaxed, which reduces the difficulty of satisfaction. 
 
