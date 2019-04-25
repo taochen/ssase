@@ -112,6 +112,26 @@ Source code directory:
 
 Experiment results:
    * [experiments-data/seeding/gecco2018/](https://github.com/taochen/ssase/tree/master/experiments-data/seeding/gecco2018)
+   
+   
+## 6. FROAS for handling imprecise requirements in search-based optimizing adaptable software
+---------------
+
+
+### FROAS: Steering Search-Based Optimization for Adaptable Software with Imprecise Requirements
+
+We propose FROAS, a framework that allows software engineers to reason about the imprecise requirement propositions and their possible relaxations to optimize adaptable software using search algorithm. In FROAS, the imprecise information of a formally relaxable requirement proposition(s) can be automatically transposed into a specialized fuzzy fitness function that steers the search algorithm for strictly satisfying the requirements. By leveraging these fuzzy fitness functions, we provide general framework of definitions and rigorous analysis to theoretically prove that the requirement propositions can be strongly or weakly relaxed, which reduces the difficulty of satisfaction. 
+
+Extensive experimental and empirical studies have been conducted, covering eight real-world adaptable software (e.g., Apache) that spreads across various domains, under different contexts (design time and runtime), optimizing diverse quality attributes (e.g., throughput and energy consumption) with conflicts and using five well-known search algorithms (e.g., GA, NSGA-II and IBEA) that are of different nature (single-objective and multi-objective). The results demonstrates the effectiveness FROAS on correctly satisfying the needs of different requirement propositions when both single-objectively and multi-objectively optimizing the adaptable software. More importantly, our studies reveals clear traces of the relative adaptation results of optimality before, and after the theoretically provable relaxations, which, together with the clear traces on the relative level of satisfaction, provides further insights for the software engineers to reason about and refine the requirement proposition(s).
+
+
+
+Source code directory:
+   * [src/main/java/org/ssase/requirement/froas/](https://github.com/taochen/ssase/tree/master/src/main/java/org/ssase/requirement/froas)
+   * [search algorihtms](https://github.com/JerryI00/Software-Adaptive-System)
+
+Experiment results:
+   * [experiments-data/froas-data/](https://github.com/taochen/froas-data/tree/master)
 
 
 - - - -
