@@ -73,7 +73,10 @@ public class SimTester {
 	
 	public static void main(String[] a){
 		//new SimTester().run();
-		readSingleRunFile();
+		//readSingleRunFile();
+		String login = "\\' and password=' or 1=1";//"\\";
+		System.out.print(login.replace("\\'", "'").replace("'", "''"));
+		//System.out.print(login.replace("'", "''"));
 	}
 	
 	private static void readSingleRunFile() {
