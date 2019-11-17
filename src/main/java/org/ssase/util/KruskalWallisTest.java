@@ -183,6 +183,7 @@ where k is the number of groups and n represents the number of total observation
 		}
 		
 		// can be used with bonferroni correction a / (k(k-1)/2) to modify the alpha
+		System.out.print("effect size " + ((H - numberOfGroups + 1) / (data.size() - numberOfGroups )) + "\n");
 		System.out.print("H/C value " + (H / C) + "\n");
 		System.out.print("chi square value " + H  + "\n");
 		System.out.print("test value " + (1.0 - dist.cumulativeProbability(H / C)) + "\n");
