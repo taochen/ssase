@@ -21,6 +21,8 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 	// is consistent with the CP in QoS object. This include EP, in which case the 
 	// -1 value would be used.
 	protected Map<Objective, Integer[]> map;
+	// This is only needed for specific work, e.g., comparing pareto and weighted optimization
+	protected double[] weights;
 	
 	private FEMOSAASolutionInstantiator(){
 		
@@ -131,6 +133,15 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 	public void defuzzilizeAndRemove(Solution s,
 			SolutionSet oldPopulation) {
 		oldPopulation.remove(((FEMOSAASolution)s).getFuzzyID());
+	}
+
+	@Override
+	public double[] getWeights() {
+		return null;
+	}
+	
+	public void setWeights(double[] weights) {
+		this.weights = weights;
 	}
 
 

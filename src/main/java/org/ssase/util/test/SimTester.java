@@ -1,5 +1,9 @@
 package org.ssase.util.test;
 
+
+/**
+ * for FROAS work
+ */
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
