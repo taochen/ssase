@@ -168,7 +168,7 @@ public class FEMOSAASolution extends SASSolution {
 					result[i] = objectives.get(i).predict(xValue);
 				} else {
 					// Assume minimizing
-					result[i] = Double.MAX_VALUE;
+					result[i] = Double.MAX_VALUE/100;
 				}
 				}catch(Throwable t) {
 					System.err.print("This solution is " + isValid + "\n");

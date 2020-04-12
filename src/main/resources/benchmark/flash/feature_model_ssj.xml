@@ -1,0 +1,25 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+ 
+<feature name="spouts" type="categorical" optional="true"/>
+<feature name="max_spout" type="numeric" range="0 3" gap="1" />
+<feature name="sorters" type="numeric" range="0 7" gap="1" />
+<feature name="emit_freq" type="numeric" range="0 4" gap="1" />
+<feature name="chunk_size" type="numeric" range="0 3" gap="1" />
+<feature name="message_size" type="numeric" range="0 2" gap="1" />
+
+	
+</model>
+</ssase>
+

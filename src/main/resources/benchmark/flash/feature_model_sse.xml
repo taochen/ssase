@@ -1,0 +1,22 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+ 
+<feature name="max_spout" type="numeric" range="0 6" gap="1" />
+<feature name="spliters" type="numeric" range="0 5" gap="1" />
+<feature name="counters" type="numeric" range="0 17" gap="1" />
+
+	
+</model>
+</ssase>
+

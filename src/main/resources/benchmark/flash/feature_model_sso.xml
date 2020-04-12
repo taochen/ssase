@@ -1,0 +1,78 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+ 
+<feature name="extrema" type="categorical" optional="true"/>
+<feature name="enabledOptimizations" type="categorical" optional="true"/>
+<feature name="disabledOptimizations" type="categorical" optional="true"/>
+<feature name="ls" type="categorical" optional="true"/>
+<feature name="dcr" type="categorical" optional="true"/>
+<feature name="cf" type="categorical" optional="true"/>
+<feature name="lir" type="categorical" optional="true"/>
+<feature name="inl" type="categorical" optional="true"/>
+<feature name="lur" type="categorical" optional="true"/>
+<feature name="wlur" type="categorical" optional="true"/>
+<feature name="prfunr" type="categorical" optional="true"/>
+<feature name="lus" type="categorical" optional="true"/>
+<feature name="cse" type="categorical" optional="true"/>
+<feature name="dfr" type="categorical" optional="true"/>
+<feature name="wlt" type="categorical" optional="true"/>
+<feature name="wlf" type="categorical" optional="true"/>
+<feature name="awlf" type="categorical" optional="true"/>
+<feature name="ivecyc" type="categorical" optional="true"/>
+<feature name="ive" type="categorical" optional="true"/>
+<feature name="ivesli" type="categorical" optional="true"/>
+<feature name="wlflt" type="categorical" optional="true"/>
+<feature name="ae" type="categorical" optional="true"/>
+<feature name="dl" type="categorical" optional="true"/>
+<feature name="rco" type="categorical" optional="true"/>
+<feature name="uip" type="categorical" optional="true"/>
+<feature name="dr" type="categorical" optional="true"/>
+<feature name="ipc" type="categorical" optional="true"/>
+<feature name="wlpg" type="categorical" optional="true"/>
+<feature name="cp" type="categorical" optional="true"/>
+<feature name="vp" type="categorical" optional="true"/>
+<feature name="srf" type="categorical" optional="true"/>
+<feature name="phm" type="categorical" optional="true"/>
+<feature name="dpa" type="categorical" optional="true"/>
+<feature name="msca" type="categorical" optional="true"/>
+<feature name="wls" type="categorical" optional="true"/>
+<feature name="as" type="categorical" optional="true"/>
+<feature name="wlsimp" type="categorical" optional="true"/>
+<feature name="cwle" type="categorical" optional="true"/>
+<feature name="lro" type="categorical" optional="true"/>
+<feature name="lao" type="categorical" optional="true"/>
+<feature name="pra" type="categorical" optional="true"/>
+<feature name="rnb" type="categorical" optional="true"/>
+<feature name="rip" type="categorical" optional="true"/>
+<feature name="sde" type="categorical" optional="true"/>
+<feature name="wlprop" type="categorical" optional="true"/>
+<feature name="saa" type="categorical" optional="true"/>
+<feature name="cyc" type="categorical" optional="true"/>
+<feature name="scyc" type="categorical" optional="true"/>
+<feature name="saacyc" type="categorical" optional="true"/>
+<feature name="wlsd" type="categorical" optional="true"/>
+<feature name="cts" type="categorical" optional="true"/>
+<feature name="ucts" type="categorical" optional="true"/>
+<feature name="maxoptcyc" type="numeric" range="0 19" gap="1" />
+<feature name="maxlur" type="numeric" range="0 10" gap="1" />
+<feature name="maxwlur" type="numeric" range="0 19" gap="1" />
+<feature name="maxprfur" type="numeric" range="0 19" gap="1" />
+<feature name="maxae" type="numeric" range="0 10" gap="1" />
+<feature name="initmheap" type="numeric" range="0 10" gap="1" />
+<feature name="initwheap" type="numeric" range="0 31" gap="1" />
+
+	
+</model>
+</ssase>
+

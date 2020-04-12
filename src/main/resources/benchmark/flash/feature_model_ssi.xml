@@ -1,0 +1,24 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+ 
+<feature name="spout" type="numeric" range="0 2" gap="1" />
+<feature name="split" type="numeric" range="0 3" gap="1" />
+<feature name="count" type="numeric" range="0 5" gap="1" />
+<feature name="buffer-size" type="numeric" range="0 4" gap="1" />
+<feature name="heap" type="numeric" range="0 2" gap="1" />
+
+	
+</model>
+</ssase>
+

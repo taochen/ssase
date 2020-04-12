@@ -1,0 +1,31 @@
+<ssase>
+
+<vm id="sas">
+
+           
+           
+           <adaptation cost_unit="0.01" /> <!-- next 0.05 seems to be good, retry? -->
+           
+           <service name="rubis_software">
+           <softwareControlPrimitive>
+
+       <item name="spout_wait" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="13" price_per_unit="0.5"  />
+<item name="spliters" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="5" price_per_unit="0.5"  />
+<item name="counters" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="17" price_per_unit="0.5"  />
+
+           </softwareControlPrimitive>
+
+
+         
+           <QoS>
+             <item name="P1" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5" />
+          <item name="P2" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5" /> 
+           </QoS>
+           
+           
+        </service>
+</vm>
+
+
+</ssase>
+

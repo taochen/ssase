@@ -137,7 +137,7 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 
 	@Override
 	public double[] getWeights() {
-		return null;
+		return weights;
 	}
 	
 	public void setWeights(double[] weights) {

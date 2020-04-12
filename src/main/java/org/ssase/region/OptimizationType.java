@@ -9,5 +9,6 @@ public enum OptimizationType {
 	GP, GPkd,
 	BB, BBd,
 	HC,
-	RS
+	RS,
+	SGA
 }
