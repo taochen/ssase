@@ -294,7 +294,7 @@ public class WilcoxonSignedRankTest {
 
 		// - 0.5 is a continuity correction
 		final double z = (Wmin - ES - 0.5) / FastMath.sqrt(VarS);
-		System.out.print("z "+ z+"\n" );
+		//System.out.print("z "+ z+"\n" );
 		//System.out.print("VarS "+ VarS+"\n" );
 		//System.out.print("ES "+ ES+"\n" );
 		final NormalDistribution standardNormal = new NormalDistribution(0, 1);
@@ -304,7 +304,7 @@ public class WilcoxonSignedRankTest {
 //		System.out.print("ret "+ ret+"\n" );
 //		return (1 + (x < 0 ? -ret : ret));
 //		
-		System.out.print("Z/sqrt N = " + Math.abs(z)/Math.sqrt(n) + "\n");
+		//System.out.print("Z/sqrt N = " + Math.abs(z)/Math.sqrt(n) + "\n");
 		return 2 * standardNormal.cumulativeProbability(z);
 	}
 
