@@ -334,7 +334,7 @@
  <feature name="AS98" type="numeric" range="1 99" gap="1" switchoff="false"/>
  <feature name="AS99" type="numeric" range="1 100" gap="1" switchoff="false"/>
  <feature name="AS100" type="numeric" range="1 108" gap="1" switchoff="false"/>
- 
+ -->
 
  
      <feature name="AS1" type="numeric" range="1 66" gap="1" switchoff="false"/>
@@ -387,8 +387,10 @@
  <feature name="AS48" type="numeric" range="1 76" gap="1" switchoff="false"/>
  <feature name="AS49" type="numeric" range="1 58" gap="1" switchoff="false"/>
  <feature name="AS50" type="numeric" range="1 80" gap="1" switchoff="false"/>
-	 -->
 	 
+	  <!-- 
+	  
+	    This is for 5 objectives 
 	 <feature name="AS1" type="numeric" range="1 119" gap="1" switchoff="false"/>
  <feature name="AS2" type="numeric" range="1 98" gap="1" switchoff="false"/>
  <feature name="AS3" type="numeric" range="1 99" gap="1" switchoff="false"/>
@@ -396,7 +398,7 @@
  <feature name="AS5" type="numeric" range="1 108" gap="1" switchoff="false"/>
 
 
-  
+
   
 
     
@@ -410,7 +412,7 @@
  <feature name="AS13" type="numeric" range="1 102" gap="1" switchoff="false"/>
  <feature name="AS14" type="numeric" range="1 86" gap="1" switchoff="false"/>
  <feature name="AS15" type="numeric" range="1 122" gap="1" switchoff="false"/>
-
+-->
 </model>
 </ssase>
 
