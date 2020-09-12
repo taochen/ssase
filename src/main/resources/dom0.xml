@@ -102,7 +102,7 @@
           <item name="AS15" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="122" price_per_unit="0.5" switchoff="false" />
                   
    -->
-           <!-- 
+           <!--   
           <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="108" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="110" price_per_unit="0.5" switchoff="false" />
           <item name="AS3" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="106" price_per_unit="0.5" switchoff="false" />
@@ -119,8 +119,8 @@
           <item name="AS14" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="122" price_per_unit="0.5" switchoff="false" />
           <item name="AS15" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="86" price_per_unit="0.5" switchoff="false" />
         
-         
-         
+         -->
+       
                
            
            <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="96" price_per_unit="0.5" switchoff="false" />
@@ -224,7 +224,7 @@
           <item name="AS99" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="100" price_per_unit="0.5" switchoff="false" />
           <item name="AS100" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="108" price_per_unit="0.5" switchoff="false" />          
         
-     
+     <!--
                   -->   
                   
                   <!-- change delta
@@ -331,6 +331,7 @@
           <item name="AS100" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="108" price_per_unit="0.5" switchoff="false" />          
           
         -->
+         <!--
         <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="66" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="80" price_per_unit="0.5" switchoff="false" />
           <item name="AS3" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="76" price_per_unit="0.5" switchoff="false" />
@@ -382,7 +383,7 @@
           <item name="AS49" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="58" price_per_unit="0.5" switchoff="false" />
           <item name="AS50" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="80" price_per_unit="0.5" switchoff="false" />      
           
-            <!--  
+             
                   This is for 5 objectives      
                         <item name="AS1" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="119" price_per_unit="0.5" switchoff="false" />
           <item name="AS2" provision="1" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="1" max="98" price_per_unit="0.5" switchoff="false" />

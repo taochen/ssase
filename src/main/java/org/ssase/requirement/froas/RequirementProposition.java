@@ -103,7 +103,7 @@ public class RequirementProposition  {
 	 * @param value
 	 * @return
 	 */
-	private double normalize(double value) {	
+	protected double normalize(double value) {	
 		
 		// means all values are the same
 		if(max == min) {
