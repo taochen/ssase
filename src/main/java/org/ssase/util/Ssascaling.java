@@ -45,6 +45,7 @@ import org.ssase.region.OptimizationType;
 import org.ssase.region.Region;
 import org.ssase.requirement.froas.RequirementPrimitive;
 import org.ssase.requirement.froas.RequirementProposition;
+import org.ssase.requirement.froas.SimpleRequirementProposition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -426,7 +427,20 @@ public class Ssascaling {
 	    										Repository.setRequirementProposition(qos.getName(), 
 	    												new RequirementProposition(d, RequirementPrimitive.AS_GOOD_AS_POSSIBLE, 
 	    														RequirementPrimitive.AS_GOOD_AS_POSSIBLE_TO_d));
-	    									}
+	    									} else if("linear".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    												new SimpleRequirementProposition(RequirementPrimitive.AS_GOOD_AS_POSSIBLE));
+	    									} else if("linear_p1".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    												new SimpleRequirementProposition(d, RequirementPrimitive.AS_GOOD_AS_POSSIBLE_TO_d));
+	    									} else if("linear_p2".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    										        new SimpleRequirementProposition(d, RequirementPrimitive.BETTER_THAN_d));
+	    									} else if("linear_p3".equals(req)) {
+	    										Repository.setRequirementProposition(qos.getName(), 
+	    	    										new SimpleRequirementProposition(d, RequirementPrimitive.AS_GOOD_AS_POSSIBLE, 
+	    														RequirementPrimitive.BETTER_THAN_d));
+	    	    							}
 	    									
 	    								}
 	    									

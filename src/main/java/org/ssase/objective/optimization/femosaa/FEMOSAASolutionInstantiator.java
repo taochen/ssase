@@ -53,6 +53,7 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 
 	@Override
 	public Solution getSolution(Problem problem) {
+		//System.out.print("Obj " +objectives.get(0).getName() + "\n");
 		FEMOSAASolution sol = null;
 		try {
 			sol = new FEMOSAASolution(problem);

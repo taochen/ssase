@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -66,9 +67,9 @@ public class Repository {
 	
 	// Used to detect under-provisioning
 	// need concurrent set
-	private static Set<QualityOfService> qoss = new HashSet<QualityOfService>();
+	private static Set<QualityOfService> qoss = new LinkedHashSet<QualityOfService>();
 	// Used to detect over-provisioning
-	private static Set<Cost> cost = new HashSet<Cost>();
+	private static Set<Cost> cost = new LinkedHashSet<Cost>();
 	
 	// ************** These are the collections contain unique instance of QoS and primitives, 
 	// which need to be updated when adding newly measured data ***********
@@ -185,7 +186,7 @@ public class Repository {
 	
 	public static void setDirectForAnObjective  (Objective obj, Primitive p) {
 		if (!directPrimitives.containsKey(obj)) {
-			directPrimitives.put(obj, new HashSet<Primitive>());
+			directPrimitives.put(obj, new LinkedHashSet<Primitive>());
 		}
 		
 		directPrimitives.get(obj).add(p);

@@ -396,7 +396,11 @@
              <!-- constraint="6"  -->
             <item name="Cost" constraint="5000" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  />
              <item name="Latency" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  />
-          
+            <!--   <item name="Latency" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  />
+               <item name="Availability" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  />
+                   <item name="Compliance" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  />
+                <item name="Practices" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5"  />
+        --> 
            </QoS>
            
            

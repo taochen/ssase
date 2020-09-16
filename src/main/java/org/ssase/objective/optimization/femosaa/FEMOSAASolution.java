@@ -83,7 +83,6 @@ public class FEMOSAASolution extends SASSolution {
 		double[] result = new double[objectives.size()];
 		logger.debug(" ");
 		for (int i = 0; i < objectives.size(); i++) {
-			
 			logger.debug(objectives.get(i).getName() + " start prediction");
 			
 			Integer[] values = modelMap.get(objectives.get(i));

@@ -13,17 +13,17 @@ import org.ssase.requirement.froas.fuzzy.*;
  */
 
 public class RequirementProposition  {
-	private RequirementPrimitive[] primitives;
+	protected RequirementPrimitive[] primitives;
 	// Fitness function
-	private FuzzyFunction function;
+	protected FuzzyFunction function;
 
-	private double d = Double.NEGATIVE_INFINITY;
+	protected double d = Double.NEGATIVE_INFINITY;
 
-	private double min = Double.MAX_VALUE;
-	private double max = Double.MIN_VALUE;
+	protected double min = Double.MAX_VALUE;
+	protected double max = Double.MIN_VALUE;
 
 	// The actual math function
-	private Class clazz = ErrorFunction.class;
+	protected Class clazz = ErrorFunction.class;
 
 
 

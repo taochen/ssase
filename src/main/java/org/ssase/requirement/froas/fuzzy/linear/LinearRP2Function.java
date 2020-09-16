@@ -7,9 +7,9 @@ public class LinearRP2Function implements FuzzyFunction{
 	@Override
 	public double fuzzilize(double original, double d) {
 		if(original <= d) {
-			return 1.0;
+			return 0.0;
 		}
-		return 0.0;
+		return 1.0;
 	}
 
 }
