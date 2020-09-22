@@ -1,0 +1,31 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+<feature name="﻿vm_type" type="numeric" range="0 4" gap="1" />
+<feature name="min_child_weight" type="categorical" optional="true"/>
+<feature name="nthread" type="categorical" optional="true"/> 
+<feature name="n_estimators" type="categorical" optional="true"/>
+<feature name="max_depth" type="categorical" optional="true"/>
+<feature name="learning_rate" type="categorical" optional="true"/> 
+<feature name="max_delta_step" type="categorical" optional="true"/> 
+<feature name="subsample" type="categorical" optional="true"/> 
+<feature name="colsample_bytree" type="categorical" optional="true"/> 
+<feature name="lambda" type="categorical" optional="true"/> 
+<feature name="alpha" type="categorical" optional="true"/> 
+<feature name="scale_pos_weight" type="categorical" optional="true"/> 
+<feature name="colsample_bylevel" type="categorical" optional="true"/> 
+
+	
+</model>
+</ssase>
+

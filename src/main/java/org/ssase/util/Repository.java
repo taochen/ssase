@@ -251,7 +251,7 @@ public class Repository {
 		lambda_   = new double[MOEAD_SAS_main.popsize][2];
 		try {
 			// Open the file
-			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/tao/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/tao/weight" + "/"
+			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/"+System.getProperty("user.name")+"/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/"+System.getProperty("user.name")+"/weight" + "/"
 					+ dataFileName);
 			InputStreamReader isr = new InputStreamReader(fis);
 			BufferedReader br = new BufferedReader(isr);
@@ -283,7 +283,7 @@ public class Repository {
 		lambda_   = new double[no][3];
 		try {
 			// Open the file
-			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/tao/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/tao/weight" + "/"
+			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/"+System.getProperty("user.name")+"/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/"+System.getProperty("user.name")+"/weight" + "/"
 					+ dataFileName);
 			InputStreamReader isr = new InputStreamReader(fis);
 			BufferedReader br = new BufferedReader(isr);

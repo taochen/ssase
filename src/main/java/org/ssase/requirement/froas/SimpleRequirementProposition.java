@@ -28,7 +28,7 @@ public class SimpleRequirementProposition extends RequirementProposition {
 		
 	}
 	
-	protected double normalize(double value) {	
+	public double normalize(double value) {	
 		
 		double max = this.max;
 		double min = this.min;
@@ -40,7 +40,7 @@ public class SimpleRequirementProposition extends RequirementProposition {
 				primitives[1] == RequirementPrimitive.BETTER_THAN_d){
 			max = max > d? d : max;
 			min = min < d? min : d;
-		} else if (primitives.length == 1 && primitives[0] == RequirementPrimitive.AS_CLOSE_AS_POSSIBLE_TO_d){
+		} else if (primitives.length == 2 && primitives[0] == RequirementPrimitive.AS_CLOSE_AS_POSSIBLE_TO_d){
 			double d1 = Math.abs(max - d);
 			double d2 = Math.abs(min - d);
 			

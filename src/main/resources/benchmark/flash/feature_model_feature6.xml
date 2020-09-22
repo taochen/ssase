@@ -1,0 +1,30 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+ 
+<feature name="topology.workers" type="categorical" optional="true"/>
+<feature name="component.bolt_num" type="categorical" optional="true"/>
+<feature name="topology.acker.executors" type="categorical" optional="true"/>
+<feature name="message.size" type="categorical" optional="true"/>
+<feature name="component.spout_num" type="categorical" optional="true"/>
+<feature name="topology.serialized.message.size.metrics" type="categorical" optional="true"/>
+<feature name="topology.max.spout.pending" type="categorical" optional="true"/>
+<feature name="storm.messaging.netty.min_wait_ms" type="categorical" optional="true"/>
+<feature name="topology.transfer.buffer.size" type="categorical" optional="true"/>
+<feature name="storm.messaging.netty.max_wait_ms" type="categorical" optional="true"/>
+<feature name="topology.level" type="categorical" optional="true"/>
+<feature name="topology.priority" type="categorical" optional="true"/>
+	
+</model>
+</ssase>
+

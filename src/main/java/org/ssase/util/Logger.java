@@ -14,9 +14,9 @@ import org.ssase.region.Region;
 
 public class Logger { 
 
-	public static final String prefix = //"/home/tao/monitor/";
-		//"/Users/tao/research/monitor/sas-soa/final/";
-		"/Users/tao/research/monitor/ws-soa/sas/";
+	public static final String prefix = //"/home/"+System.getProperty("user.name")+"/monitor/";
+		//"/Users/"+System.getProperty("user.name")+"/research/monitor/sas-soa/final/";
+		"/Users/"+System.getProperty("user.name")+"/research/monitor/ws-soa/sas/";
 	private static long executionCount = 0;
 	 
 	
