@@ -8,7 +8,7 @@ import java.util.List;
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.metaheuristics.sga.SGA_SAS_main;
-import jmetal.metaheuristics.moead.MOEAD_SAS_main;
+import jmetal.metaheuristics.moead.MOEAD_STM_SAS_main;
 import jmetal.metaheuristics.nsgaII.NSGA2_SAS_main;
 
 import org.femosaa.core.SASAlgorithmAdaptor;

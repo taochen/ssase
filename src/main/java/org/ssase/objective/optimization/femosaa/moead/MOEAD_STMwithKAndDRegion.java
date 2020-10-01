@@ -10,7 +10,7 @@ import java.util.Random;
 
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
-import jmetal.metaheuristics.moead.MOEAD_SAS_main;
+import jmetal.metaheuristics.moead.MOEAD_STM_SAS_main;
 import jmetal.problems.test.DummySASSolution;
 import jmetal.problems.test.DummySASSolutionInstantiator;
 import jmetal.util.JMException;
@@ -88,7 +88,7 @@ public class MOEAD_STMwithKAndDRegion extends Region {
 	}
 	
 	protected SASAlgorithmAdaptor getAlgorithm(){
-		return new MOEAD_SAS_main(){
+		return new MOEAD_STM_SAS_main(){
 			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){			
 				//Region.correctDependencyAfterEvolution(pareto_front);
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);

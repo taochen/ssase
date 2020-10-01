@@ -9,6 +9,7 @@ import org.ssase.objective.optimization.bb.BranchAndBoundwithDRegion;
 import org.ssase.objective.optimization.femosaa.*;
 import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithDRegion;
 import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithKRegion;
+import org.ssase.objective.optimization.femosaa.moead.MOEADRegion;
 import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMRegion;
 import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithZeroAndOneRegion;
 import org.ssase.objective.optimization.femosaa.moead.MOEAD_STMwithKAndDRegion;
@@ -149,6 +150,8 @@ public abstract class Region {
 			return new MOEAD_STMRegion();
 		} else if(OptimizationType.FEMOSAA01.equals(type)) {
 			return new MOEAD_STMwithZeroAndOneRegion();
+		} else if(OptimizationType.MOEADkd.equals(type)) {
+				return new MOEADRegion();
 		} else if(OptimizationType.NSGAII.equals(type)) {
 			return new NSGAIIRegion();
 		} else if(OptimizationType.NSGAIIkd.equals(type)) {

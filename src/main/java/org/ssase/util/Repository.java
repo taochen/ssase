@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import jmetal.metaheuristics.moead.MOEAD_SAS_main;
+import jmetal.metaheuristics.moead.MOEAD_STM_SAS_main;
 
 import org.ssase.ControlBus;
 import org.ssase.Service;
@@ -247,8 +247,8 @@ public class Repository {
 	public static void initUniformWeight() {
 		//Always 2 objectives
 		String dataFileName;
-		dataFileName = "W2D_" + MOEAD_SAS_main.popsize + ".dat";
-		lambda_   = new double[MOEAD_SAS_main.popsize][2];
+		dataFileName = "W2D_" + MOEAD_STM_SAS_main.popsize + ".dat";
+		lambda_   = new double[MOEAD_STM_SAS_main.popsize][2];
 		try {
 			// Open the file
 			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/"+System.getProperty("user.name")+"/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/"+System.getProperty("user.name")+"/weight" + "/"

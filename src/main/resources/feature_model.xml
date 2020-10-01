@@ -12,19 +12,17 @@
 <model>
   <!-- -->
  
-<feature name="﻿vm_type" type="numeric" range="0 3" gap="1" />
-<feature name="a" type="categorical" optional="true"/> 
-<feature name="b" type="categorical" optional="true"/> 
-<feature name="c" type="categorical" optional="true"/> 
-<feature name="d" type="categorical" optional="true"/> 
-<feature name="e" type="categorical" optional="true"/> 
-<feature name="f" type="categorical" optional="true"/> 
-<feature name="g" type="categorical" optional="true"/> 
-<feature name="h" type="categorical" optional="true"/> 
-<feature name="i" type="categorical" optional="true"/> 
-<feature name="j" type="categorical" optional="true"/> 
-<feature name="k" type="categorical" optional="true"/> 
-<feature name="l" type="categorical" optional="true"/> 
+<feature name="F" type="categorical" optional="true"/>
+<feature name="colorGS" type="categorical" optional="true"/>
+<feature name="relaxParameter" type="categorical" optional="true"/>
+<feature name="V" type="categorical" optional="true"/>
+<feature name="Jacobi" type="categorical" optional="true"/>
+<feature name="line" type="categorical" optional="true"/>
+<feature name="zebraLine" type="categorical" optional="true"/>
+<feature name="alpha" type="numeric" range="0 17" gap="1" />
+<feature name="beta" type="numeric" range="0 17" gap="1" />
+<feature name="preSmoothing" type="numeric" range="0 8" gap="1" />
+<feature name="postSmoothing" type="numeric" range="0 8" gap="1" />
 
 	
 </model>

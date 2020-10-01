@@ -13,7 +13,7 @@ import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.core.Variable;
 import jmetal.encodings.variable.Int;
-import jmetal.metaheuristics.moead.MOEAD_SAS_PLAIN_main;
+import jmetal.metaheuristics.moead.MOEAD_main;
 import jmetal.util.JMException;
 
 import org.femosaa.core.SASAlgorithmAdaptor;
@@ -107,7 +107,7 @@ public class MOEAD_STMwithZeroAndOneRegion extends MOEAD_STMwithKAndDRegion {
 	}
 	
 	protected SASAlgorithmAdaptor getAlgorithm(){
-		return new MOEAD_SAS_PLAIN_main(){
+		return new MOEAD_main(){
 			
 			
 			public Solution execute(SASSolutionInstantiator factory, int[][] vars,

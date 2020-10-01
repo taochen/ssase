@@ -1,7 +1,7 @@
 package org.ssase.objective.optimization.femosaa.moead;
 
 import jmetal.core.SolutionSet;
-import jmetal.metaheuristics.moead.MOEAD_SAS_main;
+import jmetal.metaheuristics.moead.MOEAD_STM_SAS_main;
 
 import org.femosaa.core.SASAlgorithmAdaptor;
 import org.femosaa.core.SASSolution;
@@ -20,7 +20,7 @@ public class MOEAD_STMwithKRegion extends MOEAD_STMwithKAndDRegion {
 	}
 	
 	protected SASAlgorithmAdaptor getAlgorithm(){
-		return new MOEAD_SAS_main(){
+		return new MOEAD_STM_SAS_main(){
 			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){			
 				//Region.correctDependencyAfterEvolution(pareto_front);
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);

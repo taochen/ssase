@@ -2,8 +2,11 @@ package org.ssase.objective.optimization.femosaa;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 
+import org.femosaa.core.EAConfigure;
 import org.femosaa.core.SASSolutionInstantiator;
 import org.ssase.objective.Objective;
 import org.ssase.primitive.ControlPrimitive;
@@ -13,6 +16,7 @@ import jmetal.core.Problem;
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
 import jmetal.core.Variable;
+import jmetal.util.JMException;
 
 public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 
@@ -23,6 +27,8 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 	protected Map<Objective, Integer[]> map;
 	// This is only needed for specific work, e.g., comparing pareto and weighted optimization
 	protected double[] weights;
+	
+	private Set<String> measurement_record;
 	
 	private FEMOSAASolutionInstantiator(){
 		
@@ -69,6 +75,10 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 	public Solution getSolution(Solution solution) {
 		FEMOSAASolution sol = new FEMOSAASolution(solution);
 		sol.init(objectives, map);
+		if(solution instanceof FEMOSAASolution) {
+			sol.setFuzzyID(((FEMOSAASolution)solution).getFuzzyID());
+		}
+		
 		return sol;
 	}
 
@@ -144,6 +154,51 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 	public void setWeights(double[] weights) {
 		this.weights = weights;
 	}
+
+	public int record(SolutionSet set) {
+		if(EAConfigure.getInstance().measurement == -1) {
+			return 0;
+		}
+		
+		if (measurement_record == null) {
+			measurement_record = new HashSet<String>();
+		}
+		
+		int r = 0;
+		for (int i = 0; i < set.size(); i++) {
+			r += record(set.get(i));
+		}
+		
+		return r;
+	}
+	
+	public int record(Solution s) {
+		if(EAConfigure.getInstance().measurement == -1) {
+			return 0;
+		}
+		
+		if (measurement_record == null) {
+			measurement_record = new HashSet<String>();
+		}
+		
+		String str = "";
+		for (int i = 0; i < s.getDecisionVariables().length; i++) {
+			try {
+				str += String.valueOf(s.getDecisionVariables()[i].getValue()) + ",";
+			} catch (JMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//System.out.print("size: " + measurement_record.size() + "---\n");
+		if (measurement_record.contains(str)) {
+			return 0;
+		} else {
+			measurement_record.add(str);
+			return 1;
+		}
+	}
+	
 
 
 }
