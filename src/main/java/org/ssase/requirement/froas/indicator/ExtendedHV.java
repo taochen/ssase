@@ -41,7 +41,7 @@ public class ExtendedHV extends HV {
 			  
 			  double[] v = new double[front[i].length];
 			  for (int j = 0; j < front[i].length; j++) {
-				  v[j] = rp[j].fuzzilize(front[i][j]);
+				  v[j] = 0.9*rp[j].fuzzilize(front[i][j]);//0.9*rp[j].fuzzilize(front[i][j]); // for abn
 			  }
 			  new_front[i] = v;
 			  
