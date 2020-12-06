@@ -28,10 +28,16 @@ import org.ssase.region.Region;
 public class RSRegion extends Region {
 
 	protected int[][] vars = null;
+	protected double[] weights;
 	
 	public RSRegion() {
 		super();		
 	}
+	
+	public RSRegion(double[] weights) {
+		this.weights = weights;	
+	}
+
 
 	protected void init(){
 		if(vars == null) {
@@ -62,6 +68,7 @@ public class RSRegion extends Region {
 
 
 			FEMOSAASolutionInstantiator inst = new FEMOSAASolutionInstantiator(objectives);
+			inst.setWeights(weights);
 			System.out.print("Algorithm start *******\n");
             SASAlgorithmAdaptor algorithm = getAlgorithm();
 			Solution solution = null;

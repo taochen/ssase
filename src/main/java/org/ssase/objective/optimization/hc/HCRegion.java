@@ -21,9 +21,14 @@ import org.ssase.region.Region;
 public class HCRegion extends Region {
 
 	protected int[][] vars = null;
+	protected double[] weights;
 	
 	public HCRegion() {
 		super();		
+	}
+	
+	public HCRegion(double[] weights) {
+		this.weights = weights;	
 	}
 
 	protected void init(){
@@ -55,6 +60,7 @@ public class HCRegion extends Region {
 
 
 			FEMOSAASolutionInstantiator inst = new FEMOSAASolutionInstantiator(objectives);
+			inst.setWeights(weights);
 			System.out.print("Algorithm start *******\n");
             SASAlgorithmAdaptor algorithm = getAlgorithm();
 			Solution solution = null;

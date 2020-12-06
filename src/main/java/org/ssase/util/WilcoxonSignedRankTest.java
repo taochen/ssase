@@ -305,6 +305,7 @@ public class WilcoxonSignedRankTest {
 //		return (1 + (x < 0 ? -ret : ret));
 //		
 		//System.out.print("Z/sqrt N = " + Math.abs(z)/Math.sqrt(n) + "\n");
+		//System.out.print(standardNormal.cumulativeProbability(z)+"\n");
 		return 2 * standardNormal.cumulativeProbability(z);
 	}
 
@@ -366,6 +367,7 @@ public class WilcoxonSignedRankTest {
 		final long N = x.length;
 		final double Wmax = wilcoxonSignedRank(x, y);
 
+		//System.out.print("Wmax: " + Wmax + "\n");
 		if (exactPValue && N > 30) {
 			throw new NumberIsTooLargeException(N, 30, true);
 		}
@@ -374,6 +376,7 @@ public class WilcoxonSignedRankTest {
 			return calculateExactPValue(Wmax, N);
 		} else {
 			final double Wmin = ((double) (N * (N + 1)) / 2.0) - Wmax;
+			//System.out.print("Wmin: " + Wmin + "\n");
 			return calculateAsymptoticPValue(Wmin, N);
 		}
 	}

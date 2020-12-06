@@ -9,19 +9,12 @@
            <service name="rubis_software">
            <softwareControlPrimitive>
 
-     <item name="﻿vm_type" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="5" price_per_unit="0.5"  />
-<item name="a" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="b" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="c" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="d" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="e" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="f" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="g" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="h" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="i" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="j" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="k" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="l" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="spouts" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="max_spout" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="5" price_per_unit="0.5"  />
+<item name="spout_wait" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="4" price_per_unit="0.5"  />
+<item name="spliters" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="3" price_per_unit="0.5"  />
+<item name="counters" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="3" price_per_unit="0.5"  />
+<item name="netty_min_wait" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="2" price_per_unit="0.5"  />
 
            </softwareControlPrimitive>
 
