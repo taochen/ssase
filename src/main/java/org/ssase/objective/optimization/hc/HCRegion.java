@@ -22,6 +22,7 @@ public class HCRegion extends Region {
 
 	protected int[][] vars = null;
 	protected double[] weights;
+	protected double[][] fixed_bounds;
 	
 	public HCRegion() {
 		super();		
@@ -31,6 +32,12 @@ public class HCRegion extends Region {
 		this.weights = weights;	
 	}
 
+	
+	public HCRegion(double[] weights, double[][] fixed_bounds) {
+		this.weights = weights;	
+		this.fixed_bounds = fixed_bounds;
+	}
+	
 	protected void init(){
 		if(vars == null) {
 			vars = FEMOSAASolutionAdaptor.getInstance().convertInitialLimits(objectives.get(0));
@@ -61,6 +68,7 @@ public class HCRegion extends Region {
 
 			FEMOSAASolutionInstantiator inst = new FEMOSAASolutionInstantiator(objectives);
 			inst.setWeights(weights);
+			inst.setFixedBounds(fixed_bounds);
 			System.out.print("Algorithm start *******\n");
             SASAlgorithmAdaptor algorithm = getAlgorithm();
 			Solution solution = null;

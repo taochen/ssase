@@ -25,8 +25,10 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 	// is consistent with the CP in QoS object. This include EP, in which case the 
 	// -1 value would be used.
 	protected Map<Objective, Integer[]> map;
-	// This is only needed for specific work, e.g., comparing pareto and weighted optimization
+	// The two below only needed for specific work, e.g., comparing pareto and weighted optimization
 	protected double[] weights;
+	// Bounds of weighted sum normalization
+	protected double[][] fixed_bounds;
 	
 	private Set<String> measurement_record;
 	
@@ -154,6 +156,15 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 	public void setWeights(double[] weights) {
 		this.weights = weights;
 	}
+	
+	@Override
+	public double[][] getFixedBounds() {
+		return fixed_bounds;
+	}
+	
+	public void setFixedBounds(double[][] fixed_bounds) {
+		this.fixed_bounds = fixed_bounds;
+	}
 
 	public int record(SolutionSet set) {
 		if(EAConfigure.getInstance().measurement == -1) {
@@ -198,6 +209,8 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 			return 1;
 		}
 	}
+
+	
 	
 
 

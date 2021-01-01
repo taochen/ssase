@@ -10,15 +10,383 @@
 		order is cross-dependency - features - alt - or
 		-->
 <model>
-  <!-- -->
+  <!--
+ <feature name="AS1" type="numeric" range="1 96" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ -->
+     <!--
+ <feature name="AS1" type="numeric" range="1 119" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 98" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 99" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 100" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 108" gap="1" switchoff="false"/>
  
-<feature name="spouts" type="categorical" optional="true"/>
-<feature name="max_spout" type="numeric" range="0 5" gap="1" />
-<feature name="spout_wait" type="numeric" range="0 4" gap="1" />
-<feature name="spliters" type="numeric" range="0 3" gap="1" />
-<feature name="counters" type="numeric" range="0 3" gap="1" />
-<feature name="netty_min_wait" type="numeric" range="0 2" gap="1" />
+  <feature name="AS1" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 115" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 101" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 115" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ 
 
+   
+  <feature name="AS1" type="numeric" range="1 96" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS6" type="numeric" range="1 119" gap="1" switchoff="false"/>
+ <feature name="AS7" type="numeric" range="1 98" gap="1" switchoff="false"/>
+ <feature name="AS8" type="numeric" range="1 99" gap="1" switchoff="false"/>
+ <feature name="AS9" type="numeric" range="1 100" gap="1" switchoff="false"/>
+ <feature name="AS10" type="numeric" range="1 108" gap="1" switchoff="false"/>
+
+  
+
+    
+  <feature name="AS1" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 115" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 101" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 115" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ <feature name="AS6" type="numeric" range="1 113" gap="1" switchoff="false"/>
+ <feature name="AS7" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ <feature name="AS8" type="numeric" range="1 102" gap="1" switchoff="false"/>
+ <feature name="AS9" type="numeric" range="1 86" gap="1" switchoff="false"/>
+ <feature name="AS10" type="numeric" range="1 122" gap="1" switchoff="false"/>
+    
+
+ 
+  <feature name="AS1" type="numeric" range="1 122" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 118" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 87" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS6" type="numeric" range="1 112" gap="1" switchoff="false"/>
+ <feature name="AS7" type="numeric" range="1 101" gap="1" switchoff="false"/>
+ <feature name="AS8" type="numeric" range="1 102" gap="1" switchoff="false"/>
+ <feature name="AS9" type="numeric" range="1 119" gap="1" switchoff="false"/>
+ <feature name="AS10" type="numeric" range="1 122" gap="1" switchoff="false"/>
+
+
+
+ 
+   <feature name="AS1" type="numeric" range="1 96" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS6" type="numeric" range="1 119" gap="1" switchoff="false"/>
+ <feature name="AS7" type="numeric" range="1 98" gap="1" switchoff="false"/>
+ <feature name="AS8" type="numeric" range="1 99" gap="1" switchoff="false"/>
+ <feature name="AS9" type="numeric" range="1 100" gap="1" switchoff="false"/>
+ <feature name="AS10" type="numeric" range="1 108" gap="1" switchoff="false"/>
+ <feature name="AS11" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS12" type="numeric" range="1 115" gap="1" switchoff="false"/>
+ <feature name="AS13" type="numeric" range="1 101" gap="1" switchoff="false"/>
+ <feature name="AS14" type="numeric" range="1 115" gap="1" switchoff="false"/>
+  <feature name="AS15" type="numeric" range="1 123" gap="1" switchoff="false"/>
+
+     
+     <feature name="AS1" type="numeric" range="1 113" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 102" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 86" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 122" gap="1" switchoff="false"/>
+ <feature name="AS6" type="numeric" range="1 122" gap="1" switchoff="false"/>
+ <feature name="AS7" type="numeric" range="1 118" gap="1" switchoff="false"/>
+ <feature name="AS8" type="numeric" range="1 87" gap="1" switchoff="false"/>
+ <feature name="AS9" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS10" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS11" type="numeric" range="1 112" gap="1" switchoff="false"/>
+ <feature name="AS12" type="numeric" range="1 101" gap="1" switchoff="false"/>
+ <feature name="AS13" type="numeric" range="1 102" gap="1" switchoff="false"/>
+ <feature name="AS14" type="numeric" range="1 119" gap="1" switchoff="false"/>
+  <feature name="AS15" type="numeric" range="1 122" gap="1" switchoff="false"/>
+  
+  
+ 
+
+       <feature name="AS1" type="numeric" range="1 108" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 117" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ <feature name="AS6" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS7" type="numeric" range="1 111" gap="1" switchoff="false"/>
+ <feature name="AS8" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS9" type="numeric" range="1 95" gap="1" switchoff="false"/>
+ <feature name="AS10" type="numeric" range="1 93" gap="1" switchoff="false"/>
+ <feature name="AS11" type="numeric" range="1 111" gap="1" switchoff="false"/>
+ <feature name="AS12" type="numeric" range="1 107" gap="1" switchoff="false"/>
+ <feature name="AS13" type="numeric" range="1 116" gap="1" switchoff="false"/>
+ <feature name="AS14" type="numeric" range="1 122" gap="1" switchoff="false"/>
+  <feature name="AS15" type="numeric" range="1 86" gap="1" switchoff="false"/>
+  
+  
+
+     <feature name="AS1" type="numeric" range="1 96" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS6" type="numeric" range="1 119" gap="1" switchoff="false"/>
+ <feature name="AS7" type="numeric" range="1 98" gap="1" switchoff="false"/>
+ <feature name="AS8" type="numeric" range="1 99" gap="1" switchoff="false"/>
+ <feature name="AS9" type="numeric" range="1 100" gap="1" switchoff="false"/>
+ <feature name="AS10" type="numeric" range="1 108" gap="1" switchoff="false"/>
+ <feature name="AS11" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS12" type="numeric" range="1 115" gap="1" switchoff="false"/>
+ <feature name="AS13" type="numeric" range="1 101" gap="1" switchoff="false"/>
+ <feature name="AS14" type="numeric" range="1 115" gap="1" switchoff="false"/>
+  <feature name="AS15" type="numeric" range="1 123" gap="1" switchoff="false"/>
+       <feature name="AS16" type="numeric" range="1 113" gap="1" switchoff="false"/>
+ <feature name="AS17" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ <feature name="AS18" type="numeric" range="1 102" gap="1" switchoff="false"/>
+ <feature name="AS19" type="numeric" range="1 86" gap="1" switchoff="false"/>
+ <feature name="AS20" type="numeric" range="1 122" gap="1" switchoff="false"/>
+ <feature name="AS21" type="numeric" range="1 122" gap="1" switchoff="false"/>
+ <feature name="AS22" type="numeric" range="1 118" gap="1" switchoff="false"/>
+ <feature name="AS23" type="numeric" range="1 87" gap="1" switchoff="false"/>
+ <feature name="AS24" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS25" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS26" type="numeric" range="1 112" gap="1" switchoff="false"/>
+ <feature name="AS27" type="numeric" range="1 101" gap="1" switchoff="false"/>
+ <feature name="AS28" type="numeric" range="1 102" gap="1" switchoff="false"/>
+ <feature name="AS29" type="numeric" range="1 119" gap="1" switchoff="false"/>
+  <feature name="AS30" type="numeric" range="1 122" gap="1" switchoff="false"/>
+         <feature name="AS31" type="numeric" range="1 108" gap="1" switchoff="false"/>
+ <feature name="AS32" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS33" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS34" type="numeric" range="1 117" gap="1" switchoff="false"/>
+ <feature name="AS35" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ <feature name="AS36" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS37" type="numeric" range="1 111" gap="1" switchoff="false"/>
+ <feature name="AS38" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS39" type="numeric" range="1 95" gap="1" switchoff="false"/>
+ <feature name="AS40" type="numeric" range="1 93" gap="1" switchoff="false"/>
+ <feature name="AS41" type="numeric" range="1 111" gap="1" switchoff="false"/>
+ <feature name="AS42" type="numeric" range="1 107" gap="1" switchoff="false"/>
+ <feature name="AS43" type="numeric" range="1 116" gap="1" switchoff="false"/>
+ <feature name="AS44" type="numeric" range="1 122" gap="1" switchoff="false"/>
+  <feature name="AS45" type="numeric" range="1 86" gap="1" switchoff="false"/>
+   <feature name="AS46" type="numeric" range="1 96" gap="1" switchoff="false"/>
+ <feature name="AS47" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS48" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS49" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS50" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS51" type="numeric" range="1 119" gap="1" switchoff="false"/>
+ <feature name="AS52" type="numeric" range="1 98" gap="1" switchoff="false"/>
+ <feature name="AS53" type="numeric" range="1 99" gap="1" switchoff="false"/>
+ <feature name="AS54" type="numeric" range="1 100" gap="1" switchoff="false"/>
+ <feature name="AS55" type="numeric" range="1 108" gap="1" switchoff="false"/>
+ <feature name="AS56" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS57" type="numeric" range="1 115" gap="1" switchoff="false"/>
+ <feature name="AS58" type="numeric" range="1 101" gap="1" switchoff="false"/>
+ <feature name="AS59" type="numeric" range="1 115" gap="1" switchoff="false"/>
+  <feature name="AS60" type="numeric" range="1 123" gap="1" switchoff="false"/>
+       <feature name="AS61" type="numeric" range="1 113" gap="1" switchoff="false"/>
+ <feature name="AS62" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ <feature name="AS63" type="numeric" range="1 102" gap="1" switchoff="false"/>
+ <feature name="AS64" type="numeric" range="1 86" gap="1" switchoff="false"/>
+ <feature name="AS65" type="numeric" range="1 122" gap="1" switchoff="false"/>
+ <feature name="AS66" type="numeric" range="1 122" gap="1" switchoff="false"/>
+ <feature name="AS67" type="numeric" range="1 118" gap="1" switchoff="false"/>
+ <feature name="AS68" type="numeric" range="1 87" gap="1" switchoff="false"/>
+ <feature name="AS69" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS70" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS71" type="numeric" range="1 112" gap="1" switchoff="false"/>
+ <feature name="AS72" type="numeric" range="1 101" gap="1" switchoff="false"/>
+ <feature name="AS73" type="numeric" range="1 102" gap="1" switchoff="false"/>
+ <feature name="AS74" type="numeric" range="1 119" gap="1" switchoff="false"/>
+  <feature name="AS75" type="numeric" range="1 122" gap="1" switchoff="false"/>
+         <feature name="AS76" type="numeric" range="1 108" gap="1" switchoff="false"/>
+ <feature name="AS77" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS78" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS79" type="numeric" range="1 117" gap="1" switchoff="false"/>
+ <feature name="AS80" type="numeric" range="1 123" gap="1" switchoff="false"/>
+ <feature name="AS81" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS82" type="numeric" range="1 111" gap="1" switchoff="false"/>
+ <feature name="AS83" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS84" type="numeric" range="1 95" gap="1" switchoff="false"/>
+ <feature name="AS85" type="numeric" range="1 93" gap="1" switchoff="false"/>
+ <feature name="AS86" type="numeric" range="1 111" gap="1" switchoff="false"/>
+ <feature name="AS87" type="numeric" range="1 107" gap="1" switchoff="false"/>
+ <feature name="AS88" type="numeric" range="1 116" gap="1" switchoff="false"/>
+ <feature name="AS89" type="numeric" range="1 122" gap="1" switchoff="false"/>
+  <feature name="AS90" type="numeric" range="1 86" gap="1" switchoff="false"/>
+       <feature name="AS91" type="numeric" range="1 96" gap="1" switchoff="false"/>
+ <feature name="AS92" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS93" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS94" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS95" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS96" type="numeric" range="1 119" gap="1" switchoff="false"/>
+ <feature name="AS97" type="numeric" range="1 98" gap="1" switchoff="false"/>
+ <feature name="AS98" type="numeric" range="1 99" gap="1" switchoff="false"/>
+ <feature name="AS99" type="numeric" range="1 100" gap="1" switchoff="false"/>
+ <feature name="AS100" type="numeric" range="1 108" gap="1" switchoff="false"/>
+   -->
+
+  <!-- the delta is by changing the CS down by 30, for 100 AS, we change 10 AS to reach 10% delta -->
+	
+	<!-- delta changed 
+	
+	
+      <feature name="AS1" type="numeric" range="1 66" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 58" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS6" type="numeric" range="1 89" gap="1" switchoff="false"/>
+ <feature name="AS7" type="numeric" range="1 68" gap="1" switchoff="false"/>
+ <feature name="AS8" type="numeric" range="1 69" gap="1" switchoff="false"/>
+ <feature name="AS9" type="numeric" range="1 70" gap="1" switchoff="false"/>
+ <feature name="AS10" type="numeric" range="1 78" gap="1" switchoff="false"/>
+ <feature name="AS11" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS12" type="numeric" range="1 85" gap="1" switchoff="false"/>
+ <feature name="AS13" type="numeric" range="1 71" gap="1" switchoff="false"/>
+ <feature name="AS14" type="numeric" range="1 85" gap="1" switchoff="false"/>
+  <feature name="AS15" type="numeric" range="1 93" gap="1" switchoff="false"/>
+       <feature name="AS16" type="numeric" range="1 83" gap="1" switchoff="false"/>
+ <feature name="AS17" type="numeric" range="1 93" gap="1" switchoff="false"/>
+ <feature name="AS18" type="numeric" range="1 72" gap="1" switchoff="false"/>
+ <feature name="AS19" type="numeric" range="1 56" gap="1" switchoff="false"/>
+ <feature name="AS20" type="numeric" range="1 92" gap="1" switchoff="false"/>
+ <feature name="AS21" type="numeric" range="1 92" gap="1" switchoff="false"/>
+ <feature name="AS22" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS23" type="numeric" range="1 57" gap="1" switchoff="false"/>
+ <feature name="AS24" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS25" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS26" type="numeric" range="1 82" gap="1" switchoff="false"/>
+ <feature name="AS27" type="numeric" range="1 71" gap="1" switchoff="false"/>
+ <feature name="AS28" type="numeric" range="1 72" gap="1" switchoff="false"/>
+ <feature name="AS29" type="numeric" range="1 89" gap="1" switchoff="false"/>
+  <feature name="AS30" type="numeric" range="1 92" gap="1" switchoff="false"/>
+         <feature name="AS31" type="numeric" range="1 78" gap="1" switchoff="false"/>
+ <feature name="AS32" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS33" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS34" type="numeric" range="1 87" gap="1" switchoff="false"/>
+ <feature name="AS35" type="numeric" range="1 93" gap="1" switchoff="false"/>
+ <feature name="AS36" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS37" type="numeric" range="1 81" gap="1" switchoff="false"/>
+ <feature name="AS38" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS39" type="numeric" range="1 65" gap="1" switchoff="false"/>
+ <feature name="AS40" type="numeric" range="1 63" gap="1" switchoff="false"/>
+ <feature name="AS41" type="numeric" range="1 81" gap="1" switchoff="false"/>
+ <feature name="AS42" type="numeric" range="1 77" gap="1" switchoff="false"/>
+ <feature name="AS43" type="numeric" range="1 86" gap="1" switchoff="false"/>
+ <feature name="AS44" type="numeric" range="1 92" gap="1" switchoff="false"/>
+  <feature name="AS45" type="numeric" range="1 56" gap="1" switchoff="false"/>
+   <feature name="AS46" type="numeric" range="1 66" gap="1" switchoff="false"/>
+ <feature name="AS47" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS48" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS49" type="numeric" range="1 58" gap="1" switchoff="false"/>
+ <feature name="AS50" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS51" type="numeric" range="1 89" gap="1" switchoff="false"/>
+ <feature name="AS52" type="numeric" range="1 68" gap="1" switchoff="false"/>
+ <feature name="AS53" type="numeric" range="1 69" gap="1" switchoff="false"/>
+ <feature name="AS54" type="numeric" range="1 70" gap="1" switchoff="false"/>
+ <feature name="AS55" type="numeric" range="1 78" gap="1" switchoff="false"/>
+ <feature name="AS56" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS57" type="numeric" range="1 85" gap="1" switchoff="false"/>
+ <feature name="AS58" type="numeric" range="1 71" gap="1" switchoff="false"/>
+ <feature name="AS59" type="numeric" range="1 85" gap="1" switchoff="false"/>
+  <feature name="AS60" type="numeric" range="1 93" gap="1" switchoff="false"/>
+       <feature name="AS61" type="numeric" range="1 83" gap="1" switchoff="false"/>
+ <feature name="AS62" type="numeric" range="1 93" gap="1" switchoff="false"/>
+ <feature name="AS63" type="numeric" range="1 72" gap="1" switchoff="false"/>
+ <feature name="AS64" type="numeric" range="1 56" gap="1" switchoff="false"/>
+ <feature name="AS65" type="numeric" range="1 92" gap="1" switchoff="false"/>
+ <feature name="AS66" type="numeric" range="1 92" gap="1" switchoff="false"/>
+ <feature name="AS67" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS68" type="numeric" range="1 57" gap="1" switchoff="false"/>
+ <feature name="AS69" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS70" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS71" type="numeric" range="1 82" gap="1" switchoff="false"/>
+ <feature name="AS72" type="numeric" range="1 71" gap="1" switchoff="false"/>
+ <feature name="AS73" type="numeric" range="1 72" gap="1" switchoff="false"/>
+ <feature name="AS74" type="numeric" range="1 89" gap="1" switchoff="false"/>
+  <feature name="AS75" type="numeric" range="1 92" gap="1" switchoff="false"/>
+         <feature name="AS76" type="numeric" range="1 78" gap="1" switchoff="false"/>
+ <feature name="AS77" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS78" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS79" type="numeric" range="1 87" gap="1" switchoff="false"/>
+ <feature name="AS80" type="numeric" range="1 93" gap="1" switchoff="false"/>
+ <feature name="AS81" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS82" type="numeric" range="1 81" gap="1" switchoff="false"/>
+ <feature name="AS83" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS84" type="numeric" range="1 65" gap="1" switchoff="false"/>
+ <feature name="AS85" type="numeric" range="1 63" gap="1" switchoff="false"/>
+ <feature name="AS86" type="numeric" range="1 81" gap="1" switchoff="false"/>
+ <feature name="AS87" type="numeric" range="1 77" gap="1" switchoff="false"/>
+ <feature name="AS88" type="numeric" range="1 86" gap="1" switchoff="false"/>
+ <feature name="AS89" type="numeric" range="1 92" gap="1" switchoff="false"/>
+  <feature name="AS90" type="numeric" range="1 56" gap="1" switchoff="false"/>
+       <feature name="AS91" type="numeric" range="1 96" gap="1" switchoff="false"/>
+ <feature name="AS92" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS93" type="numeric" range="1 106" gap="1" switchoff="false"/>
+ <feature name="AS94" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS95" type="numeric" range="1 110" gap="1" switchoff="false"/>
+ <feature name="AS96" type="numeric" range="1 119" gap="1" switchoff="false"/>
+ <feature name="AS97" type="numeric" range="1 98" gap="1" switchoff="false"/>
+ <feature name="AS98" type="numeric" range="1 99" gap="1" switchoff="false"/>
+ <feature name="AS99" type="numeric" range="1 100" gap="1" switchoff="false"/>
+ <feature name="AS100" type="numeric" range="1 108" gap="1" switchoff="false"/>
+ 
+ 
+ -->
+   <feature name="AS1" type="numeric" range="1 66" gap="1" switchoff="false"/>
+ <feature name="AS2" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS3" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS4" type="numeric" range="1 58" gap="1" switchoff="false"/>
+ <feature name="AS5" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS6" type="numeric" range="1 89" gap="1" switchoff="false"/>
+ <feature name="AS7" type="numeric" range="1 68" gap="1" switchoff="false"/>
+ <feature name="AS8" type="numeric" range="1 69" gap="1" switchoff="false"/>
+ <feature name="AS9" type="numeric" range="1 70" gap="1" switchoff="false"/>
+ <feature name="AS10" type="numeric" range="1 78" gap="1" switchoff="false"/>
+ <feature name="AS11" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS12" type="numeric" range="1 85" gap="1" switchoff="false"/>
+ <feature name="AS13" type="numeric" range="1 71" gap="1" switchoff="false"/>
+ <feature name="AS14" type="numeric" range="1 85" gap="1" switchoff="false"/>
+  <feature name="AS15" type="numeric" range="1 93" gap="1" switchoff="false"/>
+       <feature name="AS16" type="numeric" range="1 83" gap="1" switchoff="false"/>
+ <feature name="AS17" type="numeric" range="1 93" gap="1" switchoff="false"/>
+ <feature name="AS18" type="numeric" range="1 72" gap="1" switchoff="false"/>
+ <feature name="AS19" type="numeric" range="1 56" gap="1" switchoff="false"/>
+ <feature name="AS20" type="numeric" range="1 92" gap="1" switchoff="false"/>
+ <feature name="AS21" type="numeric" range="1 92" gap="1" switchoff="false"/>
+ <feature name="AS22" type="numeric" range="1 88" gap="1" switchoff="false"/>
+ <feature name="AS23" type="numeric" range="1 57" gap="1" switchoff="false"/>
+ <feature name="AS24" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS25" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS26" type="numeric" range="1 82" gap="1" switchoff="false"/>
+ <feature name="AS27" type="numeric" range="1 71" gap="1" switchoff="false"/>
+ <feature name="AS28" type="numeric" range="1 72" gap="1" switchoff="false"/>
+ <feature name="AS29" type="numeric" range="1 89" gap="1" switchoff="false"/>
+  <feature name="AS30" type="numeric" range="1 92" gap="1" switchoff="false"/>
+         <feature name="AS31" type="numeric" range="1 78" gap="1" switchoff="false"/>
+ <feature name="AS32" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS33" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS34" type="numeric" range="1 87" gap="1" switchoff="false"/>
+ <feature name="AS35" type="numeric" range="1 93" gap="1" switchoff="false"/>
+ <feature name="AS36" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS37" type="numeric" range="1 81" gap="1" switchoff="false"/>
+ <feature name="AS38" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS39" type="numeric" range="1 65" gap="1" switchoff="false"/>
+ <feature name="AS40" type="numeric" range="1 63" gap="1" switchoff="false"/>
+ <feature name="AS41" type="numeric" range="1 81" gap="1" switchoff="false"/>
+ <feature name="AS42" type="numeric" range="1 77" gap="1" switchoff="false"/>
+ <feature name="AS43" type="numeric" range="1 86" gap="1" switchoff="false"/>
+ <feature name="AS44" type="numeric" range="1 92" gap="1" switchoff="false"/>
+  <feature name="AS45" type="numeric" range="1 56" gap="1" switchoff="false"/>
+   <feature name="AS46" type="numeric" range="1 66" gap="1" switchoff="false"/>
+ <feature name="AS47" type="numeric" range="1 80" gap="1" switchoff="false"/>
+ <feature name="AS48" type="numeric" range="1 76" gap="1" switchoff="false"/>
+ <feature name="AS49" type="numeric" range="1 58" gap="1" switchoff="false"/>
+ <feature name="AS50" type="numeric" range="1 80" gap="1" switchoff="false"/>
 	
 </model>
 </ssase>

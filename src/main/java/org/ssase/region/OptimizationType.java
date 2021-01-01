@@ -11,5 +11,6 @@ public enum OptimizationType {
 	BB, BBd,
 	HC,
 	RS,
-	SGA
+	SGA,
+	SA
 }

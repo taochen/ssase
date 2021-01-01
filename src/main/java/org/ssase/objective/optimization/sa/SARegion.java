@@ -1,4 +1,4 @@
-package org.ssase.objective.optimization.sga;
+package org.ssase.objective.optimization.sa;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +7,7 @@ import java.util.List;
 
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
-import jmetal.metaheuristics.sga.SGA_SAS_main;
+import jmetal.metaheuristics.sa.SA_SAS_main;
 import jmetal.metaheuristics.moead.MOEAD_STM_SAS_main;
 import jmetal.metaheuristics.nsgaII.NSGA2_SAS_main;
 
@@ -18,22 +18,22 @@ import org.ssase.objective.optimization.femosaa.FEMOSAASolutionInstantiator;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.region.Region;
 
-public class SGARegion extends Region {
+public class SARegion extends Region {
 
 	protected int[][] vars = null;
 	protected double[] weights;
 	protected double[][] fixed_bounds;
 	
-	public SGARegion() {
+	public SARegion() {
 		super();		
 	}
 	
-	public SGARegion(double[] weights) {
+	public SARegion(double[] weights) {
 		this.weights = weights;	
 	}
 	
 	
-	public SGARegion(double[] weights, double[][] fixed_bounds) {
+	public SARegion(double[] weights, double[][] fixed_bounds) {
 		this.weights = weights;	
 		this.fixed_bounds = fixed_bounds;
 	}
@@ -95,7 +95,7 @@ public class SGARegion extends Region {
 	}
 	
 	protected SASAlgorithmAdaptor getAlgorithm(){
-		return new SGA_SAS_main(){
+		return new SA_SAS_main(){
 			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){
 		
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);

@@ -29,6 +29,7 @@ public class RSRegion extends Region {
 
 	protected int[][] vars = null;
 	protected double[] weights;
+	protected double[][] fixed_bounds;
 	
 	public RSRegion() {
 		super();		
@@ -37,6 +38,13 @@ public class RSRegion extends Region {
 	public RSRegion(double[] weights) {
 		this.weights = weights;	
 	}
+	
+	
+	public RSRegion(double[] weights, double[][] fixed_bounds) {
+		this.weights = weights;	
+		this.fixed_bounds = fixed_bounds;
+	}
+	
 
 
 	protected void init(){
@@ -69,6 +77,7 @@ public class RSRegion extends Region {
 
 			FEMOSAASolutionInstantiator inst = new FEMOSAASolutionInstantiator(objectives);
 			inst.setWeights(weights);
+			inst.setFixedBounds(fixed_bounds);
 			System.out.print("Algorithm start *******\n");
             SASAlgorithmAdaptor algorithm = getAlgorithm();
 			Solution solution = null;
