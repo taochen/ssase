@@ -61,6 +61,8 @@ public abstract class Region {
 	protected int finishedUpdateCounter = 0;
 	
 	public static OptimizationType selected;
+	
+	protected static boolean isEnabledConstraint = false;
 
 	public static void setSelectedOptimizationType(String type){
 		if(type == null) throw new RuntimeException("No proper OptimizationType found!");
@@ -335,6 +337,11 @@ public abstract class Region {
 	
 	public static SolutionSet filterRequirementsAfterEvolution(
 			SolutionSet pareto_front,  List<Objective> objectives) {
+		
+		if(!isEnabledConstraint) {
+			return pareto_front;
+		}
+		
 		Iterator<Solution> itr = pareto_front.iterator();
 		
 		

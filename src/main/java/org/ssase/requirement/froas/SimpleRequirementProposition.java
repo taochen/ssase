@@ -26,6 +26,7 @@ public class SimpleRequirementProposition extends RequirementProposition {
 		double v = function.fuzzilize(s.getObjective(index),d);
 		//System.out.print("before norm: " + v + "\n");
 		// 0.0 is the best
+		// note that this is oppose to the paper, as in the paper, we need argmax, but the optimization is argmin - the paper has merely a different representation
 		if (v != 0.0 && v != 1.0) {
 			v = normalize(v); 
 		}
