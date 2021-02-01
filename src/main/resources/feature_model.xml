@@ -12,18 +12,18 @@
 <model>
   <!-- -->
  
-<feature name="topology.workers" type="categorical" optional="true"/>
-<feature name="component.bolt_num" type="categorical" optional="true"/>
-<feature name="topology.acker.executors" type="categorical" optional="true"/>
-<feature name="message.size" type="categorical" optional="true"/>
-<feature name="component.spout_num" type="categorical" optional="true"/>
-<feature name="topology.serialized.message.size.metrics" type="categorical" optional="true"/>
-<feature name="topology.max.spout.pending" type="categorical" optional="true"/>
-<feature name="storm.messaging.netty.min_wait_ms" type="categorical" optional="true"/>
-<feature name="topology.transfer.buffer.size" type="categorical" optional="true"/>
-<feature name="storm.messaging.netty.max_wait_ms" type="categorical" optional="true"/>
-<feature name="topology.level" type="categorical" optional="true"/>
-<feature name="topology.priority" type="categorical" optional="true"/>
+<feature name="F" type="categorical" optional="true"/>
+<feature name="colorGS" type="categorical" optional="true"/>
+<feature name="relaxParameter" type="categorical" optional="true"/>
+<feature name="V" type="categorical" optional="true"/>
+<feature name="Jacobi" type="categorical" optional="true"/>
+<feature name="line" type="categorical" optional="true"/>
+<feature name="zebraLine" type="categorical" optional="true"/>
+<feature name="alpha" type="numeric" range="0 17" gap="1" />
+<feature name="beta" type="numeric" range="0 17" gap="1" />
+<feature name="preSmoothing" type="numeric" range="0 8" gap="1" />
+<feature name="postSmoothing" type="numeric" range="0 8" gap="1" />
+
 	
 </model>
 </ssase>
