@@ -87,6 +87,10 @@ public class Repository {
 	// This is the mapping between the name of an objective and a requirement proposition
 	private static Map<String, RequirementProposition> fuzzyReq = new ConcurrentHashMap<String, RequirementProposition>();
 	
+	public static String mac_path = "/Users/"+System.getProperty("user.name")+"/research/projects/ssase-core/ssase/weight/";
+	
+	public static String other_path = "/home/"+System.getProperty("user.name")+"/weight" + "/";
+	
 	public static void clear(){
 		services.clear();
 		vms.clear();
@@ -283,7 +287,9 @@ public class Repository {
 		lambda_   = new double[no][3];
 		try {
 			// Open the file
-			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/"+System.getProperty("user.name")+"/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/"+System.getProperty("user.name")+"/weight" + "/"
+			//FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? "/Users/"+System.getProperty("user.name")+"/research/projects/ssase-core/ssase/weight/" + dataFileName: "/home/"+System.getProperty("user.name")+"/weight" + "/"
+			//		+ dataFileName);
+			FileInputStream fis = new FileInputStream(System.getProperty("os.name").startsWith("Mac")? mac_path+ dataFileName: other_path
 					+ dataFileName);
 			InputStreamReader isr = new InputStreamReader(fis);
 			BufferedReader br = new BufferedReader(isr);

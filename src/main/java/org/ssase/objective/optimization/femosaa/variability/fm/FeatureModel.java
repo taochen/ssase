@@ -80,7 +80,7 @@ public class FeatureModel {
 			DocumentBuilder builder = dbFactory.newDocumentBuilder();
 
 			Document doc = builder.parse(FeatureModel.class.getClassLoader()
-					.getResourceAsStream("feature_model.xml"));
+					.getResourceAsStream(Ssascaling.feature_model));
 
 			doc.getDocumentElement().normalize();
 

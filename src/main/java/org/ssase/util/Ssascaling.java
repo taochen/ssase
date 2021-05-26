@@ -52,6 +52,8 @@ import org.w3c.dom.NodeList;
 
 public class Ssascaling {
 	
+	public static String dom0 = "dom0.xml";
+	public static String feature_model = "feature_model.xml";
 	protected static final Logger logger = LoggerFactory
 	.getLogger(Ssascaling.class);
 	
@@ -192,7 +194,7 @@ public class Ssascaling {
 			
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = dbFactory.newDocumentBuilder();
-			Document doc = builder.parse(Ssascaling.class.getClassLoader().getResourceAsStream("dom0.xml"));
+			Document doc = builder.parse(Ssascaling.class.getClassLoader().getResourceAsStream(dom0));
 			
 			doc.getDocumentElement().normalize();
 			
