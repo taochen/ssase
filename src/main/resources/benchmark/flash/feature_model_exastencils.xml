@@ -1,0 +1,30 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+ 
+<feature name="opt_useAddressPrecalc" type="categorical" optional="true"/>
+<feature name="opt_vectorize" type="categorical" optional="true"/>
+<feature name="simd_avoidUnaligned" type="categorical" optional="true"/>
+<feature name="data_alignFieldPointers" type="categorical" optional="true"/>
+<feature name="opt_unroll_interleave" type="categorical" optional="true"/>
+<feature name="opt_unroll" type="numeric" range="0 3" gap="1" />
+<feature name="no_explorationId" type="categorical" optional="true"/>
+<feature name="explorationId" type="numeric" range="0 4" gap="1" />
+<feature name="poly_tileSize_x" type="numeric" range="0 7" gap="1" />
+<feature name="poly_tileSize_y" type="numeric" range="0 7" gap="1" />
+<feature name="poly_tileSize_z" type="numeric" range="0 7" gap="1" />
+
+	
+</model>
+</ssase>
+

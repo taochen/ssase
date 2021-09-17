@@ -1,0 +1,32 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+<feature name="journal" type="categorical" optional="true"/>
+<feature name="nojournal" type="categorical" optional="true"/>
+<feature name="journalCompression" type="categorical" optional="true"/>
+<feature name="journalCompressionSnappy" type="categorical" optional="true"/>
+<feature name="journalCompressionZlib" type="categorical" optional="true"/>
+<feature name="ssl" type="categorical" optional="true"/>
+<feature name="networkCompression" type="categorical" optional="true"/>
+<feature name="networkCompressionSnappy" type="categorical" optional="true"/>
+<feature name="networkCompressionZlib" type="categorical" optional="true"/>
+<feature name="wireObjectCheck" type="categorical" optional="true"/>
+<feature name="dataCompression" type="categorical" optional="true"/>
+<feature name="dataCompressionSnappy" type="categorical" optional="true"/>
+<feature name="dataCompressionZlib" type="categorical" optional="true"/>
+<feature name="indexPrefixCompression" type="categorical" optional="true"/>
+<feature name="journalCommitInterval" type="numeric" range="0 5" gap="1" />
+<feature name="cacheSize" type="numeric" range="0 4" gap="1" />
+</model>
+</ssase>
+

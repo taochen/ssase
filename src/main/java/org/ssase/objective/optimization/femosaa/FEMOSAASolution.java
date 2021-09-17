@@ -164,6 +164,17 @@ public class FEMOSAASolution extends SASSolution {
 			if(QualityOfService.isDelegate()) {
 				try{
 				if(isValid) {
+					/*String o = "";
+					for(int k = 0; k < this.getDecisionVariables().length; k++) {
+						try {
+							o += this.getDecisionVariables()[k].getValue() + ", ";
+							
+						} catch (JMException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					System.out.print("before " + o + "\n");*/
 					result[i] = objectives.get(i).predict(xValue);
 				} else {
 					// Assume minimizing
@@ -260,6 +271,17 @@ public class FEMOSAASolution extends SASSolution {
 			}
 			rp.updateNormalizationBounds(f[i]);
 		}
+		//System.out.print("Update " + f[0] + " : " + f[1] + "\n");
+		
+	}
+
+	@Override
+	public void resetNormalizationBounds(int i) {
+			org.ssase.requirement.froas.RequirementProposition rp = Repository.getRequirementProposition(objectives.get(i).getName());
+			if(rp == null) {
+				return;
+			}
+			rp.resetNormalizationBounds();	
 		
 	}
 }

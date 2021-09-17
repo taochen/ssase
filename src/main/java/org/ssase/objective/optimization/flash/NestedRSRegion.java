@@ -1,4 +1,5 @@
-package org.ssase.objective.optimization.femosaa.nsgaii;
+package org.ssase.objective.optimization.flash;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,8 +8,10 @@ import java.util.List;
 
 import jmetal.core.Solution;
 import jmetal.core.SolutionSet;
+import jmetal.metaheuristics.hc.HC_SAS_main;
 import jmetal.metaheuristics.moead.MOEAD_STM_SAS_main;
 import jmetal.metaheuristics.nsgaII.NSGA2_SAS_main;
+import jmetal.metaheuristics.rs.RS_SAS_main;
 
 import org.femosaa.core.SASAlgorithmAdaptor;
 import org.femosaa.core.SASSolution;
@@ -17,13 +20,33 @@ import org.ssase.objective.optimization.femosaa.FEMOSAASolutionInstantiator;
 import org.ssase.primitive.ControlPrimitive;
 import org.ssase.region.Region;
 
-public class NSGAIIRegion extends Region {
+
+/**
+ * This is a random search, uniformly searching over the variable vector.
+ * @author tao
+ *
+ */
+public class NestedRSRegion extends Region {
 
 	protected int[][] vars = null;
+	protected double[] weights;
+	protected double[][] fixed_bounds;
 	
-	public NSGAIIRegion() {
+	public NestedRSRegion() {
 		super();		
 	}
+	
+	public NestedRSRegion(double[] weights) {
+		this.weights = weights;	
+	}
+	
+	
+	public NestedRSRegion(double[] weights, double[][] fixed_bounds) {
+		this.weights = weights;	
+		this.fixed_bounds = fixed_bounds;
+	}
+	
+
 
 	protected void init(){
 		if(vars == null) {
@@ -34,10 +57,11 @@ public class NSGAIIRegion extends Region {
 		}
 	}
 	
+	
 	public LinkedHashMap<ControlPrimitive, Double> optimize() {
 		
 		init();
-		
+		System.out.print("Algorithm entering *******\n");
 		LinkedHashMap<ControlPrimitive, Double> result = null;
 		synchronized (lock) {
 			while (waitingUpdateCounter != 0) {
@@ -53,21 +77,23 @@ public class NSGAIIRegion extends Region {
 
 
 			FEMOSAASolutionInstantiator inst = new FEMOSAASolutionInstantiator(objectives);
-			
+			inst.setWeights(weights);
+			inst.setFixedBounds(fixed_bounds);
+			System.out.print("Algorithm start *******\n");
             SASAlgorithmAdaptor algorithm = getAlgorithm();
 			Solution solution = null;
 			try {
 				solution = algorithm.execute(inst, vars, objectives.size(), 0);		
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			//org.femosaa.seed.Seeder.addSeed(solution);
-			org.femosaa.seed.Seeder.priorSolution(solution);
-			
+			System.out.print("Algorithm end *******\n");
+			System.out.print("Convertion start *******\n");
 			result = FEMOSAASolutionAdaptor.getInstance().convertSolution(solution/*Use the first one, as the list should all be knee points*/
 					,objectives.get(0));
+			System.out.print("Convertion end *******\n");
 			print(result);
 
 			isLocked = false;
@@ -78,50 +104,12 @@ public class NSGAIIRegion extends Region {
 		return result;
 	}
 	
-	public Solution raw_optimize() {
-        init();
-    	Solution solution = null;
-		synchronized (lock) {
-			while (waitingUpdateCounter != 0) {
-				try {
-					lock.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-			}
-
-			isLocked = true;
-
-
-			FEMOSAASolutionInstantiator inst = new FEMOSAASolutionInstantiator(objectives);
-			
-            SASAlgorithmAdaptor algorithm = getAlgorithm();
-		
-			try {
-				solution = algorithm.execute(inst, vars, objectives.size(), 0);		
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			//org.femosaa.seed.Seeder.addSeed(solution);
-			org.femosaa.seed.Seeder.priorSolution(solution);
-			
-			
-
-			isLocked = false;
-			lock.notifyAll();
-		}
-		System.out.print("================= Finish optimization ! =================\n");
-		// TODO optimization.
-		return solution;
-	}
-	
 	protected SASAlgorithmAdaptor getAlgorithm(){
-		return new NSGA2_SAS_main(){
-			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){		
+		return new RS_SAS_main(){
+			protected SolutionSet filterRequirementsAfterEvolution(SolutionSet pareto_front){
+		
 				return Region.filterRequirementsAfterEvolution(pareto_front, objectives);
+				//return pareto_front;
 			}
 			protected SolutionSet correctDependencyAfterEvolution(
 					SolutionSet pareto_front) {

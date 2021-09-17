@@ -1,0 +1,31 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+<feature name="compressed_script" type="categorical" optional="true"/>
+<feature name="encryption" type="categorical" optional="true"/>
+<feature name="crypt_aes" type="categorical" optional="true"/>
+<feature name="crypt_blowfish" type="categorical" optional="true"/>
+<feature name="txc_mvlocks" type="categorical" optional="true"/>
+<feature name="txc_mvcc" type="categorical" optional="true"/>
+<feature name="txc_locks" type="categorical" optional="true"/>
+<feature name="memory_tables" type="categorical" optional="true"/>
+<feature name="cached_tables" type="categorical" optional="true"/>
+<feature name="small_cache" type="categorical" optional="true"/>
+<feature name="large_cache" type="categorical" optional="true"/>
+<feature name="logging" type="categorical" optional="true"/>
+<feature name="detailed_logging" type="categorical" optional="true"/>
+<feature name="no_write_delay" type="categorical" optional="true"/>
+<feature name="small_log" type="categorical" optional="true"/>
+</model>
+</ssase>
+

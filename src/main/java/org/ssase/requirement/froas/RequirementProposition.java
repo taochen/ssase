@@ -24,7 +24,7 @@ public class RequirementProposition {
 	protected double d = Double.NEGATIVE_INFINITY;
 
 	protected double min = Double.MAX_VALUE;
-	protected double max = Double.MIN_VALUE;
+	protected double max = Double.NEGATIVE_INFINITY;//Double.MIN_VALUE;
 
 	// The actual math function
 	protected Class clazz = ErrorFunction.class;
@@ -56,6 +56,10 @@ public class RequirementProposition {
 		// System.out.print("max: " + max + " = min: " + min + "= normalized: " + normalize(s.getObjective(index)) + " = original: " + s.getObjective(index) + " = fuzzie: " + v +"\n");
 		s.setObjective(index, v);
 
+	}
+	
+	public void fuzzilize(Solution s, int index, double increment) {
+		
 	}
 
 	/**
@@ -95,6 +99,11 @@ public class RequirementProposition {
 		}
 
 	}
+	
+	public void resetNormalizationBounds() {
+		min = Double.MAX_VALUE;
+		max = Double.NEGATIVE_INFINITY;
+	}
 
 	/**
 	 * 
@@ -102,13 +111,28 @@ public class RequirementProposition {
 	 * @return
 	 */
 	public double normalize(double value) {
-
+		//System.out.print("max " + max + ", min " + min + "\n");
 		// means all values are the same
 		if (max == min) {
-			return value / max;
+			//return value / max;
+			return value > 0? value / max : -1.0 * (value / max);
 		}
+		
+		/*if(value < 0) {
+			max = Double.MIN_VALUE;
+		}
+		
+		if(value > 0) {
+			min = Double.MIN_VALUE;
+		}*/
 
+		//System.out.print("max " + max + ", min " + min + "\n");
+		/*if(value > max || value < min) {
+			System.out.print("max " + max + ", min " + min + ", with value " + value + "\n");
+		}*/
+		
 		return ((value - min) / (max - min));
+		//return value > 0 ? value / (value + 1) : value / (value - 1);
 	}
 
 	// Mapping proposition to the actual fuzzy function.

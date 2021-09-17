@@ -1,0 +1,26 @@
+<ssase>
+
+	<!-- <feature name="" type="" optional="false" range="" gap=""/> 
+	
+	<cross-dependency 
+		type="required|excluded" operator ="less_or_equal|greater_or_equal|less|greater|equal|range" 
+		main="" main_range="" dependent_range="" translate="plus|minus|time|divide"/> 
+		
+		
+		order is cross-dependency - features - alt - or
+		-->
+<model>
+  <!-- -->
+<feature name="delayedInnodbLogFlush" type="categorical" optional="true"/>
+<feature name="delayedInnodbLogWrite" type="categorical" optional="true"/>
+<feature name="fsyncFlush" type="categorical" optional="true"/>
+<feature name="dsyncFlush" type="categorical" optional="true"/>
+<feature name="directFlush" type="categorical" optional="true"/>
+<feature name="binaryLog" type="categorical" optional="true"/>
+<feature name="innodbDoubleWrite" type="categorical" optional="true"/>
+<feature name="tempTableSize" type="numeric" range="0 2" gap="1" />
+<feature name="innodbBufferPoolSize" type="numeric" range="0 2" gap="1" />
+<feature name="innodbLogBufferSize" type="numeric" range="0 2" gap="1" />
+</model>
+</ssase>
+

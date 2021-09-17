@@ -131,6 +131,22 @@ public class FEMOSAASolutionInstantiator implements SASSolutionInstantiator {
 		}
 		return newSet;
 	}
+	
+	@Override
+	public SolutionSet fuzzilize(SolutionSet set, double increment) {
+		SolutionSet newSet = new SolutionSet();
+		for (int i = 0; i < set.size(); i++) {
+			Solution newS = getSolution(set.get(i));
+			((FEMOSAASolution)newS).setFuzzyID(i);
+			newSet.add(newS);
+		}
+		for (int i = 0; i < objectives.size(); i++) {		
+			for (int j = 0; j < newSet.size(); j++) {
+				Repository.getRequirementProposition(objectives.get(i).getName()).fuzzilize(newSet.get(j), i, increment);
+			}
+		}
+		return newSet;
+	}
 
 	@Override
 	public Solution defuzzilize(int i, SolutionSet newPopulation,

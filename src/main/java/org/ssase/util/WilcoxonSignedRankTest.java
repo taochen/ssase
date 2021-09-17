@@ -88,7 +88,7 @@ public class WilcoxonSignedRankTest {
 	 *            second sample
 	 * @return z = y - x
 	 */
-	private double[] calculateDifferences(final double[] x, final double[] y) {
+	public double[] calculateDifferences(final double[] x, final double[] y) {
 
 		final double[] z = new double[x.length];
 
@@ -110,7 +110,7 @@ public class WilcoxonSignedRankTest {
 	 * @throws NoDataException
 	 *             if {@code z} is zero-length.
 	 */
-	private double[] calculateAbsoluteDifferences(final double[] z)
+	public double[] calculateAbsoluteDifferences(final double[] z)
 			throws NullArgumentException, NoDataException {
 
 		if (z == null) {
@@ -183,18 +183,25 @@ public class WilcoxonSignedRankTest {
 		final double[] ranks = naturalRanking.rank(zAbs);
 
 		double Wplus = 0;
-
+		//double tWplus = 0;
 		for (int i = 0; i < z.length; ++i) {
+			// this will remove the asymmetric issue
 			if (z[i] > 0) {
 				Wplus += ranks[i];
 			}
+			/*if (z[i] < 0) {
+				tWplus += ranks[i];
+			}*/
+			//Wplus += (z[i] > 0? 1 : -1) * ranks[i];
 		}
 
 		final long N = x.length;
 		final double Wminus = (((double) (N * (N + 1))) / 2.0) - Wplus;
 
+		//System.out.print(tWplus + " : " + Wplus + "\n");
 		return FastMath.max(Wplus, Wminus);
 	}
+	
 
 	public double getEffectSize(final double[] x, final double[] y)
 			throws NullArgumentException, NoDataException,
@@ -379,5 +386,17 @@ public class WilcoxonSignedRankTest {
 			//System.out.print("Wmin: " + Wmin + "\n");
 			return calculateAsymptoticPValue(Wmin, N);
 		}
+	}
+	
+	public double wilcoxonSignedRankTestStable(final double[] x, final double[] y,
+			final boolean exactPValue) throws NullArgumentException,
+			NoDataException, DimensionMismatchException,
+			NumberIsTooLargeException, ConvergenceException,
+			MaxCountExceededException {
+
+		double p1 = wilcoxonSignedRankTest(x,y, exactPValue);
+		double p2 = wilcoxonSignedRankTest(y,x, exactPValue);
+		
+		return p1 < p2? p1 : p2;
 	}
 }

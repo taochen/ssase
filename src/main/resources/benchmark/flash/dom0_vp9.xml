@@ -1,0 +1,39 @@
+<ssase>
+
+<vm id="sas">
+
+           
+           
+           <adaptation cost_unit="0.01" /> <!-- next 0.05 seems to be good, retry? -->
+           
+           <service name="rubis_software">
+           <softwareControlPrimitive>
+<item name="twoPass" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="bestQuality" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="goodQuality" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="rtQuality" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="constantBitrate" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="autoAltRef" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="noAltRef" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="allowResize" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="columnTiling" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="rowTiling" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="threads" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="3" price_per_unit="0.5"  />
+<item name="arnrMaxFrames" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="2" price_per_unit="0.5"  />
+<item name="arnrStrength" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="2" price_per_unit="0.5"  />
+    </softwareControlPrimitive>
+
+
+         
+           <QoS>
+                 <item name="P1" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5" />
+          <item name="P2" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5" />
+           </QoS>
+           
+           
+        </service>
+</vm>
+
+
+</ssase>
+

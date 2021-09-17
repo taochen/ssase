@@ -1,0 +1,42 @@
+<ssase>
+
+<vm id="sas">
+
+           
+           
+           <adaptation cost_unit="0.01" /> <!-- next 0.05 seems to be good, retry? -->
+           
+           <service name="rubis_software">
+           <softwareControlPrimitive>
+<item name="journal" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="nojournal" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="journalCompression" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="journalCompressionSnappy" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="journalCompressionZlib" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="ssl" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="networkCompression" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="networkCompressionSnappy" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="networkCompressionZlib" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="wireObjectCheck" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="dataCompression" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="dataCompressionSnappy" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="dataCompressionZlib" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="indexPrefixCompression" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="journalCommitInterval" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="5" price_per_unit="0.5"  />
+<item name="cacheSize" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="4" price_per_unit="0.5"  />
+   </softwareControlPrimitive>
+
+
+         
+           <QoS>
+                 <item name="P1" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5" />
+          <item name="P2" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5" />
+           </QoS>
+           
+           
+        </service>
+</vm>
+
+
+</ssase>
+
