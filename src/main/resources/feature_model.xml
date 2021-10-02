@@ -11,18 +11,19 @@
 		-->
 <model>
   <!-- -->
-<feature name="encryption" type="categorical" optional="true"/>
-<feature name="compression" type="categorical" optional="true"/>
-<feature name="compressionBzip2" type="categorical" optional="true"/>
-<feature name="compressionGzip" type="categorical" optional="true"/>
-<feature name="compressionLzo" type="categorical" optional="true"/>
-<feature name="compressionZpaq" type="categorical" optional="true"/>
-<feature name="compressionLzma" type="categorical" optional="true"/>
-<feature name="unlimitedWindowSize" type="categorical" optional="true"/>
-<feature name="disableCompressibilityTesting" type="categorical" optional="true"/>
-<feature name="level" type="numeric" range="0 8" gap="1" />
-<feature name="processorCount" type="numeric" range="0 3" gap="1" />
-<feature name="maxRam" type="numeric" range="0 2" gap="1" />
+ 
+<feature name="F" type="categorical" optional="true"/>
+<feature name="colorGS" type="categorical" optional="true"/>
+<feature name="relaxParameter" type="categorical" optional="true"/>
+<feature name="V" type="categorical" optional="true"/>
+<feature name="Jacobi" type="categorical" optional="true"/>
+<feature name="line" type="categorical" optional="true"/>
+<feature name="zebraLine" type="categorical" optional="true"/>
+<feature name="alpha" type="numeric" range="0 17" gap="1" />
+<feature name="beta" type="numeric" range="0 17" gap="1" />
+<feature name="preSmoothing" type="numeric" range="0 8" gap="1" />
+<feature name="postSmoothing" type="numeric" range="0 8" gap="1" />
+
 	
 </model>
 </ssase>

@@ -8,19 +8,20 @@
            
            <service name="rubis_software">
            <softwareControlPrimitive>
-<item name="encryption" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="compression" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="compressionBzip2" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="compressionGzip" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="compressionLzo" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="compressionZpaq" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="compressionLzma" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="unlimitedWindowSize" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="disableCompressibilityTesting" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
-<item name="level" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="8" price_per_unit="0.5"  />
-<item name="processorCount" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="3" price_per_unit="0.5"  />
-<item name="maxRam" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="2" price_per_unit="0.5"  />
-       </softwareControlPrimitive>
+
+        <item name="F" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="colorGS" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="relaxParameter" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="V" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="Jacobi" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="line" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="zebraLine" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="alpha" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="17" price_per_unit="0.5"  />
+<item name="beta" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="17" price_per_unit="0.5"  />
+<item name="preSmoothing" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="8" price_per_unit="0.5"  />
+<item name="postSmoothing" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="8" price_per_unit="0.5"  />
+
+           </softwareControlPrimitive>
 
 
          
