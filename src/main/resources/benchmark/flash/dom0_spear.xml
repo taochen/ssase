@@ -1,0 +1,41 @@
+<ssase>
+
+<vm id="sas">
+
+           
+           
+           <adaptation cost_unit="0.01" /> <!-- next 0.05 seems to be good, retry? -->
+           
+           <service name="rubis_software">
+           <softwareControlPrimitive>
+<item name="spset-old-default" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="spset-autotuned-fh_1_0" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="spset-autotuned-fh_1_1" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="spset-autotuned-fh_1_2" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="spset-sw-verif" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="spset-hw-bmc" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="sp-var-dec-heur" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="sp-learned-clause-sort-heur" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="sp-orig-clause-sort-heur" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="sp-res-order-heur" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="sp-clause-del-heur" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="sp-phase-dec-heur" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+<item name="sp-resolution" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+ <item name="sp-use-pure-literal-rule" provision="0" constraint="-1" differences="1" pre_to_max="0.7" pre_of_max="0.1" min="0" max="1" price_per_unit="0.5"  />
+ 
+  </softwareControlPrimitive>
+
+
+         
+           <QoS>
+                 <item name="P1" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5" />
+          <item name="P2" constraint="-0.05" is_min="true" pre_to_change="0.7" sla_per_unit="0.5" />
+           </QoS>
+           
+           
+        </service>
+</vm>
+
+
+</ssase>
+
