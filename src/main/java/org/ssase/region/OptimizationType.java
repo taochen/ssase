@@ -12,5 +12,6 @@ public enum OptimizationType {
 	HC,
 	RS,
 	SGA,
-	SA
+	SA,
+	IRACE
 }

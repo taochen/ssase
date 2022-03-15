@@ -11,22 +11,15 @@
 		-->
 <model>
   <!-- -->
-<feature name="non-deterministic" type="categorical" optional="true"/>
-<feature name="no-asm" type="categorical" optional="true"/>
-<feature name="no-mixed-refs" type="categorical" optional="true"/>
-<feature name="no-chroma-me" type="categorical" optional="true"/>
-<feature name="no-8x8dct" type="categorical" optional="true"/>
-<feature name="no-fast-pskip" type="categorical" optional="true"/>
-<feature name="no-dct-decimate" type="categorical" optional="true"/>
-<feature name="no-scenecut" type="categorical" optional="true"/>
-<feature name="no-cabac" type="categorical" optional="true"/>
-<feature name="no-deblock" type="categorical" optional="true"/>
-<feature name="no-mbtree" type="categorical" optional="true"/>
-<feature name="no-weightb" type="categorical" optional="true"/>
-<feature name="no-psy" type="categorical" optional="true"/>
-<feature name="no-progress" type="categorical" optional="true"/>
-<feature name="visualize" type="categorical" optional="true"/>
-<feature name="dts-compress" type="categorical" optional="true"/>
+ 
+<feature name="spouts" type="categorical" optional="true"/>
+<feature name="max_spout" type="numeric" range="0 5" gap="1" />
+<feature name="spout_wait" type="numeric" range="0 4" gap="1" />
+<feature name="spliters" type="numeric" range="0 3" gap="1" />
+<feature name="counters" type="numeric" range="0 3" gap="1" />
+<feature name="netty_min_wait" type="numeric" range="0 2" gap="1" />
+
+	
 </model>
 </ssase>
 
