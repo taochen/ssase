@@ -398,5 +398,6 @@ public class WilcoxonSignedRankTest {
 		double p2 = wilcoxonSignedRankTest(y,x, exactPValue);
 		
 		return p1 < p2? p1 : p2;
+		//return p1 > p2? p1 : p2;
 	}
 }

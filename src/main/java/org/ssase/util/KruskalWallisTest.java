@@ -118,7 +118,7 @@ public class KruskalWallisTest {
 	 * 
 	 * 
 	 * the psychometrica online calculator uses the formula provided by Barry Cohen (2008, see also the review article by Tomczak & Tomczak 2014: "The need to report effect size estimates revisited"):
-eta square H = (H Ð k +1) / (n Ð k)
+eta square H = (H ï¿½ k +1) / (n ï¿½ k)
 where k is the number of groups and n represents the number of total observations.
 	 * 
 	 * @return the chi-squared approximation of the Kruskal-Wallis test
@@ -189,6 +189,24 @@ where k is the number of groups and n represents the number of total observation
 		System.out.print("test value " + (1.0 - dist.cumulativeProbability(H / C)) + "\n");
 		return 1.0 - dist.cumulativeProbability(H / C) < alpha;
 	}
+	
+	public double test() {
+		update();
+
+		ChiSquaredDistribution dist = new ChiSquaredDistribution(
+				numberOfGroups - 1);
+		double H = H();
+		double C = C();
+
+		if (C == 0.0) {
+			// all observations the same
+			return 1.0;
+		}
+		System.out.print("H/C value " + (H / C) + "\n");
+		System.out.print("chi square value " + H  + "\n");
+		return 1.0 - dist.cumulativeProbability(H / C);
+	}
+	
 	
 	protected void update() {
 		Collections.sort(data, comparator);

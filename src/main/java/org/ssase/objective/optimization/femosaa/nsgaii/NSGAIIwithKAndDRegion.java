@@ -67,7 +67,7 @@ public class NSGAIIwithKAndDRegion extends NSGAIIRegion {
 
 					Solution best = null;
 					for (int i = 0; i < pareto_front.size(); i++) {
-						System.out.print("final " + pareto_front.get(i).getObjective(index) + "***\n");
+						//System.out.print("final " + pareto_front.get(i).getObjective(index) + "***\n");
 						if (best == null || pareto_front.get(i).getObjective(index) < best.getObjective(index)) {
 							best = pareto_front.get(i);
 						}

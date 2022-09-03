@@ -21,6 +21,7 @@ import org.ssase.objective.optimization.hc.HillClimbingwithDRegion;
 import org.ssase.objective.optimization.irace.IRACERegion;
 import org.ssase.objective.optimization.moaco.MOACORegion;
 import org.ssase.objective.optimization.moga.MOGARegion;
+import org.ssase.objective.optimization.paramils.ParamILSRegion;
 import org.ssase.objective.optimization.rs.RSRegion;
 import org.ssase.objective.optimization.femosaa.ibea.*;
 import org.ssase.primitive.ControlPrimitive;
@@ -124,7 +125,10 @@ public abstract class Region {
 			selected = OptimizationType.RS;
 		} else if("irace".equals(type)) {
 			selected = OptimizationType.IRACE;
+		} else if("paramils".equals(type)) {
+			selected = OptimizationType.PARAMILS;
 		}
+		
 		
 		
 		
@@ -193,6 +197,8 @@ public abstract class Region {
 			return new RSRegion();
 		} else if(OptimizationType.IRACE.equals(type)) {
 			return new IRACERegion();
+		} else if(OptimizationType.PARAMILS.equals(type)) {
+			return new ParamILSRegion();
 		}
 		
 		throw new RuntimeException("Can not find region for type " + type);

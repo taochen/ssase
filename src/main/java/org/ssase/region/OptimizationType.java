@@ -13,5 +13,6 @@ public enum OptimizationType {
 	RS,
 	SGA,
 	SA,
-	IRACE
+	IRACE,
+	PARAMILS
 }
