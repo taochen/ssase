@@ -3,6 +3,7 @@ package org.ssase.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -194,7 +195,12 @@ public class Ssascaling {
 			
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = dbFactory.newDocumentBuilder();
+		
+			// The new Mac system cannot use the class loeader for some reasons, so this is a temporary fix.
+			//InputStream is = new FileInputStream("/Users/cottc/research/projects/ssase/src/main/resources/"+dom0);
 			Document doc = builder.parse(Ssascaling.class.getClassLoader().getResourceAsStream(dom0));
+			
+			//Document doc = builder.parse(is);
 			
 			doc.getDocumentElement().normalize();
 			

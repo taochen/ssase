@@ -11,25 +11,22 @@
 		-->
 <model>
   <!-- -->
- 
-<feature name="no_mbtree" type="categorical" optional="true"/>
-<feature name="no_asm" type="categorical" optional="true"/>
-<feature name="no_cabac" type="categorical" optional="true"/>
-<feature name="no_scenecut" type="categorical" optional="true"/>
-<feature name="aq_strength" type="numeric" range="0 36" gap="1" />
-<feature name="bframes" type="numeric" range="0 24" gap="1" />
-<feature name="qcomp" type="numeric" range="0 20" gap="1" />
-<feature name="qp" type="numeric" range="0 51" gap="1" />
-<feature name="ref" type="numeric" range="0 10" gap="1" />
-<feature name="rc_lookahead" type="numeric" range="0 217" gap="1" />
-<feature name="b_bias" type="numeric" range="0 193" gap="1" />
-<feature name="threads" type="numeric" range="0 128" gap="1" />
-<feature name="keyint" type="numeric" range="0 514" gap="1" />
-<feature name="crf" type="numeric" range="0 610" gap="1" />
-<feature name="scenecut" type="numeric" range="0 99" gap="1" />
-<feature name="seek" type="numeric" range="0 568" gap="1" />
-<feature name="ipratio" type="numeric" range="0 36" gap="1" />
-
+<feature name="ee_instrument" type="categorical" optional="true"/>
+<feature name="simplifycfg" type="categorical" optional="true"/>
+<feature name="ipsccp" type="categorical" optional="true"/>
+<feature name="called_value_propagation" type="categorical" optional="true"/>
+<feature name="basicaa" type="categorical" optional="true"/>
+<feature name="instcombine" type="categorical" optional="true"/>
+<feature name="inline" type="categorical" optional="true"/>
+<feature name="mergereturn" type="categorical" optional="true"/>
+<feature name="jump_threading" type="categorical" optional="true"/>
+<feature name="pgo_memop_opt" type="categorical" optional="true"/>
+<feature name="tailcallelim" type="categorical" optional="true"/>
+<feature name="licm" type="categorical" optional="true"/>
+<feature name="sink" type="categorical" optional="true"/>
+<feature name="gvn" type="categorical" optional="true"/>
+<feature name="sccp" type="categorical" optional="true"/>
+<feature name="adce" type="categorical" optional="true"/>
 	
 </model>
 </ssase>
